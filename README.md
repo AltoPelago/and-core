@@ -7,10 +7,10 @@ editor integration, canonicalization, and future conformance-tested implementati
 
 ## Repository Layout
 
-* [docs/spec/v1/README.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/docs/spec/v1/README.md) — the current v1 spec bundle
-* [cts/README.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/cts/README.md) — conformance test suite plan and fixture layout
-* [implementations/README.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/implementations/README.md) — future parser/emitter implementation home
-* [examples/README.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/examples/README.md) — future example documents and interoperability samples
+* [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
+* [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
+* [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
+* [examples/README.md](./examples/README.md) — future example documents and interoperability samples
 
 ## Current Status
 
@@ -22,10 +22,10 @@ The repository is currently documentation-first:
 
 ## Suggested Reading Order
 
-1. [docs/spec/v1/and-core-proposal.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/docs/spec/v1/and-core-proposal.md)
-2. [docs/spec/v1/and-canonical-rules.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/docs/spec/v1/and-canonical-rules.md)
-3. [docs/spec/v1/and-implementation-guide.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/docs/spec/v1/and-implementation-guide.md)
-4. [docs/spec/v1/and-vscode-support.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/docs/spec/v1/and-vscode-support.md)
+1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
+2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
+3. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
+4. [docs/spec/v1/and-vscode-support.md](./docs/spec/v1/and-vscode-support.md)
 
 ## Near-Term Next Steps
 
@@ -33,3 +33,9 @@ The repository is currently documentation-first:
 * extract the current conformance seeds into machine-readable fixtures
 * start the first reference parser implementation
 * add editor tooling once the CTS baseline exists
+
+## Safety Scripts
+
+* `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
+* `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
+* `npm run precommit:check` — runs the current repository safety checks together

@@ -23,6 +23,6 @@ turning the normative conformance seeds in the v1 specification into executable 
 
 Start by extracting the existing named seeds from:
 
-* [docs/spec/v1/and-core-proposal.md](/Users/altopelago/Documents/GitHub/aeon-family/altopelago/and-core/docs/spec/v1/and-core-proposal.md)
+* [docs/spec/v1/and-core-proposal.md](../docs/spec/v1/and-core-proposal.md)
 
 into a stable machine-readable fixture format.

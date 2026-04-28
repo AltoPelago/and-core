@@ -1,0 +1,9 @@
+{
+  "name": "and-core",
+  "private": true,
+  "scripts": {
+    "check:no-local-paths": "bash scripts/check-no-local-paths.sh",
+    "check:spec-layout": "bash scripts/check-spec-layout.sh",
+    "precommit:check": "bash scripts/pre-commit-check.sh"
+  }
+}
