@@ -155,6 +155,7 @@ interface NdText {
 
 `value` is escaped text after escape resolution.
 For multiline paragraphs, normalized line breaks are preserved as `\n` inside text values.
+Canonical emitters treat those line breaks as paragraph soft wraps and emit each as a single space.
 
 ### Strong
 

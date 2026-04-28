@@ -32,13 +32,13 @@
                 },
                 {
                   "type": "heading",
+                  "level": 2,
                   "children": [
                     {
                       "type": "text",
                       "value": "Child heading"
                     }
-                  ],
-                  "level": 2
+                  ]
                 }
               ]
             }

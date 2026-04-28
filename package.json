@@ -8,6 +8,7 @@
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "check:cts-seed-coverage": "bash scripts/check-cts-seed-coverage.sh",
     "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
+    "canonical:report": "node scripts/check-canonical-emitter.mjs --out ./cts/reports/reference-canonical-report.json",
     "cts:run": "node scripts/run-cts.mjs",
     "cts:run:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs",
     "cts:run:reference": "node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs",

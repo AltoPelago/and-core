@@ -788,6 +788,38 @@ Expected result:
 * one paragraph block
 * paragraph contains two lines of text
 
+### `seed-header-standalone`
+
+Input:
+
+```text
+&ND v1
+
+# Title
+```
+
+Expected result:
+
+* parse success
+* header is recognized as a document declaration
+* header does not appear as an AST block
+* one heading block
+
+### `seed-invalid-header-version`
+
+Input:
+
+```text
+&ND v2
+
+# Title
+```
+
+Expected result:
+
+* parse failure
+* reason: unsupported or malformed document header
+
 ### `seed-ordered-list-after-blank-line`
 
 Input:

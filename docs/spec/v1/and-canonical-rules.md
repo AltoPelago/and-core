@@ -90,8 +90,9 @@ Heading content is inline-canonicalized.
 ## 7. Paragraphs
 
 Paragraphs are emitted as a single logical line.
-Canonical form therefore collapses any valid multi-line paragraph input into one logical line
-without altering its content.
+Canonical form therefore collapses any valid multi-line paragraph input into one logical line.
+Each normalized paragraph line break is treated as an authoring soft wrap and emitted as a single
+U+0020 space.
 
 Any wrapped form is non-canonical, even if produced by a human-friendly pretty-printer.
 
@@ -111,6 +112,10 @@ with [* strong] text.
 Hard wrapping creates ambiguity and diff noise and is therefore non-canonical.
 
 Inline content within a paragraph is inline-canonicalized (see §8).
+
+Parser ASTs MAY preserve normalized paragraph line breaks as `\n` text content for diagnostics and
+editor tooling. Canonical emitters MUST NOT re-emit those paragraph line breaks; they MUST apply the
+single-space soft-wrap collapse described above.
 
 ---
 

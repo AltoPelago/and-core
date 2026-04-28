@@ -9,15 +9,9 @@ function fail(errorCode, detail) {
 }
 
 function escapeText(value, context = {}) {
-  if (value.includes('\n')) {
-    throw fail(
-      'unsupported_multiline_inline_text',
-      'The reference canonical emitter does not yet collapse multiline paragraph text.'
-    );
-  }
-
+  const normalizedValue = value.replaceAll('\r\n', '\n').replaceAll('\n', ' ');
   let output = '';
-  for (const char of value) {
+  for (const char of normalizedValue) {
     if (char === '[' || char === ']' || char === '\\' || (context.tableCell && char === '|')) {
       output += `\\${char}`;
     } else {

@@ -3,22 +3,22 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 53,
+    "fixtures": 55,
     "pending": 0,
-    "pass": 53,
+    "pass": 55,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 30,
+    "expected": 31,
     "checked": 0,
     "matched": 0,
-    "skipped": 30,
+    "skipped": 31,
     "failed": 0
   },
   "errorCodeChecks": {
-    "expected": 23,
-    "matched": 23,
+    "expected": 24,
+    "matched": 24,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -35,6 +35,35 @@
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-header-standalone",
+      "path": "strict/accept/seed-header-standalone.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-invalid-header-version",
+      "path": "strict/reject/seed-invalid-header-version.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_header",
+      "actualOk": false,
+      "errorCode": "invalid_header",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter."
       ]
     },
     {

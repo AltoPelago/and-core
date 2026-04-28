@@ -227,6 +227,15 @@ function evaluateFixture(fixture) {
     case 'seed-paragraph-vs-ordered-list':
       return { ok: lines.length === 2 && /^1\. /.test(lines[1]) };
 
+    case 'seed-header-standalone':
+      return { ok: lines.length === 3 && lines[0] === '&ND v1' && lines[1] === '' && lines[2] === '# Title' };
+
+    case 'seed-invalid-header-version':
+      return {
+        ok: false,
+        errorCode: lines[0] === '&ND v2' ? 'invalid_header' : 'unexpected_structure',
+      };
+
     case 'seed-ordered-list-after-blank-line':
       return { ok: lines.length === 3 && lines[1] === '' && /^1\. /.test(lines[2]) };
 

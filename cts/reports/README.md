@@ -12,6 +12,7 @@ The current convenience script writes:
 
 * `reference-subset-report.json`
 * `reference-parser-report.json`
+* `reference-canonical-report.json`
 
 Generated report files are not part of the normative CTS definition.
 They are execution artifacts derived from the fixture suite and a chosen adapter.
@@ -24,6 +25,12 @@ Each report includes:
 * `documentChecks` — structural AST expectation coverage
 * `errorCodeChecks` — reject diagnostic coverage
 * `results` — per-fixture adapter results
+
+Canonical emitter reports include:
+
+* `totals` — accept fixture count and canonical fixed-point status counts
+* `results[].canonical` — emitted canonical text for each checked accept fixture
+* `results[].notes` — failure or skip details, if any
 
 For a full parser adapter with `capabilities.document = true`, document checks should be fully
 matched:
@@ -51,4 +58,5 @@ Regenerate the reports with:
 ```sh
 npm run cts:report:reference
 npm run cts:report:subset
+npm run canonical:report
 ```

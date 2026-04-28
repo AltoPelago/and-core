@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-invalid-header-version",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v2\n\n# Title\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_header",
+    "assertions": [
+      "unsupported or malformed document header"
+    ]
+  }
+}

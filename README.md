@@ -47,6 +47,7 @@ The repository is currently spec-and-CTS first:
 * `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
 * `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
 * `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
+* `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
 * `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
 * `npm run cts:run:reference` — runs the first reference parser adapter against the CTS

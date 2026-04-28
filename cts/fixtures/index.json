@@ -3,6 +3,8 @@
   "specVersion": "&ND Core v1",
   "fixtures": [
     "strict/accept/seed-paragraph-vs-ordered-list.json",
+    "strict/accept/seed-header-standalone.json",
+    "strict/reject/seed-invalid-header-version.json",
     "strict/accept/seed-ordered-list-after-blank-line.json",
     "strict/accept/seed-table-requires-separator.json",
     "strict/accept/seed-table-valid-top-level.json",

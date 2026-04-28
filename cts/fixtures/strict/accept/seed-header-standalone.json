@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-header-standalone",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n# Title\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "header is recognized as a document declaration",
+      "header does not appear as an AST block",
+      "one heading block"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "heading",
+          "level": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "Title"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

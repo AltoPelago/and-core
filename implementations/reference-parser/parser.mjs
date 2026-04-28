@@ -9,6 +9,16 @@ function stripFinalEmptyLine(lines) {
   return lines;
 }
 
+function stripDocumentHeader(lines) {
+  if (lines[0] === '&ND v1') {
+    return { ok: true, lines: lines[1] === '' ? lines.slice(2) : lines.slice(1) };
+  }
+  if (lines[0]?.startsWith('&ND ')) {
+    return { ok: false, errorCode: 'invalid_header' };
+  }
+  return { ok: true, lines };
+}
+
 function isEscapable(char) {
   return char === '[' || char === ']' || char === '|' || char === '\\';
 }
@@ -575,8 +585,11 @@ function parseBlocks(lines, options) {
       const match = line.match(/^(#{1,6}) (.*)$/);
       const heading = parseInlineBlock('heading', match[2], options);
       if (!heading.ok) return heading;
-      heading.node.level = match[1].length;
-      children.push(heading.node);
+      children.push({
+        type: 'heading',
+        level: match[1].length,
+        children: heading.node.children,
+      });
       index += 1;
       continue;
     }
@@ -622,7 +635,10 @@ function parseBlocks(lines, options) {
 
 export function parseAnd(source, options = {}) {
   const normalized = normalizeSource(source);
-  const lines = stripFinalEmptyLine(normalized.split('\n'));
+  const sourceLines = stripFinalEmptyLine(normalized.split('\n'));
+  const header = stripDocumentHeader(sourceLines);
+  if (!header.ok) return header;
+  const lines = header.lines;
 
   const raw = scanRawIslands(lines);
   if (!raw.ok) return raw;
