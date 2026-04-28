@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-missing-body-row",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| A | B |\n| --- | --- |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_shape",
+    "assertions": [
+      "parse failure",
+      "table has no body rows"
+    ]
+  }
+}

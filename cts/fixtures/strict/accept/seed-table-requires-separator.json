@@ -9,6 +9,20 @@
     "assertions": [
       "one paragraph block with two lines",
       "no table block"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "| A | B |\nplain text"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

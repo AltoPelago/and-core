@@ -9,6 +9,20 @@
     "assertions": [
       "plain text only",
       "no strong inline node"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "[* not strong]"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

@@ -10,6 +10,25 @@
       "one blockquote block",
       "quoted paragraph contains plain text `[* not strong]`",
       "no strong inline node"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "[* not strong]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

@@ -157,6 +157,10 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
     const char = text[index];
 
     if (char === '\n') {
+      if (state.stopOnClose) {
+        return { ok: false, errorCode: 'unclosed_inline', nextIndex: index };
+      }
+      pushText(nodes, '\n');
       index += 1;
       continue;
     }
@@ -242,26 +246,51 @@ function rawFencePrefix(line) {
   return null;
 }
 
+function extensionOpener(line) {
+  const match = line.match(/^((?: {2})?|> ?|  > ?)\+\+\+([a-z][a-z0-9-]*(?:\/[a-z][a-z0-9-]*)*(?:\.v[0-9]+)?)$/);
+  if (!match) return null;
+  return {
+    prefix: match[1],
+    name: match[2],
+  };
+}
+
 function scanRawIslands(lines) {
   const rawLines = new Set();
   for (let i = 0; i < lines.length; i += 1) {
     const prefix = rawFencePrefix(lines[i]);
-    if (prefix === null) continue;
+    if (prefix !== null) {
+      rawLines.add(i);
+      let closed = false;
+      for (let j = i + 1; j < lines.length; j += 1) {
+        rawLines.add(j);
+        if (lines[j] === `${prefix}\`\`\``) {
+          closed = true;
+          i = j;
+          break;
+        }
+        if (lines[j].trim() === '```' && lines[j] !== `${prefix}\`\`\``) {
+          return { ok: false, errorCode: 'raw_block_bad_closing_margin' };
+        }
+      }
+      if (!closed) return { ok: false, errorCode: 'unclosed_code_block' };
+      continue;
+    }
+
+    const extension = extensionOpener(lines[i]);
+    if (extension === null) continue;
 
     rawLines.add(i);
     let closed = false;
     for (let j = i + 1; j < lines.length; j += 1) {
       rawLines.add(j);
-      if (lines[j] === `${prefix}\`\`\``) {
+      if (lines[j] === `${extension.prefix}+++`) {
         closed = true;
         i = j;
         break;
       }
-      if (lines[j].trim() === '```' && lines[j] !== `${prefix}\`\`\``) {
-        return { ok: false, errorCode: 'raw_block_bad_closing_margin' };
-      }
     }
-    if (!closed) return { ok: false, errorCode: 'unclosed_code_block' };
+    if (!closed) return { ok: false, errorCode: 'unclosed_extension_block' };
   }
   return { ok: true, rawLines };
 }
@@ -279,7 +308,7 @@ function validateBlocks(lines, rawLines) {
     const previous = i > 0 ? lines[i - 1] : '';
 
     if (line.startsWith('+++')) {
-      return { ok: false, errorCode: 'unclosed_extension_block' };
+      return { ok: false, errorCode: 'invalid_extension_name' };
     }
     if (line.startsWith(' - ')) {
       return { ok: false, errorCode: 'invalid_indentation' };
@@ -338,6 +367,31 @@ function parseCodeBlock(lines, start) {
   }
 
   return { ok: false, errorCode: 'unclosed_code_block' };
+}
+
+function parseExtensionBlock(lines, start) {
+  const extension = extensionOpener(lines[start]);
+  if (extension === null) return { ok: false, errorCode: 'invalid_extension_name' };
+  const payload = [];
+
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === `${extension.prefix}+++`) {
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: {
+          type: 'extension_block',
+          name: extension.name,
+          text: payload.map((payloadLine) =>
+            payloadLine.startsWith(extension.prefix) ? payloadLine.slice(extension.prefix.length) : payloadLine
+          ).join('\n'),
+        },
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_extension_block' };
 }
 
 function isTableStart(lines, index) {
@@ -479,9 +533,7 @@ function parseParagraph(lines, start, options) {
   const paragraphLines = [];
   let index = start;
   while (index < lines.length && lines[index] !== '') {
-    const line = lines[index];
-    if (paragraphLines.length > 0 && /^(#{1,6} |- |\d+\. |> |```|\| )/.test(line)) break;
-    paragraphLines.push(line);
+    paragraphLines.push(lines[index]);
     index += 1;
   }
   const inline = parseInline(paragraphLines.join('\n'), options);
@@ -505,6 +557,14 @@ function parseBlocks(lines, options) {
       if (!code.ok) return code;
       children.push(code.node);
       index = code.nextIndex;
+      continue;
+    }
+
+    if (extensionOpener(line) !== null) {
+      const extension = parseExtensionBlock(lines, index);
+      if (!extension.ok) return extension;
+      children.push(extension.node);
+      index = extension.nextIndex;
       continue;
     }
 

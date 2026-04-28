@@ -10,6 +10,25 @@
       "one blockquote block",
       "quoted paragraph contains plain text `[@ https://example.com | label]`",
       "no link inline node"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "[@ https://example.com | label]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

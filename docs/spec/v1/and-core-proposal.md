@@ -864,6 +864,50 @@ Expected result:
 * first body cell contains one strong inline node
 * second body cell contains a literal pipe character
 
+### `seed-table-mismatched-body-row`
+
+Input:
+
+```text
+| A | B |
+| --- | --- |
+| 1 | 2 | 3 |
+```
+
+Expected result:
+
+* parse failure
+* reason: table body row has a different cell count from the header row
+
+### `seed-table-missing-body-row`
+
+Input:
+
+```text
+| A | B |
+| --- | --- |
+```
+
+Expected result:
+
+* parse failure
+* reason: table has no body rows
+
+### `seed-table-unescaped-pipe-extra-cell`
+
+Input:
+
+```text
+| A | B |
+| --- | --- |
+| escaped | pipe | ok |
+```
+
+Expected result:
+
+* parse failure
+* reason: unescaped pipe creates an extra cell and violates table shape
+
 ### `seed-escaped-inline-opener`
 
 Input:
@@ -909,6 +953,24 @@ Expected result:
 * one code block
 * payload contains the interior lines exactly, subject only to line-ending normalization
 
+### `seed-extension-block-opaque`
+
+Input:
+
+```text
++++chart/pie
+[* not strong]
+| not | table |
++++
+```
+
+Expected result:
+
+* parse success
+* one extension block
+* extension name is `chart/pie`
+* payload is opaque and not parsed as inline or block content
+
 ### `seed-unclosed-extension-block`
 
 Input:
@@ -922,6 +984,22 @@ Expected result:
 
 * parse failure
 * error code `unclosed_extension_block`
+
+### `seed-extension-uppercase-name`
+
+Input:
+
+```text
++++Chart/pie
+payload
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_extension_name`
+* reason: extension names are lowercase in strict mode
 
 ### `seed-invalid-escape`
 
@@ -1315,6 +1393,21 @@ Expected result:
 
 * parse failure
 * error code `unclosed_inline`
+
+### `seed-inline-strong-newline`
+
+Input:
+
+```text
+[* strong
+continued]
+```
+
+Expected result:
+
+* parse failure
+* error code `unclosed_inline`
+* reason: inline strong node crosses a line boundary before closing
 
 ### `seed-inline-unclosed-nested`
 

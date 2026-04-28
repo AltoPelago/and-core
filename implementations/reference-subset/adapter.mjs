@@ -251,6 +251,26 @@ function evaluateFixture(fixture) {
           lines[2] === '| [* Ada] | escaped \\| pipe |',
       };
 
+    case 'seed-table-mismatched-body-row':
+      return {
+        ok: false,
+        errorCode: lines[2] === '| 1 | 2 | 3 |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
+    case 'seed-table-missing-body-row':
+      return {
+        ok: false,
+        errorCode: lines.length === 2 && matchesTableSeparator(lines[1])
+          ? 'invalid_table_shape'
+          : 'unexpected_structure',
+      };
+
+    case 'seed-table-unescaped-pipe-extra-cell':
+      return {
+        ok: false,
+        errorCode: lines[2] === '| escaped | pipe | ok |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
     case 'seed-escaped-inline-opener':
       return {
         ok: lines.length === 1 && lines[0] === '\\[* not strong]',
@@ -261,6 +281,7 @@ function evaluateFixture(fixture) {
     case 'seed-inline-escaped-pipe-in-link-target':
     case 'seed-inline-link-missing-target':
     case 'seed-inline-unclosed-strong':
+    case 'seed-inline-strong-newline':
     case 'seed-inline-unclosed-nested':
     case 'seed-inline-unexpected-closing':
     case 'seed-invalid-escape': {
@@ -274,6 +295,20 @@ function evaluateFixture(fixture) {
           lines.length === 5 &&
           lines[0] === '```txt' &&
           lines[4] === '```',
+      };
+
+    case 'seed-extension-block-opaque':
+      return {
+        ok:
+          lines.length === 4 &&
+          lines[0] === '+++chart/pie' &&
+          lines[3] === '+++',
+      };
+
+    case 'seed-extension-uppercase-name':
+      return {
+        ok: false,
+        errorCode: lines[0] === '+++Chart/pie' ? 'invalid_extension_name' : 'unexpected_structure',
       };
 
     case 'seed-nested-list-two-space-indent':

@@ -18,7 +18,6 @@ The following parts are normative for CTS fixtures that contain `expected.docume
 
 The following parts are provisional and MAY be revised before `v1` is frozen:
 
-- extension block AST shape
 - source location metadata
 - diagnostics attached to AST nodes
 - recovery-mode partial AST shape
@@ -103,6 +102,20 @@ interface NdCodeBlock {
 `text` is the raw payload after line-ending normalization and margin removal. It does not include
 opening or closing fences.
 
+### Extension Block
+
+```ts
+interface NdExtensionBlock {
+  readonly type: "extension_block";
+  readonly name: string;
+  readonly text: string;
+}
+```
+
+`name` is the validated extension name from the opening fence, excluding the `+++` marker. `text`
+is the opaque payload after line-ending normalization and margin removal. It does not include
+opening or closing fences, and no inline or block parsing occurs inside it.
+
 ### Table
 
 ```ts
@@ -141,6 +154,7 @@ interface NdText {
 ```
 
 `value` is escaped text after escape resolution.
+For multiline paragraphs, normalized line breaks are preserved as `\n` inside text values.
 
 ### Strong
 

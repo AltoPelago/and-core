@@ -9,6 +9,20 @@
     "assertions": [
       "one paragraph block",
       "paragraph contains two lines of text"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "My number is\n1. not a list"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

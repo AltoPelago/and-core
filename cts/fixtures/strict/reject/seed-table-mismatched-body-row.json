@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-mismatched-body-row",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| A | B |\n| --- | --- |\n| 1 | 2 | 3 |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_shape",
+    "assertions": [
+      "parse failure",
+      "table body row has a different cell count from the header row"
+    ]
+  }
+}

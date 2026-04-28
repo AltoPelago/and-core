@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-extension-block-opaque",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "+++chart/pie\n[* not strong]\n| not | table |\n+++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one extension block",
+      "extension name is `chart/pie`",
+      "payload is opaque and not parsed as inline or block content"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "extension_block",
+          "name": "chart/pie",
+          "text": "[* not strong]\n| not | table |"
+        }
+      ]
+    }
+  }
+}
