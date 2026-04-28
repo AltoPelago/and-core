@@ -72,6 +72,12 @@ for rel in fixtures:
         if not isinstance(assertions, list) or not all(isinstance(x, str) for x in assertions):
             errors.append(f"{rel} expected.assertions must be an array of strings")
 
+    error_code = expected.get("errorCode")
+    if expected.get("ok") is False and not isinstance(error_code, str):
+        errors.append(f"{rel} expected.errorCode is required for reject fixtures")
+    if error_code is not None and not isinstance(error_code, str):
+        errors.append(f"{rel} expected.errorCode must be a string when present")
+
     document = expected.get("document")
     if document is not None:
         if expected.get("ok") is not True:

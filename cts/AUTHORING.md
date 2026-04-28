@@ -1,0 +1,168 @@
+# CTS Authoring Guide
+
+This guide explains how to add and maintain `&ND Core v1` CTS fixtures.
+
+The CTS has two jobs:
+
+- prove accept/reject behavior
+- pin stable parser outputs where the spec has a concrete contract
+
+Fixtures are normative when they correspond to named conformance seeds in
+[`docs/spec/v1/and-core-proposal.md`](../docs/spec/v1/and-core-proposal.md).
+
+## Fixture Checklist
+
+When adding a fixture:
+
+1. Add a named seed section to `docs/spec/v1/and-core-proposal.md`.
+2. Add a JSON fixture under `cts/fixtures/strict/accept/` or `cts/fixtures/strict/reject/`.
+3. Add the fixture path to `cts/fixtures/index.json`.
+4. Update adapters that intentionally cover the fixture.
+5. Run `npm run precommit:check`.
+
+The seed coverage check fails if the spec and fixture index drift apart.
+
+## Accept Fixtures
+
+Accept fixtures MUST set:
+
+```json
+{
+  "expected": {
+    "ok": true,
+    "assertions": []
+  }
+}
+```
+
+Accept fixtures SHOULD include `expected.document` once the relevant AST shape is covered by
+[`docs/spec/v1/and-ast-contract.md`](../docs/spec/v1/and-ast-contract.md).
+
+Current policy: every strict accept fixture has `expected.document`.
+
+`expected.document` is exact JSON. Order, node type strings, and payload fields are all checked
+when an adapter declares document capability.
+
+## Reject Fixtures
+
+Reject fixtures MUST set:
+
+```json
+{
+  "expected": {
+    "ok": false,
+    "errorCode": "stable_error_code",
+    "assertions": []
+  }
+}
+```
+
+`expected.errorCode` is required for every reject fixture. Avoid adding generic reject-only fixtures
+without a stable diagnostic, because they are much less useful for independent implementations and
+agentic debugging.
+
+Reject fixtures MUST NOT include `expected.document`. Strict-mode failures produce no document AST.
+
+## Assertions
+
+`expected.assertions` are human-readable normative expectations.
+
+Use assertions to explain why the case exists, even when the same behavior is also machine-checked
+by `expected.document` or `expected.errorCode`.
+
+Good assertions are concrete:
+
+- `one blockquote block`
+- `table body row has a different cell count from the header row`
+- `extension block closer must appear at the same block margin as the opener`
+
+Avoid vague assertions such as:
+
+- `works correctly`
+- `invalid syntax`
+- `parser handles this`
+
+## Adapter Capabilities
+
+Adapters export:
+
+```js
+export async function runFixture(fixture, context) {
+  return {
+    status: "pass",
+    actualOk: true,
+    errorCode: undefined,
+    notes: []
+  };
+}
+```
+
+Adapters that return AST documents should declare:
+
+```js
+export const capabilities = {
+  document: true
+};
+```
+
+When `document` capability is declared, the CTS runner compares `expected.document` exactly.
+
+When `document` capability is not declared, document checks are reported as skipped. This is useful
+for smoke adapters, but full parser adapters should declare document capability once they can emit
+the contract shape.
+
+## Reports
+
+The CTS report includes:
+
+- fixture totals
+- per-fixture pass/fail results
+- `documentChecks`
+- `errorCodeChecks`
+
+For a complete strict parser, a healthy report should show:
+
+```text
+documentChecks expected=N checked=N matched=N skipped=0 failed=0
+errorCodeChecks expected=N matched=N missingActual=0 mismatched=0
+```
+
+For a smoke adapter without AST output, skipped document checks are expected:
+
+```text
+documentChecks expected=N checked=0 matched=0 skipped=N failed=0
+```
+
+## Commands
+
+Run the reference parser:
+
+```sh
+npm run cts:run:reference
+```
+
+Run the smoke subset adapter:
+
+```sh
+npm run cts:run:subset
+```
+
+Regenerate the reference report:
+
+```sh
+npm run cts:report:reference
+```
+
+Run all safety checks:
+
+```sh
+npm run precommit:check
+```
+
+## Common Mistakes
+
+- Adding a spec seed but forgetting `cts/fixtures/index.json`.
+- Adding a reject fixture without `expected.errorCode`.
+- Adding `expected.document` to a reject fixture.
+- Forgetting to update smoke/reference adapters for new seeds.
+- Treating skipped document checks as equivalent to checked document matches.

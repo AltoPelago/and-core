@@ -6,6 +6,7 @@
   "source": "- Parent\n\n\t- Child\n",
   "expected": {
     "ok": false,
+    "errorCode": "invalid_indentation",
     "assertions": [
       "tabs are invalid where indentation is structural"
     ]

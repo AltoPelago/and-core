@@ -33,7 +33,8 @@ The current fixture schema is intentionally minimal.
 * `expected.ok = true` means parse success is required.
 * `expected.ok = false` means parse failure is required.
 * `options` is optional and carries parser configuration relevant to the fixture.
-* `errorCode` is used only when the spec names a stable error code.
+* `errorCode` is required when `expected.ok = false` and MUST name the stable diagnostic code
+  expected from conforming parsers.
 * `assertions` are normative human-readable expectations extracted from the spec. The first CTS
   runner MAY treat them as descriptive, then progressively promote them into machine-checked
   structural checks.

@@ -14,14 +14,16 @@ Each fixture is a JSON document with:
 * `source` — the raw `&ND` input text
 * `expected` — the expected high-level result
 
-The initial fixture contract is intentionally small.
-It is designed to support:
+The fixture contract is intentionally small.
+It supports:
 
 * accept/reject behavior
 * stable error-code expectations
-* lightweight structural assertions
+* exact AST expectations for accepted documents
+* lightweight human-readable assertions
 
-without forcing the first CTS runner to adopt a full AST interchange format.
+See [`schema-v1.md`](./schema-v1.md) for the JSON schema notes and
+[`../AUTHORING.md`](../AUTHORING.md) for authoring rules.
 
 ## Layout
 
@@ -29,9 +31,9 @@ without forcing the first CTS runner to adopt a full AST interchange format.
 * `strict/accept/` — strict-mode acceptance fixtures
 * `strict/reject/` — strict-mode rejection fixtures
 
-## Next Step
+## Future Growth
 
-Once the first parser exists, this directory can grow to include:
+This directory can grow to include:
 
 * canonicalization fixtures
 * budgeted fixtures with explicit parser options

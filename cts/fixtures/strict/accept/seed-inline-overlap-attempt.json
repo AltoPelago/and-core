@@ -9,6 +9,38 @@
     "assertions": [
       "one strong node containing one nested emphasis node and trailing text",
       "nesting is strictly tree-structured, not overlapping"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "strong",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "strong "
+                },
+                {
+                  "type": "emphasis",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "emphasis"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "value": " text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

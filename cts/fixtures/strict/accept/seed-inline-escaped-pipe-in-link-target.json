@@ -9,6 +9,26 @@
     "assertions": [
       "one link node",
       "target contains the literal pipe character `|`"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "link",
+              "href": "https://example.com/a|b",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "label"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

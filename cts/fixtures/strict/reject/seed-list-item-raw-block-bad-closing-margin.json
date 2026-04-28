@@ -6,6 +6,7 @@
   "source": "- Parent\n\n  ```txt\n  raw\n ```\n",
   "expected": {
     "ok": false,
+    "errorCode": "raw_block_bad_closing_margin",
     "assertions": [
       "raw block closer must appear at the same block margin as the opener"
     ]

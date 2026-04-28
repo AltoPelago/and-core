@@ -6,6 +6,7 @@
   "source": "Text\n---\n",
   "expected": {
     "ok": false,
+    "errorCode": "block_opener_on_paragraph_continuation",
     "assertions": [
       "block opener attempted on a paragraph continuation line"
     ]

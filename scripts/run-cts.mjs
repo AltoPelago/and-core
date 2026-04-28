@@ -112,6 +112,9 @@ function validateFixture(relativePath, fixture) {
     if ('errorCode' in fixture.expected && typeof fixture.expected.errorCode !== 'string') {
       errors.push(`${relativePath} expected.errorCode must be a string when present`);
     }
+    if (fixture.expected.ok === false && typeof fixture.expected.errorCode !== 'string') {
+      errors.push(`${relativePath} expected.errorCode is required for reject fixtures`);
+    }
     if ('document' in fixture.expected) {
       if (fixture.expected.ok !== true) {
         errors.push(`${relativePath} expected.document is only valid for successful fixtures`);
@@ -269,6 +272,7 @@ async function runWithAdapter(adapter, entry) {
     status,
     mode: entry.fixture.mode,
     expectedOk: entry.fixture.expected.ok,
+    expectedErrorCode: entry.fixture.expected.errorCode,
     actualOk: result.actualOk,
     errorCode: result.errorCode,
     documentExpected: documentExpectationPresent,
@@ -288,9 +292,45 @@ function summarize(results, adapter) {
     fail: 0,
     error: 0,
   };
+  const documentCounts = {
+    expected: 0,
+    checked: 0,
+    matched: 0,
+    skipped: 0,
+    failed: 0,
+  };
+  const errorCodeCounts = {
+    expected: 0,
+    matched: 0,
+    missingActual: 0,
+    mismatched: 0,
+  };
 
   for (const result of results) {
     counts[result.status] = (counts[result.status] ?? 0) + 1;
+    if (result.expectedErrorCode) {
+      errorCodeCounts.expected += 1;
+      if (result.errorCode === result.expectedErrorCode) {
+        errorCodeCounts.matched += 1;
+      } else if (result.errorCode === undefined) {
+        errorCodeCounts.missingActual += 1;
+      } else {
+        errorCodeCounts.mismatched += 1;
+      }
+    }
+    if (result.documentExpected) {
+      documentCounts.expected += 1;
+      if (result.documentChecked) {
+        documentCounts.checked += 1;
+        if (result.documentMatch === true) {
+          documentCounts.matched += 1;
+        } else {
+          documentCounts.failed += 1;
+        }
+      } else {
+        documentCounts.skipped += 1;
+      }
+    }
   }
 
   return {
@@ -301,6 +341,8 @@ function summarize(results, adapter) {
       fixtures: results.length,
       ...counts,
     },
+    documentChecks: documentCounts,
+    errorCodeChecks: errorCodeCounts,
     results,
   };
 }
@@ -314,6 +356,12 @@ function printText(summary) {
   console.log('');
   console.log(
     `fixtures=${summary.totals.fixtures} pass=${summary.totals.pass} fail=${summary.totals.fail} error=${summary.totals.error} pending=${summary.totals.pending}`
+  );
+  console.log(
+    `documentChecks expected=${summary.documentChecks.expected} checked=${summary.documentChecks.checked} matched=${summary.documentChecks.matched} skipped=${summary.documentChecks.skipped} failed=${summary.documentChecks.failed}`
+  );
+  console.log(
+    `errorCodeChecks expected=${summary.errorCodeChecks.expected} matched=${summary.errorCodeChecks.matched} missingActual=${summary.errorCodeChecks.missingActual} mismatched=${summary.errorCodeChecks.mismatched}`
   );
 }
 

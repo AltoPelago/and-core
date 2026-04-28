@@ -6,6 +6,7 @@
   "source": "[@ | label]\n",
   "expected": {
     "ok": false,
+    "errorCode": "invalid_link_target",
     "assertions": [
       "link target is required in Core v1"
     ]

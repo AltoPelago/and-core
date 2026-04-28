@@ -6,6 +6,7 @@
   "source": "- Parent\n\n - Child\n",
   "expected": {
     "ok": false,
+    "errorCode": "invalid_indentation",
     "assertions": [
       "structural indentation is exactly two spaces in Core v1"
     ]

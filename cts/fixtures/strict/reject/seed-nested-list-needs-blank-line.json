@@ -6,6 +6,7 @@
   "source": "- Parent\n  - Child\n",
   "expected": {
     "ok": false,
+    "errorCode": "missing_blank_line_before_nested_block",
     "assertions": [
       "nested blocks require a blank line before the nested block in Core v1"
     ]

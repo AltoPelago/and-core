@@ -6,6 +6,7 @@
   "source": "[@ https://example.com | ]\n",
   "expected": {
     "ok": false,
+    "errorCode": "missing_link_label",
     "assertions": [
       "link label is required in Core v1"
     ]
