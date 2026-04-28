@@ -21,39 +21,76 @@ function parseEscape(text, index) {
   return { ok: false, errorCode: 'invalid_escape', nextIndex: index + 1 };
 }
 
-function scanInlineCode(text, index) {
+function pushText(nodes, value) {
+  if (!value) return;
+  const last = nodes[nodes.length - 1];
+  if (last?.type === 'text') {
+    last.value += value;
+    return;
+  }
+  nodes.push({ type: 'text', value });
+}
+
+function parseEscapedBracketLiteral(text, index) {
+  let i = index + 2;
+  let value = '[';
+  while (i < text.length) {
+    if (text[i] === '\\') {
+      const escaped = parseEscape(text, i);
+      if (!escaped.ok) return escaped;
+      value += escaped.value;
+      i = escaped.nextIndex;
+      continue;
+    }
+    value += text[i];
+    if (text[i] === ']') {
+      return { ok: true, nextIndex: i + 1, value };
+    }
+    if (text[i] === '\n') {
+      return { ok: true, nextIndex: i, value: value.slice(0, -1) };
+    }
+    i += 1;
+  }
+  return { ok: true, nextIndex: i, value };
+}
+
+function parseInlineCode(text, index) {
   let i = index + 3;
+  let value = '';
   while (i < text.length) {
     const char = text[i];
     if (char === '\\') {
       const escaped = parseEscape(text, i);
       if (!escaped.ok) return escaped;
+      value += escaped.value;
       i = escaped.nextIndex;
       continue;
     }
     if (char === ']') {
-      return { ok: true, nextIndex: i + 1 };
+      return { ok: true, nextIndex: i + 1, node: { type: 'code', text: value } };
     }
     if (char === '\n') {
       return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
     }
+    value += char;
     i += 1;
   }
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function scanSpan(text, index, opener, options) {
-  let i = index + opener.length;
-  while (i < text.length) {
-    const result = scanInlineAt(text, i, options, { insideSpan: true });
-    if (!result.ok) return result;
-    if (result.closed) return { ok: true, nextIndex: result.nextIndex };
-    i = result.nextIndex;
-  }
-  return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
+function parseSpan(text, index, opener, options) {
+  const type = opener === '[* ' ? 'strong' : 'emphasis';
+  const parsed = parseInlineSequence(text, index + opener.length, options, { stopOnClose: true });
+  if (!parsed.ok) return parsed;
+  if (!parsed.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: parsed.nextIndex };
+  return {
+    ok: true,
+    nextIndex: parsed.nextIndex,
+    node: { type, children: parsed.nodes },
+  };
 }
 
-function scanLink(text, index, options) {
+function parseLink(text, index, options) {
   const maxLinkTargetLength = options?.budgets?.maxLinkTargetLength;
   let i = index + 3;
   let target = '';
@@ -90,81 +127,109 @@ function scanLink(text, index, options) {
 
   i += 1;
   if (text[i] === ' ') i += 1;
-  const labelStart = i;
-
-  while (i < text.length) {
-    const result = scanInlineAt(text, i, options, { insideSpan: true });
-    if (!result.ok) return result;
-    if (result.closed) {
-      if (text.slice(labelStart, i).trim().length === 0) {
-        return { ok: false, errorCode: 'missing_link_label', nextIndex: i };
-      }
-      return { ok: true, nextIndex: result.nextIndex };
-    }
-    i = result.nextIndex;
+  const label = parseInlineSequence(text, i, options, { stopOnClose: true });
+  if (!label.ok) return label;
+  if (!label.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: label.nextIndex };
+  if (!hasInlineContent(label.nodes)) {
+    return { ok: false, errorCode: 'missing_link_label', nextIndex: i };
   }
 
-  return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
+  return {
+    ok: true,
+    nextIndex: label.nextIndex,
+    node: { type: 'link', href: target.trim(), children: label.nodes },
+  };
 }
 
-function scanEscapedBracketLiteral(text, index) {
-  let i = index + 2;
-  while (i < text.length) {
-    if (text[i] === '\\') {
-      const escaped = parseEscape(text, i);
-      if (!escaped.ok) return escaped;
-      i = escaped.nextIndex;
+function hasInlineContent(nodes) {
+  return nodes.some((node) => {
+    if (node.type === 'text') return node.value.trim().length > 0;
+    if ('children' in node) return hasInlineContent(node.children);
+    return true;
+  });
+}
+
+function parseInlineSequence(text, startIndex, options, state = {}) {
+  const nodes = [];
+  let index = startIndex;
+
+  while (index < text.length) {
+    const char = text[index];
+
+    if (char === '\n') {
+      index += 1;
       continue;
     }
-    if (text[i] === ']') {
-      return { ok: true, nextIndex: i + 1 };
+
+    if (char === '\\') {
+      const escaped = parseEscape(text, index);
+      if (!escaped.ok) return escaped;
+      if (escaped.value === '[') {
+        const literal = parseEscapedBracketLiteral(text, index);
+        if (!literal.ok) return literal;
+        pushText(nodes, literal.value);
+        index = literal.nextIndex;
+        continue;
+      }
+      pushText(nodes, escaped.value);
+      index = escaped.nextIndex;
+      continue;
     }
-    if (text[i] === '\n') {
-      return { ok: true, nextIndex: i };
+
+    if (text.startsWith('[* ', index)) {
+      const parsed = parseSpan(text, index, '[* ', options);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
     }
-    i += 1;
-  }
-  return { ok: true, nextIndex: i };
-}
 
-function scanInlineAt(text, index, options, state = {}) {
-  const char = text[index];
-  if (char === '\n') return { ok: true, nextIndex: index + 1 };
-
-  if (char === '\\') {
-    const escaped = parseEscape(text, index);
-    if (!escaped.ok) return escaped;
-    if (escaped.value === '[') {
-      return scanEscapedBracketLiteral(text, index);
+    if (text.startsWith('[/ ', index)) {
+      const parsed = parseSpan(text, index, '[/ ', options);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
     }
-    return { ok: true, nextIndex: escaped.nextIndex };
+
+    if (text.startsWith('[@ ', index)) {
+      const parsed = parseLink(text, index, options);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
+    if (text.startsWith('[$ ', index)) {
+      const parsed = parseInlineCode(text, index);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
+    if (char === ']') {
+      if (state.stopOnClose) {
+        return { ok: true, closed: true, nextIndex: index + 1, nodes };
+      }
+      return { ok: false, errorCode: 'unexpected_closing', nextIndex: index };
+    }
+
+    if (char === '[' && index + 1 < text.length) {
+      return { ok: false, errorCode: 'unknown_inline_type', nextIndex: index };
+    }
+
+    pushText(nodes, char);
+    index += 1;
   }
 
-  if (text.startsWith('[* ', index)) return scanSpan(text, index, '[* ', options);
-  if (text.startsWith('[/ ', index)) return scanSpan(text, index, '[/ ', options);
-  if (text.startsWith('[@ ', index)) return scanLink(text, index, options);
-  if (text.startsWith('[$ ', index)) return scanInlineCode(text, index);
-
-  if (char === ']') {
-    if (state.insideSpan) return { ok: true, closed: true, nextIndex: index + 1 };
-    return { ok: false, errorCode: 'unexpected_closing', nextIndex: index };
-  }
-
-  if (char === '[' && index + 1 < text.length) {
-    return { ok: false, errorCode: 'unknown_inline_type', nextIndex: index };
-  }
-
-  return { ok: true, nextIndex: index + 1 };
+  return { ok: true, closed: false, nextIndex: index, nodes };
 }
 
 export function parseInline(text, options = {}) {
-  let index = 0;
-  while (index < text.length) {
-    const result = scanInlineAt(text, index, options);
-    if (!result.ok) return result;
-    index = result.nextIndex;
-  }
-  return { ok: true };
+  const parsed = parseInlineSequence(text, 0, options);
+  if (!parsed.ok) return parsed;
+  return { ok: true, nodes: parsed.nodes };
 }
 
 function rawFencePrefix(line) {
@@ -201,19 +266,6 @@ function scanRawIslands(lines) {
   return { ok: true, rawLines };
 }
 
-function stripInlinePrefix(line) {
-  if (line.startsWith('  > ')) return line.slice(4);
-  if (line === '  >') return '';
-  if (line.startsWith('> ')) return line.slice(2);
-  if (line === '>') return '';
-  if (line.startsWith('  - ')) return line.slice(4);
-  if (line.startsWith('- ')) return line.slice(2);
-  if (/^  #{1,6} /.test(line)) return line.replace(/^  #{1,6} /, '');
-  if (/^#{1,6} /.test(line)) return line.replace(/^#{1,6} /, '');
-  if (/^\d+\. /.test(line)) return line.replace(/^\d+\. /, '');
-  return line;
-}
-
 function hasStructuralTab(lines) {
   return lines.some((line) => line.startsWith('\t') || line.includes('\n\t'));
 }
@@ -243,6 +295,200 @@ function validateBlocks(lines, rawLines) {
   return { ok: true };
 }
 
+function parseInlineBlock(type, text, options) {
+  const inline = parseInline(text, options);
+  if (!inline.ok) return inline;
+  return { ok: true, node: { type, children: inline.nodes } };
+}
+
+function stripQuotePrefix(line) {
+  if (line.startsWith('  > ')) return line.slice(4);
+  if (line === '  >') return '';
+  if (line.startsWith('> ')) return line.slice(2);
+  if (line === '>') return '';
+  return line;
+}
+
+function stripIndent(lines) {
+  return lines.map((line) => (line.startsWith('  ') ? line.slice(2) : line));
+}
+
+function parseCodeBlock(lines, start) {
+  const line = lines[start];
+  const prefix = rawFencePrefix(line);
+  const openerText = line.slice(prefix.length);
+  const language = openerText.slice(3).trim() || null;
+  const payload = [];
+
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === `${prefix}\`\`\``) {
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: {
+          type: 'code_block',
+          language,
+          text: payload.map((payloadLine) =>
+            payloadLine.startsWith(prefix) ? payloadLine.slice(prefix.length) : payloadLine
+          ).join('\n'),
+        },
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_code_block' };
+}
+
+function isTableStart(lines, index) {
+  return lines[index]?.trim().startsWith('|') && /^\s*\|\s*---/.test(lines[index + 1] ?? '');
+}
+
+function parseTable(lines, start, options) {
+  const rows = [];
+  let index = start;
+  while (index < lines.length && lines[index].trim().startsWith('|')) {
+    rows.push(lines[index].trim());
+    index += 1;
+  }
+  return { ok: true, nextIndex: index, node: { type: 'table', rows } };
+}
+
+function parseList(lines, start, options) {
+  const ordered = /^\d+\. /.test(lines[start]);
+  const items = [];
+  let index = start;
+
+  while (index < lines.length) {
+    const markerMatch = ordered ? lines[index].match(/^\d+\. (.*)$/) : lines[index].match(/^- (.*)$/);
+    if (!markerMatch) break;
+
+    const item = { type: 'list_item', children: [] };
+    const head = parseInlineBlock('paragraph', markerMatch[1], options);
+    if (!head.ok) return head;
+    item.children.push(head.node);
+    index += 1;
+
+    const nested = [];
+    if (lines[index] === '') {
+      index += 1;
+      while (
+        index < lines.length &&
+        !/^- /.test(lines[index]) &&
+        !/^\d+\. /.test(lines[index]) &&
+        lines[index] !== ''
+      ) {
+        nested.push(lines[index]);
+        index += 1;
+      }
+    }
+
+    if (nested.length > 0) {
+      const parsedNested = parseBlocks(stripIndent(nested), options);
+      if (!parsedNested.ok) return parsedNested;
+      item.children.push(...parsedNested.children);
+    }
+
+    items.push(item);
+  }
+
+  return { ok: true, nextIndex: index, node: { type: 'list', ordered, items } };
+}
+
+function parseBlockquote(lines, start, options) {
+  const quoteLines = [];
+  let index = start;
+  while (index < lines.length && (lines[index].startsWith('>') || lines[index].startsWith('  >'))) {
+    quoteLines.push(stripQuotePrefix(lines[index]));
+    index += 1;
+  }
+  const parsed = parseBlocks(quoteLines, options);
+  if (!parsed.ok) return parsed;
+  return { ok: true, nextIndex: index, node: { type: 'blockquote', children: parsed.children } };
+}
+
+function parseParagraph(lines, start, options) {
+  const paragraphLines = [];
+  let index = start;
+  while (index < lines.length && lines[index] !== '') {
+    const line = lines[index];
+    if (paragraphLines.length > 0 && /^(#{1,6} |- |\d+\. |> |```|\| )/.test(line)) break;
+    paragraphLines.push(line);
+    index += 1;
+  }
+  const inline = parseInline(paragraphLines.join('\n'), options);
+  if (!inline.ok) return inline;
+  return { ok: true, nextIndex: index, node: { type: 'paragraph', children: inline.nodes } };
+}
+
+function parseBlocks(lines, options) {
+  const children = [];
+  let index = 0;
+
+  while (index < lines.length) {
+    const line = lines[index];
+    if (line === '') {
+      index += 1;
+      continue;
+    }
+
+    if (rawFencePrefix(line) !== null) {
+      const code = parseCodeBlock(lines, index);
+      if (!code.ok) return code;
+      children.push(code.node);
+      index = code.nextIndex;
+      continue;
+    }
+
+    if (/^#{1,6} /.test(line)) {
+      const match = line.match(/^(#{1,6}) (.*)$/);
+      const heading = parseInlineBlock('heading', match[2], options);
+      if (!heading.ok) return heading;
+      heading.node.level = match[1].length;
+      children.push(heading.node);
+      index += 1;
+      continue;
+    }
+
+    if (line === '---') {
+      children.push({ type: 'horizontal_rule' });
+      index += 1;
+      continue;
+    }
+
+    if (/^- /.test(line) || /^\d+\. /.test(line)) {
+      const list = parseList(lines, index, options);
+      if (!list.ok) return list;
+      children.push(list.node);
+      index = list.nextIndex;
+      continue;
+    }
+
+    if (line.startsWith('>') || line.startsWith('  >')) {
+      const quote = parseBlockquote(lines, index, options);
+      if (!quote.ok) return quote;
+      children.push(quote.node);
+      index = quote.nextIndex;
+      continue;
+    }
+
+    if (isTableStart(lines, index)) {
+      const table = parseTable(lines, index, options);
+      if (!table.ok) return table;
+      children.push(table.node);
+      index = table.nextIndex;
+      continue;
+    }
+
+    const paragraph = parseParagraph(lines, index, options);
+    if (!paragraph.ok) return paragraph;
+    children.push(paragraph.node);
+    index = paragraph.nextIndex;
+  }
+
+  return { ok: true, children };
+}
+
 export function parseAnd(source, options = {}) {
   const normalized = normalizeSource(source);
   const lines = stripFinalEmptyLine(normalized.split('\n'));
@@ -253,14 +499,14 @@ export function parseAnd(source, options = {}) {
   const blockValidation = validateBlocks(lines, raw.rawLines);
   if (!blockValidation.ok) return blockValidation;
 
-  for (let i = 0; i < lines.length; i += 1) {
-    if (raw.rawLines.has(i)) continue;
-    const line = lines[i];
-    if (line.trim() === '') continue;
-    if (line.trim().startsWith('|')) continue;
-    const inline = parseInline(stripInlinePrefix(line), options);
-    if (!inline.ok) return inline;
-  }
+  const parsed = parseBlocks(lines, options);
+  if (!parsed.ok) return parsed;
 
-  return { ok: true };
+  return {
+    ok: true,
+    document: {
+      type: 'document',
+      children: parsed.children,
+    },
+  };
 }

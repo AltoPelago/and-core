@@ -11,7 +11,9 @@ entrypoints:
 Current scope:
 
 * strict-mode line normalization
+* document AST output for the currently covered block forms
 * inline scanning for `strong`, `emphasis`, `link`, and `inline code`
+* inline AST output for text, strong, emphasis, link, and code nodes
 * escape validation
 * link-target budget enforcement
 * raw code block margin checks
@@ -23,5 +25,6 @@ Run it against the CTS with:
 node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs
 ```
 
-The implementation is not yet a complete AST-producing parser.
-It is the starting point for that parser, with the current CTS as its behavioral guardrail.
+The implementation is now AST-producing for the fixture-covered subset.
+It is not yet a complete parser, but the current CTS is its behavioral guardrail as the supported
+grammar expands.
