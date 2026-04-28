@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-link-label-nesting",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[@ https://example.com | [* label]]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one link node with the given target",
+      "link label contains one nested strong node"
+    ]
+  }
+}

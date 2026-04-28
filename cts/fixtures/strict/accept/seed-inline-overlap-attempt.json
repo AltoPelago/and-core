@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-overlap-attempt",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[* strong [/ emphasis] text]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one strong node containing one nested emphasis node and trailing text",
+      "nesting is strictly tree-structured, not overlapping"
+    ]
+  }
+}

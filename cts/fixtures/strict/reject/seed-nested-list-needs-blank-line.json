@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-nested-list-needs-blank-line",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n  - Child\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "nested blocks require a blank line before the nested block in Core v1"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-nested-code-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> ```txt\n> raw\n> ```\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one blockquote block",
+      "blockquote contains one paragraph child followed by one nested code block child",
+      "code payload is `raw`"
+    ]
+  }
+}

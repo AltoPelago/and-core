@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-ordered-list-after-blank-line",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "My number is\n\n1. a list item\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one paragraph block",
+      "one ordered list block with one item"
+    ]
+  }
+}

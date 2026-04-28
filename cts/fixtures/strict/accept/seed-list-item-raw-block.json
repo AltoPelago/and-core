@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-list-item-raw-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  ```txt\n  raw\n  ```\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one unordered list block",
+      "first item contains one nested code block",
+      "code payload is `raw`"
+    ]
+  }
+}

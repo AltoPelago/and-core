@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-raw-block-bad-closing-margin",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> ```txt\n> raw\n```\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "raw block closer must appear at the same block margin as the opener inside the enclosing blockquote"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-link-missing-target",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[@ | label]\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "link target is required in Core v1"
+    ]
+  }
+}

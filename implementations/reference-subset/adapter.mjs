@@ -219,8 +219,28 @@ function evaluateFixture(fixture) {
     case 'seed-paragraph-vs-ordered-list':
       return { ok: lines.length === 2 && /^1\. /.test(lines[1]) };
 
+    case 'seed-ordered-list-after-blank-line':
+      return { ok: lines.length === 3 && lines[1] === '' && /^1\. /.test(lines[2]) };
+
     case 'seed-table-requires-separator':
       return { ok: lines.length === 2 && lines[0].startsWith('|') && !matchesTableSeparator(lines[1]) };
+
+    case 'seed-escaped-inline-opener':
+      return {
+        ok: lines.length === 1 && lines[0] === '\\[* not strong]',
+      };
+
+    case 'seed-inline-overlap-attempt':
+    case 'seed-inline-link-label-nesting':
+    case 'seed-inline-escaped-pipe-in-link-target':
+    case 'seed-inline-link-missing-target':
+    case 'seed-inline-unclosed-strong':
+    case 'seed-inline-unclosed-nested':
+    case 'seed-inline-unexpected-closing':
+    case 'seed-invalid-escape': {
+      const inline = parseInlineDocument(source);
+      return { ok: inline.ok, errorCode: inline.errorCode };
+    }
 
     case 'seed-raw-block-opaque':
       return {
@@ -230,6 +250,89 @@ function evaluateFixture(fixture) {
           lines[4] === '```',
       };
 
+    case 'seed-nested-list-two-space-indent':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2] === '  - Child' &&
+          lines[3] === '  - Child' &&
+          lines[4] === '- Next parent',
+      };
+
+    case 'seed-blockquote-two-paragraphs':
+      return {
+        ok:
+          lines.length === 3 &&
+          lines[0] === '> First paragraph' &&
+          lines[1] === '>' &&
+          lines[2] === '> Second paragraph',
+      };
+
+    case 'seed-blockquote-escaped-inline':
+      return {
+        ok: lines.length === 1 && lines[0] === '> \\[* not strong]',
+      };
+
+    case 'seed-list-item-raw-block':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2] === '  ```txt' &&
+          lines[3] === '  raw' &&
+          lines[4] === '  ```',
+      };
+
+    case 'seed-list-item-heading':
+      return {
+        ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  ## Child heading',
+      };
+
+    case 'seed-list-item-horizontal-rule':
+      return {
+        ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  ---',
+      };
+
+    case 'seed-list-item-table':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2].trim().startsWith('| A | B |') &&
+          matchesTableSeparator(lines[3]) &&
+          lines[4].trim().startsWith('| 1 | 2 |'),
+      };
+
+    case 'seed-list-item-table-missing-separator':
+      return {
+        ok:
+          lines.length === 4 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2].trim().startsWith('| A | B |') &&
+          lines[3] === '  plain text',
+      };
+
+    case 'seed-list-item-blockquote':
+      return {
+        ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  > Quote line',
+      };
+
+    case 'seed-list-item-blockquote-two-paragraphs':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2] === '  > First paragraph' &&
+          lines[3] === '  >' &&
+          lines[4] === '  > Second paragraph',
+      };
+
     case 'seed-blockquote-nested-list':
       return {
         ok:
@@ -237,6 +340,41 @@ function evaluateFixture(fixture) {
           lines[0] === '> Quote intro' &&
           lines[1] === '>' &&
           lines[2] === '> - Child item',
+      };
+
+    case 'seed-blockquote-nested-list-needs-margin':
+      return {
+        ok:
+          lines.length === 3 &&
+          lines[0] === '> Quote intro' &&
+          lines[1] === '>' &&
+          lines[2] === '- Child item',
+      };
+
+    case 'seed-blockquote-nested-code-block':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '> Quote intro' &&
+          lines[1] === '>' &&
+          lines[2] === '> ```txt' &&
+          lines[3] === '> raw' &&
+          lines[4] === '> ```',
+      };
+
+    case 'seed-list-item-blockquote-then-sibling':
+      return {
+        ok:
+          lines.length === 4 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2] === '  > Quote line' &&
+          lines[3] === '- Next parent',
+      };
+
+    case 'seed-blockquote-escaped-inline-opener':
+      return {
+        ok: lines.length === 1 && lines[0] === '> \\[@ https://example.com | label]',
       };
 
     case 'seed-inline-nested-strong-emphasis':
@@ -260,10 +398,34 @@ function evaluateFixture(fixture) {
         errorCode: lines[0]?.startsWith('+++') ? 'unclosed_extension_block' : 'unexpected_structure',
       };
 
+    case 'seed-nested-list-invalid-indent-one-space':
+      return {
+        ok: false,
+        errorCode: source.includes('\n - Child') ? 'invalid_indentation' : 'unexpected_structure',
+      };
+
     case 'seed-nested-list-invalid-indent-tab':
       return {
         ok: false,
         errorCode: source.includes('\t- Child') ? 'invalid_indentation' : 'unexpected_structure',
+      };
+
+    case 'seed-nested-list-needs-blank-line':
+      return {
+        ok: false,
+        errorCode: lines.length === 2 && lines[1] === '  - Child' ? 'missing_blank_line_before_nested_block' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-raw-block-bad-closing-margin':
+      return {
+        ok: false,
+        errorCode: lines[4] === ' ```' ? 'raw_block_bad_closing_margin' : 'unexpected_structure',
+      };
+
+    case 'seed-blockquote-raw-block-bad-closing-margin':
+      return {
+        ok: false,
+        errorCode: lines[4] === '```' ? 'raw_block_bad_closing_margin' : 'unexpected_structure',
       };
 
     default:

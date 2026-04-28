@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-unclosed-nested",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[* strong [/ emphasis]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_inline",
+    "assertions": [
+      "parse failure"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-two-paragraphs",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> First paragraph\n>\n> Second paragraph\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one blockquote block",
+      "blockquote contains two paragraph children"
+    ]
+  }
+}

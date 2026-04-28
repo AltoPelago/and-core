@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-unexpected-closing",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "text ]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unexpected_closing",
+    "assertions": [
+      "parse failure"
+    ]
+  }
+}

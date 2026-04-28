@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-escaped-inline-opener",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> \\[@ https://example.com | label]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one blockquote block",
+      "quoted paragraph contains plain text `[@ https://example.com | label]`",
+      "no link inline node"
+    ]
+  }
+}

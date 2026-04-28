@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-nested-list-two-space-indent",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  - Child\n  - Child\n- Next parent\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one unordered list block",
+      "first parent item contains a nested unordered list with two child items",
+      "second parent item is a sibling of the first parent item"
+    ]
+  }
+}

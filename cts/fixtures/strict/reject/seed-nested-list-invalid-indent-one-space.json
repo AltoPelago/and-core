@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-nested-list-invalid-indent-one-space",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n - Child\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "structural indentation is exactly two spaces in Core v1"
+    ]
+  }
+}

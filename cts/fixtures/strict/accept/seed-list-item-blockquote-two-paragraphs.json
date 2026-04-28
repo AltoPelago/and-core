@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-list-item-blockquote-two-paragraphs",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  > First paragraph\n  >\n  > Second paragraph\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one unordered list block",
+      "first item contains one nested blockquote block",
+      "blockquote contains two paragraph children"
+    ]
+  }
+}
