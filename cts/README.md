@@ -26,3 +26,24 @@ Start by extracting the existing named seeds from:
 * [docs/spec/v1/and-core-proposal.md](../docs/spec/v1/and-core-proposal.md)
 
 into a stable machine-readable fixture format.
+
+## Current Runner Interface
+
+The repository now includes a small CTS entrypoint:
+
+* `npm run cts:run`
+
+Current behavior:
+
+* loads `cts/fixtures/index.json`
+* validates fixture JSON shape
+* emits a placeholder report when no parser adapter is configured
+
+Future parser implementations can plug in through:
+
+* `node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs`
+
+The adapter contract is:
+
+* export `runFixture(fixture, context)`
+* return a result object with `status`, plus optional `actualOk`, `errorCode`, and `notes`
