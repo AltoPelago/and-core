@@ -1,0 +1,481 @@
+{
+  "ok": true,
+  "mode": "adapter",
+  "adapter": "./implementations/reference-parser/adapter.mjs",
+  "totals": {
+    "fixtures": 41,
+    "pending": 0,
+    "pass": 41,
+    "fail": 0,
+    "error": 0
+  },
+  "results": [
+    {
+      "id": "seed-paragraph-vs-ordered-list",
+      "path": "strict/accept/seed-paragraph-vs-ordered-list.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-ordered-list-after-blank-line",
+      "path": "strict/accept/seed-ordered-list-after-blank-line.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-table-requires-separator",
+      "path": "strict/accept/seed-table-requires-separator.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-escaped-inline-opener",
+      "path": "strict/accept/seed-escaped-inline-opener.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-raw-block-opaque",
+      "path": "strict/accept/seed-raw-block-opaque.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-nested-list-two-space-indent",
+      "path": "strict/accept/seed-nested-list-two-space-indent.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-two-paragraphs",
+      "path": "strict/accept/seed-blockquote-two-paragraphs.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-escaped-inline",
+      "path": "strict/accept/seed-blockquote-escaped-inline.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-raw-block",
+      "path": "strict/accept/seed-list-item-raw-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-heading",
+      "path": "strict/accept/seed-list-item-heading.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-horizontal-rule",
+      "path": "strict/accept/seed-list-item-horizontal-rule.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-table",
+      "path": "strict/accept/seed-list-item-table.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-table-missing-separator",
+      "path": "strict/accept/seed-list-item-table-missing-separator.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote",
+      "path": "strict/accept/seed-list-item-blockquote.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-two-paragraphs",
+      "path": "strict/accept/seed-list-item-blockquote-two-paragraphs.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-nested-list",
+      "path": "strict/accept/seed-blockquote-nested-list.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-nested-list-needs-margin",
+      "path": "strict/accept/seed-blockquote-nested-list-needs-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-nested-code-block",
+      "path": "strict/accept/seed-blockquote-nested-code-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-then-sibling",
+      "path": "strict/accept/seed-list-item-blockquote-then-sibling.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-escaped-inline-opener",
+      "path": "strict/accept/seed-blockquote-escaped-inline-opener.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-nested-strong-emphasis",
+      "path": "strict/accept/seed-inline-nested-strong-emphasis.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-overlap-attempt",
+      "path": "strict/accept/seed-inline-overlap-attempt.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-code-opaque-brackets",
+      "path": "strict/accept/seed-inline-code-opaque-brackets.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-link-label-nesting",
+      "path": "strict/accept/seed-inline-link-label-nesting.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-escaped-pipe-in-link-target",
+      "path": "strict/accept/seed-inline-escaped-pipe-in-link-target.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-horizontal-rule-needs-boundary",
+      "path": "strict/reject/seed-horizontal-rule-needs-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "block_opener_on_paragraph_continuation",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-unknown-inline-tag",
+      "path": "strict/reject/seed-unknown-inline-tag.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-unclosed-extension-block",
+      "path": "strict/reject/seed-unclosed-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "unclosed_extension_block",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-invalid-escape",
+      "path": "strict/reject/seed-invalid-escape.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "invalid_escape",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-budget-link-target",
+      "path": "strict/reject/seed-budget-link-target.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-nested-list-invalid-indent-one-space",
+      "path": "strict/reject/seed-nested-list-invalid-indent-one-space.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "invalid_indentation",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-nested-list-invalid-indent-tab",
+      "path": "strict/reject/seed-nested-list-invalid-indent-tab.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "invalid_indentation",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-nested-list-needs-blank-line",
+      "path": "strict/reject/seed-nested-list-needs-blank-line.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "missing_blank_line_before_nested_block",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-raw-block-bad-closing-margin",
+      "path": "strict/reject/seed-list-item-raw-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "raw_block_bad_closing_margin",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-raw-block-bad-closing-margin",
+      "path": "strict/reject/seed-blockquote-raw-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "raw_block_bad_closing_margin",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-unclosed-strong",
+      "path": "strict/reject/seed-inline-unclosed-strong.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "unclosed_inline",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-unclosed-nested",
+      "path": "strict/reject/seed-inline-unclosed-nested.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "unclosed_inline",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-unexpected-closing",
+      "path": "strict/reject/seed-inline-unexpected-closing.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "unexpected_closing",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-link-missing-label",
+      "path": "strict/reject/seed-inline-link-missing-label.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "missing_link_label",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-link-missing-target",
+      "path": "strict/reject/seed-inline-link-missing-target.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "invalid_link_target",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-inline-invalid-escape-in-code",
+      "path": "strict/reject/seed-inline-invalid-escape-in-code.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "invalid_escape",
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    }
+  ]
+}

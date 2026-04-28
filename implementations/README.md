@@ -12,6 +12,7 @@ Expected future contents include:
 Current contents:
 
 * `reference-subset/` — a small CTS-facing strict subset adapter used to bootstrap the runner
+* `reference-parser/` — the first parser-shaped implementation, currently guarded by the CTS
 
 Recommended sequencing:
 

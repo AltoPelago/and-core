@@ -42,5 +42,7 @@ The repository is currently documentation-first:
 * `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
 * `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
+* `npm run cts:run:reference` — runs the first reference parser adapter against the CTS
 * `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
+* `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
 * `npm run precommit:check` — runs the current repository safety checks together
