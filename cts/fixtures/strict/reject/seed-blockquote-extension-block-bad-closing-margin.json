@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-extension-block-bad-closing-margin",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> +++chart/pie\n> apples: 3\n+++\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "extension_block_bad_closing_margin",
+    "assertions": [
+      "parse failure",
+      "extension block closer must appear at the same block margin as the opener inside the enclosing blockquote"
+    ]
+  }
+}

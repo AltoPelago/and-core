@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-nested-extension-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> +++chart/pie\n> apples: 3\n> +++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one blockquote block",
+      "blockquote contains one paragraph child followed by one nested extension block child",
+      "extension payload is `apples: 3`"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Quote intro"
+                }
+              ]
+            },
+            {
+              "type": "extension_block",
+              "name": "chart/pie",
+              "text": "apples: 3"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

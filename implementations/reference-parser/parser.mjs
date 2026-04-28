@@ -289,6 +289,9 @@ function scanRawIslands(lines) {
         i = j;
         break;
       }
+      if (lines[j].trim() === '+++' && lines[j] !== `${extension.prefix}+++`) {
+        return { ok: false, errorCode: 'extension_block_bad_closing_margin' };
+      }
     }
     if (!closed) return { ok: false, errorCode: 'unclosed_extension_block' };
   }

@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 49,
+    "fixtures": 53,
     "pending": 0,
-    "pass": 49,
+    "pass": 53,
     "fail": 0,
     "error": 0
   },
@@ -247,6 +247,21 @@
       ]
     },
     {
+      "id": "seed-list-item-extension-block",
+      "path": "strict/accept/seed-list-item-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
       "id": "seed-list-item-heading",
       "path": "strict/accept/seed-list-item-heading.json",
       "status": "pass",
@@ -363,6 +378,21 @@
     {
       "id": "seed-blockquote-nested-code-block",
       "path": "strict/accept/seed-blockquote-nested-code-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-blockquote-nested-extension-block",
+      "path": "strict/accept/seed-blockquote-nested-extension-block.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,
@@ -601,6 +631,20 @@
       ]
     },
     {
+      "id": "seed-list-item-extension-block-bad-closing-margin",
+      "path": "strict/reject/seed-list-item-extension-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "extension_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
       "id": "seed-blockquote-raw-block-bad-closing-margin",
       "path": "strict/reject/seed-blockquote-raw-block-bad-closing-margin.json",
       "status": "pass",
@@ -608,6 +652,20 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "raw_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-extension-block-bad-closing-margin",
+      "path": "strict/reject/seed-blockquote-extension-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "actualOk": false,
+      "errorCode": "extension_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
       "notes": [

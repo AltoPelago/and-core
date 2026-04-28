@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-list-item-extension-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  +++chart/pie\n  apples: 3\n  +++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one unordered list block",
+      "first item contains one nested extension block",
+      "extension payload is `apples: 3`"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Parent"
+                    }
+                  ]
+                },
+                {
+                  "type": "extension_block",
+                  "name": "chart/pie",
+                  "text": "apples: 3"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

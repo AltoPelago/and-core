@@ -593,6 +593,8 @@ When a code block opener or extension block opener is recognized:
 * subsequent lines are treated as opaque raw payload
 * parsing resumes only at the first valid closing fence at the same block margin as the opener
 * if no closer exists before EOF, parsing MUST fail
+* if a closing fence token appears at a different block margin, parsing MUST fail with the
+  corresponding bad-closing-margin error
 
 No inline parsing, block parsing, or escape reinterpretation occurs inside raw payload.
 
@@ -1141,6 +1143,25 @@ Expected result:
 * first item contains one nested code block
 * code payload is `raw`
 
+### `seed-list-item-extension-block`
+
+Input:
+
+```text
+- Parent
+
+  +++chart/pie
+  apples: 3
+  +++
+```
+
+Expected result:
+
+* parse success
+* one unordered list block
+* first item contains one nested extension block
+* extension payload is `apples: 3`
+
 ### `seed-list-item-heading`
 
 Input:
@@ -1227,6 +1248,24 @@ Expected result:
 
 * parse failure
 * reason: raw block closer must appear at the same block margin as the opener
+
+### `seed-list-item-extension-block-bad-closing-margin`
+
+Input:
+
+```text
+- Parent
+
+  +++chart/pie
+  apples: 3
+ +++
+```
+
+Expected result:
+
+* parse failure
+* error code `extension_block_bad_closing_margin`
+* reason: extension block closer must appear at the same block margin as the opener
 
 ### `seed-list-item-blockquote`
 
@@ -1316,6 +1355,25 @@ Expected result:
 * blockquote contains one paragraph child followed by one nested code block child
 * code payload is `raw`
 
+### `seed-blockquote-nested-extension-block`
+
+Input:
+
+```text
+> Quote intro
+>
+> +++chart/pie
+> apples: 3
+> +++
+```
+
+Expected result:
+
+* parse success
+* one blockquote block
+* blockquote contains one paragraph child followed by one nested extension block child
+* extension payload is `apples: 3`
+
 ### `seed-blockquote-raw-block-bad-closing-margin`
 
 Input:
@@ -1332,6 +1390,24 @@ Expected result:
 
 * parse failure
 * reason: raw block closer must appear at the same block margin as the opener inside the enclosing blockquote
+
+### `seed-blockquote-extension-block-bad-closing-margin`
+
+Input:
+
+```text
+> Quote intro
+>
+> +++chart/pie
+> apples: 3
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `extension_block_bad_closing_margin`
+* reason: extension block closer must appear at the same block margin as the opener inside the enclosing blockquote
 
 ### `seed-list-item-blockquote-then-sibling`
 
@@ -1617,6 +1693,7 @@ Inline:
 
 * `unclosed_code_block`
 * `unclosed_extension_block`
+* `extension_block_bad_closing_margin`
 * `invalid_table_shape`
 
 ### Lexical

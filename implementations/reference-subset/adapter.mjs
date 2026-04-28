@@ -347,6 +347,17 @@ function evaluateFixture(fixture) {
           lines[4] === '  ```',
       };
 
+    case 'seed-list-item-extension-block':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2] === '  +++chart/pie' &&
+          lines[3] === '  apples: 3' &&
+          lines[4] === '  +++',
+      };
+
     case 'seed-list-item-heading':
       return {
         ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  ## Child heading',
@@ -423,6 +434,17 @@ function evaluateFixture(fixture) {
           lines[4] === '> ```',
       };
 
+    case 'seed-blockquote-nested-extension-block':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '> Quote intro' &&
+          lines[1] === '>' &&
+          lines[2] === '> +++chart/pie' &&
+          lines[3] === '> apples: 3' &&
+          lines[4] === '> +++',
+      };
+
     case 'seed-list-item-blockquote-then-sibling':
       return {
         ok:
@@ -488,10 +510,22 @@ function evaluateFixture(fixture) {
         errorCode: lines[4] === ' ```' ? 'raw_block_bad_closing_margin' : 'unexpected_structure',
       };
 
+    case 'seed-list-item-extension-block-bad-closing-margin':
+      return {
+        ok: false,
+        errorCode: lines[4] === ' +++' ? 'extension_block_bad_closing_margin' : 'unexpected_structure',
+      };
+
     case 'seed-blockquote-raw-block-bad-closing-margin':
       return {
         ok: false,
         errorCode: lines[4] === '```' ? 'raw_block_bad_closing_margin' : 'unexpected_structure',
+      };
+
+    case 'seed-blockquote-extension-block-bad-closing-margin':
+      return {
+        ok: false,
+        errorCode: lines[4] === '+++' ? 'extension_block_bad_closing_margin' : 'unexpected_structure',
       };
 
     default:
