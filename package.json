@@ -6,6 +6,7 @@
     "check:spec-layout": "bash scripts/check-spec-layout.sh",
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "cts:run": "node scripts/run-cts.mjs",
+    "cts:run:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs",
     "precommit:check": "bash scripts/pre-commit-check.sh"
   }
 }

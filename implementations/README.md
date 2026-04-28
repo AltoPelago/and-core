@@ -9,6 +9,10 @@ Expected future contents include:
 * shared AST and diagnostic models
 * editor-facing recovery-mode adapters
 
+Current contents:
+
+* `reference-subset/` — a small CTS-facing strict subset adapter used to bootstrap the runner
+
 Recommended sequencing:
 
 1. define CTS fixtures
