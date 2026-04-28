@@ -32,10 +32,43 @@
                 },
                 {
                   "type": "table",
+                  "header": [
+                    {
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "A"
+                        }
+                      ]
+                    },
+                    {
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "B"
+                        }
+                      ]
+                    }
+                  ],
                   "rows": [
-                    "| A | B |",
-                    "| --- | --- |",
-                    "| 1 | 2 |"
+                    [
+                      {
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "2"
+                          }
+                        ]
+                      }
+                    ]
                   ]
                 }
               ]

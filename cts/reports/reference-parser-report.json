@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 42,
+    "fixtures": 43,
     "pending": 0,
-    "pass": 42,
+    "pass": 43,
     "fail": 0,
     "error": 0
   },
@@ -52,6 +52,21 @@
     {
       "id": "seed-table-valid-top-level",
       "path": "strict/accept/seed-table-valid-top-level.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-table-inline-cells",
+      "path": "strict/accept/seed-table-inline-cells.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,

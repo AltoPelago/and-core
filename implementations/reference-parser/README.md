@@ -28,3 +28,7 @@ node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mj
 The implementation is now AST-producing for the fixture-covered subset.
 It is not yet a complete parser, but the current CTS is its behavioral guardrail as the supported
 grammar expands.
+
+The emitted document shape follows the CTS AST contract in
+[`docs/spec/v1/and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md). Table output uses
+structured header/body cells with inline children, matching the current CTS contract.

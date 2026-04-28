@@ -847,6 +847,23 @@ Expected result:
 * one table block
 * table has two columns and one body row
 
+### `seed-table-inline-cells`
+
+Input:
+
+```text
+| Name | Note |
+| --- | --- |
+| [* Ada] | escaped \| pipe |
+```
+
+Expected result:
+
+* parse success
+* one table block
+* first body cell contains one strong inline node
+* second body cell contains a literal pipe character
+
 ### `seed-escaped-inline-opener`
 
 Input:

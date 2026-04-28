@@ -344,14 +344,82 @@ function isTableStart(lines, index) {
   return lines[index]?.trim().startsWith('|') && /^\s*\|\s*---/.test(lines[index + 1] ?? '');
 }
 
+function splitTableRow(line) {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith('|')) return null;
+  const body = trimmed.endsWith('|') ? trimmed.slice(1, -1) : trimmed.slice(1);
+  const cells = [];
+  let current = '';
+
+  for (let i = 0; i < body.length; i += 1) {
+    const char = body[i];
+    if (char === '\\') {
+      current += char;
+      if (i + 1 < body.length) {
+        current += body[i + 1];
+        i += 1;
+      }
+      continue;
+    }
+    if (char === '|') {
+      cells.push(current.trim());
+      current = '';
+      continue;
+    }
+    current += char;
+  }
+
+  cells.push(current.trim());
+  return cells;
+}
+
+function isSeparatorCells(cells) {
+  return cells.length > 0 && cells.every((cell) => cell === '---');
+}
+
+function parseTableCells(cells, options) {
+  const parsedCells = [];
+  for (const cell of cells) {
+    const inline = parseInline(cell, options);
+    if (!inline.ok) return inline;
+    parsedCells.push({ children: inline.nodes });
+  }
+  return { ok: true, cells: parsedCells };
+}
+
 function parseTable(lines, start, options) {
+  const headerCells = splitTableRow(lines[start]);
+  const separatorCells = splitTableRow(lines[start + 1]);
+  if (
+    headerCells === null ||
+    separatorCells === null ||
+    !isSeparatorCells(separatorCells) ||
+    headerCells.length !== separatorCells.length
+  ) {
+    return { ok: false, errorCode: 'invalid_table_shape' };
+  }
+
+  const header = parseTableCells(headerCells, options);
+  if (!header.ok) return header;
+
   const rows = [];
-  let index = start;
+  let index = start + 2;
   while (index < lines.length && lines[index].trim().startsWith('|')) {
-    rows.push(lines[index].trim());
+    const cells = splitTableRow(lines[index]);
+    if (cells === null || cells.length !== headerCells.length) {
+      return { ok: false, errorCode: 'invalid_table_shape' };
+    }
+    const row = parseTableCells(cells, options);
+    if (!row.ok) return row;
+    rows.push(row.cells);
     index += 1;
   }
-  return { ok: true, nextIndex: index, node: { type: 'table', rows } };
+
+  if (rows.length === 0) {
+    return { ok: false, errorCode: 'invalid_table_shape' };
+  }
+
+  return { ok: true, nextIndex: index, node: { type: 'table', header: header.cells, rows } };
 }
 
 function parseList(lines, start, options) {

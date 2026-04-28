@@ -1,14 +1,15 @@
 {
   "schemaVersion": "1",
-  "id": "seed-table-valid-top-level",
+  "id": "seed-table-inline-cells",
   "specVersion": "&ND Core v1",
   "mode": "strict",
-  "source": "| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+  "source": "| Name | Note |\n| --- | --- |\n| [* Ada] | escaped \\| pipe |\n",
   "expected": {
     "ok": true,
     "assertions": [
       "one table block",
-      "table has two columns and one body row"
+      "first body cell contains one strong inline node",
+      "second body cell contains a literal pipe character"
     ],
     "document": {
       "type": "document",
@@ -20,7 +21,7 @@
               "children": [
                 {
                   "type": "text",
-                  "value": "A"
+                  "value": "Name"
                 }
               ]
             },
@@ -28,7 +29,7 @@
               "children": [
                 {
                   "type": "text",
-                  "value": "B"
+                  "value": "Note"
                 }
               ]
             }
@@ -38,8 +39,13 @@
               {
                 "children": [
                   {
-                    "type": "text",
-                    "value": "1"
+                    "type": "strong",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Ada"
+                      }
+                    ]
                   }
                 ]
               },
@@ -47,7 +53,7 @@
                 "children": [
                   {
                     "type": "text",
-                    "value": "2"
+                    "value": "escaped | pipe"
                   }
                 ]
               }

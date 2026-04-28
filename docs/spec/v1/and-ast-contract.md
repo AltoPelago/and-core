@@ -1,0 +1,220 @@
+# &ND Core v1 AST Contract
+
+This document defines the AST interchange shape currently used by the `&ND Core v1` CTS
+`expected.document` fixtures.
+
+The contract is intentionally smaller than a full implementation AST. Implementations MAY keep
+additional metadata internally, but CTS document comparison only relies on the fields defined here.
+
+## Stability
+
+The following parts are normative for CTS fixtures that contain `expected.document`:
+
+- node `type` strings
+- child containment fields
+- inline text/code payload fields
+- block-specific fields listed below
+- array order
+
+The following parts are provisional and MAY be revised before `v1` is frozen:
+
+- extension block AST shape
+- source location metadata
+- diagnostics attached to AST nodes
+- recovery-mode partial AST shape
+
+Strict-mode parse failures MUST NOT produce a document AST.
+
+## Root
+
+```ts
+interface NdDocument {
+  readonly type: "document";
+  readonly children: NdBlockNode[];
+}
+```
+
+`children` preserves source order after line-ending normalization.
+
+## Block Nodes
+
+### Paragraph
+
+```ts
+interface NdParagraph {
+  readonly type: "paragraph";
+  readonly children: NdInlineNode[];
+}
+```
+
+Paragraph content is represented as inline children.
+
+### Heading
+
+```ts
+interface NdHeading {
+  readonly type: "heading";
+  readonly level: 1 | 2 | 3 | 4 | 5 | 6;
+  readonly children: NdInlineNode[];
+}
+```
+
+`level` is the number of heading marker characters.
+
+### List
+
+```ts
+interface NdList {
+  readonly type: "list";
+  readonly ordered: boolean;
+  readonly items: NdListItem[];
+}
+
+interface NdListItem {
+  readonly type: "list_item";
+  readonly children: NdBlockNode[];
+}
+```
+
+List item `children` are block nodes. A simple text item is represented as a paragraph child.
+
+### Blockquote
+
+```ts
+interface NdBlockquote {
+  readonly type: "blockquote";
+  readonly children: NdBlockNode[];
+}
+```
+
+The `>` marker is structural syntax, not a child node. Quoted content is parsed as an inner block
+context.
+
+### Code Block
+
+```ts
+interface NdCodeBlock {
+  readonly type: "code_block";
+  readonly language: string | null;
+  readonly text: string;
+}
+```
+
+`text` is the raw payload after line-ending normalization and margin removal. It does not include
+opening or closing fences.
+
+### Table
+
+```ts
+interface NdTable {
+  readonly type: "table";
+  readonly header: NdTableCell[];
+  readonly rows: NdTableCell[][];
+}
+
+interface NdTableCell {
+  readonly children: NdInlineNode[];
+}
+```
+
+`header` contains the parsed header cells. `rows` contains body rows only; the separator row is
+syntax and MUST NOT appear in the AST. Cell content is represented as inline children after normal
+inline parsing and escape handling.
+
+### Horizontal Rule
+
+```ts
+interface NdHorizontalRule {
+  readonly type: "horizontal_rule";
+}
+```
+
+## Inline Nodes
+
+### Text
+
+```ts
+interface NdText {
+  readonly type: "text";
+  readonly value: string;
+}
+```
+
+`value` is escaped text after escape resolution.
+
+### Strong
+
+```ts
+interface NdStrong {
+  readonly type: "strong";
+  readonly children: NdInlineNode[];
+}
+```
+
+`strong` marks stronger importance or prominence. It does not prescribe visual styling.
+
+### Emphasis
+
+```ts
+interface NdEmphasis {
+  readonly type: "emphasis";
+  readonly children: NdInlineNode[];
+}
+```
+
+`emphasis` marks emphasized content. It does not prescribe visual styling.
+
+### Link
+
+```ts
+interface NdLink {
+  readonly type: "link";
+  readonly href: string;
+  readonly children: NdInlineNode[];
+}
+```
+
+`href` is the resolved link target after escape handling.
+
+### Inline Code
+
+```ts
+interface NdInlineCode {
+  readonly type: "code";
+  readonly text: string;
+}
+```
+
+`text` is delimiter-opaque payload after inline-code escape handling. Nested inline nodes are not
+parsed inside inline code.
+
+## Metadata
+
+Implementations SHOULD track source spans for diagnostics and editor integrations, but source spans
+are not included in CTS `expected.document` fixtures yet.
+
+Recommended metadata:
+
+```ts
+interface NdSpan {
+  readonly startOffset: number;
+  readonly endOffset: number;
+  readonly startLine: number;
+  readonly startColumn: number;
+  readonly endLine: number;
+  readonly endColumn: number;
+}
+```
+
+If exposed publicly, metadata SHOULD be additive and MUST NOT alter the semantic node fields above.
+
+## CTS Comparison
+
+CTS document comparison is exact JSON structural comparison for adapters that declare document
+capability.
+
+Adapters that do not declare document capability may still run the same fixtures, but
+`expected.document` checks are reported as skipped.
+
+Adapters that declare document capability MUST return the contract shape above for all fixture
+fields currently covered by `expected.document`.

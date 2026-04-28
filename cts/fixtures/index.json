@@ -6,6 +6,7 @@
     "strict/accept/seed-ordered-list-after-blank-line.json",
     "strict/accept/seed-table-requires-separator.json",
     "strict/accept/seed-table-valid-top-level.json",
+    "strict/accept/seed-table-inline-cells.json",
     "strict/accept/seed-escaped-inline-opener.json",
     "strict/accept/seed-raw-block-opaque.json",
     "strict/accept/seed-nested-list-two-space-indent.json",

@@ -38,7 +38,8 @@ The current fixture schema is intentionally minimal.
   runner MAY treat them as descriptive, then progressively promote them into machine-checked
   structural checks.
 * `document` is optional and valid only when `expected.ok = true`. It defines an exact structural
-  document expectation for adapters that declare `document` capability.
+  document expectation for adapters that declare `document` capability. The shape is defined by
+  [`and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md).
 
 The schema now supports a small exact AST expectation surface so conformance can move beyond
 accept/reject behavior. Adapters that do not yet expose a document AST may still run the fixtures,

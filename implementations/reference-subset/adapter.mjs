@@ -242,6 +242,15 @@ function evaluateFixture(fixture) {
           lines[2].trim().startsWith('| 1 | 2 |'),
       };
 
+    case 'seed-table-inline-cells':
+      return {
+        ok:
+          lines.length === 3 &&
+          lines[0].trim().startsWith('| Name | Note |') &&
+          matchesTableSeparator(lines[1]) &&
+          lines[2] === '| [* Ada] | escaped \\| pipe |',
+      };
+
     case 'seed-escaped-inline-opener':
       return {
         ok: lines.length === 1 && lines[0] === '\\[* not strong]',

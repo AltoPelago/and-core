@@ -229,6 +229,20 @@ type NdInlineNode =
   | NdInlineCode;
 ```
 
+Tables should use structured cells rather than raw source rows:
+
+```ts
+interface NdTable {
+  readonly type: "table";
+  readonly header: NdTableCell[];
+  readonly rows: NdTableCell[][];
+}
+
+interface NdTableCell {
+  readonly children: NdInlineNode[];
+}
+```
+
 Recommended metadata on every node:
 
 ```ts
