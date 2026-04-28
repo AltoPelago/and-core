@@ -3,11 +3,24 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 41,
+    "fixtures": 53,
     "pending": 0,
-    "pass": 41,
+    "pass": 53,
     "fail": 0,
     "error": 0
+  },
+  "documentChecks": {
+    "expected": 30,
+    "checked": 0,
+    "matched": 0,
+    "skipped": 30,
+    "failed": 0
+  },
+  "errorCodeChecks": {
+    "expected": 23,
+    "matched": 23,
+    "missingActual": 0,
+    "mismatched": 0
   },
   "results": [
     {
@@ -17,8 +30,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -28,8 +44,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -39,6 +58,82 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-table-valid-top-level",
+      "path": "strict/accept/seed-table-valid-top-level.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-table-inline-cells",
+      "path": "strict/accept/seed-table-inline-cells.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-table-mismatched-body-row",
+      "path": "strict/reject/seed-table-mismatched-body-row.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-table-missing-body-row",
+      "path": "strict/reject/seed-table-missing-body-row.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-table-unescaped-pipe-extra-cell",
+      "path": "strict/reject/seed-table-unescaped-pipe-extra-cell.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -50,8 +145,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -61,6 +159,38 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-extension-block-opaque",
+      "path": "strict/accept/seed-extension-block-opaque.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-extension-uppercase-name",
+      "path": "strict/reject/seed-extension-uppercase-name.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_extension_name",
+      "actualOk": false,
+      "errorCode": "invalid_extension_name",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -72,8 +202,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -83,8 +216,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -94,8 +230,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -105,8 +244,25 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-list-item-extension-block",
+      "path": "strict/accept/seed-list-item-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -116,8 +272,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -127,8 +286,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -138,8 +300,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -149,8 +314,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -160,8 +328,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -171,8 +342,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -182,8 +356,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -193,8 +370,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -204,8 +384,25 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-blockquote-nested-extension-block",
+      "path": "strict/accept/seed-blockquote-nested-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -215,8 +412,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -226,8 +426,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -237,8 +440,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -248,8 +454,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -259,8 +468,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -270,8 +482,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -281,8 +496,11 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
       "notes": [
-        "Evaluated by reference subset adapter."
+        "Evaluated by reference subset adapter.",
+        "Document AST expectation skipped; adapter does not declare document capability."
       ]
     },
     {
@@ -291,8 +509,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "block_opener_on_paragraph_continuation",
       "actualOk": false,
       "errorCode": "block_opener_on_paragraph_continuation",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -303,8 +524,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
       "actualOk": false,
       "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -315,8 +539,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "unclosed_extension_block",
       "actualOk": false,
       "errorCode": "unclosed_extension_block",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -327,8 +554,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "invalid_escape",
       "actualOk": false,
       "errorCode": "invalid_escape",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -339,8 +569,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
       "actualOk": false,
       "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -351,8 +584,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "invalid_indentation",
       "actualOk": false,
       "errorCode": "invalid_indentation",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -363,8 +599,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "invalid_indentation",
       "actualOk": false,
       "errorCode": "invalid_indentation",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -375,8 +614,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "missing_blank_line_before_nested_block",
       "actualOk": false,
       "errorCode": "missing_blank_line_before_nested_block",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -387,8 +629,26 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "raw_block_bad_closing_margin",
       "actualOk": false,
       "errorCode": "raw_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-extension-block-bad-closing-margin",
+      "path": "strict/reject/seed-list-item-extension-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "extension_block_bad_closing_margin",
+      "actualOk": false,
+      "errorCode": "extension_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -399,8 +659,26 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "raw_block_bad_closing_margin",
       "actualOk": false,
       "errorCode": "raw_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-blockquote-extension-block-bad-closing-margin",
+      "path": "strict/reject/seed-blockquote-extension-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "extension_block_bad_closing_margin",
+      "actualOk": false,
+      "errorCode": "extension_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -411,8 +689,26 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "unclosed_inline",
       "actualOk": false,
       "errorCode": "unclosed_inline",
+      "documentExpected": false,
+      "documentChecked": false,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-inline-strong-newline",
+      "path": "strict/reject/seed-inline-strong-newline.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_inline",
+      "actualOk": false,
+      "errorCode": "unclosed_inline",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -423,8 +719,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "unclosed_inline",
       "actualOk": false,
       "errorCode": "unclosed_inline",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -435,8 +734,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "unexpected_closing",
       "actualOk": false,
       "errorCode": "unexpected_closing",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -447,8 +749,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "missing_link_label",
       "actualOk": false,
       "errorCode": "missing_link_label",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -459,8 +764,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "invalid_link_target",
       "actualOk": false,
       "errorCode": "invalid_link_target",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -471,8 +779,11 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
+      "expectedErrorCode": "invalid_escape",
       "actualOk": false,
       "errorCode": "invalid_escape",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference subset adapter."
       ]

@@ -11,14 +11,18 @@ editor integration, canonicalization, and future conformance-tested implementati
 * [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
 * [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
 * [examples/README.md](./examples/README.md) — future example documents and interoperability samples
+* [CONTRIBUTING.md](./CONTRIBUTING.md) — contribution workflow for spec, CTS, and implementation changes
 
 ## Current Status
 
-The repository is currently documentation-first:
+The repository is currently spec-and-CTS first:
 
 * the v1 language spec has been migrated in from the design workspace
 * canonical, implementation, and editor-support documents are present
-* CTS and implementation directories are scaffolded but not yet populated with runnable code
+* CTS fixtures are machine-readable and indexed
+* a reference parser adapter validates strict accept/reject fixtures, expected ASTs, and expected error codes
+* a smaller reference subset adapter demonstrates capability-scoped CTS participation
+* CI runs the repository safety checks and both CTS adapters
 
 ## Suggested Reading Order
 
@@ -26,23 +30,35 @@ The repository is currently documentation-first:
 2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
 3. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
 4. [docs/spec/v1/and-vscode-support.md](./docs/spec/v1/and-vscode-support.md)
+5. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
 
 ## Near-Term Next Steps
 
-* define the CTS fixture format and directory layout
-* extract the current conformance seeds into machine-readable fixtures
-* start the first reference parser implementation
-* add editor tooling once the CTS baseline exists
+* expand the reference parser from CTS coverage toward complete v1 coverage
+* add canonical emission once the AST contract is stable enough
+* add editor tooling once lexer and parser behavior are locked by CTS
+* keep conformance seeds, CTS fixtures, and reference reports moving together
 
 ## Safety Scripts
 
+* `npm test` — runs the repository safety checks and both CTS adapters
 * `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
 * `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
 * `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
 * `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
+* `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
 * `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
 * `npm run cts:run:reference` — runs the first reference parser adapter against the CTS
 * `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
 * `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
 * `npm run precommit:check` — runs the current repository safety checks together
+
+## Continuous Integration
+
+The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs:
+
+* `npm run precommit:check`
+* `npm run cts:run:reference`
+* `npm run cts:run:subset`
+* `npm run check:canonical-emitter`

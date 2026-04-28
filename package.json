@@ -2,10 +2,12 @@
   "name": "and-core",
   "private": true,
   "scripts": {
+    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run check:canonical-emitter",
     "check:no-local-paths": "bash scripts/check-no-local-paths.sh",
     "check:spec-layout": "bash scripts/check-spec-layout.sh",
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "check:cts-seed-coverage": "bash scripts/check-cts-seed-coverage.sh",
+    "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
     "cts:run": "node scripts/run-cts.mjs",
     "cts:run:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs",
     "cts:run:reference": "node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs",
