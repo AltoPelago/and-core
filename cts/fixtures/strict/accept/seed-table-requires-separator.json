@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-requires-separator",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| A | B |\nplain text\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one paragraph block with two lines",
+      "no table block"
+    ]
+  }
+}

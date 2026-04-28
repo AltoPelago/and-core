@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-nested-list",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> - Child item\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one blockquote block",
+      "blockquote contains one paragraph child followed by one nested unordered list child"
+    ]
+  }
+}

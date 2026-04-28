@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-link-missing-label",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[@ https://example.com | ]\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "link label is required in Core v1"
+    ]
+  }
+}

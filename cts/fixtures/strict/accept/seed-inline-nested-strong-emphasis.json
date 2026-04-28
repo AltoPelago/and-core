@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-nested-strong-emphasis",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[* strong [/ emphasis]]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one paragraph block",
+      "paragraph contains one strong node",
+      "the strong node contains text plus one nested emphasis node"
+    ]
+  }
+}

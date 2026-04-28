@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-invalid-escape-in-code",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[$ \\q]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_escape",
+    "assertions": [
+      "parse failure"
+    ]
+  }
+}

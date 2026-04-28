@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-code-opaque-brackets",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[$ \\[* not strong\\] \\[@ x \\| y\\]]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one inline code node",
+      "code payload is `[* not strong] [@ x | y]`",
+      "no nested strong or link nodes inside code"
+    ]
+  }
+}

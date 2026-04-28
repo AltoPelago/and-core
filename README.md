@@ -38,4 +38,5 @@ The repository is currently documentation-first:
 
 * `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
 * `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
+* `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
 * `npm run precommit:check` — runs the current repository safety checks together

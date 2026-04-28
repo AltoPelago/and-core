@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-nested-list-invalid-indent-tab",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n\t- Child\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "tabs are invalid where indentation is structural"
+    ]
+  }
+}

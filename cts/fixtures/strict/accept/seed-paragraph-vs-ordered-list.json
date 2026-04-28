@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-paragraph-vs-ordered-list",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "My number is\n1. not a list\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one paragraph block",
+      "paragraph contains two lines of text"
+    ]
+  }
+}

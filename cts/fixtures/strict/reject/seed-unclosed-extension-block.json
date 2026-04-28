@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-unclosed-extension-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "+++chart/pie\napples: 3\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_extension_block",
+    "assertions": [
+      "parse failure"
+    ]
+  }
+}

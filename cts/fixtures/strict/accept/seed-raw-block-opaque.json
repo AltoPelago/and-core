@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-raw-block-opaque",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "```txt\n[* not strong]\n+++chart/pie\n---\n```\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one code block",
+      "payload contains the interior lines exactly, subject only to line-ending normalization"
+    ]
+  }
+}

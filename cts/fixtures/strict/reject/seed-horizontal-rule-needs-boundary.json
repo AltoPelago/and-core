@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-horizontal-rule-needs-boundary",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "Text\n---\n",
+  "expected": {
+    "ok": false,
+    "assertions": [
+      "block opener attempted on a paragraph continuation line"
+    ]
+  }
+}
