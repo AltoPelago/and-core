@@ -63,6 +63,10 @@ for rel in fixtures:
     if "ok" not in expected or not isinstance(expected.get("ok"), bool):
         errors.append(f"{rel} expected.ok must be a boolean")
 
+    options = fixture.get("options")
+    if options is not None and not isinstance(options, dict):
+        errors.append(f"{rel} options must be an object when present")
+
     assertions = expected.get("assertions")
     if assertions is not None:
         if not isinstance(assertions, list) or not all(isinstance(x, str) for x in assertions):

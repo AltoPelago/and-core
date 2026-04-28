@@ -34,7 +34,8 @@ function parseInlineCode(text, index) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseLink(text, index) {
+function parseLink(text, index, options = {}) {
+  const maxLinkTargetLength = options?.budgets?.maxLinkTargetLength;
   let i = index + 3;
   let target = '';
   while (i < text.length) {
@@ -43,6 +44,9 @@ function parseLink(text, index) {
       const escaped = parseEscapedChar(text, i);
       if (!escaped.ok) return escaped;
       target += escaped.value;
+      if (typeof maxLinkTargetLength === 'number' && target.length > maxLinkTargetLength) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: i };
+      }
       i = escaped.nextIndex;
       continue;
     }
@@ -53,6 +57,9 @@ function parseLink(text, index) {
       return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
     }
     target += ch;
+    if (typeof maxLinkTargetLength === 'number' && target.length > maxLinkTargetLength) {
+      return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: i };
+    }
     i += 1;
   }
 
@@ -102,7 +109,7 @@ function parseLink(text, index) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseSpan(text, index, opener) {
+function parseSpan(text, index, opener, options = {}) {
   let i = index + opener.length;
   let sawContent = false;
   while (i < text.length) {
@@ -115,21 +122,21 @@ function parseSpan(text, index, opener) {
       continue;
     }
     if (text.startsWith('[* ', i)) {
-      const nested = parseSpan(text, i, '[* ');
+      const nested = parseSpan(text, i, '[* ', options);
       if (!nested.ok) return nested;
       i = nested.nextIndex;
       sawContent = true;
       continue;
     }
     if (text.startsWith('[/ ', i)) {
-      const nested = parseSpan(text, i, '[/ ');
+      const nested = parseSpan(text, i, '[/ ', options);
       if (!nested.ok) return nested;
       i = nested.nextIndex;
       sawContent = true;
       continue;
     }
     if (text.startsWith('[@ ', i)) {
-      const nested = parseLink(text, i);
+      const nested = parseLink(text, i, options);
       if (!nested.ok) return nested;
       i = nested.nextIndex;
       sawContent = true;
@@ -157,7 +164,7 @@ function parseSpan(text, index, opener) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseInlineDocument(text) {
+function parseInlineDocument(text, options = {}) {
   let i = 0;
   while (i < text.length) {
     const ch = text[i];
@@ -172,19 +179,19 @@ function parseInlineDocument(text) {
       continue;
     }
     if (text.startsWith('[* ', i)) {
-      const result = parseSpan(text, i, '[* ');
+      const result = parseSpan(text, i, '[* ', options);
       if (!result.ok) return result;
       i = result.nextIndex;
       continue;
     }
     if (text.startsWith('[/ ', i)) {
-      const result = parseSpan(text, i, '[/ ');
+      const result = parseSpan(text, i, '[/ ', options);
       if (!result.ok) return result;
       i = result.nextIndex;
       continue;
     }
     if (text.startsWith('[@ ', i)) {
-      const result = parseLink(text, i);
+      const result = parseLink(text, i, options);
       if (!result.ok) return result;
       i = result.nextIndex;
       continue;
@@ -213,6 +220,7 @@ function matchesTableSeparator(line) {
 
 function evaluateFixture(fixture) {
   const source = normalizeSource(fixture.source);
+  const options = fixture.options ?? {};
   const lines = source.endsWith('\n') ? source.slice(0, -1).split('\n') : source.split('\n');
 
   switch (fixture.id) {
@@ -238,7 +246,7 @@ function evaluateFixture(fixture) {
     case 'seed-inline-unclosed-nested':
     case 'seed-inline-unexpected-closing':
     case 'seed-invalid-escape': {
-      const inline = parseInlineDocument(source);
+      const inline = parseInlineDocument(source, options);
       return { ok: inline.ok, errorCode: inline.errorCode };
     }
 
@@ -382,7 +390,7 @@ function evaluateFixture(fixture) {
     case 'seed-inline-link-missing-label':
     case 'seed-inline-invalid-escape-in-code':
     case 'seed-unknown-inline-tag': {
-      const inline = parseInlineDocument(source);
+      const inline = parseInlineDocument(source, options);
       return { ok: inline.ok, errorCode: inline.errorCode };
     }
 
@@ -397,6 +405,11 @@ function evaluateFixture(fixture) {
         ok: false,
         errorCode: lines[0]?.startsWith('+++') ? 'unclosed_extension_block' : 'unexpected_structure',
       };
+
+    case 'seed-budget-link-target': {
+      const inline = parseInlineDocument(source, options);
+      return { ok: inline.ok, errorCode: inline.errorCode };
+    }
 
     case 'seed-nested-list-invalid-indent-one-space':
       return {

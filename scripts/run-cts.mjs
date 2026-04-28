@@ -83,6 +83,10 @@ function validateFixture(relativePath, fixture) {
     errors.push(`${relativePath} source must be a string`);
   }
 
+  if ('options' in fixture && (typeof fixture.options !== 'object' || fixture.options === null || Array.isArray(fixture.options))) {
+    errors.push(`${relativePath} options must be an object when present`);
+  }
+
   if (typeof fixture.expected !== 'object' || fixture.expected === null || Array.isArray(fixture.expected)) {
     errors.push(`${relativePath} expected must be an object`);
   } else {
@@ -169,6 +173,7 @@ async function runWithAdapter(adapter, entry) {
     repoRoot,
     fixturePath: entry.fullPath,
     relativeFixturePath: entry.path,
+    options: entry.fixture.options ?? {},
   });
 
   if (typeof result !== 'object' || result === null) {

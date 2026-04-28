@@ -31,6 +31,7 @@
     "strict/reject/seed-unknown-inline-tag.json",
     "strict/reject/seed-unclosed-extension-block.json",
     "strict/reject/seed-invalid-escape.json",
+    "strict/reject/seed-budget-link-target.json",
     "strict/reject/seed-nested-list-invalid-indent-one-space.json",
     "strict/reject/seed-nested-list-invalid-indent-tab.json",
     "strict/reject/seed-nested-list-needs-blank-line.json",

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-link-target",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxLinkTargetLength": 24
+    }
+  },
+  "source": "[@ https://example.invalid/...very-long... | label]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured link-target budget is exceeded",
+      "scanner stops at the budget boundary rather than consuming unbounded input"
+    ]
+  }
+}

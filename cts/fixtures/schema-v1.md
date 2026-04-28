@@ -8,6 +8,11 @@ The current fixture schema is intentionally minimal.
   "id": "seed-example",
   "specVersion": "&ND Core v1",
   "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxLinkTargetLength": 32
+    }
+  },
   "source": "raw input text",
   "expected": {
     "ok": true,
@@ -23,6 +28,7 @@ The current fixture schema is intentionally minimal.
 
 * `expected.ok = true` means parse success is required.
 * `expected.ok = false` means parse failure is required.
+* `options` is optional and carries parser configuration relevant to the fixture.
 * `errorCode` is used only when the spec names a stable error code.
 * `assertions` are normative human-readable expectations extracted from the spec. The first CTS
   runner MAY treat them as descriptive, then progressively promote them into machine-checked
