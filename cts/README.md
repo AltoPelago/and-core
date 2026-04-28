@@ -40,6 +40,7 @@ Current behavior:
 * loads `cts/fixtures/index.json`
 * validates fixture JSON shape
 * emits a placeholder report when no parser adapter is configured
+* can be paired with `npm run check:cts-seed-coverage` to ensure the index still matches the normative seed list in the spec
 
 Future parser implementations can plug in through:
 
