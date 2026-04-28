@@ -7,6 +7,7 @@
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "cts:run": "node scripts/run-cts.mjs",
     "cts:run:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs",
+    "cts:report:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs --json --out ./cts/reports/reference-subset-report.json",
     "precommit:check": "bash scripts/pre-commit-check.sh"
   }
 }

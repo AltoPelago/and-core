@@ -32,6 +32,8 @@ into a stable machine-readable fixture format.
 The repository now includes a small CTS entrypoint:
 
 * `npm run cts:run`
+* `npm run cts:run:subset`
+* `npm run cts:report:subset`
 
 Current behavior:
 
@@ -42,8 +44,23 @@ Current behavior:
 Future parser implementations can plug in through:
 
 * `node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs`
+* `node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs --json --out ./cts/reports/report.json`
 
 The adapter contract is:
 
 * export `runFixture(fixture, context)`
 * return a result object with `status`, plus optional `actualOk`, `errorCode`, and `notes`
+
+## Reports
+
+CTS reports are intended to be durable artifacts.
+
+The current runner supports:
+
+* `--json` for machine-readable output
+* `--out <path>` to write a report file directly
+
+The default report script writes:
+
+* `cts/reports/reference-subset-report.json` once generated
+* report directory guide: [cts/reports/README.md](./reports/README.md)

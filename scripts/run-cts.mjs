@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
@@ -10,12 +10,13 @@ const fixturesRoot = path.join(repoRoot, 'cts', 'fixtures');
 const indexPath = path.join(fixturesRoot, 'index.json');
 
 function printUsage() {
-  console.log(`Usage: node scripts/run-cts.mjs [--adapter ./path/to/adapter.mjs] [--json] [--list]
+  console.log(`Usage: node scripts/run-cts.mjs [--adapter ./path/to/adapter.mjs] [--json] [--list] [--out ./path/to/report.json]
 
 Options:
   --adapter <path>   Load a CTS adapter module that exports runFixture(fixture, context)
   --json             Emit machine-readable JSON instead of text
   --list             List fixture ids and exit
+  --out <path>       Write the emitted report to a file
 `);
 }
 
@@ -26,6 +27,7 @@ function parseArgs(argv) {
     json: false,
     list: false,
     help: false,
+    out: null,
   };
 
   for (let i = 0; i < args.length; i += 1) {
@@ -43,6 +45,11 @@ function parseArgs(argv) {
       options.list = true;
       continue;
     }
+    if (arg === '--out') {
+      options.out = args[i + 1] ?? null;
+      i += 1;
+      continue;
+    }
     if (arg === '--help' || arg === '-h') {
       options.help = true;
       continue;
@@ -52,6 +59,9 @@ function parseArgs(argv) {
 
   if (options.adapter === null && args.includes('--adapter')) {
     throw new Error('Missing value for --adapter');
+  }
+  if (options.out === null && args.includes('--out')) {
+    throw new Error('Missing value for --out');
   }
 
   return options;
@@ -228,6 +238,12 @@ function printText(summary) {
   );
 }
 
+async function writeOutputFile(outPath, text) {
+  const absolutePath = path.resolve(repoRoot, outPath);
+  await mkdir(path.dirname(absolutePath), { recursive: true });
+  await writeFile(absolutePath, text, 'utf8');
+}
+
 async function main() {
   const options = parseArgs(process.argv);
   if (options.help) {
@@ -240,11 +256,20 @@ async function main() {
 
   if (options.list) {
     if (options.json) {
-      process.stdout.write(JSON.stringify(fixtures.map((entry) => entry.fixture.id), null, 2));
-      process.stdout.write('\n');
+      const output = `${JSON.stringify(fixtures.map((entry) => entry.fixture.id), null, 2)}\n`;
+      process.stdout.write(output);
+      if (options.out) {
+        await writeOutputFile(options.out, output);
+      }
     } else {
+      const lines = [];
       for (const entry of fixtures) {
-        console.log(entry.fixture.id);
+        lines.push(entry.fixture.id);
+      }
+      const output = `${lines.join('\n')}\n`;
+      process.stdout.write(output);
+      if (options.out) {
+        await writeOutputFile(options.out, output);
       }
     }
     return;
@@ -262,10 +287,17 @@ async function main() {
 
   const summary = summarize(results, adapter);
   if (options.json) {
-    process.stdout.write(JSON.stringify(summary, null, 2));
-    process.stdout.write('\n');
+    const output = `${JSON.stringify(summary, null, 2)}\n`;
+    process.stdout.write(output);
+    if (options.out) {
+      await writeOutputFile(options.out, output);
+    }
   } else {
     printText(summary);
+    if (options.out) {
+      const output = `${JSON.stringify(summary, null, 2)}\n`;
+      await writeOutputFile(options.out, output);
+    }
   }
 
   if (summary.totals.fail > 0 || summary.totals.error > 0) {
