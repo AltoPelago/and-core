@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-valid-top-level",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one table block",
+      "table has two columns and one body row"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "table",
+          "rows": [
+            "| A | B |",
+            "| --- | --- |",
+            "| 1 | 2 |"
+          ]
+        }
+      ]
+    }
+  }
+}

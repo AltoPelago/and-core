@@ -10,6 +10,39 @@
       "one unordered list block",
       "first item contains one nested table block",
       "table has two columns and one body row"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Parent"
+                    }
+                  ]
+                },
+                {
+                  "type": "table",
+                  "rows": [
+                    "| A | B |",
+                    "| --- | --- |",
+                    "| 1 | 2 |"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

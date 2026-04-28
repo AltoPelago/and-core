@@ -72,6 +72,13 @@ for rel in fixtures:
         if not isinstance(assertions, list) or not all(isinstance(x, str) for x in assertions):
             errors.append(f"{rel} expected.assertions must be an array of strings")
 
+    document = expected.get("document")
+    if document is not None:
+        if expected.get("ok") is not True:
+            errors.append(f"{rel} expected.document is only valid for successful fixtures")
+        if not isinstance(document, dict):
+            errors.append(f"{rel} expected.document must be an object when present")
+
     if fixture.get("schemaVersion") != "1":
         errors.append(f"{rel} must declare schemaVersion \"1\"")
 

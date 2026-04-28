@@ -10,6 +10,30 @@
       "one blockquote block",
       "blockquote contains one paragraph child followed by one nested code block child",
       "code payload is `raw`"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Quote intro"
+                }
+              ]
+            },
+            {
+              "type": "code_block",
+              "language": "txt",
+              "text": "raw"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

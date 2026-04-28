@@ -9,6 +9,34 @@
     "assertions": [
       "one blockquote block",
       "blockquote contains two paragraph children"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "First paragraph"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Second paragraph"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

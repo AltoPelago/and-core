@@ -9,6 +9,16 @@
     "assertions": [
       "one code block",
       "payload contains the interior lines exactly, subject only to line-ending normalization"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "code_block",
+          "language": "txt",
+          "text": "[* not strong]\n+++chart/pie\n---"
+        }
+      ]
+    }
   }
 }

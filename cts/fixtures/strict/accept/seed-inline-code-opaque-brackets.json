@@ -10,6 +10,20 @@
       "one inline code node",
       "code payload is `[* not strong] [@ x | y]`",
       "no nested strong or link nodes inside code"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "code",
+              "text": "[* not strong] [@ x | y]"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

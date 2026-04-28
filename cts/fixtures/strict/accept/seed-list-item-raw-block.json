@@ -10,6 +10,36 @@
       "one unordered list block",
       "first item contains one nested code block",
       "code payload is `raw`"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Parent"
+                    }
+                  ]
+                },
+                {
+                  "type": "code_block",
+                  "language": "txt",
+                  "text": "raw"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

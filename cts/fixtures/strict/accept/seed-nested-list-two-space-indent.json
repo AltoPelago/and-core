@@ -10,6 +10,79 @@
       "one unordered list block",
       "first parent item contains a nested unordered list with two child items",
       "second parent item is a sibling of the first parent item"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Parent"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "ordered": false,
+                  "items": [
+                    {
+                      "type": "list_item",
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Child"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "list_item",
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Child"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Next parent"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

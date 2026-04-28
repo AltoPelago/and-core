@@ -233,6 +233,15 @@ function evaluateFixture(fixture) {
     case 'seed-table-requires-separator':
       return { ok: lines.length === 2 && lines[0].startsWith('|') && !matchesTableSeparator(lines[1]) };
 
+    case 'seed-table-valid-top-level':
+      return {
+        ok:
+          lines.length === 3 &&
+          lines[0].trim().startsWith('| A | B |') &&
+          matchesTableSeparator(lines[1]) &&
+          lines[2].trim().startsWith('| 1 | 2 |'),
+      };
+
     case 'seed-escaped-inline-opener':
       return {
         ok: lines.length === 1 && lines[0] === '\\[* not strong]',

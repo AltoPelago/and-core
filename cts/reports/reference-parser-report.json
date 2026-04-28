@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 41,
+    "fixtures": 42,
     "pending": 0,
-    "pass": 41,
+    "pass": 42,
     "fail": 0,
     "error": 0
   },
@@ -17,6 +17,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -28,6 +30,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -39,8 +43,25 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-table-valid-top-level",
+      "path": "strict/accept/seed-table-valid-top-level.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -50,6 +71,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -61,8 +84,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -72,8 +99,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -83,8 +114,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -94,6 +129,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -105,8 +142,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -116,8 +157,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -127,6 +172,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -138,8 +185,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -149,6 +200,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -160,8 +213,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -171,6 +228,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -182,8 +241,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -193,6 +256,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -204,8 +269,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -215,6 +284,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -226,6 +297,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -237,8 +310,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -248,6 +325,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -259,8 +338,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -270,8 +353,12 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
       "notes": [
-        "Evaluated by reference parser."
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
       ]
     },
     {
@@ -281,6 +368,8 @@
       "mode": "strict",
       "expectedOk": true,
       "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -293,6 +382,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "block_opener_on_paragraph_continuation",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -305,6 +396,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -317,6 +410,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "unclosed_extension_block",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -329,6 +424,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "invalid_escape",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -341,6 +438,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -353,6 +452,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "invalid_indentation",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -365,6 +466,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "invalid_indentation",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -377,6 +480,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "missing_blank_line_before_nested_block",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -389,6 +494,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "raw_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -401,6 +508,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "raw_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -413,6 +522,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "unclosed_inline",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -425,6 +536,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "unclosed_inline",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -437,6 +550,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "unexpected_closing",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -449,6 +564,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "missing_link_label",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -461,6 +578,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "invalid_link_target",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -473,6 +592,8 @@
       "expectedOk": false,
       "actualOk": false,
       "errorCode": "invalid_escape",
+      "documentExpected": false,
+      "documentChecked": false,
       "notes": [
         "Evaluated by reference parser."
       ]

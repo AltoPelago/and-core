@@ -831,6 +831,22 @@ Expected result:
 * one paragraph block with two lines
 * no table block
 
+### `seed-table-valid-top-level`
+
+Input:
+
+```text
+| A | B |
+| --- | --- |
+| 1 | 2 |
+```
+
+Expected result:
+
+* parse success
+* one table block
+* table has two columns and one body row
+
 ### `seed-escaped-inline-opener`
 
 Input:

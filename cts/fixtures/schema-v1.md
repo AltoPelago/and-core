@@ -19,7 +19,11 @@ The current fixture schema is intentionally minimal.
     "errorCode": "optional-on-failure",
     "assertions": [
       "human-readable structural expectations"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": []
+    }
   }
 }
 ```
@@ -33,6 +37,9 @@ The current fixture schema is intentionally minimal.
 * `assertions` are normative human-readable expectations extracted from the spec. The first CTS
   runner MAY treat them as descriptive, then progressively promote them into machine-checked
   structural checks.
+* `document` is optional and valid only when `expected.ok = true`. It defines an exact structural
+  document expectation for adapters that declare `document` capability.
 
-This schema does not yet define a canonical AST interchange format.
-That is deliberate: the first goal is consistent parser behavior, not premature AST lock-in.
+The schema now supports a small exact AST expectation surface so conformance can move beyond
+accept/reject behavior. Adapters that do not yet expose a document AST may still run the fixtures,
+but the CTS runner marks those document checks as skipped rather than silently asserting them.

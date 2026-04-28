@@ -112,6 +112,18 @@ function validateFixture(relativePath, fixture) {
     if ('errorCode' in fixture.expected && typeof fixture.expected.errorCode !== 'string') {
       errors.push(`${relativePath} expected.errorCode must be a string when present`);
     }
+    if ('document' in fixture.expected) {
+      if (fixture.expected.ok !== true) {
+        errors.push(`${relativePath} expected.document is only valid for successful fixtures`);
+      }
+      if (
+        typeof fixture.expected.document !== 'object'
+        || fixture.expected.document === null
+        || Array.isArray(fixture.expected.document)
+      ) {
+        errors.push(`${relativePath} expected.document must be an object when present`);
+      }
+    }
   }
 
   return errors;
@@ -164,6 +176,51 @@ async function loadAdapter(adapterPath) {
   return {
     path: adapterPath,
     runFixture: module.runFixture,
+    capabilities: typeof module.capabilities === 'object' && module.capabilities !== null
+      ? module.capabilities
+      : {},
+  };
+}
+
+function stableJson(value) {
+  return JSON.stringify(value, null, 2);
+}
+
+function compareDocumentExpectation(expectedDocument, actualDocument) {
+  if (expectedDocument === undefined) {
+    return {
+      checked: false,
+      match: undefined,
+      notes: [],
+    };
+  }
+
+  if (actualDocument === undefined) {
+    return {
+      checked: true,
+      match: false,
+      notes: ['Expected document AST, but adapter did not return document.'],
+    };
+  }
+
+  const expectedJson = stableJson(expectedDocument);
+  const actualJson = stableJson(actualDocument);
+  if (expectedJson === actualJson) {
+    return {
+      checked: true,
+      match: true,
+      notes: ['Document AST matched expected structure.'],
+    };
+  }
+
+  return {
+    checked: true,
+    match: false,
+    notes: [
+      'Document AST mismatch.',
+      `Expected document: ${expectedJson}`,
+      `Actual document: ${actualJson}`,
+    ],
   };
 }
 
@@ -190,15 +247,37 @@ async function runWithAdapter(adapter, entry) {
     throw new Error(`Adapter returned invalid result for ${entry.path}`);
   }
 
+  const expectedDocument = entry.fixture.expected.document;
+  const documentExpectationPresent = expectedDocument !== undefined;
+  const documentSupported = adapter.capabilities.document === true;
+  const documentCheck = documentSupported
+    ? compareDocumentExpectation(expectedDocument, result.document)
+    : {
+        checked: false,
+        match: undefined,
+        notes: documentExpectationPresent
+          ? ['Document AST expectation skipped; adapter does not declare document capability.']
+          : [],
+      };
+  const status = documentCheck.checked && documentCheck.match === false
+    ? 'fail'
+    : result.status ?? 'error';
+
   return {
     id: entry.fixture.id,
     path: entry.path,
-    status: result.status ?? 'error',
+    status,
     mode: entry.fixture.mode,
     expectedOk: entry.fixture.expected.ok,
     actualOk: result.actualOk,
     errorCode: result.errorCode,
-    notes: Array.isArray(result.notes) ? result.notes : [],
+    documentExpected: documentExpectationPresent,
+    documentChecked: documentCheck.checked,
+    documentMatch: documentCheck.match,
+    notes: [
+      ...(Array.isArray(result.notes) ? result.notes : []),
+      ...documentCheck.notes,
+    ],
   };
 }
 

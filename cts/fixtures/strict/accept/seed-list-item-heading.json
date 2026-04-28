@@ -10,6 +10,41 @@
       "one unordered list block",
       "first item contains one nested heading block",
       "heading level is `2`"
-    ]
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Parent"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Child heading"
+                    }
+                  ],
+                  "level": 2
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

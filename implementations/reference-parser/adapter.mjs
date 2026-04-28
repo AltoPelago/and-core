@@ -1,5 +1,9 @@
 import { parseAnd } from './parser.mjs';
 
+export const capabilities = {
+  document: true,
+};
+
 export async function runFixture(fixture) {
   const result = parseAnd(fixture.source, fixture.options ?? {});
   const expectedOk = fixture.expected.ok;
@@ -12,6 +16,7 @@ export async function runFixture(fixture) {
     status: okMatches && errorMatches ? 'pass' : 'fail',
     actualOk: result.ok,
     errorCode: result.errorCode,
+    document: result.document,
     notes: okMatches && errorMatches
       ? ['Evaluated by reference parser.']
       : [
