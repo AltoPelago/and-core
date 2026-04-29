@@ -16,7 +16,7 @@ Current scope:
 * inline AST output for text, strong, emphasis, link, and code nodes
 * escape validation
 * compact strict-mode diagnostics with `code`, `line`, `column`, and inline `offset` when available
-* opt-in source spans for document and block nodes via `parseAnd(source, { includeSpans: true })`
+* opt-in source spans for document, block, and inline nodes via `parseAnd(source, { includeSpans: true })`
 * link-target budget enforcement
 * raw code block margin checks
 * the initial block-boundary and indentation rules covered by the CTS

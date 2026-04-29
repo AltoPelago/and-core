@@ -134,6 +134,10 @@ interface NdTableCell {
 syntax and MUST NOT appear in the AST. Cell content is represented as inline children after normal
 inline parsing and escape handling.
 
+When source spans are exposed, inline spans inside table cells SHOULD point at the trimmed cell
+content, excluding table delimiter pipes and surrounding cell padding. The table block span SHOULD
+still cover the full table source range.
+
 ### Horizontal Rule
 
 ```ts
@@ -208,9 +212,8 @@ parsed inside inline code.
 Implementations SHOULD track source spans for diagnostics and editor integrations, but source spans
 are not included in CTS `expected.document` fixtures yet.
 
-The reference parser currently exposes spans only when explicitly requested. Its first span-bearing
-surface covers the document node and block nodes; inline-node spans are intentionally left for a
-later, more precise scanner pass.
+The reference parser currently exposes spans only when explicitly requested. Its span-bearing
+surface covers the document node, block nodes, and inline nodes.
 
 Recommended metadata:
 

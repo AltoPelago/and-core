@@ -1639,6 +1639,27 @@ Expected result:
 * parse failure
 * error code `invalid_escape`
 
+### `seed-source-spans-table-inline`
+
+Input:
+
+```text
+&ND v1
+
+|  Name  | Link\|Text |
+| --- | --- |
+|  Alpha | [* Strong] |
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* table block span covers the full table source range
+* inline spans inside table cells point at trimmed cell content
+* escaped pipes inside table cells remain part of the cell source span
+* nested inline spans inside table cells point at their exact source ranges
+
 ---
 
 # **8. Structural Constraints**

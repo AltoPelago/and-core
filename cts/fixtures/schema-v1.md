@@ -23,7 +23,20 @@ The current fixture schema is intentionally minimal.
     "document": {
       "type": "document",
       "children": []
-    }
+    },
+    "spans": [
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 7,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      }
+    ]
   }
 }
 ```
@@ -41,7 +54,12 @@ The current fixture schema is intentionally minimal.
 * `document` is optional and valid only when `expected.ok = true`. It defines an exact structural
   document expectation for adapters that declare `document` capability. The shape is defined by
   [`and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md).
+* `spans` is optional and valid only when `expected.ok = true`. It defines selected source-span
+  expectations for adapters that declare `spans` capability. `path` selects a node within the
+  returned document AST using `$`, dot properties, and numeric array indexes such as
+  `$.children[0].header[1].children[0]`.
 
 The schema now supports a small exact AST expectation surface so conformance can move beyond
 accept/reject behavior. Adapters that do not yet expose a document AST may still run the fixtures,
 but the CTS runner marks those document checks as skipped rather than silently asserting them.
+Span expectations are metadata checks and are reported separately from semantic document checks.

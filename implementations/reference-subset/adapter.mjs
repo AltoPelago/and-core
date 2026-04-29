@@ -260,6 +260,17 @@ function evaluateFixture(fixture) {
           lines[2] === '| [* Ada] | escaped \\| pipe |',
       };
 
+    case 'seed-source-spans-table-inline':
+      return {
+        ok:
+          lines.length === 5 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '|  Name  | Link\\|Text |' &&
+          matchesTableSeparator(lines[3]) &&
+          lines[4] === '|  Alpha | [* Strong] |',
+      };
+
     case 'seed-table-mismatched-body-row':
       return {
         ok: false,

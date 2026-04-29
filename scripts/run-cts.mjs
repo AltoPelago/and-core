@@ -127,6 +127,27 @@ function validateFixture(relativePath, fixture) {
         errors.push(`${relativePath} expected.document must be an object when present`);
       }
     }
+    if ('spans' in fixture.expected) {
+      if (fixture.expected.ok !== true) {
+        errors.push(`${relativePath} expected.spans is only valid for successful fixtures`);
+      }
+      if (!Array.isArray(fixture.expected.spans)) {
+        errors.push(`${relativePath} expected.spans must be an array when present`);
+      } else {
+        for (const [index, entry] of fixture.expected.spans.entries()) {
+          if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+            errors.push(`${relativePath} expected.spans[${index}] must be an object`);
+            continue;
+          }
+          if (typeof entry.path !== 'string' || (entry.path !== '$' && !entry.path.startsWith('$.'))) {
+            errors.push(`${relativePath} expected.spans[${index}].path must be "$" or a string path starting with $.`);
+          }
+          if (typeof entry.span !== 'object' || entry.span === null || Array.isArray(entry.span)) {
+            errors.push(`${relativePath} expected.spans[${index}].span must be an object`);
+          }
+        }
+      }
+    }
   }
 
   return errors;
@@ -227,6 +248,78 @@ function compareDocumentExpectation(expectedDocument, actualDocument) {
   };
 }
 
+function valueAtPath(value, selector) {
+  if (selector === '$') return value;
+  if (!selector.startsWith('$.')) return undefined;
+  const segments = selector.slice(2).split('.');
+  let current = value;
+
+  for (const segment of segments) {
+    const match = segment.match(/^([A-Za-z_][A-Za-z0-9_]*)(\[(\d+)\])*$/);
+    if (!match) return undefined;
+
+    const property = match[1];
+    current = current?.[property];
+    const indexes = [...segment.matchAll(/\[(\d+)\]/g)].map((entry) => Number(entry[1]));
+    for (const index of indexes) {
+      if (!Array.isArray(current)) return undefined;
+      current = current[index];
+    }
+  }
+
+  return current;
+}
+
+function compareSpanExpectations(expectedSpans, actualDocument) {
+  if (expectedSpans === undefined) {
+    return {
+      expected: false,
+      checked: false,
+      matched: 0,
+      failed: 0,
+      notes: [],
+    };
+  }
+
+  if (actualDocument === undefined) {
+    return {
+      expected: true,
+      checked: true,
+      matched: 0,
+      failed: expectedSpans.length,
+      notes: ['Expected source spans, but adapter did not return a document.'],
+    };
+  }
+
+  const notes = [];
+  let matched = 0;
+  let failed = 0;
+  for (const entry of expectedSpans) {
+    const node = valueAtPath(actualDocument, entry.path);
+    const actualSpan = node?.span;
+    const expectedJson = stableJson(entry.span);
+    const actualJson = stableJson(actualSpan);
+    if (expectedJson === actualJson) {
+      matched += 1;
+      continue;
+    }
+    failed += 1;
+    notes.push(`Span mismatch at ${entry.path}. Expected span: ${expectedJson}. Actual span: ${actualJson}`);
+  }
+
+  if (failed === 0) {
+    notes.push(`Span expectations matched (${matched}/${expectedSpans.length}).`);
+  }
+
+  return {
+    expected: true,
+    checked: true,
+    matched,
+    failed,
+    notes,
+  };
+}
+
 function makePlaceholderResult(entry) {
   return {
     id: entry.fixture.id,
@@ -253,6 +346,9 @@ async function runWithAdapter(adapter, entry) {
   const expectedDocument = entry.fixture.expected.document;
   const documentExpectationPresent = expectedDocument !== undefined;
   const documentSupported = adapter.capabilities.document === true;
+  const expectedSpans = entry.fixture.expected.spans;
+  const spanExpectationPresent = expectedSpans !== undefined;
+  const spansSupported = adapter.capabilities.spans === true;
   const documentCheck = documentSupported
     ? compareDocumentExpectation(expectedDocument, result.document)
     : {
@@ -262,7 +358,18 @@ async function runWithAdapter(adapter, entry) {
           ? ['Document AST expectation skipped; adapter does not declare document capability.']
           : [],
       };
-  const status = documentCheck.checked && documentCheck.match === false
+  const spanCheck = spansSupported
+    ? compareSpanExpectations(expectedSpans, result.document)
+    : {
+        expected: spanExpectationPresent,
+        checked: false,
+        matched: 0,
+        failed: 0,
+        notes: spanExpectationPresent
+          ? ['Source span expectation skipped; adapter does not declare spans capability.']
+          : [],
+      };
+  const status = (documentCheck.checked && documentCheck.match === false) || spanCheck.failed > 0
     ? 'fail'
     : result.status ?? 'error';
 
@@ -278,9 +385,14 @@ async function runWithAdapter(adapter, entry) {
     documentExpected: documentExpectationPresent,
     documentChecked: documentCheck.checked,
     documentMatch: documentCheck.match,
+    spansExpected: spanExpectationPresent,
+    spansChecked: spanCheck.checked,
+    spansMatched: spanCheck.matched,
+    spansFailed: spanCheck.failed,
     notes: [
       ...(Array.isArray(result.notes) ? result.notes : []),
       ...documentCheck.notes,
+      ...spanCheck.notes,
     ],
   };
 }
@@ -304,6 +416,13 @@ function summarize(results, adapter) {
     matched: 0,
     missingActual: 0,
     mismatched: 0,
+  };
+  const spanCounts = {
+    expected: 0,
+    checked: 0,
+    matched: 0,
+    failed: 0,
+    skipped: 0,
   };
 
   for (const result of results) {
@@ -331,6 +450,16 @@ function summarize(results, adapter) {
         documentCounts.skipped += 1;
       }
     }
+    if (result.spansExpected) {
+      spanCounts.expected += 1;
+      if (result.spansChecked) {
+        spanCounts.checked += 1;
+        spanCounts.matched += result.spansMatched ?? 0;
+        spanCounts.failed += result.spansFailed ?? 0;
+      } else {
+        spanCounts.skipped += 1;
+      }
+    }
   }
 
   return {
@@ -342,6 +471,7 @@ function summarize(results, adapter) {
       ...counts,
     },
     documentChecks: documentCounts,
+    spanChecks: spanCounts,
     errorCodeChecks: errorCodeCounts,
     results,
   };
@@ -359,6 +489,9 @@ function printText(summary) {
   );
   console.log(
     `documentChecks expected=${summary.documentChecks.expected} checked=${summary.documentChecks.checked} matched=${summary.documentChecks.matched} skipped=${summary.documentChecks.skipped} failed=${summary.documentChecks.failed}`
+  );
+  console.log(
+    `spanChecks expected=${summary.spanChecks.expected} checked=${summary.spanChecks.checked} matched=${summary.spanChecks.matched} skipped=${summary.spanChecks.skipped} failed=${summary.spanChecks.failed}`
   );
   console.log(
     `errorCodeChecks expected=${summary.errorCodeChecks.expected} matched=${summary.errorCodeChecks.matched} missingActual=${summary.errorCodeChecks.missingActual} mismatched=${summary.errorCodeChecks.mismatched}`

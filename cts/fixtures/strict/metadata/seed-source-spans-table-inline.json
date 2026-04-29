@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-table-inline",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n|  Name  | Link\\|Text |\n| --- | --- |\n|  Alpha | [* Strong] |\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "table block span covers the full table source range",
+      "inline spans inside table cells point at trimmed cell content",
+      "escaped pipes inside table cells remain part of the cell source span",
+      "nested inline spans inside table cells point at their exact source ranges"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 69,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 5,
+          "endColumn": 24
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 69,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 5,
+          "endColumn": 24
+        }
+      },
+      {
+        "path": "$.children[0].header[0].children[0]",
+        "span": {
+          "startOffset": 11,
+          "endOffset": 15,
+          "startLine": 3,
+          "startColumn": 4,
+          "endLine": 3,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].header[1].children[0]",
+        "span": {
+          "startOffset": 19,
+          "endOffset": 29,
+          "startLine": 3,
+          "startColumn": 12,
+          "endLine": 3,
+          "endColumn": 22
+        }
+      },
+      {
+        "path": "$.children[0].rows[0][1].children[0]",
+        "span": {
+          "startOffset": 57,
+          "endOffset": 67,
+          "startLine": 5,
+          "startColumn": 12,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      },
+      {
+        "path": "$.children[0].rows[0][1].children[0].children[0]",
+        "span": {
+          "startOffset": 60,
+          "endOffset": 66,
+          "startLine": 5,
+          "startColumn": 15,
+          "endLine": 5,
+          "endColumn": 21
+        }
+      }
+    ]
+  }
+}

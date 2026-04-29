@@ -85,6 +85,22 @@ for rel in fixtures:
         if not isinstance(document, dict):
             errors.append(f"{rel} expected.document must be an object when present")
 
+    spans = expected.get("spans")
+    if spans is not None:
+        if expected.get("ok") is not True:
+            errors.append(f"{rel} expected.spans is only valid for successful fixtures")
+        if not isinstance(spans, list):
+            errors.append(f"{rel} expected.spans must be an array when present")
+        else:
+            for index, entry in enumerate(spans):
+                if not isinstance(entry, dict):
+                    errors.append(f"{rel} expected.spans[{index}] must be an object")
+                    continue
+                if not isinstance(entry.get("path"), str) or (entry["path"] != "$" and not entry["path"].startswith("$.")):
+                    errors.append(f"{rel} expected.spans[{index}].path must be \"$\" or a string path starting with $.")
+                if not isinstance(entry.get("span"), dict):
+                    errors.append(f"{rel} expected.spans[{index}].span must be an object")
+
     if fixture.get("schemaVersion") != "1":
         errors.append(f"{rel} must declare schemaVersion \"1\"")
 

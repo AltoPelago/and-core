@@ -56,6 +56,7 @@
     "strict/reject/seed-inline-unexpected-closing.json",
     "strict/reject/seed-inline-link-missing-label.json",
     "strict/reject/seed-inline-link-missing-target.json",
-    "strict/reject/seed-inline-invalid-escape-in-code.json"
+    "strict/reject/seed-inline-invalid-escape-in-code.json",
+    "strict/metadata/seed-source-spans-table-inline.json"
   ]
 }

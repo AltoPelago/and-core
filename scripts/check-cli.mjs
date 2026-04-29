@@ -35,11 +35,16 @@ const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'and-cli-'));
 const validPath = path.join(tempDir, 'valid.and');
 const invalidPath = path.join(tempDir, 'invalid.and');
 const invalidBodyPath = path.join(tempDir, 'invalid-body.and');
+const tablePath = path.join(tempDir, 'table.and');
 const canonicalPath = path.join(tempDir, 'canonical.and');
 
 await fs.writeFile(validPath, '&ND v1\n\n# Title\n\nMy number is\n1. not a list\n');
 await fs.writeFile(invalidPath, '&ND v2\n\n# Title\n');
 await fs.writeFile(invalidBodyPath, '&ND v1\n\nText\n---\n');
+await fs.writeFile(
+  tablePath,
+  '&ND v1\n\n|  Name  | Link\\|Text |\n| --- | --- |\n|  Alpha | [* Strong] |\n'
+);
 
 const checkValid = await run(['check', validPath]);
 assert(checkValid.ok && checkValid.stdout === 'ok\n', 'check should accept a valid document');
@@ -60,10 +65,43 @@ assert(JSON.parse(parseValid.stdout).document.children.length === 2, 'parse --js
 
 const parseValidWithSpans = await run(['parse', validPath, '--json', '--spans']);
 assert(parseValidWithSpans.ok, 'parse --json --spans should accept a valid document');
-assert(JSON.parse(parseValidWithSpans.stdout).document.span.startLine === 1, 'parse --spans should emit document spans');
+const parsedWithSpans = JSON.parse(parseValidWithSpans.stdout);
+assert(parsedWithSpans.document.span.startLine === 1, 'parse --spans should emit document spans');
 assert(
-  JSON.parse(parseValidWithSpans.stdout).document.children[0].span.startLine === 3,
+  parsedWithSpans.document.children[0].span.startLine === 3,
   'parse --spans should emit block spans after headers'
+);
+assert(
+  parsedWithSpans.document.children[0].children[0].span.startColumn === 3,
+  'parse --spans should emit heading inline spans after heading markers'
+);
+assert(
+  parsedWithSpans.document.children[1].children[0].span.startLine === 5,
+  'parse --spans should emit paragraph inline spans'
+);
+
+const parseTableWithSpans = await run(['parse', tablePath, '--json', '--spans']);
+assert(parseTableWithSpans.ok, 'parse --json --spans should accept a valid table document');
+const parsedTable = JSON.parse(parseTableWithSpans.stdout);
+assert(
+  parsedTable.document.children[0].header[0].children[0].span.startColumn === 4,
+  'table cell spans should ignore leading cell padding'
+);
+assert(
+  parsedTable.document.children[0].header[1].children[0].value === 'Link|Text',
+  'table cell parsing should preserve escaped pipe semantics'
+);
+assert(
+  parsedTable.document.children[0].header[1].children[0].span.startColumn === 12,
+  'table cell spans should account for escaped pipes before later cells'
+);
+assert(
+  parsedTable.document.children[0].rows[0][1].children[0].span.startColumn === 12,
+  'table nested inline spans should start at the trimmed cell content'
+);
+assert(
+  parsedTable.document.children[0].rows[0][1].children[0].children[0].span.startColumn === 15,
+  'table nested inline child spans should account for inline opener width'
 );
 
 const canonicalEmbedded = await run(['canonical', validPath, '--profile', 'embedded']);

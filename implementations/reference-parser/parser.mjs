@@ -56,7 +56,7 @@ function makeSpan(context, startOffset, endOffset) {
 }
 
 function withSpan(node, context, startOffset, endOffset) {
-  if (!context.includeSpans) return node;
+  if (!context?.includeSpans) return node;
   return {
     ...node,
     span: makeSpan(context, startOffset, endOffset),
@@ -150,14 +150,17 @@ function parseEscape(text, index) {
   return { ok: false, errorCode: 'invalid_escape', nextIndex: index + 1 };
 }
 
-function pushText(nodes, value) {
+function pushText(nodes, value, context, startOffset, endOffset) {
   if (!value) return;
   const last = nodes[nodes.length - 1];
   if (last?.type === 'text') {
     last.value += value;
+    if (context?.includeSpans) {
+      last.span = makeSpan(context, last.span.startOffset, endOffset);
+    }
     return;
   }
-  nodes.push({ type: 'text', value });
+  nodes.push(withSpan({ type: 'text', value }, context, startOffset, endOffset));
 }
 
 function parseEscapedBracketLiteral(text, index) {
@@ -183,7 +186,7 @@ function parseEscapedBracketLiteral(text, index) {
   return { ok: true, nextIndex: i, value };
 }
 
-function parseInlineCode(text, index) {
+function parseInlineCode(text, index, context, baseOffset = 0) {
   let i = index + 3;
   let value = '';
   while (i < text.length) {
@@ -196,7 +199,11 @@ function parseInlineCode(text, index) {
       continue;
     }
     if (char === ']') {
-      return { ok: true, nextIndex: i + 1, node: { type: 'code', text: value } };
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan({ type: 'code', text: value }, context, baseOffset + index, baseOffset + i + 1),
+      };
     }
     if (char === '\n') {
       return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
@@ -207,19 +214,19 @@ function parseInlineCode(text, index) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseSpan(text, index, opener, options) {
+function parseSpan(text, index, opener, options, context, baseOffset = 0) {
   const type = opener === '[* ' ? 'strong' : 'emphasis';
-  const parsed = parseInlineSequence(text, index + opener.length, options, { stopOnClose: true });
+  const parsed = parseInlineSequence(text, index + opener.length, options, { stopOnClose: true }, context, baseOffset);
   if (!parsed.ok) return parsed;
   if (!parsed.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: parsed.nextIndex };
   return {
     ok: true,
     nextIndex: parsed.nextIndex,
-    node: { type, children: parsed.nodes },
+    node: withSpan({ type, children: parsed.nodes }, context, baseOffset + index, baseOffset + parsed.nextIndex),
   };
 }
 
-function parseLink(text, index, options) {
+function parseLink(text, index, options, context, baseOffset = 0) {
   const maxLinkTargetLength = options?.budgets?.maxLinkTargetLength;
   let i = index + 3;
   let target = '';
@@ -256,7 +263,7 @@ function parseLink(text, index, options) {
 
   i += 1;
   if (text[i] === ' ') i += 1;
-  const label = parseInlineSequence(text, i, options, { stopOnClose: true });
+  const label = parseInlineSequence(text, i, options, { stopOnClose: true }, context, baseOffset);
   if (!label.ok) return label;
   if (!label.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: label.nextIndex };
   if (!hasInlineContent(label.nodes)) {
@@ -266,7 +273,12 @@ function parseLink(text, index, options) {
   return {
     ok: true,
     nextIndex: label.nextIndex,
-    node: { type: 'link', href: target.trim(), children: label.nodes },
+    node: withSpan(
+      { type: 'link', href: target.trim(), children: label.nodes },
+      context,
+      baseOffset + index,
+      baseOffset + label.nextIndex
+    ),
   };
 }
 
@@ -278,7 +290,7 @@ function hasInlineContent(nodes) {
   });
 }
 
-function parseInlineSequence(text, startIndex, options, state = {}) {
+function parseInlineSequence(text, startIndex, options, state = {}, context, baseOffset = 0) {
   const nodes = [];
   let index = startIndex;
 
@@ -289,7 +301,7 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
       if (state.stopOnClose) {
         return { ok: false, errorCode: 'unclosed_inline', nextIndex: index };
       }
-      pushText(nodes, '\n');
+      pushText(nodes, '\n', context, baseOffset + index, baseOffset + index + 1);
       index += 1;
       continue;
     }
@@ -300,17 +312,17 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
       if (escaped.value === '[') {
         const literal = parseEscapedBracketLiteral(text, index);
         if (!literal.ok) return literal;
-        pushText(nodes, literal.value);
+        pushText(nodes, literal.value, context, baseOffset + index, baseOffset + literal.nextIndex);
         index = literal.nextIndex;
         continue;
       }
-      pushText(nodes, escaped.value);
+      pushText(nodes, escaped.value, context, baseOffset + index, baseOffset + escaped.nextIndex);
       index = escaped.nextIndex;
       continue;
     }
 
     if (text.startsWith('[* ', index)) {
-      const parsed = parseSpan(text, index, '[* ', options);
+      const parsed = parseSpan(text, index, '[* ', options, context, baseOffset);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -318,7 +330,7 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
     }
 
     if (text.startsWith('[/ ', index)) {
-      const parsed = parseSpan(text, index, '[/ ', options);
+      const parsed = parseSpan(text, index, '[/ ', options, context, baseOffset);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -326,7 +338,7 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
     }
 
     if (text.startsWith('[@ ', index)) {
-      const parsed = parseLink(text, index, options);
+      const parsed = parseLink(text, index, options, context, baseOffset);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -334,7 +346,7 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
     }
 
     if (text.startsWith('[$ ', index)) {
-      const parsed = parseInlineCode(text, index);
+      const parsed = parseInlineCode(text, index, context, baseOffset);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -352,15 +364,15 @@ function parseInlineSequence(text, startIndex, options, state = {}) {
       return { ok: false, errorCode: 'unknown_inline_type', nextIndex: index };
     }
 
-    pushText(nodes, char);
+    pushText(nodes, char, context, baseOffset + index, baseOffset + index + 1);
     index += 1;
   }
 
   return { ok: true, closed: false, nextIndex: index, nodes };
 }
 
-export function parseInline(text, options = {}) {
-  const parsed = parseInlineSequence(text, 0, options);
+export function parseInline(text, options = {}, baseOffset = 0, context = null) {
+  const parsed = parseInlineSequence(text, 0, options, {}, context, baseOffset);
   if (!parsed.ok) return parsed;
   return { ok: true, nodes: parsed.nodes };
 }
@@ -461,8 +473,8 @@ function validateBlocks(lines, rawLines) {
   return { ok: true };
 }
 
-function parseInlineBlock(type, text, options, baseOffset = 0) {
-  const inline = parseInline(text, options);
+function parseInlineBlock(type, text, options, baseOffset = 0, context = null) {
+  const inline = parseInline(text, options, baseOffset, context);
   if (!inline.ok) return withOffset(inline, baseOffset);
   return { ok: true, node: { type, children: inline.nodes } };
 }
@@ -538,47 +550,56 @@ function isTableStart(lines, index) {
 }
 
 function splitTableRow(line) {
-  const trimmed = line.trim();
-  if (!trimmed.startsWith('|')) return null;
-  const body = trimmed.endsWith('|') ? trimmed.slice(1, -1) : trimmed.slice(1);
+  const trimmedStart = line.length - line.trimStart().length;
+  const trimmedEnd = line.trimEnd().length;
+  if (line[trimmedStart] !== '|') return null;
+  const bodyStart = trimmedStart + 1;
+  const bodyEnd = line[trimmedEnd - 1] === '|' ? trimmedEnd - 1 : trimmedEnd;
   const cells = [];
-  let current = '';
+  let cellStart = bodyStart;
 
-  for (let i = 0; i < body.length; i += 1) {
-    const char = body[i];
+  for (let i = bodyStart; i < bodyEnd; i += 1) {
+    const char = line[i];
     if (char === '\\') {
-      current += char;
-      if (i + 1 < body.length) {
-        current += body[i + 1];
+      if (i + 1 < bodyEnd) {
         i += 1;
       }
       continue;
     }
     if (char === '|') {
-      cells.push(current.trim());
-      current = '';
+      cells.push(tableCell(line, cellStart, i));
+      cellStart = i + 1;
       continue;
     }
-    current += char;
   }
 
-  cells.push(current.trim());
+  cells.push(tableCell(line, cellStart, bodyEnd));
   return cells;
 }
 
-function isSeparatorCells(cells) {
-  return cells.length > 0 && cells.every((cell) => cell === '---');
+function tableCell(line, start, end) {
+  let trimmedStart = start;
+  let trimmedEnd = end;
+  while (trimmedStart < trimmedEnd && line[trimmedStart] === ' ') trimmedStart += 1;
+  while (trimmedEnd > trimmedStart && line[trimmedEnd - 1] === ' ') trimmedEnd -= 1;
+  return {
+    text: line.slice(trimmedStart, trimmedEnd),
+    start: trimmedStart,
+    end: trimmedEnd,
+  };
 }
 
-function parseTableCells(cells, options, baseOffset = 0) {
+function isSeparatorCells(cells) {
+  return cells.length > 0 && cells.every((cell) => cell.text === '---');
+}
+
+function parseTableCells(cells, options, lineOffset = 0, context = null) {
   const parsedCells = [];
-  let searchFrom = 0;
   for (const cell of cells) {
-    const cellOffset = baseOffset + searchFrom;
-    const inline = parseInline(cell, options);
+    const cellOffset = lineOffset + cell.start;
+    const inline = parseInline(cell.text, options, cellOffset, context);
     if (!inline.ok) return withOffset(inline, cellOffset);
     parsedCells.push({ children: inline.nodes });
-    searchFrom += cell.length + 1;
   }
   return { ok: true, cells: parsedCells };
 }
@@ -595,7 +616,7 @@ function parseTable(lines, start, options, context) {
     return failAt('invalid_table_shape', context.lineOffset + start, 0);
   }
 
-  const header = parseTableCells(headerCells, options, context.lineStartOffsets[start] + 1);
+  const header = parseTableCells(headerCells, options, context.lineStartOffsets[start], context);
   if (!header.ok) return header;
 
   const rows = [];
@@ -605,7 +626,7 @@ function parseTable(lines, start, options, context) {
     if (cells === null || cells.length !== headerCells.length) {
       return failAt('invalid_table_shape', context.lineOffset + index, 0);
     }
-    const row = parseTableCells(cells, options, context.lineStartOffsets[index] + 1);
+    const row = parseTableCells(cells, options, context.lineStartOffsets[index], context);
     if (!row.ok) return row;
     rows.push(row.cells);
     index += 1;
@@ -639,7 +660,13 @@ function parseList(lines, start, options, context) {
 
     const item = { type: 'list_item', children: [] };
     const markerLength = lines[index].length - markerMatch[1].length;
-    const head = parseInlineBlock('paragraph', markerMatch[1], options, context.lineStartOffsets[index] + markerLength);
+    const head = parseInlineBlock(
+      'paragraph',
+      markerMatch[1],
+      options,
+      context.lineStartOffsets[index] + markerLength,
+      context
+    );
     if (!head.ok) return head;
     item.children.push(head.node);
     index += 1;
@@ -721,7 +748,7 @@ function parseParagraph(lines, start, options, context) {
     paragraphLines.push(lines[index]);
     index += 1;
   }
-  const inline = parseInline(paragraphLines.join('\n'), options);
+  const inline = parseInline(paragraphLines.join('\n'), options, context.lineStartOffsets[start], context);
   if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start]);
   return {
     ok: true,
@@ -764,7 +791,13 @@ function parseBlocks(lines, options, context) {
 
     if (/^#{1,6} /.test(line)) {
       const match = line.match(/^(#{1,6}) (.*)$/);
-      const heading = parseInlineBlock('heading', match[2], options, context.lineStartOffsets[index] + match[1].length + 1);
+      const heading = parseInlineBlock(
+        'heading',
+        match[2],
+        options,
+        context.lineStartOffsets[index] + match[1].length + 1,
+        context
+      );
       if (!heading.ok) return heading;
       children.push(withSpan(
         {
