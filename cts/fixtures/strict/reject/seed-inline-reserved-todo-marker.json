@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-reserved-todo-marker",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[x]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "`[x]` remains reserved in Core v1",
+      "strict parsers fail closed instead of assigning task-list semantics"
+    ]
+  }
+}

@@ -5,7 +5,7 @@
     "and": "./bin/and.mjs"
   },
   "scripts": {
-    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run check:html-renderer && npm run cli:smoke && npm run playground:check",
+    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run check:html-renderer && npm run check:vscode && npm run cli:smoke && npm run playground:check",
     "and": "node ./bin/and.mjs",
     "playground": "node scripts/serve-playground.mjs",
     "playground:check": "node scripts/check-playground.mjs",
@@ -15,6 +15,7 @@
     "check:cts-seed-coverage": "bash scripts/check-cts-seed-coverage.sh",
     "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
     "check:html-renderer": "node scripts/check-html-renderer.mjs",
+    "check:vscode": "node scripts/check-vscode.mjs",
     "html:report": "node scripts/check-html-renderer.mjs --out ./cts/reports/reference-html-report.json",
     "cli:smoke": "node scripts/check-cli.mjs",
     "canonical:report": "node scripts/check-canonical-emitter.mjs --out ./cts/reports/reference-canonical-report.json",

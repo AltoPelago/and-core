@@ -506,9 +506,13 @@ MUST error.
 [=]   reserved for todo/in progress if ever needed
 [.]   reserved for todo/cancelled if ever needed
 [<]   reserved for explicit line break if ever needed
+[>]   reserved if ever needed
 [_]   reserved for non-breaking space if ever needed
 
 [n]   reserved for auto-number marker in headers if ever needed
+
+===   reserved if ever needed
+~~~   reserved if ever needed
 ```
 
 ### Design rule
@@ -1049,6 +1053,22 @@ Expected result:
 * code block is ordered
 * payload contains the interior lines exactly, subject only to line-ending normalization
 
+### `seed-ordered-code-block-wrong-closing-fence`
+
+Input:
+
+`````text
+````aeon
+title = "Hello World"
+```
+`````
+
+Expected result:
+
+* parse failure
+* error code `unclosed_code_block`
+* reason: ordered code blocks require a matching quadruple-fence closer
+
 ### `seed-extension-block-opaque`
 
 Input:
@@ -1072,7 +1092,7 @@ Expected result:
 Input:
 
 ```text
-+++ unsupported/extension
++++unsupported/extension
 opaque [* extension] payload
 +++
 +++fallback
@@ -1108,6 +1128,28 @@ Expected result:
 * error code `orphan_fallback_block`
 * reason: fallback is only valid when directly adjacent to the immediately preceding extension
   block
+
+### `seed-fallback-not-immediately-after-extension`
+
+Input:
+
+```text
++++chart/pie
+apples: 30
++++
+
+Paragraph.
+
++++fallback
+Chart unavailable.
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: any intervening block makes the fallback orphaned
 
 ### `seed-nested-fallback-block`
 
@@ -1858,6 +1900,34 @@ Expected result:
 * parse failure
 * error code `unknown_inline_type`
 * `[_]` remains reserved in Core v1
+
+### `seed-inline-reserved-anchor-tag`
+
+Input:
+
+```text
+[# section]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[# ...]` remains reserved in Core v1
+
+### `seed-inline-reserved-todo-marker`
+
+Input:
+
+```text
+[x]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[x]` remains reserved in Core v1
 
 ### `seed-inline-invalid-escape-in-code`
 

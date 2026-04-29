@@ -1,0 +1,85 @@
+{
+  "sample": "reference.and",
+  "expectations": [
+    {
+      "label": "Header",
+      "contains": "&ND v1",
+      "scopes": ["keyword.other.declaration.and", "entity.name.type.and"]
+    },
+    {
+      "label": "Heading",
+      "contains": "# Sample",
+      "scopes": ["markup.heading.marker.and", "markup.heading.and"]
+    },
+    {
+      "label": "Strong",
+      "contains": "[* strong]",
+      "scopes": ["markup.bold.and"]
+    },
+    {
+      "label": "Emphasis",
+      "contains": "[/ emphasis]",
+      "scopes": ["markup.italic.and"]
+    },
+    {
+      "label": "Inline code",
+      "contains": "[$ code]",
+      "scopes": ["markup.inline.raw.and"]
+    },
+    {
+      "label": "Link",
+      "contains": "[@ https://example.com/a\\|b | link]",
+      "scopes": ["markup.underline.link.and", "string.other.link-target.and", "punctuation.separator.link.and"]
+    },
+    {
+      "label": "Escape",
+      "contains": "\\|",
+      "scopes": ["constant.character.escape.and"]
+    },
+    {
+      "label": "Unordered list",
+      "contains": "- Unordered",
+      "scopes": ["markup.list.unnumbered.and"]
+    },
+    {
+      "label": "Ordered list",
+      "contains": "1. Ordered",
+      "scopes": ["markup.list.numbered.and"]
+    },
+    {
+      "label": "Blockquote",
+      "contains": "> Quote",
+      "scopes": ["markup.quote.and"]
+    },
+    {
+      "label": "Table pipe",
+      "contains": "| Name | Value |",
+      "scopes": ["punctuation.definition.table.and"]
+    },
+    {
+      "label": "Code fence",
+      "contains": "```aeon",
+      "scopes": ["markup.fence.code.and", "entity.name.section.code-language.and"]
+    },
+    {
+      "label": "Extension fence",
+      "contains": "+++chart/pie",
+      "scopes": ["markup.fence.extension.and", "entity.name.type.extension.and"]
+    },
+    {
+      "label": "Reserved todo marker",
+      "contains": "[x]",
+      "scopes": ["invalid.illegal.and"]
+    },
+    {
+      "label": "Reserved anchor tag",
+      "contains": "[# anchor]",
+      "scopes": ["invalid.illegal.and"]
+    },
+    {
+      "label": "Invalid escape",
+      "contains": "\\q",
+      "scopes": ["invalid.illegal.and"]
+    }
+  ]
+}

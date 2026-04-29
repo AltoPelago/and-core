@@ -1,0 +1,36 @@
+{
+  "name": "and-vscode",
+  "displayName": "&ND",
+  "description": "Prototype VS Code language support for &ND Core v1.",
+  "version": "0.0.1",
+  "publisher": "altopelago",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "and",
+        "aliases": [
+          "&ND",
+          "and"
+        ],
+        "extensions": [
+          ".and"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "and",
+        "scopeName": "text.and",
+        "path": "./syntaxes/and.tmLanguage.json"
+      }
+    ]
+  }
+}

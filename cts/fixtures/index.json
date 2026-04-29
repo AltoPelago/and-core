@@ -67,7 +67,11 @@
     "strict/reject/seed-inline-unexpected-closing.json",
     "strict/reject/seed-inline-link-missing-label.json",
     "strict/reject/seed-inline-link-missing-target.json",
+    "strict/reject/seed-inline-reserved-anchor-tag.json",
+    "strict/reject/seed-inline-reserved-todo-marker.json",
     "strict/reject/seed-inline-invalid-escape-in-code.json",
+    "strict/reject/seed-ordered-code-block-wrong-closing-fence.json",
+    "strict/reject/seed-fallback-not-immediately-after-extension.json",
     "strict/metadata/seed-source-spans-table-inline.json"
   ]
 }

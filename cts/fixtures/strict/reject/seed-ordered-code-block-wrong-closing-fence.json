@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-ordered-code-block-wrong-closing-fence",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "````aeon\ntitle = \"Hello World\"\n```\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_code_block",
+    "assertions": [
+      "ordered code blocks require a matching quadruple-fence closer",
+      "a shorter closing fence does not terminate the raw block"
+    ]
+  }
+}

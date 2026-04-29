@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-fallback-not-immediately-after-extension",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "+++chart/pie\napples: 30\n+++\n\nParagraph.\n\n+++fallback\nChart unavailable.\n+++\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "orphan_fallback_block",
+    "assertions": [
+      "`+++fallback` must immediately follow the extension block it belongs to",
+      "an intervening paragraph makes the fallback orphaned"
+    ]
+  }
+}

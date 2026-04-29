@@ -14,6 +14,7 @@ editor integration, canonicalization, and future conformance-tested implementati
 * [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
 * [docs/tooling/playground.md](./docs/tooling/playground.md) — local playground direction and usage
 * [docs/tooling/html-renderer.md](./docs/tooling/html-renderer.md) — AST-to-HTML projection contract
+* [vscode/](./vscode/) — first-pass VS Code language prototype
 * [playground/](./playground/) — static parser/canonical/preview playground prototype
 * [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
 * [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
@@ -43,7 +44,7 @@ The repository is currently spec-and-CTS first:
 
 * expand the reference parser from CTS coverage toward complete v1 coverage
 * add canonical emission once the AST contract is stable enough
-* add editor tooling once lexer and parser behavior are locked by CTS
+* expand the first-pass VS Code tooling into a fuller editor stack
 * keep conformance seeds, CTS fixtures, and reference reports moving together
 
 ## Safety Scripts
@@ -52,6 +53,7 @@ The repository is currently spec-and-CTS first:
 * `npm run playground` — serves the local playground at `http://localhost:4173/playground/`
 * `npm run playground:check` — verifies playground wiring and parser/canonical smoke behavior
 * `npm run check:html-renderer` — verifies the reference AST-to-HTML projection
+* `npm run check:vscode` — verifies the VS Code prototype manifest, grammar, and language configuration
 * `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
 * `npm run and -- parse examples/minimal.and --json` — emits a parsed AST
