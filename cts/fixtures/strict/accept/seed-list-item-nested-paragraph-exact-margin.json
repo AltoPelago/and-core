@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-list-item-nested-paragraph-exact-margin",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "1. Hello\n2. Happy\n\n  World\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one ordered list block",
+      "second item contains a nested paragraph only when it starts at the exact two-space inner margin"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Hello"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Happy"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "World"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

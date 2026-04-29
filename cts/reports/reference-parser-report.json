@@ -3,16 +3,16 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 56,
+    "fixtures": 67,
     "pending": 0,
-    "pass": 56,
+    "pass": 67,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 31,
-    "checked": 31,
-    "matched": 31,
+    "expected": 40,
+    "checked": 40,
+    "matched": 40,
     "skipped": 0,
     "failed": 0
   },
@@ -24,8 +24,8 @@
     "skipped": 0
   },
   "errorCodeChecks": {
-    "expected": 24,
-    "matched": 24,
+    "expected": 26,
+    "matched": 26,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -278,6 +278,63 @@
       ]
     },
     {
+      "id": "seed-extension-block-fallback",
+      "path": "strict/accept/seed-extension-block-fallback.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-orphan-fallback-block",
+      "path": "strict/reject/seed-orphan-fallback-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-nested-fallback-block",
+      "path": "strict/reject/seed-nested-fallback-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nested_fallback_block",
+      "actualOk": false,
+      "errorCode": "nested_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
       "id": "seed-extension-uppercase-name",
       "path": "strict/reject/seed-extension-uppercase-name.json",
       "status": "pass",
@@ -299,6 +356,101 @@
     {
       "id": "seed-nested-list-two-space-indent",
       "path": "strict/accept/seed-nested-list-two-space-indent.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-nested-list-deep",
+      "path": "strict/accept/seed-nested-list-deep.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-list-item-paragraph-continuation-exact-margin",
+      "path": "strict/accept/seed-list-item-paragraph-continuation-exact-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-list-item-unindented-line-ends-list",
+      "path": "strict/accept/seed-list-item-unindented-line-ends-list.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-list-item-nested-paragraph-exact-margin",
+      "path": "strict/accept/seed-list-item-nested-paragraph-exact-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-list-item-unindented-paragraph-after-blank",
+      "path": "strict/accept/seed-list-item-unindented-paragraph-after-blank.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,
@@ -698,6 +850,63 @@
     {
       "id": "seed-inline-escaped-pipe-in-link-target",
       "path": "strict/accept/seed-inline-escaped-pipe-in-link-target.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-inline-nbsp",
+      "path": "strict/accept/seed-inline-nbsp.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-inline-line-break",
+      "path": "strict/accept/seed-inline-line-break.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-ordered-code-block",
+      "path": "strict/accept/seed-ordered-code-block.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,

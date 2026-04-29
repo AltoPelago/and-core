@@ -43,6 +43,8 @@ function emitInlineNode(node, context) {
   switch (node.type) {
     case 'text':
       return escapeText(node.value, context);
+    case 'nbsp':
+      return '[_]';
     case 'strong':
       return `[* ${emitInlineNodes(node.children, context)}]`;
     case 'emphasis':
@@ -51,6 +53,8 @@ function emitInlineNode(node, context) {
       return `[@ ${escapeLinkTarget(node.href)} | ${emitInlineNodes(node.children, context)}]`;
     case 'code':
       return `[$ ${escapeInlineCode(node.text)}]`;
+    case 'line_break':
+      return '[<]';
     default:
       throw fail('unsupported_inline_node', `Unsupported inline node type: ${node.type}`);
   }
@@ -67,6 +71,17 @@ function emitRawBlockFencePayload(text, fence, errorCode) {
   const normalized = normalizeRawText(text);
   if (normalized.split('\n').some((line) => line === fence)) {
     throw fail(errorCode, `Raw payload contains an unescaped closing fence line: ${fence}`);
+  }
+  return normalized;
+}
+
+function emitExtensionPayload(text) {
+  const normalized = normalizeRawText(text);
+  if (normalized.split('\n').some((line) => line === '+++')) {
+    throw fail(
+      'unsupported_extension_fence_payload',
+      'Extension payload contains an unescaped extension closing fence line.'
+    );
   }
   return normalized;
 }
@@ -115,11 +130,15 @@ function emitBlock(node) {
       return emitBlockquote(node);
     case 'code_block': {
       const language = node.language ? node.language.toLowerCase() : '';
-      const payload = emitRawBlockFencePayload(node.text, '```', 'unsupported_code_fence_payload');
-      return `\`\`\`${language}\n${payload}\n\`\`\``;
+      const fence = node.ordered ? '````' : '```';
+      const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
+      return `${fence}${language}\n${payload}\n${fence}`;
     }
     case 'extension_block': {
-      const payload = emitRawBlockFencePayload(node.text, '+++', 'unsupported_extension_fence_payload');
+      const payload = emitExtensionPayload(node.text);
+      if (node.fallback) {
+        return `+++${node.name}\n${payload}\n+++\n+++fallback\n${emitBlocks(node.fallback.children)}\n+++`;
+      }
       return `+++${node.name}\n${payload}\n+++`;
     }
     case 'table':

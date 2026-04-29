@@ -131,12 +131,16 @@ Canonical inline forms:
 [/ emphasis]
 [@ https://example.com | label]
 [$ render()]
+[_]
+[<]
 ```
 
 Rules:
 
 * exactly one space after inline tag
 * links use exactly one space around `|`
+* `nbsp` emits as `[_]` with no spaces
+* `line_break` emits as `[<]` with no spaces
 * shorthand combinations MUST NOT be emitted
 
 Canonical:
@@ -271,7 +275,7 @@ Inline content is canonicalized inside quote lines.
 
 ## 13. Code blocks
 
-Canonical:
+Plain:
 
 ````text
 ```js
@@ -295,6 +299,18 @@ raw
 ```
 ````
 
+Ordered:
+
+`````text
+````aeon
+title = "Hello World"
+mode = "ordered"
+````
+`````
+
+Ordered code blocks keep the same payload and language rules as plain code blocks, but canonical
+form preserves the quadruple fence to represent explicit line ordering intent.
+
 ---
 
 ## 14. Extension blocks
@@ -311,18 +327,22 @@ bananas: 20
 Rules:
 
 * opening `+++` at the current block margin
+* no space between `+++` and the extension name in canonical form
 * closing `+++` at the same block margin as the opener
 * extension name lowercase
-* content preserved exactly except line endings normalized to `\n`
+* primary extension content preserved exactly except line endings normalized to `\n`
+* if fallback content is present, emit an immediately adjacent `+++fallback` block after the
+  extension block
+* fallback block content is canonicalized as ordinary `&ND` block content
 * no nesting
-* no parsing inside
+* no parsing inside primary extension content
 
 Opaque preservation means:
 
 * preserve the extension block boundary
 * preserve the extension name
-* preserve payload bytes exactly, except for line-ending normalization to `\n`
-* do not inspect, reinterpret, or canonicalize payload content
+* preserve primary payload bytes exactly, except for line-ending normalization to `\n`
+* do not inspect, reinterpret, or canonicalize primary payload content
 
 ---
 
@@ -372,7 +392,19 @@ Standalone line only.
 
 ---
 
-## 17. Attribute/order rules
+## 17. Inline line break
+
+Canonical:
+
+```text
+[<]
+```
+
+This is an inline form and MAY appear anywhere inline content is permitted.
+
+---
+
+## 18. Attribute/order rules
 
 Core v1 has no attributes, IDs, footnotes, references, or metadata fields.
 Canonical emitters therefore have:

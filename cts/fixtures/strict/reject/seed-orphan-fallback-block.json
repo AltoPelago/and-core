@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-orphan-fallback-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "+++chart/pie\napples: 30\n+++\n\n+++fallback\nChart unavailable.\n+++\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "orphan_fallback_block",
+    "assertions": [
+      "`+++fallback` is reserved and only valid when directly adjacent to the immediately preceding extension block",
+      "a blank line between extension and fallback makes the fallback orphaned"
+    ]
+  }
+}

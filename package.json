@@ -5,13 +5,17 @@
     "and": "./bin/and.mjs"
   },
   "scripts": {
-    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run cli:smoke",
+    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run check:html-renderer && npm run cli:smoke && npm run playground:check",
     "and": "node ./bin/and.mjs",
+    "playground": "node scripts/serve-playground.mjs",
+    "playground:check": "node scripts/check-playground.mjs",
     "check:no-local-paths": "bash scripts/check-no-local-paths.sh",
     "check:spec-layout": "bash scripts/check-spec-layout.sh",
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "check:cts-seed-coverage": "bash scripts/check-cts-seed-coverage.sh",
     "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
+    "check:html-renderer": "node scripts/check-html-renderer.mjs",
+    "html:report": "node scripts/check-html-renderer.mjs --out ./cts/reports/reference-html-report.json",
     "cli:smoke": "node scripts/check-cli.mjs",
     "canonical:report": "node scripts/check-canonical-emitter.mjs --out ./cts/reports/reference-canonical-report.json",
     "cts:run": "node scripts/run-cts.mjs",
@@ -21,7 +25,7 @@
     "cts:report:example": "node scripts/run-cts.mjs --adapter ./cts/examples/baseline-adapter.mjs --json --quiet --out ./cts/reports/baseline-adapter-report.json",
     "cts:report:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs --json --quiet --out ./cts/reports/reference-subset-report.json",
     "cts:report:reference": "node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs --json --quiet --out ./cts/reports/reference-parser-report.json",
-    "cts:report:all": "npm run cts:report:reference && npm run cts:report:subset && npm run cts:report:example && npm run canonical:report",
+    "cts:report:all": "npm run cts:report:reference && npm run cts:report:subset && npm run cts:report:example && npm run canonical:report && npm run html:report",
     "precommit:check": "bash scripts/pre-commit-check.sh"
   }
 }

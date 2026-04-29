@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-extension-block-fallback",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "+++unsupported/extension\nopaque [* extension] payload\n+++\n+++fallback\nShow [* this] instead\n+++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "extension openers attach the extension name directly to the `+++` fence",
+      "`+++fallback` immediately after an extension block provides fallback content",
+      "fallback content is parsed as ordinary &ND blocks"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "extension_block",
+          "name": "unsupported/extension",
+          "text": "opaque [* extension] payload",
+          "fallback": {
+            "type": "document_fragment",
+            "children": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Show "
+                  },
+                  {
+                    "type": "strong",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "this"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " instead"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -38,5 +38,11 @@ jobs:
       - name: Check canonical emitter
         run: npm run check:canonical-emitter
 
+      - name: Check HTML renderer
+        run: npm run check:html-renderer
+
       - name: Run CLI smoke checks
         run: npm run cli:smoke
+
+      - name: Check playground wiring
+        run: npm run playground:check

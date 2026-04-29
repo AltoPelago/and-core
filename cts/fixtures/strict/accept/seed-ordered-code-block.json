@@ -1,13 +1,14 @@
 {
   "schemaVersion": "1",
-  "id": "seed-raw-block-opaque",
+  "id": "seed-ordered-code-block",
   "specVersion": "&ND Core v1",
   "mode": "strict",
-  "source": "```txt\n[* not strong]\n+++chart/pie\n---\n```\n",
+  "source": "````aeon\ntitle = \"Hello World\"\nmode = \"ordered\"\n````\n",
   "expected": {
     "ok": true,
     "assertions": [
       "one code block",
+      "code block is ordered",
       "payload contains the interior lines exactly, subject only to line-ending normalization"
     ],
     "document": {
@@ -15,9 +16,9 @@
       "children": [
         {
           "type": "code_block",
-          "language": "txt",
-          "ordered": false,
-          "text": "[* not strong]\n+++chart/pie\n---"
+          "language": "aeon",
+          "ordered": true,
+          "text": "title = \"Hello World\"\nmode = \"ordered\""
         }
       ]
     }

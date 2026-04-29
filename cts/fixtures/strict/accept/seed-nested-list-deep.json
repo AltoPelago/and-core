@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-nested-list-deep",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- One\n\n  - Two\n\n    - Three\n\n      - Four\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "nested lists may recurse to multiple levels",
+      "each nested level still uses the same blank-line and exact two-space margin rule"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "One"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "ordered": false,
+                  "items": [
+                    {
+                      "type": "list_item",
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Two"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "list",
+                          "ordered": false,
+                          "items": [
+                            {
+                              "type": "list_item",
+                              "children": [
+                                {
+                                  "type": "paragraph",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "value": "Three"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "list",
+                                  "ordered": false,
+                                  "items": [
+                                    {
+                                      "type": "list_item",
+                                      "children": [
+                                        {
+                                          "type": "paragraph",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "value": "Four"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

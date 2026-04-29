@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-line-break",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "First[<]Second\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "`[<]` is an explicit inline line break node",
+      "forced line breaks are part of inline content rather than standalone block syntax"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "First"
+            },
+            {
+              "type": "line_break"
+            },
+            {
+              "type": "text",
+              "value": "Second"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

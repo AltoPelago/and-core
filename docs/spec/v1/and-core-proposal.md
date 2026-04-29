@@ -245,6 +245,10 @@ Rules:
 
 * MUST have space after marker
 * MUST be contiguous
+* One or more consecutive non-blank lines immediately after a list item head that begin at the
+  exact two-space item content margin continue the item head paragraph
+* An unindented line immediately after a list item head ends the list and is parsed by the enclosing
+  block context
 * Nested blocks MUST be indented by **exactly two spaces**
 * Tabs are invalid
 * Nested lists require a blank line before them
@@ -340,13 +344,31 @@ raw content
 +++
 ```
 
+Extension blocks MAY be followed by an adjacent fallback block:
+
+```text
++++unsupported/extension
+opaque extension payload
++++
++++fallback
+fallback &ND content
++++
+```
+
 Rules:
 
 * MUST start at the current block margin
 * MUST be closed
 * MUST NOT be nested (v1)
-* Content is opaque
-* No parsing inside
+* Extension content between opener and closer is opaque
+* No parsing inside extension content
+* `fallback` is a reserved extension name
+* A `+++fallback` block is valid only when it immediately follows an extension block with no blank
+  line or intervening block
+* Only one fallback block may apply to an extension block
+* Fallback block content is parsed as ordinary `&ND` content
+* A fallback block cannot have its own fallback
+* A `+++fallback` block found anywhere else MUST fail with `orphan_fallback_block`
 * Extension names MUST match the lowercase grammar exactly in strict mode; uppercase characters
   MUST cause parse failure
 
@@ -379,6 +401,7 @@ The same character sequence MUST NOT change meaning based on surrounding prose o
 [/ ...]          emphasis
 [@ URL | text]   link
 [$ ...]          inline code
+[_]              non-breaking space
 ```
 
 ---
@@ -444,15 +467,16 @@ MUST error.
 
 ### Block symbols
 
-````text
+`````text
 #     heading
 >     blockquote
 -     unordered list item
 1.    ordered list item
 ---   horizontal rule
 ```   code block
+````  ordered code block
 +++   extension block
-````
+`````
 
 ### Inline symbols
 
@@ -461,6 +485,8 @@ MUST error.
 [/ ...]          emphasis
 [$ ...]          inline code
 [@ url | text]   link
+[_]              non-breaking space
+[<]              forced line break
 ```
 
 ### Reserved — do not use in Core v1
@@ -474,11 +500,14 @@ MUST error.
 [- ...]   reserved for deletion/removal if ever needed
 [" ...]   reserved for inline quoted text if ever needed
 [: ...]   reserved for typed values like datetime if ever needed
+[> ...]   reserved for consumer defined tags if ever needed
 
 [ ]   reserved for todo/unchecked if ever needed
 [x]   reserved for todo/checked if ever needed
 [=]   reserved for todo/in progress if ever needed
-[_]   reserved for todo/cancelled if ever needed
+[.]   reserved for todo/cancelled if ever needed
+
+[n]   reserved for auto-number marker in headers if ever needed
 ```
 
 ### Design rule
@@ -491,13 +520,15 @@ with their natural meaning.
 
 ### Lock
 
-Core v1 recognizes exactly four inline symbols:
+Core v1 recognizes exactly five inline symbols:
 
 ```text
 [* strong]
 [/ emphasis]
 [$ inline code]
 [@ url | label]
+[_]
+[<]
 ```
 
 Everything else is reserved until there is a strong need and a consistent assignment.
@@ -850,6 +881,20 @@ Expected result:
 * parse failure
 * reason: block opener attempted on a paragraph continuation line
 
+### `seed-inline-line-break`
+
+Input:
+
+```text
+First[<]Second
+```
+
+Expected result:
+
+* parse success
+* one paragraph block
+* paragraph contains one inline line-break node between text nodes
+
 ### `seed-table-requires-separator`
 
 Input:
@@ -987,6 +1032,24 @@ Expected result:
 * one code block
 * payload contains the interior lines exactly, subject only to line-ending normalization
 
+### `seed-ordered-code-block`
+
+Input:
+
+`````text
+````aeon
+title = "Hello World"
+mode = "ordered"
+````
+`````
+
+Expected result:
+
+* parse success
+* one code block
+* code block is ordered
+* payload contains the interior lines exactly, subject only to line-ending normalization
+
 ### `seed-extension-block-opaque`
 
 Input:
@@ -1004,6 +1067,73 @@ Expected result:
 * one extension block
 * extension name is `chart/pie`
 * payload is opaque and not parsed as inline or block content
+
+### `seed-extension-block-fallback`
+
+Input:
+
+```text
++++ unsupported/extension
+opaque [* extension] payload
++++
++++fallback
+Show [* this] instead
++++
+```
+
+Expected result:
+
+* parse success
+* one extension block
+* extension opener attaches the extension name directly to the `+++` fence
+* primary extension payload is opaque
+* immediately adjacent `+++fallback` content is parsed as ordinary `&ND` blocks
+
+### `seed-orphan-fallback-block`
+
+Input:
+
+```text
++++chart/pie
+apples: 30
++++
+
++++fallback
+Chart unavailable.
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: fallback is only valid when directly adjacent to the immediately preceding extension
+  block
+
+### `seed-nested-fallback-block`
+
+Input:
+
+```text
++++chart/pie
+apples: 30
++++
++++fallback
++++media/image
+src: ./chart.png
++++
++++fallback
+Image fallback.
++++
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `nested_fallback_block`
+* reason: fallback content is parsed as ordinary `&ND`, but extension blocks parsed inside
+  fallback content cannot themselves receive fallback blocks
 
 ### `seed-unclosed-extension-block`
 
@@ -1080,6 +1210,96 @@ Expected result:
 * one unordered list block
 * first parent item contains a nested unordered list with two child items
 * second parent item is a sibling of the first parent item
+
+### `seed-nested-list-deep`
+
+Input:
+
+```text
+- One
+
+  - Two
+
+    - Three
+
+      - Four
+```
+
+Expected result:
+
+* parse success
+* one unordered list block
+* nested lists recurse through all four levels
+* each nested level still depends on a blank line plus the exact two-space content margin
+
+### `seed-list-item-paragraph-continuation-exact-margin`
+
+Input:
+
+```text
+- Parse strict documents
+  world
+```
+
+Expected result:
+
+* parse success
+* one unordered list block
+* one list item
+* item contains one paragraph with two source lines
+* continuation line starts at the exact two-space list-item content margin
+
+### `seed-list-item-unindented-line-ends-list`
+
+Input:
+
+```text
+- Parse strict documents
+world
+```
+
+Expected result:
+
+* parse success
+* one unordered list block
+* one following top-level paragraph
+* unindented text immediately after a list item ends the list
+
+### `seed-list-item-nested-paragraph-exact-margin`
+
+Input:
+
+```text
+1. Hello
+2. Happy
+
+  World
+```
+
+Expected result:
+
+* parse success
+* one ordered list block
+* second item contains a nested paragraph
+* nested paragraph starts at the exact two-space list-item inner margin
+
+### `seed-list-item-unindented-paragraph-after-blank`
+
+Input:
+
+```text
+1. Hello
+2. Happy
+
+World
+```
+
+Expected result:
+
+* parse success
+* one ordered list block
+* one following top-level paragraph
+* unindented text after a blank line is not captured into the previous list item
 
 ### `seed-nested-list-invalid-indent-one-space`
 
@@ -1626,6 +1846,21 @@ Expected result:
 * one link node
 * target contains the literal pipe character `|`
 
+### `seed-inline-nbsp`
+
+Input:
+
+```text
+A[_]B
+```
+
+Expected result:
+
+* parse success
+* one paragraph block
+* paragraph contains one `nbsp` inline node between text nodes
+* `[_]` is not a cancelled task marker in Core v1
+
 ### `seed-inline-invalid-escape-in-code`
 
 Input:
@@ -1692,7 +1927,11 @@ Abstract tree:
     {
       "type": "extension_block",
       "name": "chart/pie",
-      "content": "..."
+      "content": "...",
+      "fallback": {
+        "type": "document_fragment",
+        "children": [{ "type": "paragraph" }]
+      }
     }
   ]
 }
@@ -1705,6 +1944,7 @@ Inline:
 { "type": "emphasis", "children": [...] }
 { "type": "code", "text": "..." }
 { "type": "link", "href": "...", "children": [...] }
+{ "type": "nbsp" }
 ```
 
 ---
@@ -1747,6 +1987,8 @@ Inline:
 * `unclosed_code_block`
 * `unclosed_extension_block`
 * `extension_block_bad_closing_margin`
+* `orphan_fallback_block`
+* `nested_fallback_block`
 * `invalid_table_shape`
 
 ### Lexical
@@ -1943,20 +2185,28 @@ margin.
 ## Code blocks
 
 ````ebnf
-CodeBlock       ::= CodeOpen RawLines CodeClose ;
+CodeBlock       ::= PlainCodeBlock | OrderedCodeBlock ;
+PlainCodeBlock  ::= CodeOpen RawLines CodeClose ;
+OrderedCodeBlock ::= OrderedCodeOpen RawLines OrderedCodeClose ;
 CodeOpen        ::= "```" CodeLang? LineEnd ;
 CodeClose       ::= "```" WS? LineEnd ;
+OrderedCodeOpen ::= "````" CodeLang? LineEnd ;
+OrderedCodeClose ::= "````" WS? LineEnd ;
 CodeLang        ::= Ident ;
 ````
 
-`RawLines` is implementation-defined scanning: consume all text until the first line matching `CodeClose`.
+`RawLines` is implementation-defined scanning: consume all text until the first line matching the
+corresponding closing fence at the same block margin. Triple backticks produce a plain code block.
+Quadruple backticks produce an ordered code block whose payload lines retain their raw text while
+explicitly requesting line ordering in downstream projections.
 
 ## Extension blocks
 
 ```ebnf
-ExtensionBlock  ::= ExtensionOpen RawLines ExtensionClose ;
-ExtensionOpen   ::= "+++" ExtensionName LineEnd ;
+ExtensionBlock  ::= ExtensionOpen RawLines ExtensionClose FallbackBlock? ;
+ExtensionOpen   ::= "+++" WS? ExtensionName LineEnd ;
 ExtensionClose  ::= "+++" WS? LineEnd ;
+FallbackBlock   ::= "+++fallback" LineEnd Block* ExtensionClose ;
 
 ExtensionName   ::= LowIdent ( "/" LowIdent )* ( ".v" Digit+ )? ;
 
@@ -1966,6 +2216,9 @@ LowIdentChar    ::= LowIdentStart | Digit | "-" ;
 ```
 
 `RawLines` is opaque: no inline parsing, no block parsing, no nesting in v1.
+If present, `FallbackBlock` MUST be directly adjacent to the preceding extension close and is parsed
+as ordinary `&ND` block content.
+`fallback` is a reserved extension name and MUST NOT be interpreted as a general extension block.
 
 ## Tables
 
@@ -1997,12 +2250,16 @@ InlineNode      ::= Text
                   | Strong
                   | Emphasis
                   | Link
-                  | Code ;
+                  | Code
+                  | Nbsp
+                  | LineBreak ;
 
 Strong          ::= "[*" WS InlineContent "]" ;
 Emphasis        ::= "[/" WS InlineContent "]" ;
 Link            ::= "[@" WS LinkTarget WS? "|" WS? LinkLabel "]" ;
 Code            ::= "[$" WS InlineRaw "]" ;
+Nbsp            ::= "[_]" ;
+LineBreak       ::= "[<]" ;
 
 LinkTarget      ::= LinkChar+ ;
 LinkLabel       ::= InlineNode+ ;

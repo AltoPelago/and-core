@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
 import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
+import { renderHtml } from '../implementations/reference-html/renderer.mjs';
 import { parseAnd } from '../implementations/reference-parser/parser.mjs';
 
 function usage() {
@@ -8,6 +9,7 @@ function usage() {
   and check <file> [--json]
   and parse <file> [--json] [--spans]
   and canonical <file> --profile embedded|standalone [--out <file>]
+  and render-html <file> [--fragment|--document] [--out <file>]
 `;
 }
 
@@ -96,6 +98,39 @@ async function commandCanonical(filePath, args) {
   }
 }
 
+async function commandRenderHtml(filePath, args) {
+  if (hasFlag(args, '--fragment') && hasFlag(args, '--document')) {
+    writeJson({
+      ok: false,
+      errorCode: 'conflicting_html_render_mode',
+      message: 'Use either --fragment or --document, not both.',
+    });
+    return 1;
+  }
+
+  const outPath = readOption(args, '--out');
+  const source = await readSource(filePath);
+  const parsed = parseAnd(source);
+  if (!parsed.ok) {
+    writeJson(failurePayload(parsed));
+    return 1;
+  }
+
+  try {
+    const html = renderHtml(parsed.document, { fragment: !hasFlag(args, '--document') });
+    if (outPath) {
+      await fs.writeFile(outPath, html);
+    } else {
+      process.stdout.write(html);
+      if (!html.endsWith('\n')) process.stdout.write('\n');
+    }
+    return 0;
+  } catch (error) {
+    writeJson({ ok: false, errorCode: error.code ?? 'html_render_failed' });
+    return 1;
+  }
+}
+
 async function main() {
   const [command, filePath, ...args] = process.argv.slice(2);
   if (!command || command === '--help' || command === '-h') {
@@ -110,6 +145,8 @@ async function main() {
       return commandParse(filePath, args);
     case 'canonical':
       return commandCanonical(filePath, args);
+    case 'render-html':
+      return commandRenderHtml(filePath, args);
     default:
       process.stderr.write(`Unknown command: ${command}\n\n${usage()}`);
       return 2;

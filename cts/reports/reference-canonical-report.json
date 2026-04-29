@@ -1,9 +1,9 @@
 {
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
-    "fixtures": 31,
+    "fixtures": 40,
     "profiles": 2,
-    "checked": 62,
+    "checked": 80,
     "skipped": 0,
     "failed": 0
   },
@@ -171,6 +171,24 @@
       "notes": []
     },
     {
+      "id": "seed-extension-block-fallback",
+      "path": "strict/accept/seed-extension-block-fallback.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "+++unsupported/extension\nopaque [* extension] payload\n+++\n+++fallback\nShow [* this] instead\n+++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n+++unsupported/extension\nopaque [* extension] payload\n+++\n+++fallback\nShow [* this] instead\n+++\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
       "id": "seed-nested-list-two-space-indent",
       "path": "strict/accept/seed-nested-list-two-space-indent.json",
       "status": "pass",
@@ -183,6 +201,96 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\n- Parent\n\n  - Child\n  - Child\n- Next parent\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-nested-list-deep",
+      "path": "strict/accept/seed-nested-list-deep.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- One\n\n  - Two\n  \n    - Three\n    \n      - Four\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- One\n\n  - Two\n  \n    - Three\n    \n      - Four\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-paragraph-continuation-exact-margin",
+      "path": "strict/accept/seed-list-item-paragraph-continuation-exact-margin.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parse strict documents world\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parse strict documents world\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-unindented-line-ends-list",
+      "path": "strict/accept/seed-list-item-unindented-line-ends-list.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parse strict documents\n\nworld\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parse strict documents\n\nworld\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-nested-paragraph-exact-margin",
+      "path": "strict/accept/seed-list-item-nested-paragraph-exact-margin.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "1. Hello\n2. Happy\n\n  World\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n1. Hello\n2. Happy\n\n  World\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-unindented-paragraph-after-blank",
+      "path": "strict/accept/seed-list-item-unindented-paragraph-after-blank.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "1. Hello\n2. Happy\n\nWorld\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n1. Hello\n2. Happy\n\nWorld\n",
           "notes": []
         }
       },
@@ -561,6 +669,60 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\n[@ https://example.com/a\\|b | label]\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-inline-nbsp",
+      "path": "strict/accept/seed-inline-nbsp.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "A[_]B\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nA[_]B\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-inline-line-break",
+      "path": "strict/accept/seed-inline-line-break.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "First[<]Second\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nFirst[<]Second\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-ordered-code-block",
+      "path": "strict/accept/seed-ordered-code-block.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "````aeon\ntitle = \"Hello World\"\nmode = \"ordered\"\n````\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n````aeon\ntitle = \"Hello World\"\nmode = \"ordered\"\n````\n",
           "notes": []
         }
       },

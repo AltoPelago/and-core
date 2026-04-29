@@ -95,12 +95,14 @@ context.
 interface NdCodeBlock {
   readonly type: "code_block";
   readonly language: string | null;
+  readonly ordered: boolean;
   readonly text: string;
 }
 ```
 
 `text` is the raw payload after line-ending normalization and margin removal. It does not include
-opening or closing fences.
+opening or closing fences. `ordered` is `true` when the block was opened with a quadruple backtick
+fence and requests explicit line ordering in downstream projections.
 
 ### Extension Block
 
@@ -109,12 +111,21 @@ interface NdExtensionBlock {
   readonly type: "extension_block";
   readonly name: string;
   readonly text: string;
+  readonly fallback?: NdDocumentFragment;
+}
+
+interface NdDocumentFragment {
+  readonly type: "document_fragment";
+  readonly children: NdBlockNode[];
 }
 ```
 
 `name` is the validated extension name from the opening fence, excluding the `+++` marker. `text`
-is the opaque payload after line-ending normalization and margin removal. It does not include
-opening or closing fences, and no inline or block parsing occurs inside it.
+is the opaque primary payload after line-ending normalization and margin removal. It does not
+include opening or closing fences, and no inline or block parsing occurs inside it.
+
+When present, `fallback` contains ordinary parsed `&ND` block nodes from an immediately adjacent
+reserved `+++fallback` block.
 
 ### Table
 
@@ -206,6 +217,27 @@ interface NdInlineCode {
 
 `text` is delimiter-opaque payload after inline-code escape handling. Nested inline nodes are not
 parsed inside inline code.
+
+### Line Break
+
+```ts
+interface NdLineBreak {
+  readonly type: "line_break";
+}
+```
+
+`line_break` is an explicit inline line break produced by `[<]`.
+
+### Non-Breaking Space
+
+```ts
+interface NdNbsp {
+  readonly type: "nbsp";
+}
+```
+
+`nbsp` is produced by `[_]` and represents a non-breaking space in projections that support that
+distinction.
 
 ## Metadata
 

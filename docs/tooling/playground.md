@@ -1,7 +1,30 @@
-# `&ND` Playground Proposal
+# `&ND` Playground
 
-An `&ND` playground would make the language easier to learn, test, and integrate. The likely shape
-is similar to the AEON playground: editable source on the left, processed views on the right.
+The `&ND` playground makes the language easier to learn, test, and integrate. Its shape is similar
+to the AEON playground: editable source on the left, processed views on the right.
+
+## Current Prototype
+
+The first prototype is a static browser app in [`playground/`](../../playground/). It uses the
+reference parser and canonical emitter directly as ES modules, so it does not need a bundler.
+
+Run it locally with:
+
+```sh
+npm run playground
+```
+
+Then open:
+
+```text
+http://localhost:4173/playground/
+```
+
+The smoke check verifies that the page is wired to the parser and canonical emitter:
+
+```sh
+npm run playground:check
+```
 
 ## Goals
 
@@ -11,7 +34,7 @@ is similar to the AEON playground: editable source on the left, processed views 
 * show AST and span metadata for implementers and editor tooling
 * eventually preview rendered output such as HTML without making HTML part of the core language
 
-## Suggested Layout
+## Layout
 
 The left pane is an `&ND` editor.
 
@@ -20,7 +43,8 @@ The right pane uses tabs:
 * `Canonical`: canonical `&ND` text emitted from the parsed AST
 * `AST`: parsed document JSON, optionally including spans
 * `Diagnostics`: parse result, error code, line, and column
-* `Preview`: processed HTML or another renderer output once rendering tools exist
+* `HTML`: escaped HTML fragment emitted by the reference renderer
+* `Preview`: HTML projection for author feedback
 
 ## Processing Pipeline
 
@@ -36,9 +60,9 @@ document language deterministic and non-executable while still supporting useful
 
 ## Implementation Notes
 
-Initial implementation can be client-side if the reference parser and canonical emitter are bundled
-for the browser. A server-backed implementation is also fine if future renderers need heavier
-dependencies.
+The current implementation is client-side and intentionally small. The local server serves the repo
+root because the playground imports parser and emitter modules from sibling implementation folders.
+A server-backed implementation is still acceptable later if renderers need heavier dependencies.
 
 The first version should prioritize:
 
@@ -47,4 +71,5 @@ The first version should prioritize:
 * canonical output
 * AST/spans inspection
 
-HTML preview can follow once a renderer contract exists.
+The current preview uses the reference HTML renderer documented in
+[`html-renderer.md`](./html-renderer.md). Rendering remains outside `&ND Core v1`.

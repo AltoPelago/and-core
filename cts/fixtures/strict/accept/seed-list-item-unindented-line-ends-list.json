@@ -1,15 +1,15 @@
 {
   "schemaVersion": "1",
-  "id": "seed-list-item-raw-block",
+  "id": "seed-list-item-unindented-line-ends-list",
   "specVersion": "&ND Core v1",
   "mode": "strict",
-  "source": "- Parent\n\n  ```txt\n  raw\n  ```\n",
+  "source": "- Parse strict documents\nworld\n",
   "expected": {
     "ok": true,
     "assertions": [
       "one unordered list block",
-      "first item contains one nested code block",
-      "code payload is `raw`"
+      "one following top-level paragraph",
+      "unindented text immediately after a list item ends the list"
     ],
     "document": {
       "type": "document",
@@ -26,17 +26,20 @@
                   "children": [
                     {
                       "type": "text",
-                      "value": "Parent"
+                      "value": "Parse strict documents"
                     }
                   ]
-                },
-                {
-                  "type": "code_block",
-                  "language": "txt",
-                  "ordered": false,
-                  "text": "raw"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "world"
             }
           ]
         }

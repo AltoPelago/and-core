@@ -353,6 +353,18 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       continue;
     }
 
+    if (text.startsWith('[_]', index)) {
+      nodes.push(withSpan({ type: 'nbsp' }, context, baseOffset + index, baseOffset + index + 3));
+      index += 3;
+      continue;
+    }
+
+    if (text.startsWith('[<]', index)) {
+      nodes.push(withSpan({ type: 'line_break' }, context, baseOffset + index, baseOffset + index + 3));
+      index += 3;
+      continue;
+    }
+
     if (char === ']') {
       if (state.stopOnClose) {
         return { ok: true, closed: true, nextIndex: index + 1, nodes };
@@ -377,13 +389,13 @@ export function parseInline(text, options = {}, baseOffset = 0, context = null) 
   return { ok: true, nodes: parsed.nodes };
 }
 
-function rawFencePrefix(line) {
-  const match = line.match(/^((?: {2})?)(```)/);
-  if (match) return match[1];
-  const quoteMatch = line.match(/^(> ?)(```)/);
-  if (quoteMatch) return quoteMatch[1];
-  const nestedQuoteMatch = line.match(/^(  > ?)(```)/);
-  if (nestedQuoteMatch) return nestedQuoteMatch[1];
+function rawFence(line) {
+  const match = line.match(/^((?: {2})?)(`{3,4})/);
+  if (match) return { prefix: match[1], fence: match[2] };
+  const quoteMatch = line.match(/^(> ?)(`{3,4})/);
+  if (quoteMatch) return { prefix: quoteMatch[1], fence: quoteMatch[2] };
+  const nestedQuoteMatch = line.match(/^(  > ?)(`{3,4})/);
+  if (nestedQuoteMatch) return { prefix: nestedQuoteMatch[1], fence: nestedQuoteMatch[2] };
   return null;
 }
 
@@ -399,22 +411,22 @@ function extensionOpener(line) {
 function scanRawIslands(lines) {
   const rawLines = new Set();
   for (let i = 0; i < lines.length; i += 1) {
-    const prefix = rawFencePrefix(lines[i]);
-    if (prefix !== null) {
+    const fence = rawFence(lines[i]);
+    if (fence !== null) {
       rawLines.add(i);
       let closed = false;
       for (let j = i + 1; j < lines.length; j += 1) {
         rawLines.add(j);
-        if (lines[j] === `${prefix}\`\`\``) {
+        if (lines[j] === `${fence.prefix}${fence.fence}`) {
           closed = true;
           i = j;
           break;
         }
-        if (lines[j].trim() === '```' && lines[j] !== `${prefix}\`\`\``) {
-          return failAt('raw_block_bad_closing_margin', j, lines[j].indexOf('```'));
+        if (lines[j].trim() === fence.fence && lines[j] !== `${fence.prefix}${fence.fence}`) {
+          return failAt('raw_block_bad_closing_margin', j, lines[j].indexOf(fence.fence));
         }
       }
-      if (!closed) return failAt('unclosed_code_block', i, prefix.length);
+      if (!closed) return failAt('unclosed_code_block', i, fence.prefix.length);
       continue;
     }
 
@@ -424,6 +436,20 @@ function scanRawIslands(lines) {
     rawLines.add(i);
     let closed = false;
     for (let j = i + 1; j < lines.length; j += 1) {
+      const nestedExtension = extension.name === 'fallback' ? extensionOpener(lines[j]) : null;
+      if (nestedExtension?.prefix === extension.prefix) {
+        rawLines.add(j);
+        let foundNestedClose = false;
+        for (j += 1; j < lines.length; j += 1) {
+          rawLines.add(j);
+          if (lines[j] === `${nestedExtension.prefix}+++`) {
+            foundNestedClose = true;
+            break;
+          }
+        }
+        if (!foundNestedClose) return failAt('unclosed_extension_block', i, extension.prefix.length);
+        continue;
+      }
       rawLines.add(j);
       if (lines[j] === `${extension.prefix}+++`) {
         closed = true;
@@ -479,6 +505,39 @@ function parseInlineBlock(type, text, options, baseOffset = 0, context = null) {
   return { ok: true, node: { type, children: inline.nodes } };
 }
 
+function stripListContinuationIndent(nodes) {
+  let pendingIndentSpaces = 0;
+
+  function stripText(value) {
+    let output = '';
+    for (const char of value) {
+      if (char === '\n') {
+        output += char;
+        pendingIndentSpaces = 2;
+      } else if (pendingIndentSpaces > 0 && char === ' ') {
+        pendingIndentSpaces -= 1;
+      } else {
+        output += char;
+        pendingIndentSpaces = 0;
+      }
+    }
+    return output;
+  }
+
+  function visit(children) {
+    for (const node of children) {
+      if (node.type === 'text') {
+        node.value = stripText(node.value);
+      } else if (node.children) {
+        visit(node.children);
+      }
+    }
+  }
+
+  visit(nodes);
+  return nodes;
+}
+
 function stripQuotePrefix(line) {
   if (line.startsWith('  > ')) return line.slice(4);
   if (line === '  >') return '';
@@ -493,18 +552,19 @@ function stripIndent(lines) {
 
 function parseCodeBlock(lines, start, context) {
   const line = lines[start];
-  const prefix = rawFencePrefix(line);
-  const openerText = line.slice(prefix.length);
-  const language = openerText.slice(3).trim() || null;
+  const fence = rawFence(line);
+  const openerText = line.slice(fence.prefix.length);
+  const language = openerText.slice(fence.fence.length).trim() || null;
   const payload = [];
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === `${prefix}\`\`\``) {
+    if (lines[i] === `${fence.prefix}${fence.fence}`) {
       const node = {
         type: 'code_block',
         language,
+        ordered: fence.fence.length === 4,
         text: payload.map((payloadLine) =>
-          payloadLine.startsWith(prefix) ? payloadLine.slice(prefix.length) : payloadLine
+          payloadLine.startsWith(fence.prefix) ? payloadLine.slice(fence.prefix.length) : payloadLine
         ).join('\n'),
       };
       return {
@@ -519,7 +579,7 @@ function parseCodeBlock(lines, start, context) {
   return { ok: false, errorCode: 'unclosed_code_block' };
 }
 
-function parseExtensionBlock(lines, start, context) {
+function parseExtensionBlock(lines, start, options, context) {
   const extension = extensionOpener(lines[start]);
   if (extension === null) return { ok: false, errorCode: 'invalid_extension_name' };
   const payload = [];
@@ -543,6 +603,60 @@ function parseExtensionBlock(lines, start, context) {
   }
 
   return { ok: false, errorCode: 'unclosed_extension_block' };
+}
+
+function parseFallbackBlock(lines, start, options, context) {
+  const fallback = extensionOpener(lines[start]);
+  if (fallback === null || fallback.name !== 'fallback') return { ok: false, errorCode: 'orphan_fallback_block' };
+  const payload = [];
+
+  for (let i = start + 1; i < lines.length; i += 1) {
+    const nestedExtension = extensionOpener(lines[i]);
+    if (nestedExtension?.prefix === fallback.prefix) {
+      payload.push(lines[i]);
+      let foundNestedClose = false;
+      for (i += 1; i < lines.length; i += 1) {
+        payload.push(lines[i]);
+        if (lines[i] === `${nestedExtension.prefix}+++`) {
+          foundNestedClose = true;
+          break;
+        }
+      }
+      if (!foundNestedClose) return { ok: false, errorCode: 'unclosed_extension_block' };
+      continue;
+    }
+    if (lines[i] === `${fallback.prefix}+++`) {
+      const fallbackContext = {
+        lineOffset: context.lineOffset + start + 1,
+        lineStartOffsets: context.lineStartOffsets
+          .slice(start + 1, i)
+          .map((offset) => offset + fallback.prefix.length),
+        sourceLineStartOffsets: context.sourceLineStartOffsets,
+        includeSpans: context.includeSpans,
+      };
+      const parsedFallback = parseBlocks(stripExtensionPrefix(payload, fallback.prefix), {
+        ...options,
+        allowExtensionFallback: false,
+      }, fallbackContext);
+      if (!parsedFallback.ok) return parsedFallback;
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        fallback: {
+          type: 'document_fragment',
+          children: parsedFallback.children,
+        },
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_extension_block' };
+}
+
+function stripExtensionPrefix(lines, prefix) {
+  if (prefix === '') return lines;
+  return lines.map((line) => (line.startsWith(prefix) ? line.slice(prefix.length) : line));
 }
 
 function isTableStart(lines, index) {
@@ -660,26 +774,41 @@ function parseList(lines, start, options, context) {
 
     const item = { type: 'list_item', children: [] };
     const markerLength = lines[index].length - markerMatch[1].length;
+    const headBaseOffset = context.lineStartOffsets[index] + markerLength;
+    const headLines = [markerMatch[1]];
+    index += 1;
+    while (
+      index < lines.length &&
+      lines[index].startsWith('  ') &&
+      lines[index] !== ''
+    ) {
+      headLines.push(lines[index]);
+      index += 1;
+    }
+
     const head = parseInlineBlock(
       'paragraph',
-      markerMatch[1],
+      headLines.join('\n'),
       options,
-      context.lineStartOffsets[index] + markerLength,
+      headBaseOffset,
       context
     );
     if (!head.ok) return head;
+    stripListContinuationIndent(head.node.children);
     item.children.push(head.node);
-    index += 1;
 
     const nested = [];
     if (lines[index] === '') {
       index += 1;
-      while (
-        index < lines.length &&
-        !/^- /.test(lines[index]) &&
-        !/^\d+\. /.test(lines[index]) &&
-        lines[index] !== ''
-      ) {
+      while (index < lines.length) {
+        if (lines[index] === '') {
+          nested.push(lines[index]);
+          index += 1;
+          continue;
+        }
+        if (!lines[index].startsWith('  ')) {
+          break;
+        }
         nested.push(lines[index]);
         index += 1;
       }
@@ -773,7 +902,7 @@ function parseBlocks(lines, options, context) {
       continue;
     }
 
-    if (rawFencePrefix(line) !== null) {
+    if (rawFence(line) !== null) {
       const code = parseCodeBlock(lines, index, context);
       if (!code.ok) return withLine(code, context.lineOffset + index);
       children.push(code.node);
@@ -781,11 +910,26 @@ function parseBlocks(lines, options, context) {
       continue;
     }
 
-    if (extensionOpener(line) !== null) {
-      const extension = parseExtensionBlock(lines, index, context);
+    const opener = extensionOpener(line);
+    if (opener !== null) {
+      if (opener.name === 'fallback') {
+        return failAt('orphan_fallback_block', context.lineOffset + index, opener.prefix.length);
+      }
+      const extension = parseExtensionBlock(lines, index, options, context);
       if (!extension.ok) return withLine(extension, context.lineOffset + index);
+      let nextIndex = extension.nextIndex;
+      const fallbackOpener = extensionOpener(lines[nextIndex] ?? '');
+      if (fallbackOpener?.name === 'fallback') {
+        if (options.allowExtensionFallback === false) {
+          return failAt('nested_fallback_block', context.lineOffset + nextIndex, fallbackOpener.prefix.length);
+        }
+        const fallback = parseFallbackBlock(lines, nextIndex, options, context);
+        if (!fallback.ok) return withLine(fallback, context.lineOffset + nextIndex, fallbackOpener.prefix.length);
+        extension.node.fallback = fallback.fallback;
+        nextIndex = fallback.nextIndex;
+      }
       children.push(extension.node);
-      index = extension.nextIndex;
+      index = nextIndex;
       continue;
     }
 

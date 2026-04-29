@@ -226,7 +226,8 @@ type NdInlineNode =
   | NdStrong
   | NdEmphasis
   | NdLink
-  | NdInlineCode;
+  | NdInlineCode
+  | NdLineBreak;
 ```
 
 Tables should use structured cells rather than raw source rows:
@@ -683,9 +684,12 @@ Avoid:
 - source-rewriting canonicalizers that do not go through the AST
 
 Reserved symbols should remain reserved at implementation time.
-In particular, todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[_]` MUST NOT be interpreted as
+In particular, todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[.]` MUST NOT be interpreted as
 task-list semantics in Core v1 strict mode, and SHOULD produce the same reserved/invalid handling
 path as other unassigned Core v1 inline forms.
+
+`[_]` is assigned in Core v1 as the non-breaking-space inline node and MUST NOT be treated as a
+cancelled task marker.
 
 If the implementation stays scanner-first, budget-aware, and conformance-driven, it should preserve
 the core value of `&ND`: explicit structure without Markdown-style ambiguity.

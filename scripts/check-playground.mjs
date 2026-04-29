@@ -1,0 +1,61 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
+import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+
+const repoRoot = path.resolve(new URL('..', import.meta.url).pathname);
+
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
+const index = await fs.readFile(path.join(repoRoot, 'playground/index.html'), 'utf8');
+const app = await fs.readFile(path.join(repoRoot, 'playground/app.mjs'), 'utf8');
+const styles = await fs.readFile(path.join(repoRoot, 'playground/styles.css'), 'utf8');
+
+assert(index.includes('src="./app.mjs"'), 'playground index should load app.mjs');
+assert(index.includes('href="./styles.css"'), 'playground index should load styles.css');
+assert(index.includes('data-tab="html"'), 'playground should expose an HTML output tab');
+assert(app.includes("from '../implementations/reference-parser/parser.mjs'"), 'playground should import the parser');
+assert(
+  app.includes("from '../implementations/reference-canonical/emitter.mjs'"),
+  'playground should import the canonical emitter'
+);
+assert(app.includes("from '../implementations/reference-html/renderer.mjs'"), 'playground should import the HTML renderer');
+assert(styles.includes('@media (max-width: 900px)'), 'playground should include a mobile layout breakpoint');
+assert(styles.includes('.preview .and-code-block figcaption'), 'playground should style visible code block language tags');
+
+const source = `&ND v1
+
+# Playground
+
+This is [* deterministic] prose with [/ visible structure].
+
+\`\`\`aeon
+title = "Playground"
+mode = "strict"
+\`\`\`
+
+\`\`\`\`aeon
+title = "Playground"
+mode = "ordered"
+\`\`\`\`
+
+| Name | Note |
+| --- | --- |
+| &ND | escaped \\| pipe |
+`;
+
+const result = parseAnd(source, { includeSpans: true });
+assert(result.ok, `playground smoke source should parse: ${result.errorCode ?? 'unknown_error'}`);
+
+const canonical = emitCanonical(result.document, { profile: 'standalone' });
+assert(canonical.startsWith('&ND v1\n\n# Playground\n\n'), 'playground source should emit standalone canonical text');
+assert(canonical.includes('```aeon\ntitle = "Playground"\nmode = "strict"\n```'), 'playground source should preserve aeon code blocks');
+assert(canonical.includes('````aeon\ntitle = "Playground"\nmode = "ordered"\n````'), 'playground source should preserve ordered aeon code blocks');
+assert(canonical.includes('escaped \\| pipe'), 'canonical table output should preserve escaped table pipes');
+
+console.log('Playground checks passed.');

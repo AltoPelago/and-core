@@ -1,0 +1,331 @@
+{
+  "generatedBy": "scripts/check-html-renderer.mjs",
+  "totals": {
+    "fixtures": 40,
+    "checked": 40,
+    "skipped": 0,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "seed-paragraph-vs-ordered-list",
+      "path": "strict/accept/seed-paragraph-vs-ordered-list.json",
+      "status": "pass",
+      "fragment": "<p>My number is\n1. not a list</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>My number is\n1. not a list</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-header-standalone",
+      "path": "strict/accept/seed-header-standalone.json",
+      "status": "pass",
+      "fragment": "<h1>Title</h1>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<h1>Title</h1>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-ordered-list-after-blank-line",
+      "path": "strict/accept/seed-ordered-list-after-blank-line.json",
+      "status": "pass",
+      "fragment": "<p>My number is</p>\n<ol>\n<li><p>a list item</p></li>\n</ol>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>My number is</p>\n<ol>\n<li><p>a list item</p></li>\n</ol>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-table-requires-separator",
+      "path": "strict/accept/seed-table-requires-separator.json",
+      "status": "pass",
+      "fragment": "<p>| A | B |\nplain text</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>| A | B |\nplain text</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-table-valid-top-level",
+      "path": "strict/accept/seed-table-valid-top-level.json",
+      "status": "pass",
+      "fragment": "<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-table-inline-cells",
+      "path": "strict/accept/seed-table-inline-cells.json",
+      "status": "pass",
+      "fragment": "<table>\n<thead>\n<tr><th>Name</th><th>Note</th></tr>\n</thead>\n<tbody>\n<tr><td><strong>Ada</strong></td><td>escaped | pipe</td></tr>\n</tbody>\n</table>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<table>\n<thead>\n<tr><th>Name</th><th>Note</th></tr>\n</thead>\n<tbody>\n<tr><td><strong>Ada</strong></td><td>escaped | pipe</td></tr>\n</tbody>\n</table>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-escaped-inline-opener",
+      "path": "strict/accept/seed-escaped-inline-opener.json",
+      "status": "pass",
+      "fragment": "<p>[* not strong]</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>[* not strong]</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-raw-block-opaque",
+      "path": "strict/accept/seed-raw-block-opaque.json",
+      "status": "pass",
+      "fragment": "<figure class=\"and-code-block\" data-language=\"txt\">\n<figcaption>txt</figcaption>\n<pre><code class=\"language-txt\">[* not strong]\n+++chart/pie\n---</code></pre>\n</figure>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<figure class=\"and-code-block\" data-language=\"txt\">\n<figcaption>txt</figcaption>\n<pre><code class=\"language-txt\">[* not strong]\n+++chart/pie\n---</code></pre>\n</figure>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-extension-block-opaque",
+      "path": "strict/accept/seed-extension-block-opaque.json",
+      "status": "pass",
+      "fragment": "<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"chart/pie\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>chart/pie</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>[* not strong]\n| not | table |</code></pre>\n</details>\n</aside>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"chart/pie\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>chart/pie</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>[* not strong]\n| not | table |</code></pre>\n</details>\n</aside>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-extension-block-fallback",
+      "path": "strict/accept/seed-extension-block-fallback.json",
+      "status": "pass",
+      "fragment": "<p>Show <strong>this</strong> instead</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>Show <strong>this</strong> instead</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-nested-list-two-space-indent",
+      "path": "strict/accept/seed-nested-list-two-space-indent.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<ul>\n<li><p>Child</p></li>\n<li><p>Child</p></li>\n</ul></li>\n<li><p>Next parent</p></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<ul>\n<li><p>Child</p></li>\n<li><p>Child</p></li>\n</ul></li>\n<li><p>Next parent</p></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-nested-list-deep",
+      "path": "strict/accept/seed-nested-list-deep.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>One</p>\n<ul>\n<li><p>Two</p>\n<ul>\n<li><p>Three</p>\n<ul>\n<li><p>Four</p></li>\n</ul></li>\n</ul></li>\n</ul></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>One</p>\n<ul>\n<li><p>Two</p>\n<ul>\n<li><p>Three</p>\n<ul>\n<li><p>Four</p></li>\n</ul></li>\n</ul></li>\n</ul></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-paragraph-continuation-exact-margin",
+      "path": "strict/accept/seed-list-item-paragraph-continuation-exact-margin.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parse strict documents\nworld</p></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parse strict documents\nworld</p></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-unindented-line-ends-list",
+      "path": "strict/accept/seed-list-item-unindented-line-ends-list.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parse strict documents</p></li>\n</ul>\n<p>world</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parse strict documents</p></li>\n</ul>\n<p>world</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-nested-paragraph-exact-margin",
+      "path": "strict/accept/seed-list-item-nested-paragraph-exact-margin.json",
+      "status": "pass",
+      "fragment": "<ol>\n<li><p>Hello</p></li>\n<li><p>Happy</p>\n<p>World</p></li>\n</ol>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ol>\n<li><p>Hello</p></li>\n<li><p>Happy</p>\n<p>World</p></li>\n</ol>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-unindented-paragraph-after-blank",
+      "path": "strict/accept/seed-list-item-unindented-paragraph-after-blank.json",
+      "status": "pass",
+      "fragment": "<ol>\n<li><p>Hello</p></li>\n<li><p>Happy</p></li>\n</ol>\n<p>World</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ol>\n<li><p>Hello</p></li>\n<li><p>Happy</p></li>\n</ol>\n<p>World</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-two-paragraphs",
+      "path": "strict/accept/seed-blockquote-two-paragraphs.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>First paragraph</p>\n<p>Second paragraph</p>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>First paragraph</p>\n<p>Second paragraph</p>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-escaped-inline",
+      "path": "strict/accept/seed-blockquote-escaped-inline.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>[* not strong]</p>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>[* not strong]</p>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-raw-block",
+      "path": "strict/accept/seed-list-item-raw-block.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<figure class=\"and-code-block\" data-language=\"txt\">\n<figcaption>txt</figcaption>\n<pre><code class=\"language-txt\">raw</code></pre>\n</figure></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<figure class=\"and-code-block\" data-language=\"txt\">\n<figcaption>txt</figcaption>\n<pre><code class=\"language-txt\">raw</code></pre>\n</figure></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-extension-block",
+      "path": "strict/accept/seed-list-item-extension-block.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"chart/pie\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>chart/pie</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>apples: 3</code></pre>\n</details>\n</aside></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"chart/pie\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>chart/pie</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>apples: 3</code></pre>\n</details>\n</aside></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-heading",
+      "path": "strict/accept/seed-list-item-heading.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<h2>Child heading</h2></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<h2>Child heading</h2></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-horizontal-rule",
+      "path": "strict/accept/seed-list-item-horizontal-rule.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<hr></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<hr></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-table",
+      "path": "strict/accept/seed-list-item-table.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-table-missing-separator",
+      "path": "strict/accept/seed-list-item-table-missing-separator.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<p>| A | B |\nplain text</p></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<p>| A | B |\nplain text</p></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-blockquote",
+      "path": "strict/accept/seed-list-item-blockquote.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>Quote line</p>\n</blockquote></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>Quote line</p>\n</blockquote></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-blockquote-two-paragraphs",
+      "path": "strict/accept/seed-list-item-blockquote-two-paragraphs.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>First paragraph</p>\n<p>Second paragraph</p>\n</blockquote></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>First paragraph</p>\n<p>Second paragraph</p>\n</blockquote></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-nested-list",
+      "path": "strict/accept/seed-blockquote-nested-list.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>Quote intro</p>\n<ul>\n<li><p>Child item</p></li>\n</ul>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>Quote intro</p>\n<ul>\n<li><p>Child item</p></li>\n</ul>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-nested-list-needs-margin",
+      "path": "strict/accept/seed-blockquote-nested-list-needs-margin.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>Quote intro</p>\n</blockquote>\n<ul>\n<li><p>Child item</p></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>Quote intro</p>\n</blockquote>\n<ul>\n<li><p>Child item</p></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-nested-code-block",
+      "path": "strict/accept/seed-blockquote-nested-code-block.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>Quote intro</p>\n<figure class=\"and-code-block\" data-language=\"txt\">\n<figcaption>txt</figcaption>\n<pre><code class=\"language-txt\">raw</code></pre>\n</figure>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>Quote intro</p>\n<figure class=\"and-code-block\" data-language=\"txt\">\n<figcaption>txt</figcaption>\n<pre><code class=\"language-txt\">raw</code></pre>\n</figure>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-nested-extension-block",
+      "path": "strict/accept/seed-blockquote-nested-extension-block.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>Quote intro</p>\n<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"chart/pie\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>chart/pie</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>apples: 3</code></pre>\n</details>\n</aside>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>Quote intro</p>\n<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"chart/pie\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>chart/pie</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>apples: 3</code></pre>\n</details>\n</aside>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-blockquote-then-sibling",
+      "path": "strict/accept/seed-list-item-blockquote-then-sibling.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>Quote line</p>\n</blockquote></li>\n<li><p>Next parent</p></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>Quote line</p>\n</blockquote></li>\n<li><p>Next parent</p></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-escaped-inline-opener",
+      "path": "strict/accept/seed-blockquote-escaped-inline-opener.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>[@ https://example.com | label]</p>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>[@ https://example.com | label]</p>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-nested-strong-emphasis",
+      "path": "strict/accept/seed-inline-nested-strong-emphasis.json",
+      "status": "pass",
+      "fragment": "<p><strong>strong <em>emphasis</em></strong></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><strong>strong <em>emphasis</em></strong></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-overlap-attempt",
+      "path": "strict/accept/seed-inline-overlap-attempt.json",
+      "status": "pass",
+      "fragment": "<p><strong>strong <em>emphasis</em> text</strong></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><strong>strong <em>emphasis</em> text</strong></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-code-opaque-brackets",
+      "path": "strict/accept/seed-inline-code-opaque-brackets.json",
+      "status": "pass",
+      "fragment": "<p><code>[* not strong] [@ x | y]</code></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><code>[* not strong] [@ x | y]</code></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-link-label-nesting",
+      "path": "strict/accept/seed-inline-link-label-nesting.json",
+      "status": "pass",
+      "fragment": "<p><a href=\"https://example.com\"><strong>label</strong></a></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a href=\"https://example.com\"><strong>label</strong></a></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-escaped-pipe-in-link-target",
+      "path": "strict/accept/seed-inline-escaped-pipe-in-link-target.json",
+      "status": "pass",
+      "fragment": "<p><a href=\"https://example.com/a|b\">label</a></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a href=\"https://example.com/a|b\">label</a></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-nbsp",
+      "path": "strict/accept/seed-inline-nbsp.json",
+      "status": "pass",
+      "fragment": "<p>A&nbsp;B</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>A&nbsp;B</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-inline-line-break",
+      "path": "strict/accept/seed-inline-line-break.json",
+      "status": "pass",
+      "fragment": "<p>First<br>Second</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>First<br>Second</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-ordered-code-block",
+      "path": "strict/accept/seed-ordered-code-block.json",
+      "status": "pass",
+      "fragment": "<figure class=\"and-code-block and-code-block-ordered\" data-language=\"aeon\" data-ordered=\"true\">\n<figcaption>aeon</figcaption>\n<ol class=\"and-code-lines\">\n<li><code>title = &quot;Hello World&quot;</code></li>\n<li><code>mode = &quot;ordered&quot;</code></li>\n</ol>\n</figure>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<figure class=\"and-code-block and-code-block-ordered\" data-language=\"aeon\" data-ordered=\"true\">\n<figcaption>aeon</figcaption>\n<ol class=\"and-code-lines\">\n<li><code>title = &quot;Hello World&quot;</code></li>\n<li><code>mode = &quot;ordered&quot;</code></li>\n</ol>\n</figure>\n</body>\n</html>\n",
+      "notes": []
+    }
+  ]
+}

@@ -14,6 +14,7 @@ The current convenience script writes:
 * `reference-subset-report.json`
 * `reference-parser-report.json`
 * `reference-canonical-report.json`
+* `reference-html-report.json`
 
 Generated report files are not part of the normative CTS definition.
 They are execution artifacts derived from the fixture suite and a chosen adapter.
@@ -33,6 +34,13 @@ Canonical emitter reports include:
 * `totals` — accept fixture count, profile count, and canonical fixed-point status counts
 * `results[].profiles.embedded.canonical` — emitted headerless canonical text
 * `results[].profiles.standalone.canonical` — emitted standalone canonical text with `&ND v1`
+* `results[].notes` — failure or skip details, if any
+
+HTML renderer reports include:
+
+* `totals` — accept fixture count and renderer status counts
+* `results[].fragment` — escaped HTML fragment output
+* `results[].document` — escaped complete HTML document output
 * `results[].notes` — failure or skip details, if any
 
 For a full parser adapter with `capabilities.document = true`, document checks should be fully
@@ -69,4 +77,5 @@ npm run cts:report:reference
 npm run cts:report:subset
 npm run cts:report:example
 npm run canonical:report
+npm run html:report
 ```

@@ -12,7 +12,9 @@ editor integration, canonicalization, and future conformance-tested implementati
 ## Repository Layout
 
 * [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
-* [docs/tooling/playground.md](./docs/tooling/playground.md) — future playground direction
+* [docs/tooling/playground.md](./docs/tooling/playground.md) — local playground direction and usage
+* [docs/tooling/html-renderer.md](./docs/tooling/html-renderer.md) — AST-to-HTML projection contract
+* [playground/](./playground/) — static parser/canonical/preview playground prototype
 * [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
 * [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
 * [examples/README.md](./examples/README.md) — future example documents and interoperability samples
@@ -47,18 +49,26 @@ The repository is currently spec-and-CTS first:
 ## Safety Scripts
 
 * `npm test` — runs the repository safety checks, CTS adapters, adapter example, canonical checks, and CLI smoke checks
+* `npm run playground` — serves the local playground at `http://localhost:4173/playground/`
+* `npm run playground:check` — verifies playground wiring and parser/canonical smoke behavior
+* `npm run check:html-renderer` — verifies the reference AST-to-HTML projection
+* `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
 * `npm run and -- parse examples/minimal.and --json` — emits a parsed AST
 * `npm run and -- parse examples/minimal.and --json --spans` — emits an AST with source spans
 * `npm run and -- canonical examples/minimal.and --profile standalone` — emits canonical text
+* `npm run and -- render-html examples/minimal.and` — emits an escaped HTML fragment
+* `npm run and -- render-html examples/minimal.and --document --out output.html` — writes a complete HTML document
 * CLI failures include stable `errorCode` values and line/column diagnostics where available
 * `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
 * `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
 * `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
 * `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
 * `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
+* `npm run check:html-renderer` — checks escaped HTML fragment/full-document output and fail-closed behavior
 * `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands
 * `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
+* `npm run html:report` — writes HTML renderer output snapshots to `cts/reports/`
 * `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
 * `npm run cts:run:example` — runs the copyable baseline adapter example
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS

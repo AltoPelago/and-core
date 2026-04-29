@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>&amp;ND Playground</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero" aria-labelledby="title">
+        <p class="eyebrow">AEON Native Document</p>
+        <h1 id="title">&amp;ND Playground</h1>
+        <p class="lede">
+          Write strict &amp;ND on the left. Inspect canonical text, AST/spans, diagnostics, and a
+          lightweight preview on the right.
+        </p>
+      </section>
+
+      <section class="workspace" aria-label="Playground workspace">
+        <div class="panel source-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Source</p>
+              <h2>&amp;ND input</h2>
+            </div>
+            <button id="reset" type="button">Reset</button>
+          </div>
+          <textarea id="source" spellcheck="false" aria-label="&ND source editor"></textarea>
+        </div>
+
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Output</p>
+              <h2 id="status">Ready</h2>
+            </div>
+            <span id="badge" class="badge">strict</span>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Output views">
+            <button
+              id="tab-canonical"
+              class="tab is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-canonical"
+              data-tab="canonical"
+            >
+              Canonical
+            </button>
+            <button
+              id="tab-ast"
+              class="tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-ast"
+              data-tab="ast"
+            >
+              AST
+            </button>
+            <button
+              id="tab-diagnostics"
+              class="tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-diagnostics"
+              data-tab="diagnostics"
+            >
+              Diagnostics
+            </button>
+            <button
+              id="tab-html"
+              class="tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-html"
+              data-tab="html"
+            >
+              HTML
+            </button>
+            <button
+              id="tab-preview"
+              class="tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-preview"
+              data-tab="preview"
+            >
+              Preview
+            </button>
+          </div>
+
+          <section
+            id="panel-canonical"
+            class="tab-panel is-active"
+            role="tabpanel"
+            aria-labelledby="tab-canonical"
+            data-panel="canonical"
+          >
+            <pre id="canonical" class="code-output"></pre>
+          </section>
+          <section id="panel-ast" class="tab-panel" role="tabpanel" aria-labelledby="tab-ast" data-panel="ast" hidden>
+            <pre id="ast" class="code-output"></pre>
+          </section>
+          <section
+            id="panel-diagnostics"
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="tab-diagnostics"
+            data-panel="diagnostics"
+            hidden
+          >
+            <pre id="diagnostics" class="code-output"></pre>
+          </section>
+          <section
+            id="panel-html"
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="tab-html"
+            data-panel="html"
+            hidden
+          >
+            <pre id="html" class="code-output"></pre>
+          </section>
+          <section
+            id="panel-preview"
+            class="tab-panel preview-panel"
+            role="tabpanel"
+            aria-labelledby="tab-preview"
+            data-panel="preview"
+            hidden
+          >
+            <article id="preview" class="preview"></article>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.mjs"></script>
+  </body>
+</html>

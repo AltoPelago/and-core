@@ -37,6 +37,7 @@ const invalidPath = path.join(tempDir, 'invalid.and');
 const invalidBodyPath = path.join(tempDir, 'invalid-body.and');
 const tablePath = path.join(tempDir, 'table.and');
 const canonicalPath = path.join(tempDir, 'canonical.and');
+const htmlPath = path.join(tempDir, 'document.html');
 
 await fs.writeFile(validPath, '&ND v1\n\n# Title\n\nMy number is\n1. not a list\n');
 await fs.writeFile(invalidPath, '&ND v2\n\n# Title\n');
@@ -120,6 +121,33 @@ assert(!canonicalMissingProfile.ok, 'canonical should require --profile');
 assert(
   JSON.parse(canonicalMissingProfile.stdout).errorCode === 'missing_canonical_profile',
   'canonical should report missing_canonical_profile'
+);
+
+const renderHtmlFragment = await run(['render-html', validPath]);
+assert(renderHtmlFragment.ok, 'render-html should succeed for a valid document');
+assert(
+  renderHtmlFragment.stdout === '<h1>Title</h1>\n<p>My number is\n1. not a list</p>\n',
+  'render-html fragment output mismatch'
+);
+
+const renderHtmlDocument = await run(['render-html', validPath, '--document', '--out', htmlPath]);
+assert(renderHtmlDocument.ok, 'render-html --document --out should succeed');
+const htmlDocument = await fs.readFile(htmlPath, 'utf8');
+assert(htmlDocument.startsWith('<!doctype html>\n<html lang="en">'), 'render-html --document should emit a full HTML document');
+assert(htmlDocument.includes('<h1>Title</h1>'), 'render-html --document should include rendered body content');
+
+const renderHtmlConflictingMode = await run(['render-html', validPath, '--fragment', '--document']);
+assert(!renderHtmlConflictingMode.ok, 'render-html should reject conflicting mode flags');
+assert(
+  JSON.parse(renderHtmlConflictingMode.stdout).errorCode === 'conflicting_html_render_mode',
+  'render-html should report conflicting_html_render_mode'
+);
+
+const renderHtmlInvalid = await run(['render-html', invalidBodyPath]);
+assert(!renderHtmlInvalid.ok, 'render-html should reject invalid source');
+assert(
+  JSON.parse(renderHtmlInvalid.stdout).errorCode === 'block_opener_on_paragraph_continuation',
+  'render-html should report parser error codes'
 );
 
 console.log('CLI smoke checks passed.');
