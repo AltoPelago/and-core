@@ -10,6 +10,7 @@ Current intended usage:
 
 The current convenience script writes:
 
+* `baseline-adapter-report.json`
 * `reference-subset-report.json`
 * `reference-parser-report.json`
 * `reference-canonical-report.json`
@@ -58,6 +59,7 @@ Regenerate the reports with:
 
 ```sh
 npm run cts:report:reference
+npm run cts:report:example
 npm run cts:report:subset
 npm run canonical:report
 ```

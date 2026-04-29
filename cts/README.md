@@ -28,8 +28,10 @@ Canonicalization fixtures are expected to live here later, but the current suite
 The repository now includes a small CTS entrypoint:
 
 * `npm run cts:run`
+* `npm run cts:run:example`
 * `npm run cts:run:subset`
 * `npm run cts:run:reference`
+* `npm run cts:report:example`
 * `npm run cts:report:subset`
 * `npm run cts:report:reference`
 

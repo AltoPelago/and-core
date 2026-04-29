@@ -11,7 +11,7 @@ capabilities, so semantic AST and metadata lanes are reported as skipped.
 Run it with:
 
 ```sh
-node scripts/run-cts.mjs --adapter ./cts/examples/baseline-adapter.mjs
+npm run cts:run:example
 ```
 
 This example imports the in-repository reference parser only to keep the sample runnable. A

@@ -15,8 +15,10 @@
     "cli:smoke": "node scripts/check-cli.mjs",
     "canonical:report": "node scripts/check-canonical-emitter.mjs --out ./cts/reports/reference-canonical-report.json",
     "cts:run": "node scripts/run-cts.mjs",
+    "cts:run:example": "node scripts/run-cts.mjs --adapter ./cts/examples/baseline-adapter.mjs",
     "cts:run:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs",
     "cts:run:reference": "node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs",
+    "cts:report:example": "node scripts/run-cts.mjs --adapter ./cts/examples/baseline-adapter.mjs --json --out ./cts/reports/baseline-adapter-report.json",
     "cts:report:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs --json --out ./cts/reports/reference-subset-report.json",
     "cts:report:reference": "node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs --json --out ./cts/reports/reference-parser-report.json",
     "precommit:check": "bash scripts/pre-commit-check.sh"

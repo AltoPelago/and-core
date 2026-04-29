@@ -60,8 +60,10 @@ The repository is currently spec-and-CTS first:
 * `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands
 * `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
 * `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
+* `npm run cts:run:example` — runs the copyable baseline adapter example
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
 * `npm run cts:run:reference` — runs the first reference parser adapter against the CTS
+* `npm run cts:report:example` — writes a JSON CTS report artifact for the baseline adapter example
 * `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
 * `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
 * `npm run precommit:check` — runs the current repository safety checks together
