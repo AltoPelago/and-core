@@ -511,8 +511,8 @@ MUST error.
 
 [n]   reserved for auto-number marker in headers if ever needed
 
-===   reserved if ever needed
-~~~   reserved if ever needed
+===   reserved for header text if ever needed
+~~~   reserved for alternative formating if ever needed
 ```
 
 ### Design rule

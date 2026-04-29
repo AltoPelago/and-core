@@ -2,11 +2,13 @@
 import fs from 'node:fs/promises';
 import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
 import { renderHtml } from '../implementations/reference-html/renderer.mjs';
+import { collectDiagnostics } from '../implementations/reference-parser/diagnostics.mjs';
 import { parseAnd } from '../implementations/reference-parser/parser.mjs';
 
 function usage() {
   return `Usage:
   and check <file> [--json]
+  and diagnostics <file> [--json]
   and parse <file> [--json] [--spans]
   and canonical <file> --profile embedded|standalone [--out <file>]
   and render-html <file> [--fragment|--document] [--out <file>]
@@ -70,6 +72,23 @@ async function commandParse(filePath, args) {
     process.stdout.write('ok\n');
   } else {
     process.stdout.write(formatFailure(result));
+  }
+  return result.ok ? 0 : 1;
+}
+
+async function commandDiagnostics(filePath, args) {
+  const source = await readSource(filePath);
+  const result = collectDiagnostics(source);
+  if (hasFlag(args, '--json')) {
+    writeJson(result);
+  } else if (result.ok) {
+    process.stdout.write('ok\n');
+  } else {
+    for (const diagnostic of result.diagnostics) {
+      process.stdout.write(
+        `${diagnostic.code} ${diagnostic.range.start.line + 1}:${diagnostic.range.start.character + 1} ${diagnostic.message}\n`
+      );
+    }
   }
   return result.ok ? 0 : 1;
 }
@@ -143,6 +162,8 @@ async function main() {
       return commandCheck(filePath, args);
     case 'parse':
       return commandParse(filePath, args);
+    case 'diagnostics':
+      return commandDiagnostics(filePath, args);
     case 'canonical':
       return commandCanonical(filePath, args);
     case 'render-html':

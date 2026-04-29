@@ -56,6 +56,7 @@ The repository is currently spec-and-CTS first:
 * `npm run check:vscode` — verifies the VS Code prototype manifest, grammar, and language configuration
 * `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
+* `npm run and -- diagnostics examples/minimal.and --json` — emits parser-backed diagnostics for editor tooling
 * `npm run and -- parse examples/minimal.and --json` — emits a parsed AST
 * `npm run and -- parse examples/minimal.and --json --spans` — emits an AST with source spans
 * `npm run and -- canonical examples/minimal.and --profile standalone` — emits canonical text

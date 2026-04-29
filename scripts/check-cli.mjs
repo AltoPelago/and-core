@@ -64,6 +64,19 @@ const parseValid = await run(['parse', validPath, '--json']);
 assert(parseValid.ok, 'parse --json should accept a valid document');
 assert(JSON.parse(parseValid.stdout).document.children.length === 2, 'parse --json should emit an AST');
 
+const diagnosticsValid = await run(['diagnostics', validPath, '--json']);
+assert(diagnosticsValid.ok, 'diagnostics --json should accept a valid document');
+assert(Array.isArray(JSON.parse(diagnosticsValid.stdout).diagnostics), 'diagnostics should emit an array');
+assert(JSON.parse(diagnosticsValid.stdout).diagnostics.length === 0, 'valid documents should produce no diagnostics');
+
+const diagnosticsInvalidBody = await run(['diagnostics', invalidBodyPath, '--json']);
+assert(!diagnosticsInvalidBody.ok, 'diagnostics should reject invalid body syntax');
+const invalidDiagnostics = JSON.parse(diagnosticsInvalidBody.stdout).diagnostics;
+assert(invalidDiagnostics[0].code === 'block_opener_on_paragraph_continuation', 'diagnostics should surface parser error codes');
+assert(invalidDiagnostics[0].range.start.line === 3, 'diagnostics should emit zero-based line positions');
+assert(invalidDiagnostics[0].range.start.character === 0, 'diagnostics should emit zero-based character positions');
+assert(invalidDiagnostics[0].source === 'and-core', 'diagnostics should expose a stable source identifier');
+
 const parseValidWithSpans = await run(['parse', validPath, '--json', '--spans']);
 assert(parseValidWithSpans.ok, 'parse --json --spans should accept a valid document');
 const parsedWithSpans = JSON.parse(parseValidWithSpans.stdout);
