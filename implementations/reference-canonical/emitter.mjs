@@ -137,12 +137,23 @@ function emitBlocks(children) {
   return children.map((child) => emitBlock(child)).join('\n\n');
 }
 
+function resolveProfile(options) {
+  if (options.profile === 'embedded' || options.profile === 'standalone') {
+    return options.profile;
+  }
+  throw fail(
+    'missing_canonical_profile',
+    'Canonical emission requires options.profile to be "embedded" or "standalone".'
+  );
+}
+
 export function emitCanonical(document, options = {}) {
   if (document.type !== 'document') {
     throw fail('invalid_document', 'Canonical emission requires a document node.');
   }
 
+  const profile = resolveProfile(options);
   const body = emitBlocks(document.children);
-  const prefix = options.header ? '&ND v1\n\n' : '';
+  const prefix = profile === 'standalone' ? '&ND v1\n\n' : '';
   return `${prefix}${body}\n`;
 }

@@ -28,8 +28,9 @@ Each report includes:
 
 Canonical emitter reports include:
 
-* `totals` — accept fixture count and canonical fixed-point status counts
-* `results[].canonical` — emitted canonical text for each checked accept fixture
+* `totals` — accept fixture count, profile count, and canonical fixed-point status counts
+* `results[].profiles.embedded.canonical` — emitted headerless canonical text
+* `results[].profiles.standalone.canonical` — emitted standalone canonical text with `&ND v1`
 * `results[].notes` — failure or skip details, if any
 
 For a full parser adapter with `capabilities.document = true`, document checks should be fully

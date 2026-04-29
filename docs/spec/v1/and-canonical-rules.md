@@ -12,7 +12,10 @@ This property is required for diffing, hashing, signing, testing, and stable ren
 
 ## 2. Header
 
-For standalone &ND files, always emit:
+Canonical emitters MUST require a profile choice before emitting text. The profile determines
+whether the `&ND v1` file header is required or forbidden.
+
+For standalone &ND files, emit:
 
 ```text
 &ND v1

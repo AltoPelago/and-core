@@ -21,6 +21,12 @@ Paragraph line breaks preserved in parser AST text nodes are treated as soft wra
 emission and serialized as a single space. The canonical-emitter check therefore verifies canonical
 fixed-point stability: AST -> canonical text -> AST -> canonical text.
 
-The default output omits the standalone `&ND v1` header so emitted text can be reparsed by the
-current reference parser. Pass `{ header: true }` to emit a standalone-style header once parser
-support for headers exists.
+Callers must choose an emission profile explicitly:
+
+```js
+emitCanonical(document, { profile: "embedded" });
+emitCanonical(document, { profile: "standalone" });
+```
+
+The `embedded` profile omits the `&ND v1` header for typed embedding contexts such as annotation
+payloads. The `standalone` profile emits the `&ND v1` header followed by one blank line.

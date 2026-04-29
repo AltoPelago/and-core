@@ -2,7 +2,8 @@
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
     "fixtures": 31,
-    "checked": 31,
+    "profiles": 2,
+    "checked": 62,
     "skipped": 0,
     "failed": 0
   },
@@ -11,217 +12,558 @@
       "id": "seed-paragraph-vs-ordered-list",
       "path": "strict/accept/seed-paragraph-vs-ordered-list.json",
       "status": "pass",
-      "canonical": "My number is 1. not a list\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "My number is 1. not a list\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nMy number is 1. not a list\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-header-standalone",
       "path": "strict/accept/seed-header-standalone.json",
       "status": "pass",
-      "canonical": "# Title\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "# Title\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n# Title\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-ordered-list-after-blank-line",
       "path": "strict/accept/seed-ordered-list-after-blank-line.json",
       "status": "pass",
-      "canonical": "My number is\n\n1. a list item\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "My number is\n\n1. a list item\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nMy number is\n\n1. a list item\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-table-requires-separator",
       "path": "strict/accept/seed-table-requires-separator.json",
       "status": "pass",
-      "canonical": "| A | B | plain text\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "| A | B | plain text\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n| A | B | plain text\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-table-valid-top-level",
       "path": "strict/accept/seed-table-valid-top-level.json",
       "status": "pass",
-      "canonical": "| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-table-inline-cells",
       "path": "strict/accept/seed-table-inline-cells.json",
       "status": "pass",
-      "canonical": "| Name | Note |\n| --- | --- |\n| [* Ada] | escaped \\| pipe |\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "| Name | Note |\n| --- | --- |\n| [* Ada] | escaped \\| pipe |\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n| Name | Note |\n| --- | --- |\n| [* Ada] | escaped \\| pipe |\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-escaped-inline-opener",
       "path": "strict/accept/seed-escaped-inline-opener.json",
       "status": "pass",
-      "canonical": "\\[* not strong\\]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "\\[* not strong\\]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n\\[* not strong\\]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-raw-block-opaque",
       "path": "strict/accept/seed-raw-block-opaque.json",
       "status": "pass",
-      "canonical": "```txt\n[* not strong]\n+++chart/pie\n---\n```\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "```txt\n[* not strong]\n+++chart/pie\n---\n```\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n```txt\n[* not strong]\n+++chart/pie\n---\n```\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-extension-block-opaque",
       "path": "strict/accept/seed-extension-block-opaque.json",
       "status": "pass",
-      "canonical": "+++chart/pie\n[* not strong]\n| not | table |\n+++\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "+++chart/pie\n[* not strong]\n| not | table |\n+++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n+++chart/pie\n[* not strong]\n| not | table |\n+++\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-nested-list-two-space-indent",
       "path": "strict/accept/seed-nested-list-two-space-indent.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  - Child\n  - Child\n- Next parent\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  - Child\n  - Child\n- Next parent\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  - Child\n  - Child\n- Next parent\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-two-paragraphs",
       "path": "strict/accept/seed-blockquote-two-paragraphs.json",
       "status": "pass",
-      "canonical": "> First paragraph\n>\n> Second paragraph\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> First paragraph\n>\n> Second paragraph\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> First paragraph\n>\n> Second paragraph\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-escaped-inline",
       "path": "strict/accept/seed-blockquote-escaped-inline.json",
       "status": "pass",
-      "canonical": "> \\[* not strong\\]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> \\[* not strong\\]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> \\[* not strong\\]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-raw-block",
       "path": "strict/accept/seed-list-item-raw-block.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  ```txt\n  raw\n  ```\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  ```txt\n  raw\n  ```\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  ```txt\n  raw\n  ```\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-extension-block",
       "path": "strict/accept/seed-list-item-extension-block.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  +++chart/pie\n  apples: 3\n  +++\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  +++chart/pie\n  apples: 3\n  +++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  +++chart/pie\n  apples: 3\n  +++\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-heading",
       "path": "strict/accept/seed-list-item-heading.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  ## Child heading\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  ## Child heading\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  ## Child heading\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-horizontal-rule",
       "path": "strict/accept/seed-list-item-horizontal-rule.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  ---\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  ---\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  ---\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-table",
       "path": "strict/accept/seed-list-item-table.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  | A | B |\n  | --- | --- |\n  | 1 | 2 |\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  | A | B |\n  | --- | --- |\n  | 1 | 2 |\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  | A | B |\n  | --- | --- |\n  | 1 | 2 |\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-table-missing-separator",
       "path": "strict/accept/seed-list-item-table-missing-separator.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  | A | B | plain text\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  | A | B | plain text\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  | A | B | plain text\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-blockquote",
       "path": "strict/accept/seed-list-item-blockquote.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  > Quote line\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  > Quote line\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  > Quote line\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-blockquote-two-paragraphs",
       "path": "strict/accept/seed-list-item-blockquote-two-paragraphs.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  > First paragraph\n  >\n  > Second paragraph\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  > First paragraph\n  >\n  > Second paragraph\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  > First paragraph\n  >\n  > Second paragraph\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-nested-list",
       "path": "strict/accept/seed-blockquote-nested-list.json",
       "status": "pass",
-      "canonical": "> Quote intro\n>\n> - Child item\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> Quote intro\n>\n> - Child item\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> Quote intro\n>\n> - Child item\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-nested-list-needs-margin",
       "path": "strict/accept/seed-blockquote-nested-list-needs-margin.json",
       "status": "pass",
-      "canonical": "> Quote intro\n\n- Child item\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> Quote intro\n\n- Child item\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> Quote intro\n\n- Child item\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-nested-code-block",
       "path": "strict/accept/seed-blockquote-nested-code-block.json",
       "status": "pass",
-      "canonical": "> Quote intro\n>\n> ```txt\n> raw\n> ```\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> Quote intro\n>\n> ```txt\n> raw\n> ```\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> Quote intro\n>\n> ```txt\n> raw\n> ```\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-nested-extension-block",
       "path": "strict/accept/seed-blockquote-nested-extension-block.json",
       "status": "pass",
-      "canonical": "> Quote intro\n>\n> +++chart/pie\n> apples: 3\n> +++\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> Quote intro\n>\n> +++chart/pie\n> apples: 3\n> +++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> Quote intro\n>\n> +++chart/pie\n> apples: 3\n> +++\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-list-item-blockquote-then-sibling",
       "path": "strict/accept/seed-list-item-blockquote-then-sibling.json",
       "status": "pass",
-      "canonical": "- Parent\n\n  > Quote line\n- Next parent\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  > Quote line\n- Next parent\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  > Quote line\n- Next parent\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-blockquote-escaped-inline-opener",
       "path": "strict/accept/seed-blockquote-escaped-inline-opener.json",
       "status": "pass",
-      "canonical": "> \\[@ https://example.com | label\\]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> \\[@ https://example.com | label\\]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> \\[@ https://example.com | label\\]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-inline-nested-strong-emphasis",
       "path": "strict/accept/seed-inline-nested-strong-emphasis.json",
       "status": "pass",
-      "canonical": "[* strong [/ emphasis]]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[* strong [/ emphasis]]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[* strong [/ emphasis]]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-inline-overlap-attempt",
       "path": "strict/accept/seed-inline-overlap-attempt.json",
       "status": "pass",
-      "canonical": "[* strong [/ emphasis] text]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[* strong [/ emphasis] text]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[* strong [/ emphasis] text]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-inline-code-opaque-brackets",
       "path": "strict/accept/seed-inline-code-opaque-brackets.json",
       "status": "pass",
-      "canonical": "[$ \\[* not strong\\] \\[@ x \\| y\\]]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[$ \\[* not strong\\] \\[@ x \\| y\\]]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[$ \\[* not strong\\] \\[@ x \\| y\\]]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-inline-link-label-nesting",
       "path": "strict/accept/seed-inline-link-label-nesting.json",
       "status": "pass",
-      "canonical": "[@ https://example.com | [* label]]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[@ https://example.com | [* label]]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[@ https://example.com | [* label]]\n",
+          "notes": []
+        }
+      },
       "notes": []
     },
     {
       "id": "seed-inline-escaped-pipe-in-link-target",
       "path": "strict/accept/seed-inline-escaped-pipe-in-link-target.json",
       "status": "pass",
-      "canonical": "[@ https://example.com/a\\|b | label]\n",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[@ https://example.com/a\\|b | label]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[@ https://example.com/a\\|b | label]\n",
+          "notes": []
+        }
+      },
       "notes": []
     }
   ]

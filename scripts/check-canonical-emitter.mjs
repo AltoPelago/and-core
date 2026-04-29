@@ -9,12 +9,19 @@ const indexPath = path.join(repoRoot, 'cts/fixtures/index.json');
 const args = process.argv.slice(2);
 const outIndex = args.indexOf('--out');
 const outPath = outIndex === -1 ? null : args[outIndex + 1];
+const profiles = ['embedded', 'standalone'];
+
+function makeEmptyTotals() {
+  return {
+    checked: 0,
+    skipped: 0,
+    failed: 0,
+  };
+}
 
 async function main() {
   const index = JSON.parse(await fs.readFile(indexPath, 'utf8'));
-  let checked = 0;
-  let skipped = 0;
-  let failed = 0;
+  const totals = makeEmptyTotals();
   const results = [];
 
   for (const fixturePath of index.fixtures) {
@@ -29,77 +36,106 @@ async function main() {
       id: fixture.id,
       path: fixturePath,
       status: 'pending',
-      canonical: null,
+      profiles: {},
       notes: [],
     };
     results.push(result);
 
-    let emitted;
-    try {
-      emitted = emitCanonical(document);
-      result.canonical = emitted;
-    } catch (error) {
-      if (error.code?.startsWith('unsupported_')) {
-        skipped += 1;
-        result.status = 'skipped';
-        result.notes.push(error.code);
+    let fixtureFailed = false;
+    let fixtureSkipped = true;
+
+    for (const profile of profiles) {
+      const profileResult = {
+        status: 'pending',
+        canonical: null,
+        notes: [],
+      };
+      result.profiles[profile] = profileResult;
+
+      let emitted;
+      try {
+        emitted = emitCanonical(document, { profile });
+        profileResult.canonical = emitted;
+      } catch (error) {
+        if (error.code?.startsWith('unsupported_')) {
+          totals.skipped += 1;
+          profileResult.status = 'skipped';
+          profileResult.notes.push(error.code);
+          continue;
+        }
+        totals.failed += 1;
+        fixtureFailed = true;
+        profileResult.status = 'failed';
+        profileResult.notes.push(error.code ?? error.message);
+        console.error(`FAIL ${fixture.id} (${profile}): ${error.code ?? error.message}`);
         continue;
       }
-      failed += 1;
-      result.status = 'failed';
-      result.notes.push(error.code ?? error.message);
-      console.error(`FAIL ${fixture.id}: ${error.code ?? error.message}`);
-      continue;
+
+      fixtureSkipped = false;
+
+      const reparsed = parseAnd(emitted);
+      if (!reparsed.ok) {
+        totals.failed += 1;
+        fixtureFailed = true;
+        profileResult.status = 'failed';
+        profileResult.notes.push(`reparse:${reparsed.errorCode}`);
+        console.error(`FAIL ${fixture.id} (${profile}): emitted canonical text did not parse (${reparsed.errorCode})`);
+        continue;
+      }
+
+      let reemitted;
+      try {
+        reemitted = emitCanonical(reparsed.document, { profile });
+      } catch (error) {
+        totals.failed += 1;
+        fixtureFailed = true;
+        profileResult.status = 'failed';
+        profileResult.notes.push(`reemission:${error.code ?? error.message}`);
+        console.error(
+          `FAIL ${fixture.id} (${profile}): reparsed document could not be re-emitted (${error.code ?? error.message})`
+        );
+        continue;
+      }
+
+      if (reemitted !== emitted) {
+        totals.failed += 1;
+        fixtureFailed = true;
+        profileResult.status = 'failed';
+        profileResult.notes.push('not_fixed_point');
+        console.error(`FAIL ${fixture.id} (${profile}): canonical output was not stable after reparse/re-emit`);
+        continue;
+      }
+
+      totals.checked += 1;
+      profileResult.status = 'pass';
     }
 
-    const reparsed = parseAnd(emitted);
-    if (!reparsed.ok) {
-      failed += 1;
+    if (fixtureFailed) {
       result.status = 'failed';
-      result.notes.push(`reparse:${reparsed.errorCode}`);
-      console.error(`FAIL ${fixture.id}: emitted canonical text did not parse (${reparsed.errorCode})`);
-      continue;
+    } else if (fixtureSkipped) {
+      result.status = 'skipped';
+    } else {
+      result.status = 'pass';
     }
-
-    let reemitted;
-    try {
-      reemitted = emitCanonical(reparsed.document);
-    } catch (error) {
-      failed += 1;
-      result.status = 'failed';
-      result.notes.push(`reemission:${error.code ?? error.message}`);
-      console.error(`FAIL ${fixture.id}: reparsed document could not be re-emitted (${error.code ?? error.message})`);
-      continue;
-    }
-
-    if (reemitted !== emitted) {
-      failed += 1;
-      result.status = 'failed';
-      result.notes.push('not_fixed_point');
-      console.error(`FAIL ${fixture.id}: canonical output was not stable after reparse/re-emit`);
-      continue;
-    }
-
-    checked += 1;
-    result.status = 'pass';
   }
 
-  console.log(`canonicalEmitter checked=${checked} skipped=${skipped} failed=${failed}`);
+  console.log(`canonicalEmitter checked=${totals.checked} skipped=${totals.skipped} failed=${totals.failed}`);
   if (outPath) {
     const report = {
       generatedBy: 'scripts/check-canonical-emitter.mjs',
       totals: {
         fixtures: results.length,
-        checked,
-        skipped,
-        failed,
+        profiles: profiles.length,
+        checked: totals.checked,
+        skipped: totals.skipped,
+        failed: totals.failed,
       },
       results,
     };
     await fs.mkdir(path.dirname(path.resolve(repoRoot, outPath)), { recursive: true });
     await fs.writeFile(path.resolve(repoRoot, outPath), `${JSON.stringify(report, null, 2)}\n`);
   }
-  if (failed > 0 || checked === 0) process.exit(1);
+  if (totals.failed > 0 || totals.checked === 0) process.exit(1);
 }
 
 await main();
