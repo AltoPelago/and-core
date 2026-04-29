@@ -2,12 +2,17 @@
 
 `and-core` is the standalone home for `&ND` (AEON Native Document).
 
+> &ND is a pedantic prose language. Pronounced “amperand”… with a silent G.
+> Markdown tries to be forgiving.
+> &ND is not.
+
 `&ND` is a deterministic, fail-closed document language designed for structured document content,
 editor integration, canonicalization, and future conformance-tested implementations.
 
 ## Repository Layout
 
 * [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
+* [docs/tooling/playground.md](./docs/tooling/playground.md) — future playground direction
 * [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
 * [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
 * [examples/README.md](./examples/README.md) — future example documents and interoperability samples

@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 55,
+    "fixtures": 56,
     "pending": 0,
-    "pass": 55,
+    "pass": 56,
     "fail": 0,
     "error": 0
   },
@@ -15,6 +15,13 @@
     "matched": 0,
     "skipped": 31,
     "failed": 0
+  },
+  "spanChecks": {
+    "expected": 1,
+    "checked": 0,
+    "matched": 0,
+    "failed": 0,
+    "skipped": 1
   },
   "errorCodeChecks": {
     "expected": 24,
@@ -32,6 +39,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -46,6 +57,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -62,6 +77,10 @@
       "errorCode": "invalid_header",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -75,6 +94,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -89,6 +112,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -103,6 +130,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -117,6 +148,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -133,6 +168,10 @@
       "errorCode": "invalid_table_shape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -148,6 +187,10 @@
       "errorCode": "invalid_table_shape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -163,6 +206,10 @@
       "errorCode": "invalid_table_shape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -176,6 +223,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -190,6 +241,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -204,6 +259,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -220,6 +279,10 @@
       "errorCode": "invalid_extension_name",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -233,6 +296,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -247,6 +314,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -261,6 +332,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -275,6 +350,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -289,6 +368,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -303,6 +386,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -317,6 +404,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -331,6 +422,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -345,6 +440,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -359,6 +458,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -373,6 +476,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -387,6 +494,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -401,6 +512,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -415,6 +530,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -429,6 +548,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -443,6 +566,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -457,6 +584,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -471,6 +602,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -485,6 +620,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -499,6 +638,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -513,6 +656,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -527,6 +674,10 @@
       "actualOk": true,
       "documentExpected": true,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter.",
         "Document AST expectation skipped; adapter does not declare document capability."
@@ -543,6 +694,10 @@
       "errorCode": "block_opener_on_paragraph_continuation",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -558,6 +713,10 @@
       "errorCode": "unknown_inline_type",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -573,6 +732,10 @@
       "errorCode": "unclosed_extension_block",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -588,6 +751,10 @@
       "errorCode": "invalid_escape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -603,6 +770,10 @@
       "errorCode": "nd_budget_exceeded",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -618,6 +789,10 @@
       "errorCode": "invalid_indentation",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -633,6 +808,10 @@
       "errorCode": "invalid_indentation",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -648,6 +827,10 @@
       "errorCode": "missing_blank_line_before_nested_block",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -663,6 +846,10 @@
       "errorCode": "raw_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -678,6 +865,10 @@
       "errorCode": "extension_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -693,6 +884,10 @@
       "errorCode": "raw_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -708,6 +903,10 @@
       "errorCode": "extension_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -723,6 +922,10 @@
       "errorCode": "unclosed_inline",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -738,6 +941,10 @@
       "errorCode": "unclosed_inline",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -753,6 +960,10 @@
       "errorCode": "unclosed_inline",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -768,6 +979,10 @@
       "errorCode": "unexpected_closing",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -783,6 +998,10 @@
       "errorCode": "missing_link_label",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -798,6 +1017,10 @@
       "errorCode": "invalid_link_target",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
       ]
@@ -813,8 +1036,30 @@
       "errorCode": "invalid_escape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-source-spans-table-inline",
+      "path": "strict/metadata/seed-source-spans-table-inline.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Source span expectation skipped; adapter does not declare spans capability."
       ]
     }
   ]

@@ -17,7 +17,9 @@ Canonicalization fixtures are expected to live here later, but the current suite
 
 ## Layout
 
+* [`ADAPTERS.md`](./ADAPTERS.md) — how parser implementations plug into the CTS runner
 * [`AUTHORING.md`](./AUTHORING.md) — how to add and maintain fixtures
+* [`examples/`](./examples/) — copyable CTS adapter examples
 * [`fixtures/`](./fixtures/) — raw input and expected outcomes
 * [`reports/`](./reports/) — generated adapter reports
 
@@ -48,7 +50,10 @@ The adapter contract is:
 
 * export `runFixture(fixture, context)`
 * return a result object with `status`, plus optional `actualOk`, `errorCode`, `document`, and `notes`
-* optionally export `capabilities = { document: true }` to enable exact `expected.document` checks
+* optionally export `capabilities = { document: true, spans: true }` to enable capability-gated
+  document and metadata checks
+
+See [ADAPTERS.md](./ADAPTERS.md) for the complete adapter contract and capability guidance.
 
 ## Reports
 

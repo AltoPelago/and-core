@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 55,
+    "fixtures": 56,
     "pending": 0,
-    "pass": 55,
+    "pass": 56,
     "fail": 0,
     "error": 0
   },
@@ -15,6 +15,13 @@
     "matched": 31,
     "skipped": 0,
     "failed": 0
+  },
+  "spanChecks": {
+    "expected": 1,
+    "checked": 1,
+    "matched": 6,
+    "failed": 0,
+    "skipped": 0
   },
   "errorCodeChecks": {
     "expected": 24,
@@ -33,6 +40,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -48,6 +59,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -64,6 +79,10 @@
       "errorCode": "invalid_header",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -78,6 +97,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -93,6 +116,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -108,6 +135,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -123,6 +154,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -139,6 +174,10 @@
       "errorCode": "invalid_table_shape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -154,6 +193,10 @@
       "errorCode": "invalid_table_shape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -169,6 +212,10 @@
       "errorCode": "invalid_table_shape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -183,6 +230,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -198,6 +249,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -213,6 +268,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -229,6 +288,10 @@
       "errorCode": "invalid_extension_name",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -243,6 +306,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -258,6 +325,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -273,6 +344,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -288,6 +363,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -303,6 +382,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -318,6 +401,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -333,6 +420,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -348,6 +439,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -363,6 +458,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -378,6 +477,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -393,6 +496,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -408,6 +515,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -423,6 +534,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -438,6 +553,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -453,6 +572,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -468,6 +591,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -483,6 +610,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -498,6 +629,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -513,6 +648,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -528,6 +667,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -543,6 +686,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -558,6 +705,10 @@
       "documentExpected": true,
       "documentChecked": true,
       "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
@@ -574,6 +725,10 @@
       "errorCode": "block_opener_on_paragraph_continuation",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -589,6 +744,10 @@
       "errorCode": "unknown_inline_type",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -604,6 +763,10 @@
       "errorCode": "unclosed_extension_block",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -619,6 +782,10 @@
       "errorCode": "invalid_escape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -634,6 +801,10 @@
       "errorCode": "nd_budget_exceeded",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -649,6 +820,10 @@
       "errorCode": "invalid_indentation",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -664,6 +839,10 @@
       "errorCode": "invalid_indentation",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -679,6 +858,10 @@
       "errorCode": "missing_blank_line_before_nested_block",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -694,6 +877,10 @@
       "errorCode": "raw_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -709,6 +896,10 @@
       "errorCode": "extension_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -724,6 +915,10 @@
       "errorCode": "raw_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -739,6 +934,10 @@
       "errorCode": "extension_block_bad_closing_margin",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -754,6 +953,10 @@
       "errorCode": "unclosed_inline",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -769,6 +972,10 @@
       "errorCode": "unclosed_inline",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -784,6 +991,10 @@
       "errorCode": "unclosed_inline",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -799,6 +1010,10 @@
       "errorCode": "unexpected_closing",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -814,6 +1029,10 @@
       "errorCode": "missing_link_label",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -829,6 +1048,10 @@
       "errorCode": "invalid_link_target",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
       ]
@@ -844,8 +1067,30 @@
       "errorCode": "invalid_escape",
       "documentExpected": false,
       "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
       "notes": [
         "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-source-spans-table-inline",
+      "path": "strict/metadata/seed-source-spans-table-inline.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 6,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (6/6)."
       ]
     }
   ]

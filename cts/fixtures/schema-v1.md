@@ -63,3 +63,14 @@ The schema now supports a small exact AST expectation surface so conformance can
 accept/reject behavior. Adapters that do not yet expose a document AST may still run the fixtures,
 but the CTS runner marks those document checks as skipped rather than silently asserting them.
 Span expectations are metadata checks and are reported separately from semantic document checks.
+
+## Expectation Lanes
+
+Fixtures may carry expectations in separate lanes:
+
+* Parse outcome lane: `expected.ok` and optional `expected.errorCode`.
+* Semantic AST lane: `expected.document`, checked only for adapters with `document` capability.
+* Metadata lane: `expected.spans`, checked only for adapters with `spans` capability.
+
+Adapters MAY implement only the baseline parse outcome lane. Capability-gated lanes are reported as
+skipped, not failed, when an adapter does not claim that capability.
