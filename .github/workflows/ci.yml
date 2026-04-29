@@ -32,5 +32,11 @@ jobs:
       - name: Run subset adapter CTS
         run: npm run cts:run:subset
 
+      - name: Run baseline adapter example CTS
+        run: npm run cts:run:example
+
       - name: Check canonical emitter
         run: npm run check:canonical-emitter
+
+      - name: Run CLI smoke checks
+        run: npm run cli:smoke

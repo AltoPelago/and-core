@@ -34,6 +34,7 @@ The repository now includes a small CTS entrypoint:
 * `npm run cts:report:example`
 * `npm run cts:report:subset`
 * `npm run cts:report:reference`
+* `npm run cts:report:all`
 
 Current behavior:
 
@@ -46,7 +47,7 @@ Current behavior:
 Future parser implementations can plug in through:
 
 * `node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs`
-* `node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs --json --out ./cts/reports/report.json`
+* `node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs --json --quiet --out ./cts/reports/report.json`
 
 The adapter contract is:
 
@@ -64,6 +65,7 @@ CTS reports are intended to be durable artifacts.
 The current runner supports:
 
 * `--json` for machine-readable output
+* `--quiet` to suppress stdout when writing report files
 * `--out <path>` to write a report file directly
 
 The default report script writes:

@@ -17,6 +17,7 @@ The current convenience script writes:
 
 Generated report files are not part of the normative CTS definition.
 They are execution artifacts derived from the fixture suite and a chosen adapter.
+Report scripts use `--quiet` so regeneration updates files without printing full JSON payloads.
 
 ## Summary Fields
 
@@ -58,8 +59,14 @@ errorCodeChecks expected=N matched=N missingActual=0 mismatched=0
 Regenerate the reports with:
 
 ```sh
+npm run cts:report:all
+```
+
+Or regenerate individual reports with:
+
+```sh
 npm run cts:report:reference
-npm run cts:report:example
 npm run cts:report:subset
+npm run cts:report:example
 npm run canonical:report
 ```

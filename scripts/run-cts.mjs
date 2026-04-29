@@ -10,11 +10,12 @@ const fixturesRoot = path.join(repoRoot, 'cts', 'fixtures');
 const indexPath = path.join(fixturesRoot, 'index.json');
 
 function printUsage() {
-  console.log(`Usage: node scripts/run-cts.mjs [--adapter ./path/to/adapter.mjs] [--json] [--list] [--out ./path/to/report.json]
+  console.log(`Usage: node scripts/run-cts.mjs [--adapter ./path/to/adapter.mjs] [--json] [--quiet] [--list] [--out ./path/to/report.json]
 
 Options:
   --adapter <path>   Load a CTS adapter module that exports runFixture(fixture, context)
   --json             Emit machine-readable JSON instead of text
+  --quiet            Suppress stdout; requires --out unless --list is used
   --list             List fixture ids and exit
   --out <path>       Write the emitted report to a file
 `);
@@ -25,6 +26,7 @@ function parseArgs(argv) {
   const options = {
     adapter: null,
     json: false,
+    quiet: false,
     list: false,
     help: false,
     out: null,
@@ -39,6 +41,10 @@ function parseArgs(argv) {
     }
     if (arg === '--json') {
       options.json = true;
+      continue;
+    }
+    if (arg === '--quiet') {
+      options.quiet = true;
       continue;
     }
     if (arg === '--list') {
@@ -62,6 +68,9 @@ function parseArgs(argv) {
   }
   if (options.out === null && args.includes('--out')) {
     throw new Error('Missing value for --out');
+  }
+  if (options.quiet && options.out === null && !options.list) {
+    throw new Error('--quiet requires --out');
   }
 
   return options;
@@ -517,7 +526,7 @@ async function main() {
   if (options.list) {
     if (options.json) {
       const output = `${JSON.stringify(fixtures.map((entry) => entry.fixture.id), null, 2)}\n`;
-      process.stdout.write(output);
+      if (!options.quiet) process.stdout.write(output);
       if (options.out) {
         await writeOutputFile(options.out, output);
       }
@@ -527,7 +536,7 @@ async function main() {
         lines.push(entry.fixture.id);
       }
       const output = `${lines.join('\n')}\n`;
-      process.stdout.write(output);
+      if (!options.quiet) process.stdout.write(output);
       if (options.out) {
         await writeOutputFile(options.out, output);
       }
@@ -548,12 +557,12 @@ async function main() {
   const summary = summarize(results, adapter);
   if (options.json) {
     const output = `${JSON.stringify(summary, null, 2)}\n`;
-    process.stdout.write(output);
+    if (!options.quiet) process.stdout.write(output);
     if (options.out) {
       await writeOutputFile(options.out, output);
     }
   } else {
-    printText(summary);
+    if (!options.quiet) printText(summary);
     if (options.out) {
       const output = `${JSON.stringify(summary, null, 2)}\n`;
       await writeOutputFile(options.out, output);

@@ -12,7 +12,7 @@ node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs
 Generate a report with:
 
 ```sh
-node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs --json --out ./cts/reports/my-report.json
+node scripts/run-cts.mjs --adapter ./path/to/adapter.mjs --json --quiet --out ./cts/reports/my-report.json
 ```
 
 ## Minimal Adapter

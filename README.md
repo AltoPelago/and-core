@@ -46,7 +46,7 @@ The repository is currently spec-and-CTS first:
 
 ## Safety Scripts
 
-* `npm test` — runs the repository safety checks and both CTS adapters
+* `npm test` — runs the repository safety checks, CTS adapters, adapter example, canonical checks, and CLI smoke checks
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
 * `npm run and -- parse examples/minimal.and --json` — emits a parsed AST
 * `npm run and -- parse examples/minimal.and --json --spans` — emits an AST with source spans
@@ -66,6 +66,7 @@ The repository is currently spec-and-CTS first:
 * `npm run cts:report:example` — writes a JSON CTS report artifact for the baseline adapter example
 * `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
 * `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
+* `npm run cts:report:all` — regenerates all parser and canonical report artifacts
 * `npm run precommit:check` — runs the current repository safety checks together
 
 ## Continuous Integration
