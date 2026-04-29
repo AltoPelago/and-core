@@ -2,9 +2,12 @@
 
 This directory is reserved for example `&ND` documents and interoperability samples.
 
+Current examples:
+
+* [minimal.and](./minimal.and) — a small standalone document with an `&ND v1` header
+
 Likely future contents:
 
-* minimal valid documents
 * nesting and edge-case examples
 * canonicalization before/after samples
 * editor demo documents

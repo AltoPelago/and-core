@@ -208,6 +208,10 @@ parsed inside inline code.
 Implementations SHOULD track source spans for diagnostics and editor integrations, but source spans
 are not included in CTS `expected.document` fixtures yet.
 
+The reference parser currently exposes spans only when explicitly requested. Its first span-bearing
+surface covers the document node and block nodes; inline-node spans are intentionally left for a
+later, more precise scanner pass.
+
 Recommended metadata:
 
 ```ts
@@ -220,6 +224,9 @@ interface NdSpan {
   readonly endColumn: number;
 }
 ```
+
+Span ranges use inclusive starts and exclusive ends. `startLine`, `startColumn`, `endLine`, and
+`endColumn` are one-based. Offsets are measured in the normalized source consumed by the parser.
 
 If exposed publicly, metadata SHOULD be additive and MUST NOT alter the semantic node fields above.
 

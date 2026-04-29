@@ -11,12 +11,131 @@ function stripFinalEmptyLine(lines) {
 
 function stripDocumentHeader(lines) {
   if (lines[0] === '&ND v1') {
-    return { ok: true, lines: lines[1] === '' ? lines.slice(2) : lines.slice(1) };
+    const consumed = lines[1] === '' ? 2 : 1;
+    return { ok: true, lines: lines.slice(consumed), lineOffset: consumed };
   }
   if (lines[0]?.startsWith('&ND ')) {
-    return { ok: false, errorCode: 'invalid_header' };
+    return failAt('invalid_header', 0, 0);
   }
-  return { ok: true, lines };
+  return { ok: true, lines, lineOffset: 0 };
+}
+
+function lineStartOffsets(lines) {
+  const offsets = [];
+  let offset = 0;
+  for (const line of lines) {
+    offsets.push(offset);
+    offset += line.length + 1;
+  }
+  return offsets;
+}
+
+function positionAtOffset(lineOffsets, offset) {
+  let lineIndex = 0;
+  for (let i = 0; i < lineOffsets.length; i += 1) {
+    if (lineOffsets[i] > offset) break;
+    lineIndex = i;
+  }
+  return {
+    line: lineIndex + 1,
+    column: offset - lineOffsets[lineIndex] + 1,
+  };
+}
+
+function makeSpan(context, startOffset, endOffset) {
+  const start = positionAtOffset(context.sourceLineStartOffsets, startOffset);
+  const end = positionAtOffset(context.sourceLineStartOffsets, endOffset);
+  return {
+    startOffset,
+    endOffset,
+    startLine: start.line,
+    startColumn: start.column,
+    endLine: end.line,
+    endColumn: end.column,
+  };
+}
+
+function withSpan(node, context, startOffset, endOffset) {
+  if (!context.includeSpans) return node;
+  return {
+    ...node,
+    span: makeSpan(context, startOffset, endOffset),
+  };
+}
+
+function failAt(errorCode, lineIndex, columnIndex = 0) {
+  return {
+    ok: false,
+    errorCode,
+    diagnostic: {
+      code: errorCode,
+      line: lineIndex + 1,
+      column: columnIndex + 1,
+    },
+  };
+}
+
+function withOffset(result, baseOffset = 0) {
+  if (result.ok || typeof result.nextIndex !== 'number') return result;
+  const offset = baseOffset + result.nextIndex;
+  return {
+    ...result,
+    diagnostic: {
+      code: result.errorCode,
+      offset,
+    },
+  };
+}
+
+function withLine(result, lineIndex, columnIndex = 0) {
+  if (result.ok || result.diagnostic?.line) return result;
+  return {
+    ...result,
+    diagnostic: {
+      ...(result.diagnostic ?? { code: result.errorCode }),
+      line: lineIndex + 1,
+      column: columnIndex + 1,
+    },
+  };
+}
+
+function shiftDiagnosticLines(result, lineOffset) {
+  if (result.ok || !result.diagnostic?.line || typeof result.diagnostic.offset === 'number') return result;
+  return {
+    ...result,
+    diagnostic: {
+      ...result.diagnostic,
+      line: result.diagnostic.line + lineOffset,
+    },
+  };
+}
+
+function finalizeDiagnostic(result, source) {
+  if (result.ok || !result.diagnostic) return result;
+  if (typeof result.diagnostic.offset !== 'number') return result;
+
+  const before = source.slice(0, result.diagnostic.offset);
+  const line = before.split('\n').length;
+  const lastNewline = before.lastIndexOf('\n');
+  const column = result.diagnostic.offset - lastNewline;
+  return {
+    ...result,
+    diagnostic: {
+      code: result.errorCode,
+      offset: result.diagnostic.offset,
+      line,
+      column,
+    },
+  };
+}
+
+function publicFailure(result) {
+  if (result.ok) return result;
+  return {
+    ok: false,
+    errorCode: result.errorCode,
+    ...(result.diagnostic ? { diagnostic: result.diagnostic } : {}),
+  };
 }
 
 function isEscapable(char) {
@@ -280,10 +399,10 @@ function scanRawIslands(lines) {
           break;
         }
         if (lines[j].trim() === '```' && lines[j] !== `${prefix}\`\`\``) {
-          return { ok: false, errorCode: 'raw_block_bad_closing_margin' };
+          return failAt('raw_block_bad_closing_margin', j, lines[j].indexOf('```'));
         }
       }
-      if (!closed) return { ok: false, errorCode: 'unclosed_code_block' };
+      if (!closed) return failAt('unclosed_code_block', i, prefix.length);
       continue;
     }
 
@@ -300,20 +419,25 @@ function scanRawIslands(lines) {
         break;
       }
       if (lines[j].trim() === '+++' && lines[j] !== `${extension.prefix}+++`) {
-        return { ok: false, errorCode: 'extension_block_bad_closing_margin' };
+        return failAt('extension_block_bad_closing_margin', j, lines[j].indexOf('+++'));
       }
     }
-    if (!closed) return { ok: false, errorCode: 'unclosed_extension_block' };
+    if (!closed) return failAt('unclosed_extension_block', i, extension.prefix.length);
   }
   return { ok: true, rawLines };
 }
 
-function hasStructuralTab(lines) {
-  return lines.some((line) => line.startsWith('\t') || line.includes('\n\t'));
+function structuralTabLocation(lines) {
+  for (let i = 0; i < lines.length; i += 1) {
+    const column = lines[i].indexOf('\t');
+    if (column !== -1) return { lineIndex: i, columnIndex: column };
+  }
+  return null;
 }
 
 function validateBlocks(lines, rawLines) {
-  if (hasStructuralTab(lines)) return { ok: false, errorCode: 'invalid_indentation' };
+  const tab = structuralTabLocation(lines);
+  if (tab) return failAt('invalid_indentation', tab.lineIndex, tab.columnIndex);
 
   for (let i = 0; i < lines.length; i += 1) {
     if (rawLines.has(i)) continue;
@@ -321,25 +445,25 @@ function validateBlocks(lines, rawLines) {
     const previous = i > 0 ? lines[i - 1] : '';
 
     if (line.startsWith('+++')) {
-      return { ok: false, errorCode: 'invalid_extension_name' };
+      return failAt('invalid_extension_name', i, 0);
     }
     if (line.startsWith(' - ')) {
-      return { ok: false, errorCode: 'invalid_indentation' };
+      return failAt('invalid_indentation', i, 0);
     }
     if (line.startsWith('  - ') && previous !== '' && !previous.startsWith('  - ')) {
-      return { ok: false, errorCode: 'missing_blank_line_before_nested_block' };
+      return failAt('missing_blank_line_before_nested_block', i, 2);
     }
     if (line === '---' && previous !== '') {
-      return { ok: false, errorCode: 'block_opener_on_paragraph_continuation' };
+      return failAt('block_opener_on_paragraph_continuation', i, 0);
     }
   }
 
   return { ok: true };
 }
 
-function parseInlineBlock(type, text, options) {
+function parseInlineBlock(type, text, options, baseOffset = 0) {
   const inline = parseInline(text, options);
-  if (!inline.ok) return inline;
+  if (!inline.ok) return withOffset(inline, baseOffset);
   return { ok: true, node: { type, children: inline.nodes } };
 }
 
@@ -355,7 +479,7 @@ function stripIndent(lines) {
   return lines.map((line) => (line.startsWith('  ') ? line.slice(2) : line));
 }
 
-function parseCodeBlock(lines, start) {
+function parseCodeBlock(lines, start, context) {
   const line = lines[start];
   const prefix = rawFencePrefix(line);
   const openerText = line.slice(prefix.length);
@@ -364,16 +488,17 @@ function parseCodeBlock(lines, start) {
 
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === `${prefix}\`\`\``) {
+      const node = {
+        type: 'code_block',
+        language,
+        text: payload.map((payloadLine) =>
+          payloadLine.startsWith(prefix) ? payloadLine.slice(prefix.length) : payloadLine
+        ).join('\n'),
+      };
       return {
         ok: true,
         nextIndex: i + 1,
-        node: {
-          type: 'code_block',
-          language,
-          text: payload.map((payloadLine) =>
-            payloadLine.startsWith(prefix) ? payloadLine.slice(prefix.length) : payloadLine
-          ).join('\n'),
-        },
+        node: withSpan(node, context, context.lineStartOffsets[start], context.lineStartOffsets[i] + lines[i].length),
       };
     }
     payload.push(lines[i]);
@@ -382,23 +507,24 @@ function parseCodeBlock(lines, start) {
   return { ok: false, errorCode: 'unclosed_code_block' };
 }
 
-function parseExtensionBlock(lines, start) {
+function parseExtensionBlock(lines, start, context) {
   const extension = extensionOpener(lines[start]);
   if (extension === null) return { ok: false, errorCode: 'invalid_extension_name' };
   const payload = [];
 
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === `${extension.prefix}+++`) {
+      const node = {
+        type: 'extension_block',
+        name: extension.name,
+        text: payload.map((payloadLine) =>
+          payloadLine.startsWith(extension.prefix) ? payloadLine.slice(extension.prefix.length) : payloadLine
+        ).join('\n'),
+      };
       return {
         ok: true,
         nextIndex: i + 1,
-        node: {
-          type: 'extension_block',
-          name: extension.name,
-          text: payload.map((payloadLine) =>
-            payloadLine.startsWith(extension.prefix) ? payloadLine.slice(extension.prefix.length) : payloadLine
-          ).join('\n'),
-        },
+        node: withSpan(node, context, context.lineStartOffsets[start], context.lineStartOffsets[i] + lines[i].length),
       };
     }
     payload.push(lines[i]);
@@ -444,17 +570,20 @@ function isSeparatorCells(cells) {
   return cells.length > 0 && cells.every((cell) => cell === '---');
 }
 
-function parseTableCells(cells, options) {
+function parseTableCells(cells, options, baseOffset = 0) {
   const parsedCells = [];
+  let searchFrom = 0;
   for (const cell of cells) {
+    const cellOffset = baseOffset + searchFrom;
     const inline = parseInline(cell, options);
-    if (!inline.ok) return inline;
+    if (!inline.ok) return withOffset(inline, cellOffset);
     parsedCells.push({ children: inline.nodes });
+    searchFrom += cell.length + 1;
   }
   return { ok: true, cells: parsedCells };
 }
 
-function parseTable(lines, start, options) {
+function parseTable(lines, start, options, context) {
   const headerCells = splitTableRow(lines[start]);
   const separatorCells = splitTableRow(lines[start + 1]);
   if (
@@ -463,10 +592,10 @@ function parseTable(lines, start, options) {
     !isSeparatorCells(separatorCells) ||
     headerCells.length !== separatorCells.length
   ) {
-    return { ok: false, errorCode: 'invalid_table_shape' };
+    return failAt('invalid_table_shape', context.lineOffset + start, 0);
   }
 
-  const header = parseTableCells(headerCells, options);
+  const header = parseTableCells(headerCells, options, context.lineStartOffsets[start] + 1);
   if (!header.ok) return header;
 
   const rows = [];
@@ -474,32 +603,43 @@ function parseTable(lines, start, options) {
   while (index < lines.length && lines[index].trim().startsWith('|')) {
     const cells = splitTableRow(lines[index]);
     if (cells === null || cells.length !== headerCells.length) {
-      return { ok: false, errorCode: 'invalid_table_shape' };
+      return failAt('invalid_table_shape', context.lineOffset + index, 0);
     }
-    const row = parseTableCells(cells, options);
+    const row = parseTableCells(cells, options, context.lineStartOffsets[index] + 1);
     if (!row.ok) return row;
     rows.push(row.cells);
     index += 1;
   }
 
   if (rows.length === 0) {
-    return { ok: false, errorCode: 'invalid_table_shape' };
+    return failAt('invalid_table_shape', context.lineOffset + start + 1, 0);
   }
 
-  return { ok: true, nextIndex: index, node: { type: 'table', header: header.cells, rows } };
+  return {
+    ok: true,
+    nextIndex: index,
+    node: withSpan(
+      { type: 'table', header: header.cells, rows },
+      context,
+      context.lineStartOffsets[start],
+      context.lineStartOffsets[index - 1] + lines[index - 1].length
+    ),
+  };
 }
 
-function parseList(lines, start, options) {
+function parseList(lines, start, options, context) {
   const ordered = /^\d+\. /.test(lines[start]);
   const items = [];
   let index = start;
 
   while (index < lines.length) {
+    const itemStart = index;
     const markerMatch = ordered ? lines[index].match(/^\d+\. (.*)$/) : lines[index].match(/^- (.*)$/);
     if (!markerMatch) break;
 
     const item = { type: 'list_item', children: [] };
-    const head = parseInlineBlock('paragraph', markerMatch[1], options);
+    const markerLength = lines[index].length - markerMatch[1].length;
+    const head = parseInlineBlock('paragraph', markerMatch[1], options, context.lineStartOffsets[index] + markerLength);
     if (!head.ok) return head;
     item.children.push(head.node);
     index += 1;
@@ -519,30 +659,62 @@ function parseList(lines, start, options) {
     }
 
     if (nested.length > 0) {
-      const parsedNested = parseBlocks(stripIndent(nested), options);
+      const nestedContext = {
+        lineOffset: context.lineOffset + index - nested.length,
+        lineStartOffsets: context.lineStartOffsets.slice(index - nested.length, index).map((offset) => offset + 2),
+        sourceLineStartOffsets: context.sourceLineStartOffsets,
+        includeSpans: context.includeSpans,
+      };
+      const parsedNested = parseBlocks(stripIndent(nested), options, nestedContext);
       if (!parsedNested.ok) return parsedNested;
       item.children.push(...parsedNested.children);
     }
 
-    items.push(item);
+    items.push(withSpan(item, context, context.lineStartOffsets[itemStart], context.lineStartOffsets[index - 1] + lines[index - 1].length));
   }
 
-  return { ok: true, nextIndex: index, node: { type: 'list', ordered, items } };
+  return {
+    ok: true,
+    nextIndex: index,
+    node: withSpan(
+      { type: 'list', ordered, items },
+      context,
+      context.lineStartOffsets[start],
+      context.lineStartOffsets[index - 1] + lines[index - 1].length
+    ),
+  };
 }
 
-function parseBlockquote(lines, start, options) {
+function parseBlockquote(lines, start, options, context) {
   const quoteLines = [];
+  const quoteOffsets = [];
   let index = start;
   while (index < lines.length && (lines[index].startsWith('>') || lines[index].startsWith('  >'))) {
     quoteLines.push(stripQuotePrefix(lines[index]));
+    const prefixLength = lines[index].startsWith('  > ') ? 4 : lines[index] === '  >' ? 3 : lines[index].startsWith('> ') ? 2 : 1;
+    quoteOffsets.push(context.lineStartOffsets[index] + prefixLength);
     index += 1;
   }
-  const parsed = parseBlocks(quoteLines, options);
+  const parsed = parseBlocks(quoteLines, options, {
+    lineOffset: context.lineOffset + start,
+    lineStartOffsets: quoteOffsets,
+    sourceLineStartOffsets: context.sourceLineStartOffsets,
+    includeSpans: context.includeSpans,
+  });
   if (!parsed.ok) return parsed;
-  return { ok: true, nextIndex: index, node: { type: 'blockquote', children: parsed.children } };
+  return {
+    ok: true,
+    nextIndex: index,
+    node: withSpan(
+      { type: 'blockquote', children: parsed.children },
+      context,
+      context.lineStartOffsets[start],
+      context.lineStartOffsets[index - 1] + lines[index - 1].length
+    ),
+  };
 }
 
-function parseParagraph(lines, start, options) {
+function parseParagraph(lines, start, options, context) {
   const paragraphLines = [];
   let index = start;
   while (index < lines.length && lines[index] !== '') {
@@ -550,11 +722,20 @@ function parseParagraph(lines, start, options) {
     index += 1;
   }
   const inline = parseInline(paragraphLines.join('\n'), options);
-  if (!inline.ok) return inline;
-  return { ok: true, nextIndex: index, node: { type: 'paragraph', children: inline.nodes } };
+  if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start]);
+  return {
+    ok: true,
+    nextIndex: index,
+    node: withSpan(
+      { type: 'paragraph', children: inline.nodes },
+      context,
+      context.lineStartOffsets[start],
+      context.lineStartOffsets[index - 1] + lines[index - 1].length
+    ),
+  };
 }
 
-function parseBlocks(lines, options) {
+function parseBlocks(lines, options, context) {
   const children = [];
   let index = 0;
 
@@ -566,16 +747,16 @@ function parseBlocks(lines, options) {
     }
 
     if (rawFencePrefix(line) !== null) {
-      const code = parseCodeBlock(lines, index);
-      if (!code.ok) return code;
+      const code = parseCodeBlock(lines, index, context);
+      if (!code.ok) return withLine(code, context.lineOffset + index);
       children.push(code.node);
       index = code.nextIndex;
       continue;
     }
 
     if (extensionOpener(line) !== null) {
-      const extension = parseExtensionBlock(lines, index);
-      if (!extension.ok) return extension;
+      const extension = parseExtensionBlock(lines, index, context);
+      if (!extension.ok) return withLine(extension, context.lineOffset + index);
       children.push(extension.node);
       index = extension.nextIndex;
       continue;
@@ -583,25 +764,35 @@ function parseBlocks(lines, options) {
 
     if (/^#{1,6} /.test(line)) {
       const match = line.match(/^(#{1,6}) (.*)$/);
-      const heading = parseInlineBlock('heading', match[2], options);
+      const heading = parseInlineBlock('heading', match[2], options, context.lineStartOffsets[index] + match[1].length + 1);
       if (!heading.ok) return heading;
-      children.push({
-        type: 'heading',
-        level: match[1].length,
-        children: heading.node.children,
-      });
+      children.push(withSpan(
+        {
+          type: 'heading',
+          level: match[1].length,
+          children: heading.node.children,
+        },
+        context,
+        context.lineStartOffsets[index],
+        context.lineStartOffsets[index] + line.length
+      ));
       index += 1;
       continue;
     }
 
     if (line === '---') {
-      children.push({ type: 'horizontal_rule' });
+      children.push(withSpan(
+        { type: 'horizontal_rule' },
+        context,
+        context.lineStartOffsets[index],
+        context.lineStartOffsets[index] + line.length
+      ));
       index += 1;
       continue;
     }
 
     if (/^- /.test(line) || /^\d+\. /.test(line)) {
-      const list = parseList(lines, index, options);
+      const list = parseList(lines, index, options, context);
       if (!list.ok) return list;
       children.push(list.node);
       index = list.nextIndex;
@@ -609,7 +800,7 @@ function parseBlocks(lines, options) {
     }
 
     if (line.startsWith('>') || line.startsWith('  >')) {
-      const quote = parseBlockquote(lines, index, options);
+      const quote = parseBlockquote(lines, index, options, context);
       if (!quote.ok) return quote;
       children.push(quote.node);
       index = quote.nextIndex;
@@ -617,14 +808,14 @@ function parseBlocks(lines, options) {
     }
 
     if (isTableStart(lines, index)) {
-      const table = parseTable(lines, index, options);
+      const table = parseTable(lines, index, options, context);
       if (!table.ok) return table;
       children.push(table.node);
       index = table.nextIndex;
       continue;
     }
 
-    const paragraph = parseParagraph(lines, index, options);
+    const paragraph = parseParagraph(lines, index, options, context);
     if (!paragraph.ok) return paragraph;
     children.push(paragraph.node);
     index = paragraph.nextIndex;
@@ -636,24 +827,35 @@ function parseBlocks(lines, options) {
 export function parseAnd(source, options = {}) {
   const normalized = normalizeSource(source);
   const sourceLines = stripFinalEmptyLine(normalized.split('\n'));
+  const sourceLineStartOffsets = lineStartOffsets(sourceLines);
   const header = stripDocumentHeader(sourceLines);
-  if (!header.ok) return header;
+  if (!header.ok) return publicFailure(finalizeDiagnostic(header, normalized));
   const lines = header.lines;
+  const context = {
+    lineOffset: header.lineOffset,
+    lineStartOffsets: sourceLineStartOffsets.slice(header.lineOffset),
+    sourceLineStartOffsets,
+    includeSpans: options.includeSpans === true,
+  };
 
   const raw = scanRawIslands(lines);
-  if (!raw.ok) return raw;
+  if (!raw.ok) return publicFailure(finalizeDiagnostic(shiftDiagnosticLines(raw, context.lineOffset), normalized));
 
   const blockValidation = validateBlocks(lines, raw.rawLines);
-  if (!blockValidation.ok) return blockValidation;
+  if (!blockValidation.ok) {
+    return publicFailure(finalizeDiagnostic(shiftDiagnosticLines(blockValidation, context.lineOffset), normalized));
+  }
 
-  const parsed = parseBlocks(lines, options);
-  if (!parsed.ok) return parsed;
+  const parsed = parseBlocks(lines, options, context);
+  if (!parsed.ok) return publicFailure(finalizeDiagnostic(parsed, normalized));
+
+  const document = {
+    type: 'document',
+    children: parsed.children,
+  };
 
   return {
     ok: true,
-    document: {
-      type: 'document',
-      children: parsed.children,
-    },
+    document: withSpan(document, context, 0, normalized.endsWith('\n') ? normalized.length - 1 : normalized.length),
   };
 }

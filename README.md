@@ -42,11 +42,17 @@ The repository is currently spec-and-CTS first:
 ## Safety Scripts
 
 * `npm test` — runs the repository safety checks and both CTS adapters
+* `npm run and -- check examples/minimal.and` — checks one document with the local CLI
+* `npm run and -- parse examples/minimal.and --json` — emits a parsed AST
+* `npm run and -- parse examples/minimal.and --json --spans` — emits an AST with source spans
+* `npm run and -- canonical examples/minimal.and --profile standalone` — emits canonical text
+* CLI failures include stable `errorCode` values and line/column diagnostics where available
 * `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
 * `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
 * `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
 * `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
 * `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
+* `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands
 * `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
 * `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS

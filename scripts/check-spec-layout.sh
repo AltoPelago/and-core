@@ -7,8 +7,10 @@ cd "$repo_root"
 required_paths=(
   "README.md"
   "package.json"
+  "bin/and.mjs"
   "scripts/check-no-local-paths.sh"
   "scripts/check-spec-layout.sh"
+  "scripts/check-cli.mjs"
   "scripts/pre-commit-check.sh"
   "scripts/format-md-tables.mjs"
   "docs/spec/v1/README.md"
@@ -18,6 +20,7 @@ required_paths=(
   "docs/spec/v1/and-vscode-support.md"
   "cts/README.md"
   "examples/README.md"
+  "examples/minimal.and"
   "implementations/README.md"
 )
 
