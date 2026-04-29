@@ -43,8 +43,6 @@ function emitInlineNode(node, context) {
   switch (node.type) {
     case 'text':
       return escapeText(node.value, context);
-    case 'nbsp':
-      return '[_]';
     case 'strong':
       return `[* ${emitInlineNodes(node.children, context)}]`;
     case 'emphasis':
@@ -53,8 +51,6 @@ function emitInlineNode(node, context) {
       return `[@ ${escapeLinkTarget(node.href)} | ${emitInlineNodes(node.children, context)}]`;
     case 'code':
       return `[$ ${escapeInlineCode(node.text)}]`;
-    case 'line_break':
-      return '[<]';
     default:
       throw fail('unsupported_inline_node', `Unsupported inline node type: ${node.type}`);
   }

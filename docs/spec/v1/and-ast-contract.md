@@ -218,27 +218,6 @@ interface NdInlineCode {
 `text` is delimiter-opaque payload after inline-code escape handling. Nested inline nodes are not
 parsed inside inline code.
 
-### Line Break
-
-```ts
-interface NdLineBreak {
-  readonly type: "line_break";
-}
-```
-
-`line_break` is an explicit inline line break produced by `[<]`.
-
-### Non-Breaking Space
-
-```ts
-interface NdNbsp {
-  readonly type: "nbsp";
-}
-```
-
-`nbsp` is produced by `[_]` and represents a non-breaking space in projections that support that
-distinction.
-
 ## Metadata
 
 Implementations SHOULD track source spans for diagnostics and editor integrations, but source spans

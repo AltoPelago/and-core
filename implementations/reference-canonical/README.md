@@ -16,8 +16,7 @@ Current scope:
 * extension block fallback regions
 * tables
 * horizontal rules
-* inline line breaks
-* inline text, strong, emphasis, links, inline code, non-breaking spaces, and line breaks
+* inline text, strong, emphasis, links, and inline code
 
 Paragraph line breaks preserved in parser AST text nodes are treated as soft wraps during canonical
 emission and serialized as a single space. The canonical-emitter check therefore verifies canonical

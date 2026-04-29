@@ -353,18 +353,6 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       continue;
     }
 
-    if (text.startsWith('[_]', index)) {
-      nodes.push(withSpan({ type: 'nbsp' }, context, baseOffset + index, baseOffset + index + 3));
-      index += 3;
-      continue;
-    }
-
-    if (text.startsWith('[<]', index)) {
-      nodes.push(withSpan({ type: 'line_break' }, context, baseOffset + index, baseOffset + index + 3));
-      index += 3;
-      continue;
-    }
-
     if (char === ']') {
       if (state.stopOnClose) {
         return { ok: true, closed: true, nextIndex: index + 1, nodes };

@@ -12,9 +12,8 @@ Current scope:
 
 * strict-mode line normalization
 * document AST output for the currently covered block forms
-* inline scanning for `strong`, `emphasis`, `link`, `inline code`, `nbsp`, and inline line breaks
-* inline AST output for text, strong, emphasis, link, code, non-breaking-space, and line-break nodes
-* inline hard line breaks via `[<]`
+* inline scanning for `strong`, `emphasis`, `link`, and `inline code`
+* inline AST output for text, strong, emphasis, link, and code nodes
 * adjacent `+++fallback` blocks for extension fallback content
 * escape validation
 * compact strict-mode diagnostics with `code`, `line`, `column`, and inline `offset` when available

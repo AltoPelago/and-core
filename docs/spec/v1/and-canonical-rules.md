@@ -131,17 +131,15 @@ Canonical inline forms:
 [/ emphasis]
 [@ https://example.com | label]
 [$ render()]
-[_]
-[<]
 ```
 
 Rules:
 
 * exactly one space after inline tag
 * links use exactly one space around `|`
-* `nbsp` emits as `[_]` with no spaces
-* `line_break` emits as `[<]` with no spaces
 * shorthand combinations MUST NOT be emitted
+
+Core v1 does not define dedicated inline atoms for non-breaking spaces or forced line breaks.
 
 Canonical:
 
@@ -392,19 +390,7 @@ Standalone line only.
 
 ---
 
-## 17. Inline line break
-
-Canonical:
-
-```text
-[<]
-```
-
-This is an inline form and MAY appear anywhere inline content is permitted.
-
----
-
-## 18. Attribute/order rules
+## 17. Attribute/order rules
 
 Core v1 has no attributes, IDs, footnotes, references, or metadata fields.
 Canonical emitters therefore have:

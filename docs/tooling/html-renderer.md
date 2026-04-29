@@ -22,7 +22,7 @@ The first implementation lives in
 It supports:
 
 * paragraphs, headings, horizontal rules, blockquotes, lists, code blocks, ordered code blocks, extension blocks, and tables
-* text, strong, emphasis, inline code, links, non-breaking spaces, and inline line breaks
+* text, strong, emphasis, inline code, and links
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default
@@ -49,6 +49,16 @@ default renderer only emits clickable `href` values for:
 * fragment links
 
 Other link targets are rendered as disabled anchors with their labels preserved.
+
+For `http:` and `https:` links, the reference renderer also emits conservative browser-facing
+attributes:
+
+* `target="_blank"`
+* `rel="noopener noreferrer nofollow"`
+* `referrerpolicy="no-referrer"`
+
+This keeps preview surfaces safer by default and avoids treating presentation-layer links as fully
+trusted navigation.
 
 When the renderer encounters an extension block without parsed fallback content, it emits a visible
 diagnostic block in the HTML output. The diagnostic names the unsupported extension and preserves

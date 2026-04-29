@@ -34,6 +34,15 @@ function isSafeHref(href) {
   }
 }
 
+function isExternalWebHref(href) {
+  try {
+    const url = new URL(href);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function renderInlineNodes(nodes, options) {
   return nodes.map((node) => renderInlineNode(node, options)).join('');
 }
@@ -42,22 +51,22 @@ function renderInlineNode(node, options) {
   switch (node.type) {
     case 'text':
       return escapeHtml(normalizeText(node.value));
-    case 'nbsp':
-      return '&nbsp;';
     case 'strong':
       return `<strong>${renderInlineNodes(node.children, options)}</strong>`;
     case 'emphasis':
       return `<em>${renderInlineNodes(node.children, options)}</em>`;
     case 'code':
       return `<code>${escapeHtml(normalizeText(node.text))}</code>`;
-    case 'line_break':
-      return '<br>';
     case 'link': {
       const label = renderInlineNodes(node.children, options);
       if (!isSafeHref(node.href)) {
         return `<a aria-disabled="true" title="Unsafe link target omitted">${label}</a>`;
       }
-      return `<a href="${escapeAttribute(node.href)}">${label}</a>`;
+      const href = escapeAttribute(node.href);
+      const externalAttributes = isExternalWebHref(node.href)
+        ? ' target="_blank" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer"'
+        : '';
+      return `<a href="${href}"${externalAttributes}>${label}</a>`;
     }
     default:
       throw fail('unsupported_inline_node', `Unsupported inline node type: ${node.type}`);
@@ -127,11 +136,11 @@ function renderUnsupportedExtensionDiagnostic(block) {
   const payload = normalizeText(block.text);
   return [
     `<aside class="and-diagnostic and-diagnostic-extension" data-and-extension="${escapeAttribute(block.name)}" aria-label="Unsupported extension">`,
-    `Unsupported extension: <code>${escapeHtml(block.name)}</code>.`,
+    `<p>Unsupported extension: <code>${escapeHtml(block.name)}</code>. Opaque extension payload.</p>`,
     payload === ''
       ? '<p>No fallback content was provided for this extension block.</p>'
       : `<details><summary>Open payload</summary>\n\n<pre><code>${escapeHtml(payload)}</code></pre>\n</details>`,
-    '</aside><br>',
+    '</aside>',
   ].join('\n');
 }
 

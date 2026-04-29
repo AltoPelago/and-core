@@ -95,7 +95,7 @@ date = 2026-04-01
 
 # Render Me
 
-This is [* strong], [/ emphasis], [$ <code>], A[_]B[<]Wrap, and [@ https://example.com?a=1&b=2 | a link].
+This is [* strong], [/ emphasis], [$ <code>], and [@ https://example.com?a=1&b=2 | a link].
 
 [@ javascript:alert(1) | unsafe target]
 
@@ -132,8 +132,6 @@ assert(fragment.includes('<h1>Render Me</h1>'), 'renderer should emit headings')
 assert(fragment.includes('<strong>strong</strong>'), 'renderer should emit strong inline nodes');
 assert(fragment.includes('<em>emphasis</em>'), 'renderer should emit emphasis inline nodes');
 assert(fragment.includes('<code>&lt;code&gt;</code>'), 'renderer should escape inline code');
-assert(fragment.includes('A&nbsp;B'), 'renderer should emit non-breaking spaces');
-assert(fragment.includes('A&nbsp;B<br>Wrap'), 'renderer should emit inline hard line breaks');
 assert(
   fragment.includes('<figure class="and-code-block" data-language="aeon">'),
   'renderer should wrap language-tagged code blocks in a block container'
@@ -167,8 +165,8 @@ assert(
   'renderer should expose opaque extension payload in diagnostic details'
 );
 assert(
-  fragment.includes('<a href="https://example.com?a=1&amp;b=2">a link</a>'),
-  'renderer should escape safe href attributes'
+  fragment.includes('<a href="https://example.com?a=1&amp;b=2" target="_blank" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">a link</a>'),
+  'renderer should harden external safe href attributes'
 );
 assert(
   fragment.includes('<a aria-disabled="true" title="Unsafe link target omitted">unsafe target</a>'),

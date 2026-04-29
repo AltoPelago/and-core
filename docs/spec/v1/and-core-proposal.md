@@ -401,7 +401,6 @@ The same character sequence MUST NOT change meaning based on surrounding prose o
 [/ ...]          emphasis
 [@ URL | text]   link
 [$ ...]          inline code
-[_]              non-breaking space
 ```
 
 ---
@@ -485,8 +484,6 @@ MUST error.
 [/ ...]          emphasis
 [$ ...]          inline code
 [@ url | text]   link
-[_]              non-breaking space
-[<]              forced line break
 ```
 
 ### Reserved — do not use in Core v1
@@ -499,13 +496,17 @@ MUST error.
 [+ ...]   reserved for insertion/addition if ever needed
 [- ...]   reserved for deletion/removal if ever needed
 [" ...]   reserved for inline quoted text if ever needed
+[' ...]   reserved for comments if ever needed
 [: ...]   reserved for typed values like datetime if ever needed
 [> ...]   reserved for consumer defined tags if ever needed
+[^ ...]   reserved for references if ever needed
 
 [ ]   reserved for todo/unchecked if ever needed
 [x]   reserved for todo/checked if ever needed
 [=]   reserved for todo/in progress if ever needed
 [.]   reserved for todo/cancelled if ever needed
+[<]   reserved for explicit line break if ever needed
+[_]   reserved for non-breaking space if ever needed
 
 [n]   reserved for auto-number marker in headers if ever needed
 ```
@@ -520,15 +521,13 @@ with their natural meaning.
 
 ### Lock
 
-Core v1 recognizes exactly five inline symbols:
+Core v1 recognizes exactly four inline symbols:
 
 ```text
 [* strong]
 [/ emphasis]
 [$ inline code]
 [@ url | label]
-[_]
-[<]
 ```
 
 Everything else is reserved until there is a strong need and a consistent assignment.
@@ -891,9 +890,9 @@ First[<]Second
 
 Expected result:
 
-* parse success
-* one paragraph block
-* paragraph contains one inline line-break node between text nodes
+* parse failure
+* error code `unknown_inline_type`
+* `[<]` remains reserved in Core v1
 
 ### `seed-table-requires-separator`
 
@@ -1856,10 +1855,9 @@ A[_]B
 
 Expected result:
 
-* parse success
-* one paragraph block
-* paragraph contains one `nbsp` inline node between text nodes
-* `[_]` is not a cancelled task marker in Core v1
+* parse failure
+* error code `unknown_inline_type`
+* `[_]` remains reserved in Core v1
 
 ### `seed-inline-invalid-escape-in-code`
 
@@ -1944,7 +1942,6 @@ Inline:
 { "type": "emphasis", "children": [...] }
 { "type": "code", "text": "..." }
 { "type": "link", "href": "...", "children": [...] }
-{ "type": "nbsp" }
 ```
 
 ---
@@ -2250,16 +2247,12 @@ InlineNode      ::= Text
                   | Strong
                   | Emphasis
                   | Link
-                  | Code
-                  | Nbsp
-                  | LineBreak ;
+                  | Code ;
 
 Strong          ::= "[*" WS InlineContent "]" ;
 Emphasis        ::= "[/" WS InlineContent "]" ;
 Link            ::= "[@" WS LinkTarget WS? "|" WS? LinkLabel "]" ;
 Code            ::= "[$" WS InlineRaw "]" ;
-Nbsp            ::= "[_]" ;
-LineBreak       ::= "[<]" ;
 
 LinkTarget      ::= LinkChar+ ;
 LinkLabel       ::= InlineNode+ ;

@@ -688,8 +688,7 @@ In particular, todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[.]` MUST NOT
 task-list semantics in Core v1 strict mode, and SHOULD produce the same reserved/invalid handling
 path as other unassigned Core v1 inline forms.
 
-`[_]` is assigned in Core v1 as the non-breaking-space inline node and MUST NOT be treated as a
-cancelled task marker.
+`[_]` and `[<]` remain reserved in Core v1 and MUST NOT be treated as active inline syntax.
 
 If the implementation stays scanner-first, budget-aware, and conformance-driven, it should preserve
 the core value of `&ND`: explicit structure without Markdown-style ambiguity.

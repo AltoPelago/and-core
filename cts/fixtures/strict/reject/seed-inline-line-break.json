@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-line-break",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "First[<]Second\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "`[<]` is not assigned in Core v1",
+      "strict parsers fail closed instead of materializing an inline line-break node"
+    ]
+  }
+}
