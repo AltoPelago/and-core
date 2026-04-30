@@ -70,7 +70,7 @@ Current quick fixes:
 Current hover guidance:
 
 * explanations for a few common strict parser diagnostics such as `invalid_header`
-* explanations for reserved Core v1 inline tokens such as `[x]`, `[_]`, `[<]`, and `[# ...]`
+* explanations for reserved or unassigned Core v1 inline tokens such as `[x]`, `[_]`, `[<]`, and `[# ...]`
 
 Current completions:
 

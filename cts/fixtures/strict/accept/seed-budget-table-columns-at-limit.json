@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-table-columns-at-limit",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxTableColumns": 2
+    }
+  },
+  "source": "| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "table-column budget is inclusive at the configured limit"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "table",
+          "header": [
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ]
+            }
+          ],
+          "rows": [
+            [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "2"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}

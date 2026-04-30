@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-ordered-list-renumber-canonical",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "3. Alpha\n4. Beta\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one ordered list block",
+      "source numbers are a valid monotonic sequence",
+      "canonical emission renumbers ordered list items from 1"
+    ],
+    "canonical": {
+      "embedded": "1. Alpha\n2. Beta\n",
+      "standalone": "&ND v1\n\n1. Alpha\n2. Beta\n"
+    },
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Alpha"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Beta"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

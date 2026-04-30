@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-link-target-at-limit",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxLinkTargetLength": 3
+    }
+  },
+  "source": "[@ abc| label]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "link-target budget is inclusive at the configured limit"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "link",
+              "href": "abc",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "label"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

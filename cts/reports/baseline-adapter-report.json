@@ -3,29 +3,29 @@
   "mode": "adapter",
   "adapter": "./cts/examples/baseline-adapter.mjs",
   "totals": {
-    "fixtures": 67,
+    "fixtures": 103,
     "pending": 0,
-    "pass": 67,
+    "pass": 103,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 40,
+    "expected": 49,
     "checked": 0,
     "matched": 0,
-    "skipped": 40,
+    "skipped": 49,
     "failed": 0
   },
   "spanChecks": {
-    "expected": 1,
+    "expected": 3,
     "checked": 0,
     "matched": 0,
     "failed": 0,
-    "skipped": 1
+    "skipped": 3
   },
   "errorCodeChecks": {
-    "expected": 26,
-    "matched": 26,
+    "expected": 51,
+    "matched": 51,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -101,6 +101,43 @@
       "notes": [
         "Evaluated by the baseline adapter example.",
         "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-ordered-list-renumber-canonical",
+      "path": "strict/accept/seed-ordered-list-renumber-canonical.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-ordered-list-skipped-number",
+      "path": "strict/reject/seed-ordered-list-skipped-number.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_ordered_list_sequence",
+      "actualOk": false,
+      "errorCode": "invalid_ordered_list_sequence",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
       ]
     },
     {
@@ -596,6 +633,25 @@
       ]
     },
     {
+      "id": "seed-list-item-table-mismatched-body-row",
+      "path": "strict/reject/seed-list-item-table-mismatched-body-row.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
       "id": "seed-list-item-blockquote",
       "path": "strict/accept/seed-list-item-blockquote.json",
       "status": "pass",
@@ -665,6 +721,25 @@
       "notes": [
         "Evaluated by the baseline adapter example.",
         "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-blockquote-table-mismatched-body-row",
+      "path": "strict/reject/seed-blockquote-table-mismatched-body-row.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
       ]
     },
     {
@@ -831,38 +906,40 @@
     },
     {
       "id": "seed-inline-nbsp",
-      "path": "strict/accept/seed-inline-nbsp.json",
+      "path": "strict/reject/seed-inline-nbsp.json",
       "status": "pass",
       "mode": "strict",
-      "expectedOk": true,
-      "actualOk": true,
-      "documentExpected": true,
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,
       "spansChecked": false,
       "spansMatched": 0,
       "spansFailed": 0,
       "notes": [
-        "Evaluated by the baseline adapter example.",
-        "Document AST expectation skipped; adapter does not declare document capability."
+        "Evaluated by the baseline adapter example."
       ]
     },
     {
       "id": "seed-inline-line-break",
-      "path": "strict/accept/seed-inline-line-break.json",
+      "path": "strict/reject/seed-inline-line-break.json",
       "status": "pass",
       "mode": "strict",
-      "expectedOk": true,
-      "actualOk": true,
-      "documentExpected": true,
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,
       "spansChecked": false,
       "spansMatched": 0,
       "spansFailed": 0,
       "notes": [
-        "Evaluated by the baseline adapter example.",
-        "Document AST expectation skipped; adapter does not declare document capability."
+        "Evaluated by the baseline adapter example."
       ]
     },
     {
@@ -960,8 +1037,378 @@
       ]
     },
     {
+      "id": "seed-budget-block-count-at-limit",
+      "path": "strict/accept/seed-budget-block-count-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-block-count",
+      "path": "strict/reject/seed-budget-block-count.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-code-block-size-at-limit",
+      "path": "strict/accept/seed-budget-code-block-size-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-code-block-size",
+      "path": "strict/reject/seed-budget-code-block-size.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-document-size-at-limit",
+      "path": "strict/accept/seed-budget-document-size-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-document-size",
+      "path": "strict/reject/seed-budget-document-size.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-extension-block-size-at-limit",
+      "path": "strict/accept/seed-budget-extension-block-size-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-extension-block-size",
+      "path": "strict/reject/seed-budget-extension-block-size.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-inline-depth-at-limit",
+      "path": "strict/accept/seed-budget-inline-depth-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-inline-depth",
+      "path": "strict/reject/seed-budget-inline-depth.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-line-length-at-limit",
+      "path": "strict/accept/seed-budget-line-length-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-line-length",
+      "path": "strict/reject/seed-budget-line-length.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-link-target-at-limit",
+      "path": "strict/accept/seed-budget-link-target-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
       "id": "seed-budget-link-target",
       "path": "strict/reject/seed-budget-link-target.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-list-item-count-at-limit",
+      "path": "strict/accept/seed-budget-list-item-count-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-list-item-count",
+      "path": "strict/reject/seed-budget-list-item-count.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-list-item-count-whole-document",
+      "path": "strict/reject/seed-budget-list-item-count-whole-document.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-nesting-depth-at-limit",
+      "path": "strict/accept/seed-budget-nesting-depth-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-nesting-depth",
+      "path": "strict/reject/seed-budget-nesting-depth.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "nd_budget_exceeded",
+      "actualOk": false,
+      "errorCode": "nd_budget_exceeded",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-budget-table-columns-at-limit",
+      "path": "strict/accept/seed-budget-table-columns-at-limit.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-budget-table-columns",
+      "path": "strict/reject/seed-budget-table-columns.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
@@ -1226,6 +1673,158 @@
       ]
     },
     {
+      "id": "seed-inline-reserved-anchor-tag",
+      "path": "strict/reject/seed-inline-reserved-anchor-tag.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-reference-tag",
+      "path": "strict/reject/seed-inline-reserved-reference-tag.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-admonition-tag",
+      "path": "strict/reject/seed-inline-reserved-admonition-tag.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-footnote-tag",
+      "path": "strict/reject/seed-inline-reserved-footnote-tag.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-todo-unchecked-marker",
+      "path": "strict/reject/seed-inline-reserved-todo-unchecked-marker.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-todo-marker",
+      "path": "strict/reject/seed-inline-reserved-todo-marker.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-todo-in-progress-marker",
+      "path": "strict/reject/seed-inline-reserved-todo-in-progress-marker.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-inline-reserved-todo-cancelled-marker",
+      "path": "strict/reject/seed-inline-reserved-todo-cancelled-marker.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_inline_type",
+      "actualOk": false,
+      "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
       "id": "seed-inline-invalid-escape-in-code",
       "path": "strict/reject/seed-inline-invalid-escape-in-code.json",
       "status": "pass",
@@ -1245,8 +1844,82 @@
       ]
     },
     {
+      "id": "seed-ordered-code-block-wrong-closing-fence",
+      "path": "strict/reject/seed-ordered-code-block-wrong-closing-fence.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "actualOk": false,
+      "errorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-fallback-not-immediately-after-extension",
+      "path": "strict/reject/seed-fallback-not-immediately-after-extension.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
       "id": "seed-source-spans-table-inline",
       "path": "strict/metadata/seed-source-spans-table-inline.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Source span expectation skipped; adapter does not declare spans capability."
+      ]
+    },
+    {
+      "id": "seed-source-spans-extension-fallback",
+      "path": "strict/metadata/seed-source-spans-extension-fallback.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Source span expectation skipped; adapter does not declare spans capability."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-blockquote",
+      "path": "strict/metadata/seed-source-spans-list-item-blockquote.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,

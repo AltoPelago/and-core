@@ -35,6 +35,7 @@ const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'and-cli-'));
 const validPath = path.join(tempDir, 'valid.and');
 const invalidPath = path.join(tempDir, 'invalid.and');
 const invalidBodyPath = path.join(tempDir, 'invalid-body.and');
+const budgetPath = path.join(tempDir, 'budget.and');
 const tablePath = path.join(tempDir, 'table.and');
 const canonicalPath = path.join(tempDir, 'canonical.and');
 const htmlPath = path.join(tempDir, 'document.html');
@@ -42,6 +43,7 @@ const htmlPath = path.join(tempDir, 'document.html');
 await fs.writeFile(validPath, '&ND v1\n\n# Title\n\nMy number is\n1. not a list\n');
 await fs.writeFile(invalidPath, '&ND v2\n\n# Title\n');
 await fs.writeFile(invalidBodyPath, '&ND v1\n\nText\n---\n');
+await fs.writeFile(budgetPath, '&ND v1\n\nHello\n');
 await fs.writeFile(
   tablePath,
   '&ND v1\n\n|  Name  | Link\\|Text |\n| --- | --- |\n|  Alpha | [* Strong] |\n'
@@ -60,6 +62,23 @@ const checkInvalidBody = await run(['check', invalidBodyPath, '--json']);
 assert(!checkInvalidBody.ok, 'check should reject invalid body syntax');
 assert(JSON.parse(checkInvalidBody.stdout).diagnostic.line === 4, 'body diagnostics should include header line offset');
 
+const checkBudgetAtLimit = await run(['check', budgetPath, '--budget', 'maxLineLength=6']);
+assert(checkBudgetAtLimit.ok && checkBudgetAtLimit.stdout === 'ok\n', 'check --budget should accept at-limit documents');
+
+const checkBudgetExceeded = await run(['check', budgetPath, '--json', '--budget', 'maxLineLength=5']);
+assert(!checkBudgetExceeded.ok, 'check --budget should reject over-budget documents');
+assert(
+  JSON.parse(checkBudgetExceeded.stdout).errorCode === 'nd_budget_exceeded',
+  'check --budget should report nd_budget_exceeded'
+);
+
+const checkInvalidBudget = await run(['check', budgetPath, '--json', '--budget', 'nope=1']);
+assert(!checkInvalidBudget.ok, 'check should reject invalid budget names');
+assert(
+  JSON.parse(checkInvalidBudget.stdout).errorCode === 'invalid_budget_option',
+  'check should report invalid_budget_option'
+);
+
 const parseValid = await run(['parse', validPath, '--json']);
 assert(parseValid.ok, 'parse --json should accept a valid document');
 assert(JSON.parse(parseValid.stdout).document.children.length === 2, 'parse --json should emit an AST');
@@ -76,6 +95,13 @@ assert(invalidDiagnostics[0].code === 'block_opener_on_paragraph_continuation', 
 assert(invalidDiagnostics[0].range.start.line === 3, 'diagnostics should emit zero-based line positions');
 assert(invalidDiagnostics[0].range.start.character === 0, 'diagnostics should emit zero-based character positions');
 assert(invalidDiagnostics[0].source === 'and-core', 'diagnostics should expose a stable source identifier');
+
+const diagnosticsBudgetExceeded = await run(['diagnostics', budgetPath, '--json', '--budget', 'maxLineLength=5']);
+assert(!diagnosticsBudgetExceeded.ok, 'diagnostics --budget should reject over-budget documents');
+assert(
+  JSON.parse(diagnosticsBudgetExceeded.stdout).diagnostics[0].code === 'nd_budget_exceeded',
+  'diagnostics --budget should surface budget errors'
+);
 
 const parseValidWithSpans = await run(['parse', validPath, '--json', '--spans']);
 assert(parseValidWithSpans.ok, 'parse --json --spans should accept a valid document');

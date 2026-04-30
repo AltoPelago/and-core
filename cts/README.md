@@ -9,11 +9,13 @@ turning the normative conformance seeds in the v1 specification into executable 
 
 * parser acceptance and rejection cases
 * structural AST expectations for accepted documents
+* exact canonical-text expectations for selected accepted documents
 * stable error-code expectations for rejected documents
 * strict vs `forward_compat` mode distinctions where relevant
 * regression coverage for ambiguity, budget, and nesting edge cases
 
-Canonicalization fixtures are expected to live here later, but the current suite is parser-focused.
+Canonical expectations can now live alongside parser fixtures through an optional
+`expected.canonical` lane for selected documents, but the suite remains primarily parser-focused.
 
 ## Layout
 
@@ -35,6 +37,7 @@ The repository now includes a small CTS entrypoint:
 * `npm run cts:report:subset`
 * `npm run cts:report:reference`
 * `npm run cts:report:all`
+* `npm run check:reports`
 
 Current behavior:
 
@@ -72,3 +75,7 @@ The default report script writes:
 
 * `cts/reports/reference-subset-report.json` once generated
 * report directory guide: [cts/reports/README.md](./reports/README.md)
+
+Use `npm run check:reports` to verify that generated CTS, canonical, and HTML report artifacts match
+the current fixtures and implementations. If it fails, run `npm run cts:report:all` and review the
+artifact diff.

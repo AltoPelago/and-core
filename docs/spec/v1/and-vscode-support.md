@@ -145,14 +145,14 @@ The grammar SHOULD highlight obvious lexical-invalid forms distinctly, for examp
 
 - `[x something]`
 - reserved todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[.]`
-- reserved markers such as `[_]` and `[<]`
+- unassigned bracket forms such as `[_]` and `[<]`
 - invalid escapes such as `\q`
 - fence-like openers in places where only plain text is lexically expected
 
 This does not replace parser diagnostics, but it helps the editor surface likely mistakes quickly.
 Reserved todo-like markers SHOULD be highlighted as reserved-or-future syntax rather than as valid
 Core v1 task-list semantics.
-`[_]` and `[<]` SHOULD be highlighted as reserved-or-future syntax rather than as valid Core v1
+`[_]` and `[<]` SHOULD be highlighted as unassigned invalid syntax rather than as valid Core v1
 inline forms.
 
 ---

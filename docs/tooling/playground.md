@@ -26,6 +26,29 @@ The smoke check verifies that the page is wired to the parser and canonical emit
 npm run playground:check
 ```
 
+## Parser Budgets
+
+The source pane includes optional parser-budget controls for hostile-input and agent workflow
+testing. These fields map directly to the reference parser budget names:
+
+* `Line` → `maxLineLength`
+* `Doc` → `maxDocumentSize`
+* `Blocks` → `maxBlockCount`
+* `Items` → `maxListItemCount`
+* `Depth` → `maxNestingDepth`
+* `Inline` → `maxInlineDepth`
+* `Columns` → `maxTableColumns`
+* `Raw` → `maxBlockSize`
+* `Link` → `maxLinkTargetLength`
+
+Leaving a field empty means no explicit playground limit for that budget. Setting a field passes the
+configured value into `parseAnd(source, { budgets })`, and budget exhaustion is surfaced as
+`nd_budget_exceeded` in the diagnostics tab.
+
+Budgets are intentionally a parser guardrail, not a formatting feature. They are useful when testing
+resource boundaries, validating CTS budget fixtures, or checking that agent-generated documents fail
+closed before expensive parsing or rendering work begins.
+
 ## Goals
 
 * give authors immediate feedback while writing `&ND`
@@ -50,7 +73,7 @@ The right pane uses tabs:
 
 The playground should keep the same separation as the repository:
 
-1. Parse source with the reference parser.
+1. Parse source with the reference parser and any explicit playground budgets.
 2. If parsing succeeds, emit canonical text with the canonical emitter.
 3. Optionally show AST/spans for debugging and editor-tooling work.
 4. Optionally pass the AST to a renderer for HTML preview.
@@ -67,6 +90,7 @@ A server-backed implementation is still acceptable later if renderers need heavi
 The first version should prioritize:
 
 * strict-mode parsing
+* explicit parser-budget testing
 * stable diagnostics
 * canonical output
 * AST/spans inspection

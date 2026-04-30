@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-list-item-count-at-limit",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxListItemCount": 2
+    }
+  },
+  "source": "- One\n- Two\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "whole-document list-item budget is inclusive at the configured limit"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "One"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Two"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

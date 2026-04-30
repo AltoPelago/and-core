@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-block-count",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxBlockCount": 1
+    }
+  },
+  "source": "One\n\nTwo\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured whole-document block-count budget is exceeded",
+      "budget failure occurs as blocks are created"
+    ]
+  }
+}

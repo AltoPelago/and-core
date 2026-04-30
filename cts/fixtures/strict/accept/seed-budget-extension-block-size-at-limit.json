@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-extension-block-size-at-limit",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxBlockSize": 8
+    }
+  },
+  "source": "+++diagram/opaque\n12345678\n+++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "extension block payload budget is inclusive at the configured limit"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "extension_block",
+          "name": "diagram/opaque",
+          "text": "12345678"
+        }
+      ]
+    }
+  }
+}

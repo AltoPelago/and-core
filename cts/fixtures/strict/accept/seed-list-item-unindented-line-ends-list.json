@@ -11,6 +11,10 @@
       "one following top-level paragraph",
       "unindented text immediately after a list item ends the list"
     ],
+    "canonical": {
+      "embedded": "- Parse strict documents\n\nworld\n",
+      "standalone": "&ND v1\n\n- Parse strict documents\n\nworld\n"
+    },
     "document": {
       "type": "document",
       "children": [

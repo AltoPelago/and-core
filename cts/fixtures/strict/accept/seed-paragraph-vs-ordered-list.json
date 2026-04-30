@@ -10,6 +10,10 @@
       "one paragraph block",
       "paragraph contains two lines of text"
     ],
+    "canonical": {
+      "embedded": "My number is 1. not a list\n",
+      "standalone": "&ND v1\n\nMy number is 1. not a list\n"
+    },
     "document": {
       "type": "document",
       "children": [

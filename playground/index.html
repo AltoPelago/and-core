@@ -26,6 +26,114 @@
             </div>
             <button id="reset" type="button">Reset</button>
           </div>
+          <details class="budget-panel">
+            <summary>Parser budgets</summary>
+            <p class="budget-hint">
+              Optional guardrails for agent and hostile-input testing. Empty fields use the default unrestricted
+              playground parse.
+            </p>
+            <div class="budget-grid" aria-label="Optional parser budgets">
+              <label>
+                Line
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxLineLength"
+                  aria-label="Max line length"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Doc
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxDocumentSize"
+                  aria-label="Max document size"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Blocks
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxBlockCount"
+                  aria-label="Max block count"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Items
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxListItemCount"
+                  aria-label="Max list item count"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Depth
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxNestingDepth"
+                  aria-label="Max nesting depth"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Inline
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxInlineDepth"
+                  aria-label="Max inline depth"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Columns
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxTableColumns"
+                  aria-label="Max table columns"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Raw
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxBlockSize"
+                  aria-label="Max raw block payload size"
+                  placeholder="∞"
+                >
+              </label>
+              <label>
+                Link
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-budget="maxLinkTargetLength"
+                  aria-label="Max link target length"
+                  placeholder="∞"
+                >
+              </label>
+            </div>
+          </details>
           <textarea id="source" spellcheck="false" aria-label="&ND source editor"></textarea>
         </div>
 

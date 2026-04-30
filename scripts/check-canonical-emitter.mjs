@@ -73,6 +73,16 @@ async function main() {
 
       fixtureSkipped = false;
 
+      const expectedCanonical = fixture.expected?.canonical?.[profile];
+      if (typeof expectedCanonical === 'string' && expectedCanonical !== emitted) {
+        totals.failed += 1;
+        fixtureFailed = true;
+        profileResult.status = 'failed';
+        profileResult.notes.push('canonical_mismatch');
+        console.error(`FAIL ${fixture.id} (${profile}): emitted canonical text did not match expected.canonical`);
+        continue;
+      }
+
       const reparsed = parseAnd(emitted);
       if (!reparsed.ok) {
         totals.failed += 1;

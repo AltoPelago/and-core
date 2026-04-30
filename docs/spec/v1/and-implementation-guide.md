@@ -257,6 +257,17 @@ interface NdSpan {
 }
 ```
 
+If spans are exposed publicly, keep the contract narrow and stable:
+
+- normalized-source offsets only
+- inclusive `startOffset`, exclusive `endOffset`
+- one-based line and column coordinates
+- block spans covering the structural source owned by the block
+- inline spans pointing at the exact trimmed inline content rather than enclosing block delimiters
+
+Avoid exposing parser-internal bookkeeping that would make future scanner, indentation, or recovery
+refactors look like breaking API changes.
+
 This makes diagnostics, editor integration, and conformance debugging much easier.
 
 ---
@@ -533,13 +544,13 @@ Recommended enforcement points:
 
 - document size: before full parse
 - line length: during line normalization
-- block count: as blocks are created
-- nesting depth: when entering nested block contexts
-- inline depth: when pushing inline stack frames
+- block count: as blocks are created, counted across the whole document
+- nesting depth: when entering nested block contexts from the top-level document context
+- inline depth: when entering recursively parsed inline content such as span bodies and link labels
 - link target length: while scanning the link target, not afterward
 - raw block size: while consuming raw payload
 - table columns: when reading header and separator rows
-- list item count: as list items are recognized
+- list item count: as list items are recognized, counted across the whole document
 
 If a budget is exceeded:
 
@@ -688,7 +699,7 @@ In particular, todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[.]` MUST NOT
 task-list semantics in Core v1 strict mode, and SHOULD produce the same reserved/invalid handling
 path as other unassigned Core v1 inline forms.
 
-`[_]` and `[<]` remain reserved in Core v1 and MUST NOT be treated as active inline syntax.
+`[_]` and `[<]` are not assigned in Core v1 and MUST NOT be treated as active inline syntax.
 
 If the implementation stays scanner-first, budget-aware, and conformance-driven, it should preserve
 the core value of `&ND`: explicit structure without Markdown-style ambiguity.

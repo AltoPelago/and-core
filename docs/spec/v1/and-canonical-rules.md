@@ -236,6 +236,8 @@ Rules:
 * no blank line between sibling simple items
 * nested block requires one blank line before the nested block and two-space indentation
 * no blank line after the last nested item before the next sibling item at the parent level
+* any unindented following block that is outside the list item's content margin MUST be emitted
+  as a separate top-level sibling block, not folded back into the list
 
 Example:
 

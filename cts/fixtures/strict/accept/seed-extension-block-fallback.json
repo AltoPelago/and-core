@@ -11,6 +11,10 @@
       "`+++fallback` immediately after an extension block provides fallback content",
       "fallback content is parsed as ordinary &ND blocks"
     ],
+    "canonical": {
+      "embedded": "+++unsupported/extension\nopaque [* extension] payload\n+++\n+++fallback\nShow [* this] instead\n+++\n",
+      "standalone": "&ND v1\n\n+++unsupported/extension\nopaque [* extension] payload\n+++\n+++fallback\nShow [* this] instead\n+++\n"
+    },
     "document": {
       "type": "document",
       "children": [

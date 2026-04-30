@@ -1,8 +1,8 @@
 {
   "generatedBy": "scripts/check-html-renderer.mjs",
   "totals": {
-    "fixtures": 40,
-    "checked": 40,
+    "fixtures": 49,
+    "checked": 49,
     "skipped": 0,
     "failed": 0
   },
@@ -29,6 +29,14 @@
       "status": "pass",
       "fragment": "<p>My number is</p>\n<ol>\n<li><p>a list item</p></li>\n</ol>",
       "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>My number is</p>\n<ol>\n<li><p>a list item</p></li>\n</ol>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-ordered-list-renumber-canonical",
+      "path": "strict/accept/seed-ordered-list-renumber-canonical.json",
+      "status": "pass",
+      "fragment": "<ol>\n<li><p>Alpha</p></li>\n<li><p>Beta</p></li>\n</ol>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ol>\n<li><p>Alpha</p></li>\n<li><p>Beta</p></li>\n</ol>\n</body>\n</html>\n",
       "notes": []
     },
     {
@@ -291,32 +299,16 @@
       "id": "seed-inline-link-label-nesting",
       "path": "strict/accept/seed-inline-link-label-nesting.json",
       "status": "pass",
-      "fragment": "<p><a href=\"https://example.com\"><strong>label</strong></a></p>",
-      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a href=\"https://example.com\"><strong>label</strong></a></p>\n</body>\n</html>\n",
+      "fragment": "<p><a href=\"https://example.com\" target=\"_blank\" rel=\"noopener noreferrer nofollow\" referrerpolicy=\"no-referrer\"><strong>label</strong></a></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a href=\"https://example.com\" target=\"_blank\" rel=\"noopener noreferrer nofollow\" referrerpolicy=\"no-referrer\"><strong>label</strong></a></p>\n</body>\n</html>\n",
       "notes": []
     },
     {
       "id": "seed-inline-escaped-pipe-in-link-target",
       "path": "strict/accept/seed-inline-escaped-pipe-in-link-target.json",
       "status": "pass",
-      "fragment": "<p><a href=\"https://example.com/a|b\">label</a></p>",
-      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a href=\"https://example.com/a|b\">label</a></p>\n</body>\n</html>\n",
-      "notes": []
-    },
-    {
-      "id": "seed-inline-nbsp",
-      "path": "strict/accept/seed-inline-nbsp.json",
-      "status": "pass",
-      "fragment": "<p>A&nbsp;B</p>",
-      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>A&nbsp;B</p>\n</body>\n</html>\n",
-      "notes": []
-    },
-    {
-      "id": "seed-inline-line-break",
-      "path": "strict/accept/seed-inline-line-break.json",
-      "status": "pass",
-      "fragment": "<p>First<br>Second</p>",
-      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>First<br>Second</p>\n</body>\n</html>\n",
+      "fragment": "<p><a href=\"https://example.com/a|b\" target=\"_blank\" rel=\"noopener noreferrer nofollow\" referrerpolicy=\"no-referrer\">label</a></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a href=\"https://example.com/a|b\" target=\"_blank\" rel=\"noopener noreferrer nofollow\" referrerpolicy=\"no-referrer\">label</a></p>\n</body>\n</html>\n",
       "notes": []
     },
     {
@@ -325,6 +317,86 @@
       "status": "pass",
       "fragment": "<figure class=\"and-code-block and-code-block-ordered\" data-language=\"aeon\" data-ordered=\"true\">\n<figcaption>aeon</figcaption>\n<ol class=\"and-code-lines\">\n<li><code>title = &quot;Hello World&quot;</code></li>\n<li><code>mode = &quot;ordered&quot;</code></li>\n</ol>\n</figure>",
       "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<figure class=\"and-code-block and-code-block-ordered\" data-language=\"aeon\" data-ordered=\"true\">\n<figcaption>aeon</figcaption>\n<ol class=\"and-code-lines\">\n<li><code>title = &quot;Hello World&quot;</code></li>\n<li><code>mode = &quot;ordered&quot;</code></li>\n</ol>\n</figure>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-block-count-at-limit",
+      "path": "strict/accept/seed-budget-block-count-at-limit.json",
+      "status": "pass",
+      "fragment": "<p>One</p>\n<p>Two</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>One</p>\n<p>Two</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-code-block-size-at-limit",
+      "path": "strict/accept/seed-budget-code-block-size-at-limit.json",
+      "status": "pass",
+      "fragment": "<figure class=\"and-code-block\">\n\n<pre><code>12345678</code></pre>\n</figure>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<figure class=\"and-code-block\">\n\n<pre><code>12345678</code></pre>\n</figure>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-document-size-at-limit",
+      "path": "strict/accept/seed-budget-document-size-at-limit.json",
+      "status": "pass",
+      "fragment": "<p>Hello</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>Hello</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-extension-block-size-at-limit",
+      "path": "strict/accept/seed-budget-extension-block-size-at-limit.json",
+      "status": "pass",
+      "fragment": "<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"diagram/opaque\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>diagram/opaque</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>12345678</code></pre>\n</details>\n</aside>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<aside class=\"and-diagnostic and-diagnostic-extension\" data-and-extension=\"diagram/opaque\" aria-label=\"Unsupported extension\">\n<p>Unsupported extension: <code>diagram/opaque</code>. Opaque extension payload.</p>\n<details><summary>Open payload</summary>\n\n<pre><code>12345678</code></pre>\n</details>\n</aside>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-inline-depth-at-limit",
+      "path": "strict/accept/seed-budget-inline-depth-at-limit.json",
+      "status": "pass",
+      "fragment": "<p><strong>outer <strong>inner</strong></strong></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><strong>outer <strong>inner</strong></strong></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-line-length-at-limit",
+      "path": "strict/accept/seed-budget-line-length-at-limit.json",
+      "status": "pass",
+      "fragment": "<p>Hello</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>Hello</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-link-target-at-limit",
+      "path": "strict/accept/seed-budget-link-target-at-limit.json",
+      "status": "pass",
+      "fragment": "<p><a aria-disabled=\"true\" title=\"Unsafe link target omitted\">label</a></p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p><a aria-disabled=\"true\" title=\"Unsafe link target omitted\">label</a></p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-list-item-count-at-limit",
+      "path": "strict/accept/seed-budget-list-item-count-at-limit.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-nesting-depth-at-limit",
+      "path": "strict/accept/seed-budget-nesting-depth-at-limit.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>Quote</p>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>Quote</p>\n</blockquote>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-budget-table-columns-at-limit",
+      "path": "strict/accept/seed-budget-table-columns-at-limit.json",
+      "status": "pass",
+      "fragment": "<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table>\n</body>\n</html>\n",
       "notes": []
     }
   ]

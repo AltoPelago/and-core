@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-list-item-count-whole-document",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxListItemCount": 2
+    }
+  },
+  "source": "- One\n\n- Two\n- Three\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured list-item budget is exceeded across separate lists",
+      "list-item budget is a whole-document budget"
+    ]
+  }
+}

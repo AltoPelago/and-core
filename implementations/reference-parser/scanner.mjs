@@ -21,6 +21,26 @@ function stripFinalEmptyLine(lines) {
   return lines;
 }
 
+function validateScanBudgets(normalized, lines, options) {
+  const budgets = options?.budgets ?? {};
+  if (
+    typeof budgets.maxDocumentSize === 'number' &&
+    normalized.length > budgets.maxDocumentSize
+  ) {
+    return failAt('nd_budget_exceeded', 0, budgets.maxDocumentSize);
+  }
+
+  if (typeof budgets.maxLineLength === 'number') {
+    for (let i = 0; i < lines.length; i += 1) {
+      if (lines[i].length > budgets.maxLineLength) {
+        return failAt('nd_budget_exceeded', i, budgets.maxLineLength);
+      }
+    }
+  }
+
+  return { ok: true };
+}
+
 function stripDocumentHeader(lines) {
   if (lines[0] === '&ND v1') {
     const consumed = lines[1] === '' ? 2 : 1;
@@ -155,6 +175,16 @@ function validateBlocks(lines, rawLines) {
 export function scanDocument(source, options = {}) {
   const normalized = normalizeSource(source);
   const sourceLines = stripFinalEmptyLine(normalized.split('\n'));
+  const budgetValidation = validateScanBudgets(normalized, sourceLines, options);
+  if (!budgetValidation.ok) {
+    return {
+      ...budgetValidation,
+      normalized,
+      sourceLines,
+      sourceLineStartOffsets: lineStartOffsets(sourceLines),
+    };
+  }
+
   const sourceLineStartOffsets = lineStartOffsets(sourceLines);
   const header = stripDocumentHeader(sourceLines);
   if (!header.ok) {

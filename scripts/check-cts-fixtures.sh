@@ -85,6 +85,19 @@ for rel in fixtures:
         if not isinstance(document, dict):
             errors.append(f"{rel} expected.document must be an object when present")
 
+    canonical = expected.get("canonical")
+    if canonical is not None:
+        if expected.get("ok") is not True:
+            errors.append(f"{rel} expected.canonical is only valid for successful fixtures")
+        elif not isinstance(canonical, dict) or not canonical:
+            errors.append(f"{rel} expected.canonical must be a non-empty object when present")
+        else:
+            for profile, text in canonical.items():
+                if not isinstance(profile, str) or not profile:
+                    errors.append(f"{rel} expected.canonical keys must be non-empty profile strings")
+                if not isinstance(text, str):
+                    errors.append(f"{rel} expected.canonical[{profile!r}] must be a string")
+
     spans = expected.get("spans")
     if spans is not None:
         if expected.get("ok") is not True:

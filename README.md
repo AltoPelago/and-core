@@ -51,11 +51,12 @@ The repository is currently spec-and-CTS first:
 
 * `npm test` — runs the repository safety checks, CTS adapters, adapter example, canonical checks, and CLI smoke checks
 * `npm run playground` — serves the local playground at `http://localhost:4173/playground/`
-* `npm run playground:check` — verifies playground wiring and parser/canonical smoke behavior
+* `npm run playground:check` — verifies playground wiring, parser budgets, and parser/canonical smoke behavior
 * `npm run check:html-renderer` — verifies the reference AST-to-HTML projection
 * `npm run check:vscode` — verifies the VS Code prototype manifest, grammar, and language configuration
 * `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
+* `npm run and -- check examples/minimal.and --budget maxLineLength=120` — checks with an explicit parser budget
 * `npm run and -- diagnostics examples/minimal.and --json` — emits parser-backed diagnostics for editor tooling
 * open the repo in VS Code and run `.vscode/launch.json` → `Run &ND VS Code Prototype` — launches the current editor prototype against `vscode/samples/`
 * `npm run vscode:package` — stages a dependency-free unpacked VS Code extension bundle under `artifacts/`
@@ -64,11 +65,15 @@ The repository is currently spec-and-CTS first:
 * `npm run and -- canonical examples/minimal.and --profile standalone` — emits canonical text
 * `npm run and -- render-html examples/minimal.and` — emits an escaped HTML fragment
 * `npm run and -- render-html examples/minimal.and --document --out output.html` — writes a complete HTML document
+* CLI parser budgets use repeatable `--budget name=value` flags. Supported names are `maxDocumentSize`,
+  `maxLineLength`, `maxNestingDepth`, `maxInlineDepth`, `maxTableColumns`, `maxBlockSize`,
+  `maxBlockCount`, `maxListItemCount`, and `maxLinkTargetLength`.
 * CLI failures include stable `errorCode` values and line/column diagnostics where available
 * `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
 * `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
 * `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
 * `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
+* `npm run check:reports` — verifies generated CTS/canonical/HTML report artifacts are fresh
 * `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
 * `npm run check:html-renderer` — checks escaped HTML fragment/full-document output and fail-closed behavior
 * `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands

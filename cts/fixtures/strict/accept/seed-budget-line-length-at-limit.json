@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-line-length-at-limit",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxLineLength": 5
+    }
+  },
+  "source": "Hello\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "physical-line-length budget is inclusive at the configured limit"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Hello"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

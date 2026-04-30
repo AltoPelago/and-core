@@ -1,9 +1,9 @@
 {
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
-    "fixtures": 40,
+    "fixtures": 49,
     "profiles": 2,
-    "checked": 80,
+    "checked": 98,
     "skipped": 0,
     "failed": 0
   },
@@ -57,6 +57,24 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\nMy number is\n\n1. a list item\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-ordered-list-renumber-canonical",
+      "path": "strict/accept/seed-ordered-list-renumber-canonical.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "1. Alpha\n2. Beta\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n1. Alpha\n2. Beta\n",
           "notes": []
         }
       },
@@ -675,42 +693,6 @@
       "notes": []
     },
     {
-      "id": "seed-inline-nbsp",
-      "path": "strict/accept/seed-inline-nbsp.json",
-      "status": "pass",
-      "profiles": {
-        "embedded": {
-          "status": "pass",
-          "canonical": "A[_]B\n",
-          "notes": []
-        },
-        "standalone": {
-          "status": "pass",
-          "canonical": "&ND v1\n\nA[_]B\n",
-          "notes": []
-        }
-      },
-      "notes": []
-    },
-    {
-      "id": "seed-inline-line-break",
-      "path": "strict/accept/seed-inline-line-break.json",
-      "status": "pass",
-      "profiles": {
-        "embedded": {
-          "status": "pass",
-          "canonical": "First[<]Second\n",
-          "notes": []
-        },
-        "standalone": {
-          "status": "pass",
-          "canonical": "&ND v1\n\nFirst[<]Second\n",
-          "notes": []
-        }
-      },
-      "notes": []
-    },
-    {
       "id": "seed-ordered-code-block",
       "path": "strict/accept/seed-ordered-code-block.json",
       "status": "pass",
@@ -723,6 +705,186 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\n````aeon\ntitle = \"Hello World\"\nmode = \"ordered\"\n````\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-block-count-at-limit",
+      "path": "strict/accept/seed-budget-block-count-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "One\n\nTwo\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nOne\n\nTwo\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-code-block-size-at-limit",
+      "path": "strict/accept/seed-budget-code-block-size-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "```\n12345678\n```\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n```\n12345678\n```\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-document-size-at-limit",
+      "path": "strict/accept/seed-budget-document-size-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "Hello\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nHello\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-extension-block-size-at-limit",
+      "path": "strict/accept/seed-budget-extension-block-size-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "+++diagram/opaque\n12345678\n+++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n+++diagram/opaque\n12345678\n+++\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-inline-depth-at-limit",
+      "path": "strict/accept/seed-budget-inline-depth-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[* outer [* inner]]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[* outer [* inner]]\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-line-length-at-limit",
+      "path": "strict/accept/seed-budget-line-length-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "Hello\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nHello\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-link-target-at-limit",
+      "path": "strict/accept/seed-budget-link-target-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "[@ abc | label]\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n[@ abc | label]\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-list-item-count-at-limit",
+      "path": "strict/accept/seed-budget-list-item-count-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- One\n- Two\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- One\n- Two\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-nesting-depth-at-limit",
+      "path": "strict/accept/seed-budget-nesting-depth-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> Quote\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> Quote\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-budget-table-columns-at-limit",
+      "path": "strict/accept/seed-budget-table-columns-at-limit.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n",
           "notes": []
         }
       },

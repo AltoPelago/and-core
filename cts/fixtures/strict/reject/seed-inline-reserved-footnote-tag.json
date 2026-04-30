@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-inline-reserved-footnote-tag",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "[^ note]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "`[^ ...]` remains reserved in Core v1",
+      "strict parsers fail closed instead of assigning footnote semantics"
+    ]
+  }
+}

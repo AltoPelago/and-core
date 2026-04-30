@@ -11,9 +11,14 @@ It is intentionally limited:
 Current scope:
 
 * selected block-boundary fixtures
+* selected ordered-list sequence fixtures
 * selected raw-block fixtures
+* selected ordered-code-block fixtures
+* selected extension fallback locality fixtures
 * selected nesting fixtures
+* selected list paragraph-continuation fixtures
 * selected inline fixtures
+* resource-budget smoke fixtures, including inclusive at-limit and over-budget cases
 * selected rejection/error-code fixtures
 
 Run it with:

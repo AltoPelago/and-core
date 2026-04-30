@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-table-columns",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxTableColumns": 2
+    }
+  },
+  "source": "| A | B | C |\n| --- | --- | --- |\n| 1 | 2 | 3 |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured table-column budget is exceeded",
+      "budget failure occurs before unrestricted table cell parsing"
+    ]
+  }
+}

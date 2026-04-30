@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-list-item-count",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxListItemCount": 2
+    }
+  },
+  "source": "- One\n- Two\n- Three\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured list-item budget is exceeded",
+      "budget failure occurs as list items are recognized"
+    ]
+  }
+}

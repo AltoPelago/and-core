@@ -242,6 +242,32 @@ interface NdSpan {
 Span ranges use inclusive starts and exclusive ends. `startLine`, `startColumn`, `endLine`, and
 `endColumn` are one-based. Offsets are measured in the normalized source consumed by the parser.
 
+## Span Guarantees
+
+When an implementation exposes spans publicly, the following guarantees SHOULD be treated as stable:
+
+* node spans refer to the normalized strict-mode source consumed by the parser
+* `startOffset` is inclusive and `endOffset` is exclusive
+* line/column coordinates are one-based
+* block node spans cover the structural source owned by that block
+* inline node spans cover the exact inline source that produced that node after trimming any
+  enclosing structural delimiters
+* nested block spans exclude blank separator lines that belong to an enclosing structure rather than
+  to the nested block itself
+
+Current CTS metadata fixtures specifically pin:
+
+* trimmed table-cell inline spans
+* attached extension-fallback paragraph and inline spans
+* nested list-item and blockquote paragraph spans
+
+Implementations still have some latitude:
+
+* spans are optional unless the implementation chooses to expose them
+* additive metadata beyond `span` remains implementation-defined
+* internal span-tracking strategy is unconstrained as long as the exposed results obey the stable
+  guarantees above
+
 If exposed publicly, metadata SHOULD be additive and MUST NOT alter the semantic node fields above.
 
 ## CTS Comparison

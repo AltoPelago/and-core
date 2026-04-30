@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-document-size",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxDocumentSize": 12
+    }
+  },
+  "source": "This document is too long.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured document-size budget is exceeded",
+      "budget failure occurs before unrestricted block parsing"
+    ]
+  }
+}

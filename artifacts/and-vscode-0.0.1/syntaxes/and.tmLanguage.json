@@ -226,7 +226,7 @@
     "reserved": {
       "patterns": [
         {
-          "match": "\\[(?: |x|=|\\.|_|<)\\]",
+          "match": "\\[(?: |x|=|\\.)\\]",
           "name": "invalid.illegal.and"
         },
         {

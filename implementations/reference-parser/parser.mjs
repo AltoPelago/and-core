@@ -194,9 +194,9 @@ function parseInlineCode(text, index, context, baseOffset = 0) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseSpan(text, index, opener, options, context, baseOffset = 0) {
+function parseSpan(text, index, opener, options, context, baseOffset = 0, inlineDepth = 0) {
   const type = opener === '[* ' ? 'strong' : 'emphasis';
-  const parsed = parseInlineSequence(text, index + opener.length, options, { stopOnClose: true }, context, baseOffset);
+  const parsed = parseInlineSequence(text, index + opener.length, options, { stopOnClose: true, inlineDepth }, context, baseOffset);
   if (!parsed.ok) return parsed;
   if (!parsed.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: parsed.nextIndex };
   return {
@@ -206,7 +206,7 @@ function parseSpan(text, index, opener, options, context, baseOffset = 0) {
   };
 }
 
-function parseLink(text, index, options, context, baseOffset = 0) {
+function parseLink(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
   const maxLinkTargetLength = options?.budgets?.maxLinkTargetLength;
   let i = index + 3;
   let target = '';
@@ -243,7 +243,7 @@ function parseLink(text, index, options, context, baseOffset = 0) {
 
   i += 1;
   if (text[i] === ' ') i += 1;
-  const label = parseInlineSequence(text, i, options, { stopOnClose: true }, context, baseOffset);
+  const label = parseInlineSequence(text, i, options, { stopOnClose: true, inlineDepth }, context, baseOffset);
   if (!label.ok) return label;
   if (!label.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: label.nextIndex };
   if (!hasInlineContent(label.nodes)) {
@@ -273,6 +273,7 @@ function hasInlineContent(nodes) {
 function parseInlineSequence(text, startIndex, options, state = {}, context, baseOffset = 0) {
   const nodes = [];
   let index = startIndex;
+  const inlineDepth = state.inlineDepth ?? 0;
 
   while (index < text.length) {
     const char = text[index];
@@ -302,7 +303,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (text.startsWith('[* ', index)) {
-      const parsed = parseSpan(text, index, '[* ', options, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseSpan(text, index, '[* ', options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -310,7 +315,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (text.startsWith('[/ ', index)) {
-      const parsed = parseSpan(text, index, '[/ ', options, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseSpan(text, index, '[/ ', options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -318,7 +327,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (text.startsWith('[@ ', index)) {
-      const parsed = parseLink(text, index, options, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseLink(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -408,12 +421,54 @@ function stripIndent(lines) {
   return lines.map((line) => (line.startsWith('  ') ? line.slice(2) : line));
 }
 
-function parseCodeBlock(lines, start, context) {
+function rawPayloadLine(line, prefix) {
+  return line.startsWith(prefix) ? line.slice(prefix.length) : line;
+}
+
+function addPayloadSize(currentSize, line) {
+  return currentSize + (currentSize === 0 ? 0 : 1) + line.length;
+}
+
+function exceedsBlockBudget(size, options) {
+  const maxBlockSize = options?.budgets?.maxBlockSize;
+  return typeof maxBlockSize === 'number' && size > maxBlockSize;
+}
+
+function recordBlock(options, context, lineIndex) {
+  const maxBlockCount = options?.budgets?.maxBlockCount;
+  if (typeof maxBlockCount !== 'number') return { ok: true };
+  context.budgetState.blockCount += 1;
+  if (context.budgetState.blockCount > maxBlockCount) {
+    return failAt('nd_budget_exceeded', context.lineOffset + lineIndex, 0);
+  }
+  return { ok: true };
+}
+
+function recordListItem(options, context, lineIndex) {
+  const maxListItemCount = options?.budgets?.maxListItemCount;
+  if (typeof maxListItemCount !== 'number') return { ok: true };
+  context.budgetState.listItemCount += 1;
+  if (context.budgetState.listItemCount > maxListItemCount) {
+    return failAt('nd_budget_exceeded', context.lineOffset + lineIndex, 0);
+  }
+  return { ok: true };
+}
+
+function makeChildContext(context, fields = {}) {
+  return {
+    ...fields,
+    budgetState: context.budgetState,
+    depth: (context.depth ?? 0) + 1,
+  };
+}
+
+function parseCodeBlock(lines, start, options, context) {
   const line = lines[start];
   const fence = rawFence(line);
   const openerText = line.slice(fence.prefix.length);
   const language = openerText.slice(fence.fence.length).trim() || null;
   const payload = [];
+  let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === `${fence.prefix}${fence.fence}`) {
@@ -421,15 +476,17 @@ function parseCodeBlock(lines, start, context) {
         type: 'code_block',
         language,
         ordered: fence.fence.length === 4,
-        text: payload.map((payloadLine) =>
-          payloadLine.startsWith(fence.prefix) ? payloadLine.slice(fence.prefix.length) : payloadLine
-        ).join('\n'),
+        text: payload.map((payloadLine) => rawPayloadLine(payloadLine, fence.prefix)).join('\n'),
       };
       return {
         ok: true,
         nextIndex: i + 1,
         node: withSpan(node, context, context.lineStartOffsets[start], context.lineStartOffsets[i] + lines[i].length),
       };
+    }
+    payloadSize = addPayloadSize(payloadSize, rawPayloadLine(lines[i], fence.prefix));
+    if (exceedsBlockBudget(payloadSize, options)) {
+      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
     }
     payload.push(lines[i]);
   }
@@ -441,21 +498,24 @@ function parseExtensionBlock(lines, start, options, context) {
   const extension = extensionOpener(lines[start]);
   if (extension === null) return { ok: false, errorCode: 'invalid_extension_name' };
   const payload = [];
+  let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === `${extension.prefix}+++`) {
       const node = {
         type: 'extension_block',
         name: extension.name,
-        text: payload.map((payloadLine) =>
-          payloadLine.startsWith(extension.prefix) ? payloadLine.slice(extension.prefix.length) : payloadLine
-        ).join('\n'),
+        text: payload.map((payloadLine) => rawPayloadLine(payloadLine, extension.prefix)).join('\n'),
       };
       return {
         ok: true,
         nextIndex: i + 1,
         node: withSpan(node, context, context.lineStartOffsets[start], context.lineStartOffsets[i] + lines[i].length),
       };
+    }
+    payloadSize = addPayloadSize(payloadSize, rawPayloadLine(lines[i], extension.prefix));
+    if (exceedsBlockBudget(payloadSize, options)) {
+      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
     }
     payload.push(lines[i]);
   }
@@ -495,7 +555,7 @@ function parseFallbackBlock(lines, start, options, context) {
       const parsedFallback = parseBlocks(stripExtensionPrefix(payload, fallback.prefix), {
         ...options,
         allowExtensionFallback: false,
-      }, fallbackContext);
+      }, makeChildContext(context, fallbackContext));
       if (!parsedFallback.ok) return parsedFallback;
       return {
         ok: true,
@@ -588,6 +648,11 @@ function parseTable(lines, start, options, context) {
     return failAt('invalid_table_shape', context.lineOffset + start, 0);
   }
 
+  const maxTableColumns = options?.budgets?.maxTableColumns;
+  if (typeof maxTableColumns === 'number' && headerCells.length > maxTableColumns) {
+    return failAt('nd_budget_exceeded', context.lineOffset + start, 0);
+  }
+
   const header = parseTableCells(headerCells, options, context.lineStartOffsets[start], context);
   if (!header.ok) return header;
 
@@ -624,16 +689,29 @@ function parseList(lines, start, options, context) {
   const ordered = /^\d+\. /.test(lines[start]);
   const items = [];
   let index = start;
+  let expectedNumber = null;
 
   while (index < lines.length) {
     const itemStart = index;
-    const markerMatch = ordered ? lines[index].match(/^\d+\. (.*)$/) : lines[index].match(/^- (.*)$/);
+    const markerMatch = ordered ? lines[index].match(/^(\d+)\. (.*)$/) : lines[index].match(/^- (.*)$/);
     if (!markerMatch) break;
 
+    const itemBudget = recordListItem(options, context, index);
+    if (!itemBudget.ok) return itemBudget;
+
+    const itemText = ordered ? markerMatch[2] : markerMatch[1];
+    if (ordered) {
+      const actualNumber = Number(markerMatch[1]);
+      if (expectedNumber !== null && actualNumber !== expectedNumber) {
+        return failAt('invalid_ordered_list_sequence', context.lineOffset + index, 0);
+      }
+      expectedNumber = actualNumber + 1;
+    }
+
     const item = { type: 'list_item', children: [] };
-    const markerLength = lines[index].length - markerMatch[1].length;
+    const markerLength = lines[index].length - itemText.length;
     const headBaseOffset = context.lineStartOffsets[index] + markerLength;
-    const headLines = [markerMatch[1]];
+    const headLines = [itemText];
     index += 1;
     while (
       index < lines.length &&
@@ -653,6 +731,8 @@ function parseList(lines, start, options, context) {
     );
     if (!head.ok) return head;
     stripListContinuationIndent(head.node.children);
+    const headBlockBudget = recordBlock(options, context, itemStart);
+    if (!headBlockBudget.ok) return headBlockBudget;
     item.children.push(head.node);
 
     const nested = [];
@@ -673,12 +753,12 @@ function parseList(lines, start, options, context) {
     }
 
     if (nested.length > 0) {
-      const nestedContext = {
+      const nestedContext = makeChildContext(context, {
         lineOffset: context.lineOffset + index - nested.length,
         lineStartOffsets: context.lineStartOffsets.slice(index - nested.length, index).map((offset) => offset + 2),
         sourceLineStartOffsets: context.sourceLineStartOffsets,
         includeSpans: context.includeSpans,
-      };
+      });
       const parsedNested = parseBlocks(stripIndent(nested), options, nestedContext);
       if (!parsedNested.ok) return parsedNested;
       item.children.push(...parsedNested.children);
@@ -709,12 +789,12 @@ function parseBlockquote(lines, start, options, context) {
     quoteOffsets.push(context.lineStartOffsets[index] + prefixLength);
     index += 1;
   }
-  const parsed = parseBlocks(quoteLines, options, {
+  const parsed = parseBlocks(quoteLines, options, makeChildContext(context, {
     lineOffset: context.lineOffset + start,
     lineStartOffsets: quoteOffsets,
     sourceLineStartOffsets: context.sourceLineStartOffsets,
     includeSpans: context.includeSpans,
-  });
+  }));
   if (!parsed.ok) return parsed;
   return {
     ok: true,
@@ -750,6 +830,11 @@ function parseParagraph(lines, start, options, context) {
 }
 
 function parseBlocks(lines, options, context) {
+  const maxNestingDepth = options?.budgets?.maxNestingDepth;
+  if (typeof maxNestingDepth === 'number' && (context.depth ?? 0) > maxNestingDepth) {
+    return failAt('nd_budget_exceeded', context.lineOffset, 0);
+  }
+
   const children = [];
   let index = 0;
 
@@ -761,8 +846,10 @@ function parseBlocks(lines, options, context) {
     }
 
     if (rawFence(line) !== null) {
-      const code = parseCodeBlock(lines, index, context);
+      const code = parseCodeBlock(lines, index, options, context);
       if (!code.ok) return withLine(code, context.lineOffset + index);
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(code.node);
       index = code.nextIndex;
       continue;
@@ -786,6 +873,8 @@ function parseBlocks(lines, options, context) {
         extension.node.fallback = fallback.fallback;
         nextIndex = fallback.nextIndex;
       }
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(extension.node);
       index = nextIndex;
       continue;
@@ -801,6 +890,8 @@ function parseBlocks(lines, options, context) {
         context
       );
       if (!heading.ok) return heading;
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(withSpan(
         {
           type: 'heading',
@@ -816,6 +907,8 @@ function parseBlocks(lines, options, context) {
     }
 
     if (line === '---') {
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(withSpan(
         { type: 'horizontal_rule' },
         context,
@@ -829,6 +922,8 @@ function parseBlocks(lines, options, context) {
     if (/^- /.test(line) || /^\d+\. /.test(line)) {
       const list = parseList(lines, index, options, context);
       if (!list.ok) return list;
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(list.node);
       index = list.nextIndex;
       continue;
@@ -837,6 +932,8 @@ function parseBlocks(lines, options, context) {
     if (line.startsWith('>') || line.startsWith('  >')) {
       const quote = parseBlockquote(lines, index, options, context);
       if (!quote.ok) return quote;
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(quote.node);
       index = quote.nextIndex;
       continue;
@@ -845,6 +942,8 @@ function parseBlocks(lines, options, context) {
     if (isTableStart(lines, index)) {
       const table = parseTable(lines, index, options, context);
       if (!table.ok) return table;
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
       children.push(table.node);
       index = table.nextIndex;
       continue;
@@ -852,6 +951,8 @@ function parseBlocks(lines, options, context) {
 
     const paragraph = parseParagraph(lines, index, options, context);
     if (!paragraph.ok) return paragraph;
+    const blockBudget = recordBlock(options, context, index);
+    if (!blockBudget.ok) return blockBudget;
     children.push(paragraph.node);
     index = paragraph.nextIndex;
   }
@@ -866,7 +967,11 @@ export function parseAnd(source, options = {}) {
     return publicFailure(finalizeDiagnostic(shiftDiagnosticLines(scanned, lineOffset), scanned.normalized));
   }
 
-  const parsed = parseBlocks(scanned.lines, options, scanned.context);
+  const parsed = parseBlocks(scanned.lines, options, {
+    ...scanned.context,
+    budgetState: { blockCount: 0, listItemCount: 0 },
+    depth: 0,
+  });
   if (!parsed.ok) return publicFailure(finalizeDiagnostic(parsed, scanned.normalized));
 
   const document = {

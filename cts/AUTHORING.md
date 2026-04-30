@@ -63,6 +63,31 @@ agentic debugging.
 
 Reject fixtures MUST NOT include `expected.document`. Strict-mode failures produce no document AST.
 
+## Metadata Fixtures
+
+Metadata fixtures are still successful strict parses:
+
+```json
+{
+  "expected": {
+    "ok": true,
+    "spans": []
+  }
+}
+```
+
+Use `expected.spans` only when the span location is part of the stable public contract rather than
+an implementation accident.
+
+Good metadata targets include:
+
+- trimmed inline spans inside structured containers such as table cells
+- nested block spans where blank separator lines and exact margins matter
+- fallback content spans attached to extension blocks
+
+Avoid overspecifying every node in the tree. Metadata fixtures work best when they pin a few
+high-value paths that are likely to drift during parser refactors.
+
 ## Assertions
 
 `expected.assertions` are human-readable normative expectations.
@@ -118,12 +143,14 @@ The CTS report includes:
 - fixture totals
 - per-fixture pass/fail results
 - `documentChecks`
+- `spanChecks`
 - `errorCodeChecks`
 
 For a complete strict parser, a healthy report should show:
 
 ```text
 documentChecks expected=N checked=N matched=N skipped=0 failed=0
+spanChecks expected=N checked=N matched=N skipped=0 failed=0
 errorCodeChecks expected=N matched=N missingActual=0 mismatched=0
 ```
 

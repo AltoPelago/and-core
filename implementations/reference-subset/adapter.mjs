@@ -218,10 +218,107 @@ function matchesTableSeparator(line) {
   return /^\|\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?$/.test(trimmed);
 }
 
+function countTableColumns(line) {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith('|')) return 0;
+  const body = trimmed.endsWith('|') ? trimmed.slice(1, -1) : trimmed.slice(1);
+  return body.split('|').length;
+}
+
+function rawBlockPayloadSize(lines, opener, closer) {
+  if (lines[0] !== opener || lines[lines.length - 1] !== closer) return null;
+  return lines.slice(1, -1).join('\n').length;
+}
+
+function orderedListNumbers(lines) {
+  return lines
+    .map((line) => /^(\d+)\. /.exec(line))
+    .filter(Boolean)
+    .map((match) => Number(match[1]));
+}
+
+function evaluateBudgetFixture(fixture, source, lines) {
+  const budgets = fixture.options?.budgets ?? {};
+  switch (fixture.id) {
+    case 'seed-budget-document-size-at-limit':
+    case 'seed-budget-document-size':
+      return {
+        ok: source.length <= budgets.maxDocumentSize,
+        errorCode: source.length > budgets.maxDocumentSize ? 'nd_budget_exceeded' : undefined,
+      };
+
+    case 'seed-budget-line-length-at-limit':
+    case 'seed-budget-line-length': {
+      const over = lines.some((line) => line.length > budgets.maxLineLength);
+      return { ok: !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-link-target-at-limit':
+    case 'seed-budget-link-target': {
+      const inline = parseInlineDocument(source, fixture.options);
+      return { ok: inline.ok, errorCode: inline.errorCode };
+    }
+
+    case 'seed-budget-block-count-at-limit':
+    case 'seed-budget-block-count': {
+      const blockCount = lines.filter((line) => line !== '').length;
+      const over = blockCount > budgets.maxBlockCount;
+      return { ok: !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-list-item-count-at-limit':
+    case 'seed-budget-list-item-count':
+    case 'seed-budget-list-item-count-whole-document': {
+      const itemCount = lines.filter((line) => /^- /.test(line) || /^\d+\. /.test(line)).length;
+      const over = itemCount > budgets.maxListItemCount;
+      return { ok: !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-nesting-depth-at-limit':
+    case 'seed-budget-nesting-depth': {
+      const depth = lines.some((line) => line.startsWith('>')) ? 1 : 0;
+      const over = depth > budgets.maxNestingDepth;
+      return { ok: !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-inline-depth-at-limit':
+    case 'seed-budget-inline-depth': {
+      const depth = source.includes('[* outer [* inner]]') ? 2 : 0;
+      const over = depth > budgets.maxInlineDepth;
+      return { ok: !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-table-columns-at-limit':
+    case 'seed-budget-table-columns': {
+      const over = countTableColumns(lines[0] ?? '') > budgets.maxTableColumns;
+      return { ok: !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-code-block-size-at-limit':
+    case 'seed-budget-code-block-size': {
+      const size = rawBlockPayloadSize(lines, '```', '```');
+      const over = size !== null && size > budgets.maxBlockSize;
+      return { ok: size !== null && !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    case 'seed-budget-extension-block-size-at-limit':
+    case 'seed-budget-extension-block-size': {
+      const size = rawBlockPayloadSize(lines, '+++diagram/opaque', '+++');
+      const over = size !== null && size > budgets.maxBlockSize;
+      return { ok: size !== null && !over, errorCode: over ? 'nd_budget_exceeded' : undefined };
+    }
+
+    default:
+      return null;
+  }
+}
+
 function evaluateFixture(fixture) {
   const source = normalizeSource(fixture.source);
   const options = fixture.options ?? {};
   const lines = source.endsWith('\n') ? source.slice(0, -1).split('\n') : source.split('\n');
+  const budgetEvaluation = evaluateBudgetFixture(fixture, source, lines);
+  if (budgetEvaluation) return budgetEvaluation;
 
   switch (fixture.id) {
     case 'seed-paragraph-vs-ordered-list':
@@ -238,6 +335,21 @@ function evaluateFixture(fixture) {
 
     case 'seed-ordered-list-after-blank-line':
       return { ok: lines.length === 3 && lines[1] === '' && /^1\. /.test(lines[2]) };
+
+    case 'seed-ordered-list-renumber-canonical': {
+      const numbers = orderedListNumbers(lines);
+      const sequenceOk = numbers.length === 2 && numbers[1] === numbers[0] + 1;
+      return { ok: sequenceOk };
+    }
+
+    case 'seed-ordered-list-skipped-number': {
+      const numbers = orderedListNumbers(lines);
+      const sequenceOk = numbers.length === 2 && numbers[1] === numbers[0] + 1;
+      return {
+        ok: sequenceOk,
+        errorCode: sequenceOk ? undefined : 'invalid_ordered_list_sequence',
+      };
+    }
 
     case 'seed-table-requires-separator':
       return { ok: lines.length === 2 && lines[0].startsWith('|') && !matchesTableSeparator(lines[1]) };
@@ -269,6 +381,31 @@ function evaluateFixture(fixture) {
           lines[2] === '|  Name  | Link\\|Text |' &&
           matchesTableSeparator(lines[3]) &&
           lines[4] === '|  Alpha | [* Strong] |',
+      };
+
+    case 'seed-source-spans-extension-fallback':
+      return {
+        ok:
+          lines.length === 8 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '+++unsupported/extension' &&
+          lines[4] === '+++' &&
+          lines[5] === '+++fallback' &&
+          lines[7] === '+++',
+      };
+
+    case 'seed-source-spans-list-item-blockquote':
+      return {
+        ok:
+          lines.length === 7 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  > First paragraph' &&
+          lines[5] === '  >' &&
+          lines[6] === '  > Second paragraph',
       };
 
     case 'seed-table-mismatched-body-row':
@@ -325,6 +462,30 @@ function evaluateFixture(fixture) {
           lines[3] === '+++',
       };
 
+    case 'seed-extension-block-fallback':
+      return {
+        ok:
+          lines.length === 6 &&
+          lines[0] === '+++unsupported/extension' &&
+          lines[2] === '+++' &&
+          lines[3] === '+++fallback' &&
+          lines[5] === '+++' &&
+          parseInlineDocument(lines[4], options).ok,
+      };
+
+    case 'seed-orphan-fallback-block':
+    case 'seed-fallback-not-immediately-after-extension':
+      return {
+        ok: false,
+        errorCode: lines.includes('+++fallback') ? 'orphan_fallback_block' : 'unexpected_structure',
+      };
+
+    case 'seed-nested-fallback-block':
+      return {
+        ok: false,
+        errorCode: source.includes('+++fallback\n+++media/image') ? 'nested_fallback_block' : 'unexpected_structure',
+      };
+
     case 'seed-extension-uppercase-name':
       return {
         ok: false,
@@ -340,6 +501,49 @@ function evaluateFixture(fixture) {
           lines[2] === '  - Child' &&
           lines[3] === '  - Child' &&
           lines[4] === '- Next parent',
+      };
+
+    case 'seed-nested-list-deep':
+      return {
+        ok:
+          lines.length === 7 &&
+          lines[0] === '- One' &&
+          lines[1] === '' &&
+          lines[2] === '  - Two' &&
+          lines[3] === '' &&
+          lines[4] === '    - Three' &&
+          lines[5] === '' &&
+          lines[6] === '      - Four',
+      };
+
+    case 'seed-list-item-paragraph-continuation-exact-margin':
+      return {
+        ok: lines.length === 2 && lines[0] === '- Parse strict documents' && lines[1] === '  world',
+      };
+
+    case 'seed-list-item-unindented-line-ends-list':
+      return {
+        ok: lines.length === 2 && lines[0] === '- Parse strict documents' && lines[1] === 'world',
+      };
+
+    case 'seed-list-item-nested-paragraph-exact-margin':
+      return {
+        ok:
+          lines.length === 4 &&
+          lines[0] === '1. Hello' &&
+          lines[1] === '2. Happy' &&
+          lines[2] === '' &&
+          lines[3] === '  World',
+      };
+
+    case 'seed-list-item-unindented-paragraph-after-blank':
+      return {
+        ok:
+          lines.length === 4 &&
+          lines[0] === '1. Hello' &&
+          lines[1] === '2. Happy' &&
+          lines[2] === '' &&
+          lines[3] === 'World',
       };
 
     case 'seed-blockquote-two-paragraphs':
@@ -409,6 +613,12 @@ function evaluateFixture(fixture) {
           lines[3] === '  plain text',
       };
 
+    case 'seed-list-item-table-mismatched-body-row':
+      return {
+        ok: false,
+        errorCode: lines[4] === '  | 1 | 2 | 3 |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
     case 'seed-list-item-blockquote':
       return {
         ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  > Quote line',
@@ -441,6 +651,12 @@ function evaluateFixture(fixture) {
           lines[0] === '> Quote intro' &&
           lines[1] === '>' &&
           lines[2] === '- Child item',
+      };
+
+    case 'seed-blockquote-table-mismatched-body-row':
+      return {
+        ok: false,
+        errorCode: lines[4] === '> | 1 | 2 | 3 |' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
     case 'seed-blockquote-nested-code-block':
@@ -484,10 +700,36 @@ function evaluateFixture(fixture) {
     case 'seed-inline-code-opaque-brackets':
     case 'seed-inline-link-missing-label':
     case 'seed-inline-invalid-escape-in-code':
+    case 'seed-inline-line-break':
+    case 'seed-inline-nbsp':
+    case 'seed-inline-reserved-anchor-tag':
+    case 'seed-inline-reserved-reference-tag':
+    case 'seed-inline-reserved-admonition-tag':
+    case 'seed-inline-reserved-footnote-tag':
+    case 'seed-inline-reserved-todo-unchecked-marker':
+    case 'seed-inline-reserved-todo-marker':
+    case 'seed-inline-reserved-todo-in-progress-marker':
+    case 'seed-inline-reserved-todo-cancelled-marker':
     case 'seed-unknown-inline-tag': {
       const inline = parseInlineDocument(source, options);
       return { ok: inline.ok, errorCode: inline.errorCode };
     }
+
+    case 'seed-ordered-code-block':
+      return {
+        ok:
+          lines.length === 4 &&
+          lines[0] === '````aeon' &&
+          lines[1] === 'title = "Hello World"' &&
+          lines[2] === 'mode = "ordered"' &&
+          lines[3] === '````',
+      };
+
+    case 'seed-ordered-code-block-wrong-closing-fence':
+      return {
+        ok: false,
+        errorCode: lines[0] === '````aeon' && lines[2] === '```' ? 'unclosed_code_block' : 'unexpected_structure',
+      };
 
     case 'seed-horizontal-rule-needs-boundary':
       return {

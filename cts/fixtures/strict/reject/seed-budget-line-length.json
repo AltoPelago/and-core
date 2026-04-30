@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-line-length",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxLineLength": 10
+    }
+  },
+  "source": "This line is too long.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured physical-line-length budget is exceeded",
+      "budget failure occurs during scanner validation"
+    ]
+  }
+}

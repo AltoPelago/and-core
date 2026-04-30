@@ -11,6 +11,10 @@
       "code block is ordered",
       "payload contains the interior lines exactly, subject only to line-ending normalization"
     ],
+    "canonical": {
+      "embedded": "````aeon\ntitle = \"Hello World\"\nmode = \"ordered\"\n````\n",
+      "standalone": "&ND v1\n\n````aeon\ntitle = \"Hello World\"\nmode = \"ordered\"\n````\n"
+    },
     "document": {
       "type": "document",
       "children": [

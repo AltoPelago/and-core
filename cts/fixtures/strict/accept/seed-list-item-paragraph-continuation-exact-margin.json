@@ -11,6 +11,10 @@
       "two-space line immediately after a list item marker continues the item head paragraph",
       "continuation text is aligned with the item content margin"
     ],
+    "canonical": {
+      "embedded": "- Parse strict documents world\n",
+      "standalone": "&ND v1\n\n- Parse strict documents world\n"
+    },
     "document": {
       "type": "document",
       "children": [

@@ -18,7 +18,8 @@ Current scope:
 * escape validation
 * compact strict-mode diagnostics with `code`, `line`, `column`, and inline `offset` when available
 * opt-in source spans for document, block, and inline nodes via `parseAnd(source, { includeSpans: true })`
-* link-target budget enforcement
+* normative resource budget enforcement for document size, line length, block count, block payload size,
+  list item count, nesting depth, inline depth, table columns, and link target length
 * raw code block margin checks
 * the initial block-boundary and indentation rules covered by the CTS
 

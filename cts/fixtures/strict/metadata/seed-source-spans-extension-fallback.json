@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-extension-fallback",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n+++unsupported/extension\nopaque [* extension] payload\n+++\n+++fallback\nShow [* this] instead\n+++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "extension block span covers only the primary opaque extension block, not the attached fallback",
+      "fallback paragraph spans point at parsed fallback content after the reserved `+++fallback` opener",
+      "nested inline spans inside fallback content point at their exact source ranges"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 103,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 8,
+          "endColumn": 4
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 65,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 5,
+          "endColumn": 4
+        }
+      },
+      {
+        "path": "$.children[0].fallback.children[0]",
+        "span": {
+          "startOffset": 78,
+          "endOffset": 99,
+          "startLine": 7,
+          "startColumn": 1,
+          "endLine": 7,
+          "endColumn": 22
+        }
+      },
+      {
+        "path": "$.children[0].fallback.children[0].children[1]",
+        "span": {
+          "startOffset": 83,
+          "endOffset": 91,
+          "startLine": 7,
+          "startColumn": 6,
+          "endLine": 7,
+          "endColumn": 14
+        }
+      },
+      {
+        "path": "$.children[0].fallback.children[0].children[1].children[0]",
+        "span": {
+          "startOffset": 86,
+          "endOffset": 90,
+          "startLine": 7,
+          "startColumn": 9,
+          "endLine": 7,
+          "endColumn": 13
+        }
+      }
+    ]
+  }
+}

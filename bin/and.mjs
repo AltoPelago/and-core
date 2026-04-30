@@ -7,11 +7,11 @@ import { parseAnd } from '../implementations/reference-parser/parser.mjs';
 
 function usage() {
   return `Usage:
-  and check <file> [--json]
-  and diagnostics <file> [--json]
-  and parse <file> [--json] [--spans]
-  and canonical <file> --profile embedded|standalone [--out <file>]
-  and render-html <file> [--fragment|--document] [--out <file>]
+  and check <file> [--json] [--budget name=value]
+  and diagnostics <file> [--json] [--budget name=value]
+  and parse <file> [--json] [--spans] [--budget name=value]
+  and canonical <file> --profile embedded|standalone [--out <file>] [--budget name=value]
+  and render-html <file> [--fragment|--document] [--out <file>] [--budget name=value]
 `;
 }
 
@@ -23,6 +23,41 @@ function readOption(args, name) {
 
 function hasFlag(args, name) {
   return args.includes(name);
+}
+
+const allowedBudgets = new Set([
+  'maxDocumentSize',
+  'maxLineLength',
+  'maxNestingDepth',
+  'maxInlineDepth',
+  'maxTableColumns',
+  'maxBlockSize',
+  'maxBlockCount',
+  'maxListItemCount',
+  'maxLinkTargetLength',
+]);
+
+function parseBudgetOptions(args) {
+  const budgets = {};
+  for (let i = 0; i < args.length; i += 1) {
+    if (args[i] !== '--budget') continue;
+    const raw = args[i + 1];
+    if (!raw || raw.startsWith('--')) {
+      throw Object.assign(new Error('Missing --budget value.'), { code: 'invalid_budget_option' });
+    }
+    const equals = raw.indexOf('=');
+    if (equals === -1) {
+      throw Object.assign(new Error('Budget must use name=value.'), { code: 'invalid_budget_option' });
+    }
+    const name = raw.slice(0, equals);
+    const value = Number(raw.slice(equals + 1));
+    if (!allowedBudgets.has(name) || !Number.isInteger(value) || value < 0) {
+      throw Object.assign(new Error(`Invalid budget: ${raw}`), { code: 'invalid_budget_option' });
+    }
+    budgets[name] = value;
+    i += 1;
+  }
+  return Object.keys(budgets).length > 0 ? { budgets } : {};
 }
 
 function writeJson(value) {
@@ -54,7 +89,7 @@ async function readSource(filePath) {
 
 async function commandCheck(filePath, args) {
   const source = await readSource(filePath);
-  const result = parseAnd(source);
+  const result = parseAnd(source, parseBudgetOptions(args));
   if (hasFlag(args, '--json')) {
     writeJson(result.ok ? { ok: true } : failurePayload(result));
   } else {
@@ -65,7 +100,7 @@ async function commandCheck(filePath, args) {
 
 async function commandParse(filePath, args) {
   const source = await readSource(filePath);
-  const result = parseAnd(source, { includeSpans: hasFlag(args, '--spans') });
+  const result = parseAnd(source, { ...parseBudgetOptions(args), includeSpans: hasFlag(args, '--spans') });
   if (hasFlag(args, '--json')) {
     writeJson(result);
   } else if (result.ok) {
@@ -78,7 +113,7 @@ async function commandParse(filePath, args) {
 
 async function commandDiagnostics(filePath, args) {
   const source = await readSource(filePath);
-  const result = collectDiagnostics(source);
+  const result = collectDiagnostics(source, parseBudgetOptions(args));
   if (hasFlag(args, '--json')) {
     writeJson(result);
   } else if (result.ok) {
@@ -97,7 +132,7 @@ async function commandCanonical(filePath, args) {
   const profile = readOption(args, '--profile');
   const outPath = readOption(args, '--out');
   const source = await readSource(filePath);
-  const parsed = parseAnd(source);
+  const parsed = parseAnd(source, parseBudgetOptions(args));
   if (!parsed.ok) {
     writeJson(failurePayload(parsed));
     return 1;
@@ -129,7 +164,7 @@ async function commandRenderHtml(filePath, args) {
 
   const outPath = readOption(args, '--out');
   const source = await readSource(filePath);
-  const parsed = parseAnd(source);
+  const parsed = parseAnd(source, parseBudgetOptions(args));
   if (!parsed.ok) {
     writeJson(failurePayload(parsed));
     return 1;

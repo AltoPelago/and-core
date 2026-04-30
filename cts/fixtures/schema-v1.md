@@ -24,6 +24,10 @@ The current fixture schema is intentionally minimal.
       "type": "document",
       "children": []
     },
+    "canonical": {
+      "embedded": "canonical embedded text\n",
+      "standalone": "&ND v1\n\ncanonical standalone text\n"
+    },
     "spans": [
       {
         "path": "$.children[0]",
@@ -54,6 +58,8 @@ The current fixture schema is intentionally minimal.
 * `document` is optional and valid only when `expected.ok = true`. It defines an exact structural
   document expectation for adapters that declare `document` capability. The shape is defined by
   [`and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md).
+* `canonical` is optional and valid only when `expected.ok = true`. It defines exact canonical text
+  expectations keyed by emission profile such as `embedded` or `standalone`.
 * `spans` is optional and valid only when `expected.ok = true`. It defines selected source-span
   expectations for adapters that declare `spans` capability. `path` selects a node within the
   returned document AST using `$`, dot properties, and numeric array indexes such as
@@ -70,6 +76,8 @@ Fixtures may carry expectations in separate lanes:
 
 * Parse outcome lane: `expected.ok` and optional `expected.errorCode`.
 * Semantic AST lane: `expected.document`, checked only for adapters with `document` capability.
+* Canonical lane: `expected.canonical`, checked only by canonical emitters or canonical-specific
+  checks.
 * Metadata lane: `expected.spans`, checked only for adapters with `spans` capability.
 
 Adapters MAY implement only the baseline parse outcome lane. Capability-gated lanes are reported as

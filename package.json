@@ -14,6 +14,7 @@
     "check:spec-layout": "bash scripts/check-spec-layout.sh",
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "check:cts-seed-coverage": "bash scripts/check-cts-seed-coverage.sh",
+    "check:reports": "node scripts/check-reports-fresh.mjs",
     "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
     "check:html-renderer": "node scripts/check-html-renderer.mjs",
     "check:vscode": "node scripts/check-vscode.mjs",

@@ -252,7 +252,8 @@ Rules:
 * Nested blocks MUST be indented by **exactly two spaces**
 * Tabs are invalid
 * Nested lists require a blank line before them
-* Ordered lists MUST be monotonically increasing
+* Ordered lists MAY start at any non-negative decimal integer, but each following item in the same
+  source list MUST increase by exactly one
 * A nested block intended for a list item's inner block context MUST begin exactly at that inner
   context's current block margin
 * Additional structural indentation beyond that exact nested block margin is invalid in Core v1
@@ -505,9 +506,7 @@ MUST error.
 [x]   reserved for todo/checked if ever needed
 [=]   reserved for todo/in progress if ever needed
 [.]   reserved for todo/cancelled if ever needed
-[<]   reserved for explicit line break if ever needed
 [>]   reserved if ever needed
-[_]   reserved for non-breaking space if ever needed
 
 [n]   reserved for auto-number marker in headers if ever needed
 
@@ -871,6 +870,36 @@ Expected result:
 * one paragraph block
 * one ordered list block with one item
 
+### `seed-ordered-list-renumber-canonical`
+
+Input:
+
+```text
+3. Alpha
+4. Beta
+```
+
+Expected result:
+
+* parse success
+* one ordered list block
+* source numbers are a valid monotonic sequence
+* canonical emission renumbers ordered list items from `1`
+
+### `seed-ordered-list-skipped-number`
+
+Input:
+
+```text
+1. Alpha
+3. Beta
+```
+
+Expected result:
+
+* parse failure
+* reason: ordered list item numbers must increase by exactly one within the source list
+
 ### `seed-horizontal-rule-needs-boundary`
 
 Input:
@@ -897,7 +926,7 @@ Expected result:
 
 * parse failure
 * error code `unknown_inline_type`
-* `[<]` remains reserved in Core v1
+* `[<]` is not assigned in Core v1
 
 ### `seed-table-requires-separator`
 
@@ -1220,6 +1249,193 @@ Expected result:
 * parse failure
 * error code `invalid_escape`
 
+### `seed-budget-block-count-at-limit`
+
+Input:
+
+```text
+One
+
+Two
+```
+
+Expected result:
+
+* parse success when whole-document block-count equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-block-count`
+
+Input:
+
+```text
+One
+
+Two
+```
+
+Expected result:
+
+* parse failure if configured whole-document block-count budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs as blocks are created
+
+### `seed-budget-code-block-size-at-limit`
+
+Input:
+
+````text
+```
+12345678
+```
+````
+
+Expected result:
+
+* parse success when raw code block payload size equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-code-block-size`
+
+Input:
+
+````text
+```
+123456789
+```
+````
+
+Expected result:
+
+* parse failure if configured raw block payload budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs while scanning code block payload
+
+### `seed-budget-document-size-at-limit`
+
+Input:
+
+```text
+Hello
+```
+
+Expected result:
+
+* parse success when normalized document size equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-document-size`
+
+Input:
+
+```text
+This document is too long.
+```
+
+Expected result:
+
+* parse failure if configured document-size budget is exceeded
+* error code `nd_budget_exceeded`
+* scanner rejects before unrestricted block parsing
+
+### `seed-budget-extension-block-size-at-limit`
+
+Input:
+
+```text
++++diagram/opaque
+12345678
++++
+```
+
+Expected result:
+
+* parse success when extension block payload size equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-extension-block-size`
+
+Input:
+
+```text
++++diagram/opaque
+123456789
++++
+```
+
+Expected result:
+
+* parse failure if configured extension block payload budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs while scanning opaque extension payload
+
+### `seed-budget-inline-depth-at-limit`
+
+Input:
+
+```text
+[* outer [* inner]]
+```
+
+Expected result:
+
+* parse success when inline nesting depth equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-inline-depth`
+
+Input:
+
+```text
+[* outer [* inner]]
+```
+
+Expected result:
+
+* parse failure if configured inline nesting-depth budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs when entering nested inline content
+
+### `seed-budget-line-length-at-limit`
+
+Input:
+
+```text
+Hello
+```
+
+Expected result:
+
+* parse success when physical line length equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-line-length`
+
+Input:
+
+```text
+This line is too long.
+```
+
+Expected result:
+
+* parse failure if configured physical-line-length budget is exceeded
+* error code `nd_budget_exceeded`
+* scanner rejects during line validation
+
+### `seed-budget-link-target-at-limit`
+
+Input:
+
+```text
+[@ abc| label]
+```
+
+Expected result:
+
+* parse success when link target length equals the configured budget
+* budget limit is inclusive
+
 ### `seed-budget-link-target`
 
 Input:
@@ -1233,6 +1449,111 @@ Expected result:
 * parse failure if configured link-target budget is exceeded
 * error code `nd_budget_exceeded`
 * scanner stops at the budget boundary rather than consuming unbounded input
+
+### `seed-budget-list-item-count-at-limit`
+
+Input:
+
+```text
+- One
+- Two
+```
+
+Expected result:
+
+* parse success when whole-document list-item count equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-list-item-count`
+
+Input:
+
+```text
+- One
+- Two
+- Three
+```
+
+Expected result:
+
+* parse failure if configured list-item budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs as list items are recognized
+
+### `seed-budget-list-item-count-whole-document`
+
+Input:
+
+```text
+- One
+
+- Two
+- Three
+```
+
+Expected result:
+
+* parse failure if configured list-item budget is exceeded across separate lists
+* error code `nd_budget_exceeded`
+* list-item budget is a whole-document budget
+
+### `seed-budget-nesting-depth-at-limit`
+
+Input:
+
+```text
+> Quote
+```
+
+Expected result:
+
+* parse success when block nesting depth equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-nesting-depth`
+
+Input:
+
+```text
+> Quote
+```
+
+Expected result:
+
+* parse failure if configured block nesting-depth budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs when entering a nested block context
+
+### `seed-budget-table-columns-at-limit`
+
+Input:
+
+```text
+| A | B |
+| --- | --- |
+| 1 | 2 |
+```
+
+Expected result:
+
+* parse success when table column count equals the configured budget
+* budget limit is inclusive
+
+### `seed-budget-table-columns`
+
+Input:
+
+```text
+| A | B | C |
+| --- | --- | --- |
+| 1 | 2 | 3 |
+```
+
+Expected result:
+
+* parse failure if configured table-column budget is exceeded
+* error code `nd_budget_exceeded`
+* budget failure occurs before unrestricted table cell parsing
 
 ### `seed-nested-list-two-space-indent`
 
@@ -1526,6 +1847,25 @@ Expected result:
 * first item contains one paragraph block with two lines
 * no nested table block
 
+### `seed-list-item-table-mismatched-body-row`
+
+Input:
+
+```text
+- Parent
+
+  | A | B |
+  | --- | --- |
+  | 1 | 2 | 3 |
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: nested table body row has a different cell count from the header row and MUST fail
+  rather than falling back to paragraph text
+
 ### `seed-list-item-raw-block-bad-closing-margin`
 
 Input:
@@ -1629,6 +1969,25 @@ Expected result:
 * one blockquote block containing one paragraph child
 * one top-level unordered list block
 * the list is not nested in the blockquote because it does not begin at the blockquote's current block margin
+
+### `seed-blockquote-table-mismatched-body-row`
+
+Input:
+
+```text
+> Quote intro
+>
+> | A | B |
+> | --- | --- |
+> | 1 | 2 | 3 |
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a nested table inside a blockquote uses the same recognized table shape rules and MUST
+  fail rather than falling back to quoted paragraph text
 
 ### `seed-blockquote-nested-code-block`
 
@@ -1900,7 +2259,7 @@ Expected result:
 
 * parse failure
 * error code `unknown_inline_type`
-* `[_]` remains reserved in Core v1
+* `[_]` is not assigned in Core v1
 
 ### `seed-inline-reserved-anchor-tag`
 
@@ -1915,6 +2274,48 @@ Expected result:
 * parse failure
 * error code `unknown_inline_type`
 * `[# ...]` remains reserved in Core v1
+
+### `seed-inline-reserved-reference-tag`
+
+Input:
+
+```text
+[~ mention]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[~ ...]` remains reserved in Core v1
+
+### `seed-inline-reserved-admonition-tag`
+
+Input:
+
+```text
+[! warning]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[! ...]` remains reserved in Core v1
+
+### `seed-inline-reserved-footnote-tag`
+
+Input:
+
+```text
+[^ note]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[^ ...]` remains reserved in Core v1
 
 ### `seed-inline-reserved-todo-marker`
 
@@ -2005,6 +2406,51 @@ Expected result:
 * inline spans inside table cells point at trimmed cell content
 * escaped pipes inside table cells remain part of the cell source span
 * nested inline spans inside table cells point at their exact source ranges
+
+### `seed-source-spans-extension-fallback`
+
+Input:
+
+```text
+&ND v1
+
++++unsupported/extension
+opaque [* extension] payload
++++
++++fallback
+Show [* this] instead
++++
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* extension block span covers only the primary opaque extension block, not the attached fallback
+* fallback paragraph spans point at parsed fallback content after the reserved `+++fallback` opener
+* nested inline spans inside fallback content point at their exact source ranges
+
+### `seed-source-spans-list-item-blockquote`
+
+Input:
+
+```text
+&ND v1
+
+- Parent
+
+  > First paragraph
+  >
+  > Second paragraph
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* list item spans cover the full nested block range belonging to that item
+* nested blockquote spans include both quoted paragraphs but not the blank line before the nested block
+* quoted paragraph spans point at the trimmed inner content after the list and blockquote margins
 
 ---
 
@@ -2100,6 +2546,7 @@ Inline:
 * `orphan_fallback_block`
 * `nested_fallback_block`
 * `invalid_table_shape`
+* `invalid_ordered_list_sequence`
 
 ### Lexical
 
@@ -2124,6 +2571,10 @@ Implementations MUST support limits:
 
 Implementations MUST enforce these limits during parsing, not after building an unrestricted
 intermediate structure.
+
+`max block count` and `max list item count` are whole-document limits. `max nesting depth` counts
+entry into nested block contexts from the top-level document context. `max inline depth` counts
+entry into recursively parsed inline content such as span bodies and link labels.
 
 Strict-mode budget failure MUST produce no document.
 

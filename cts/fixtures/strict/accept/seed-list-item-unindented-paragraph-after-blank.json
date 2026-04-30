@@ -11,6 +11,10 @@
       "one following top-level paragraph",
       "unindented text after a blank line is not captured into the previous list item"
     ],
+    "canonical": {
+      "embedded": "1. Hello\n2. Happy\n\nWorld\n",
+      "standalone": "&ND v1\n\n1. Hello\n2. Happy\n\nWorld\n"
+    },
     "document": {
       "type": "document",
       "children": [

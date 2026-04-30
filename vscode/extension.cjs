@@ -74,11 +74,11 @@ function reservedSyntaxHover(lineText, positionCharacter) {
     },
     {
       token: '[_]',
-      message: '`[_]` is reserved in Core v1 and is currently invalid.',
+      message: '`[_]` is not assigned in Core v1 and is currently invalid.',
     },
     {
       token: '[<]',
-      message: '`[<]` is reserved in Core v1 and is currently invalid.',
+      message: '`[<]` is not assigned in Core v1 and is currently invalid.',
     },
     {
       token: '[#',

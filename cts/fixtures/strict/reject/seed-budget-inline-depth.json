@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-inline-depth",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxInlineDepth": 1
+    }
+  },
+  "source": "[* outer [* inner]]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured inline nesting-depth budget is exceeded",
+      "budget failure occurs when entering nested inline content"
+    ]
+  }
+}

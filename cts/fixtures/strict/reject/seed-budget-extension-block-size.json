@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-budget-extension-block-size",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "options": {
+    "budgets": {
+      "maxBlockSize": 8
+    }
+  },
+  "source": "+++diagram/opaque\n123456789\n+++\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nd_budget_exceeded",
+    "assertions": [
+      "parse failure if configured extension block payload budget is exceeded",
+      "budget failure occurs while scanning opaque extension payload"
+    ]
+  }
+}

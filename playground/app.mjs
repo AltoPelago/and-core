@@ -43,23 +43,77 @@ const elements = {
   diagnostics: document.querySelector('#diagnostics'),
   html: document.querySelector('#html'),
   preview: document.querySelector('#preview'),
+  budgetInputs: [...document.querySelectorAll('[data-budget]')],
   tabs: [...document.querySelectorAll('.tab')],
   panels: [...document.querySelectorAll('.tab-panel')],
 };
-
-function setText(node, value) {
-  node.textContent = value;
-}
 
 function formatJson(value) {
   return JSON.stringify(value, null, 2);
 }
 
-function diagnosticMessage(result) {
+function budgetLabel(name) {
+  return {
+    maxDocumentSize: 'Doc',
+    maxLineLength: 'Line',
+    maxNestingDepth: 'Depth',
+    maxInlineDepth: 'Inline',
+    maxTableColumns: 'Columns',
+    maxBlockSize: 'Raw',
+    maxBlockCount: 'Blocks',
+    maxListItemCount: 'Items',
+    maxLinkTargetLength: 'Link',
+  }[name] ?? name;
+}
+
+function readBudgets() {
+  const budgets = {};
+  for (const input of elements.budgetInputs) {
+    const rawValue = input.value.trim();
+    if (rawValue === '') continue;
+
+    const value = Number(rawValue);
+    if (!Number.isInteger(value) || value < 0) {
+      return {
+        ok: false,
+        error: {
+          ok: false,
+          errorCode: 'invalid_budget_option',
+          message: `${budgetLabel(input.dataset.budget)} budget must be a non-negative integer.`,
+        },
+      };
+    }
+
+    budgets[input.dataset.budget] = value;
+  }
+  return { ok: true, options: Object.keys(budgets).length > 0 ? { budgets } : {} };
+}
+
+function friendlyDiagnostic(result, parseOptions = {}) {
+  if (result.ok) return null;
+  if (result.errorCode === 'invalid_budget_option') {
+    return result.message;
+  }
+  if (result.errorCode === 'nd_budget_exceeded') {
+    const active = Object.entries(parseOptions.budgets ?? {})
+      .map(([name, value]) => `${budgetLabel(name)}=${value}`)
+      .join(', ');
+    return `The document exceeded an explicit parser budget${
+      active ? ` (${active})` : ''
+    }. Increase the matching budget field or clear it to use the default unrestricted playground parse.`;
+  }
+  if (result.diagnostic?.line && result.diagnostic?.column) {
+    return `${result.errorCode} at line ${result.diagnostic.line}, column ${result.diagnostic.column}.`;
+  }
+  return result.errorCode;
+}
+
+function diagnosticMessage(result, parseOptions = {}) {
   if (result.ok) {
     return {
       ok: true,
       message: 'Parse succeeded in strict mode.',
+      budgets: parseOptions.budgets ?? null,
       details: {
         blocks: result.document.children.length,
       },
@@ -69,6 +123,8 @@ function diagnosticMessage(result) {
   return {
     ok: false,
     errorCode: result.errorCode,
+    message: friendlyDiagnostic(result, parseOptions),
+    budgets: parseOptions.budgets ?? null,
     diagnostic: result.diagnostic ?? null,
   };
 }
@@ -94,8 +150,12 @@ function updatePreview(result) {
 }
 
 function update() {
-  const result = parseAnd(elements.source.value, { includeSpans: true });
-  const diagnostics = diagnosticMessage(result);
+  const budgetRead = readBudgets();
+  const parseOptions = budgetRead.ok ? budgetRead.options : {};
+  const result = budgetRead.ok
+    ? parseAnd(elements.source.value, { ...parseOptions, includeSpans: true })
+    : budgetRead.error;
+  const diagnostics = diagnosticMessage(result, parseOptions);
 
   elements.status.textContent = result.ok ? 'Parsed' : 'Parse error';
   elements.badge.textContent = result.ok ? 'strict: ok' : 'strict: failed';
@@ -148,8 +208,14 @@ function activateTab(name) {
 
 elements.source.value = sample;
 elements.source.addEventListener('input', update);
+for (const input of elements.budgetInputs) {
+  input.addEventListener('input', update);
+}
 elements.reset.addEventListener('click', () => {
   elements.source.value = sample;
+  for (const input of elements.budgetInputs) {
+    input.value = '';
+  }
   update();
 });
 

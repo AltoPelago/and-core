@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-table-mismatched-body-row",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> | A | B |\n> | --- | --- |\n> | 1 | 2 | 3 |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_shape",
+    "assertions": [
+      "parse failure",
+      "nested blockquote table body row has a different cell count from the header row",
+      "nested quoted table contexts fail rather than falling back to quoted paragraph text"
+    ]
+  }
+}

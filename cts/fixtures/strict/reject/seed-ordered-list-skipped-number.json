@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-ordered-list-skipped-number",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "1. Alpha\n3. Beta\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_ordered_list_sequence",
+    "assertions": [
+      "parse failure",
+      "ordered list item numbers must increase by exactly one within the source list"
+    ]
+  }
+}

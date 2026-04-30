@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-list-item-blockquote",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n- Parent\n\n  > First paragraph\n  >\n  > Second paragraph\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "list item spans cover the full nested block range belonging to that item",
+      "nested blockquote spans include both quoted paragraphs but not the blank line before the nested block",
+      "quoted paragraph spans point at the trimmed inner content after the list and blockquote margins"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 62,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 7,
+          "endColumn": 21
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 62,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 7,
+          "endColumn": 21
+        }
+      },
+      {
+        "path": "$.children[0].items[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 62,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 7,
+          "endColumn": 21
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1]",
+        "span": {
+          "startOffset": 20,
+          "endOffset": 62,
+          "startLine": 5,
+          "startColumn": 3,
+          "endLine": 7,
+          "endColumn": 21
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[0]",
+        "span": {
+          "startOffset": 22,
+          "endOffset": 37,
+          "startLine": 5,
+          "startColumn": 5,
+          "endLine": 5,
+          "endColumn": 20
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1]",
+        "span": {
+          "startOffset": 46,
+          "endOffset": 62,
+          "startLine": 7,
+          "startColumn": 5,
+          "endLine": 7,
+          "endColumn": 21
+        }
+      }
+    ]
+  }
+}
