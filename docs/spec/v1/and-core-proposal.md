@@ -513,6 +513,7 @@ MUST error.
 
 ===   reserved for header text if ever needed
 ~~~   reserved for alternative formating if ever needed
+***   reserved for disclaimer text
 ```
 
 ### Design rule

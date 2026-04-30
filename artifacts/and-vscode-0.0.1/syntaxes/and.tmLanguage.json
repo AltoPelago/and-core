@@ -1,0 +1,243 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "&ND",
+  "scopeName": "text.and",
+  "patterns": [
+    { "include": "#header" },
+    { "include": "#code_block" },
+    { "include": "#extension_block" },
+    { "include": "#heading" },
+    { "include": "#horizontal_rule" },
+    { "include": "#blockquote" },
+    { "include": "#list_markers" },
+    { "include": "#table" },
+    { "include": "#inline" }
+  ],
+  "repository": {
+    "header": {
+      "patterns": [
+        {
+          "match": "^(&ND)( )(v1)$",
+          "captures": {
+            "1": { "name": "keyword.other.declaration.and" },
+            "3": { "name": "entity.name.type.and" }
+          }
+        }
+      ]
+    },
+    "heading": {
+      "patterns": [
+        {
+          "match": "^(#{1,6})(\\s+)(.*)$",
+          "captures": {
+            "1": { "name": "markup.heading.marker.and" },
+            "3": { "name": "markup.heading.and" }
+          }
+        }
+      ]
+    },
+    "horizontal_rule": {
+      "patterns": [
+        {
+          "match": "^---$",
+          "name": "meta.separator.and"
+        }
+      ]
+    },
+    "blockquote": {
+      "patterns": [
+        {
+          "match": "^(  )?(> ?)",
+          "captures": {
+            "2": { "name": "markup.quote.and" }
+          }
+        }
+      ]
+    },
+    "list_markers": {
+      "patterns": [
+        {
+          "match": "^(  )*(- )(.*)$",
+          "captures": {
+            "2": { "name": "markup.list.unnumbered.and" }
+          }
+        },
+        {
+          "match": "^(  )*(\\d+\\. )(.*)$",
+          "captures": {
+            "2": { "name": "markup.list.numbered.and" }
+          }
+        }
+      ]
+    },
+    "table": {
+      "patterns": [
+        {
+          "match": "\\|",
+          "name": "punctuation.definition.table.and"
+        }
+      ]
+    },
+    "code_block": {
+      "patterns": [
+        {
+          "begin": "^((?:  )?(?:> ?)?)(`{3,4})([A-Za-z0-9_-]+)?$",
+          "beginCaptures": {
+            "2": { "name": "markup.fence.code.and" },
+            "3": { "name": "entity.name.section.code-language.and" }
+          },
+          "end": "^(\\1)(\\2)$",
+          "endCaptures": {
+            "2": { "name": "markup.fence.code.and" }
+          },
+          "name": "markup.raw.block.and"
+        }
+      ]
+    },
+    "extension_block": {
+      "patterns": [
+        {
+          "begin": "^((?:  )?(?:> ?)?)(\\+\\+\\+)([a-z][a-z0-9-]*(?:\\/[a-z][a-z0-9-]*)*(?:\\.v[0-9]+)?)$",
+          "beginCaptures": {
+            "2": { "name": "markup.fence.extension.and" },
+            "3": { "name": "entity.name.type.extension.and" }
+          },
+          "end": "^(\\1)(\\+\\+\\+)$",
+          "endCaptures": {
+            "2": { "name": "markup.fence.extension.and" }
+          },
+          "name": "meta.extension.block.and"
+        }
+      ]
+    },
+    "inline": {
+      "patterns": [
+        { "include": "#escape" },
+        { "include": "#link" },
+        { "include": "#inline_code" },
+        { "include": "#strong" },
+        { "include": "#emphasis" },
+        { "include": "#reserved" }
+      ]
+    },
+    "escape": {
+      "patterns": [
+        {
+          "match": "\\\\(?:\\[|\\]|\\||\\\\)",
+          "name": "constant.character.escape.and"
+        },
+        {
+          "match": "\\\\.",
+          "name": "invalid.illegal.and"
+        }
+      ]
+    },
+    "strong": {
+      "patterns": [
+        {
+          "begin": "\\[\\* ",
+          "beginCaptures": {
+            "0": { "name": "markup.bold.and" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "markup.bold.and" }
+          },
+          "contentName": "markup.bold.and",
+          "patterns": [
+            { "include": "#escape" },
+            { "include": "#link" },
+            { "include": "#inline_code" },
+            { "include": "#emphasis" },
+            { "include": "#reserved" }
+          ]
+        }
+      ]
+    },
+    "emphasis": {
+      "patterns": [
+        {
+          "begin": "\\[/ ",
+          "beginCaptures": {
+            "0": { "name": "markup.italic.and" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "markup.italic.and" }
+          },
+          "contentName": "markup.italic.and",
+          "patterns": [
+            { "include": "#escape" },
+            { "include": "#link" },
+            { "include": "#inline_code" },
+            { "include": "#strong" },
+            { "include": "#reserved" }
+          ]
+        }
+      ]
+    },
+    "inline_code": {
+      "patterns": [
+        {
+          "begin": "\\[\\$ ",
+          "beginCaptures": {
+            "0": { "name": "markup.inline.raw.and" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "markup.inline.raw.and" }
+          },
+          "contentName": "markup.inline.raw.and",
+          "patterns": [
+            { "include": "#escape" }
+          ]
+        }
+      ]
+    },
+    "link": {
+      "patterns": [
+        {
+          "begin": "\\[@ ",
+          "beginCaptures": {
+            "0": { "name": "markup.underline.link.and" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "markup.underline.link.and" }
+          },
+          "patterns": [
+            {
+              "match": "\\|",
+              "name": "punctuation.separator.link.and"
+            },
+            {
+              "match": "(?<=\\[@ )(?:[^\\]|\\\\.)+(?=\\s*\\|)",
+              "name": "string.other.link-target.and"
+            },
+            { "include": "#escape" },
+            { "include": "#strong" },
+            { "include": "#emphasis" },
+            { "include": "#inline_code" },
+            { "include": "#reserved" }
+          ]
+        }
+      ]
+    },
+    "reserved": {
+      "patterns": [
+        {
+          "match": "\\[(?: |x|=|\\.|_|<)\\]",
+          "name": "invalid.illegal.and"
+        },
+        {
+          "match": "\\[(?:#|~|!|\\?|\\+|-|\"|'|:|>|\\^)(?:[^\\]\\\\]|\\\\.)*\\]",
+          "name": "invalid.illegal.and"
+        },
+        {
+          "match": "\\[[^\\]\\\\\\s@\\$\\*/][^\\]]*\\]",
+          "name": "invalid.illegal.and"
+        }
+      ]
+    }
+  }
+}
