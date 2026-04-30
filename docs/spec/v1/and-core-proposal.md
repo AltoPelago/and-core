@@ -1930,6 +1930,48 @@ Expected result:
 * error code `unknown_inline_type`
 * `[x]` remains reserved in Core v1
 
+### `seed-inline-reserved-todo-unchecked-marker`
+
+Input:
+
+```text
+[ ]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[ ]` remains reserved in Core v1
+
+### `seed-inline-reserved-todo-in-progress-marker`
+
+Input:
+
+```text
+[=]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[=]` remains reserved in Core v1
+
+### `seed-inline-reserved-todo-cancelled-marker`
+
+Input:
+
+```text
+[.]
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_inline_type`
+* `[.]` remains reserved in Core v1
+
 ### `seed-inline-invalid-escape-in-code`
 
 Input:
