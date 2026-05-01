@@ -317,6 +317,8 @@ Rules:
 * All rows MUST have same column count
 * Once a table is recognized, every subsequent body row MUST conform to the recognized table shape
 * A non-conforming body row MUST cause parse failure rather than fallback to paragraph text
+* Table continuation is container-local: rows from a different enclosing block context or block
+  margin MUST NOT continue a recognized table
 * Inline parsing allowed inside cells
 * Block content forbidden inside cells
 * Pipes MUST be escaped: `\|`
@@ -372,6 +374,9 @@ Rules:
 * A `+++fallback` block found anywhere else MUST fail with `orphan_fallback_block`
 * Extension names MUST match the lowercase grammar exactly in strict mode; uppercase characters
   MUST cause parse failure
+* Extension opener recognition is local to the current block margin and validated extension-name
+  grammar; a line that does not satisfy that opener grammar is parsed by the ordinary block and
+  paragraph rules instead
 
 Extension name grammar:
 
@@ -1020,6 +1025,22 @@ Expected result:
 * parse failure
 * reason: unescaped pipe creates an extra cell and violates table shape
 
+### `seed-table-heading-instead-of-body-row`
+
+Input:
+
+```text
+| A | B |
+| --- | --- |
+# Heading
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: once a table is recognized, a following heading line cannot terminate the table early
+
 ### `seed-escaped-inline-opener`
 
 Input:
@@ -1098,6 +1119,114 @@ Expected result:
 * parse failure
 * error code `unclosed_code_block`
 * reason: ordered code blocks require a matching quadruple-fence closer
+
+### `seed-blockquote-ordered-code-block-wrong-closing-fence`
+
+Input:
+
+`````text
+> Quote intro
+>
+> ````aeon
+> title = "Hello World"
+> ```
+`````
+
+Expected result:
+
+* parse failure
+* error code `unclosed_code_block`
+* reason: a quoted ordered code block still requires a matching quadruple-fence closer
+
+### `seed-list-item-ordered-code-block-wrong-closing-fence`
+
+Input:
+
+`````text
+- Parent
+
+  ````aeon
+  title = "Hello World"
+  ```
+`````
+
+Expected result:
+
+* parse failure
+* error code `unclosed_code_block`
+* reason: a list-item-contained ordered code block still requires a matching quadruple-fence closer
+
+### `seed-list-item-blockquote-ordered-code-block-wrong-closing-fence`
+
+Input:
+
+`````text
+- Parent
+
+  > ````aeon
+  > title = "Hello World"
+  > ```
+`````
+
+Expected result:
+
+* parse failure
+* error code `unclosed_code_block`
+* reason: a doubly nested ordered code block still requires a matching quadruple-fence closer
+
+### `seed-list-item-unclosed-extension-block`
+
+Input:
+
+```text
+- Parent
+
+  +++chart/pie
+  apples: 1
+```
+
+Expected result:
+
+* parse failure
+* error code `unclosed_extension_block`
+* reason: a list-item-contained extension block still requires a matching closer at the same nested
+  margin
+
+### `seed-blockquote-unclosed-extension-block`
+
+Input:
+
+```text
+> Quote
+>
+> +++chart/pie
+> apples: 1
+```
+
+Expected result:
+
+* parse failure
+* error code `unclosed_extension_block`
+* reason: a blockquote-contained extension block still requires a matching closer at the same
+  nested margin
+
+### `seed-list-item-blockquote-unclosed-extension-block`
+
+Input:
+
+```text
+- Parent
+
+  > +++chart/pie
+  > apples: 1
+```
+
+Expected result:
+
+* parse failure
+* error code `unclosed_extension_block`
+* reason: a doubly nested extension block still requires a matching closer at the innermost
+  container margin
 
 ### `seed-extension-block-opaque`
 
@@ -2043,6 +2172,25 @@ Expected result:
 * reason: a nested table inside a list item cannot continue with a body row outside the list-item
   container
 
+### `seed-list-item-table-horizontal-rule-instead-of-body-row`
+
+Input:
+
+```text
+- Parent
+
+  | A | B |
+  | --- | --- |
+  ---
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a nested table inside a list item cannot terminate early and reinterpret a following
+  horizontal rule as a sibling nested block
+
 ### `seed-list-item-raw-block-bad-closing-margin`
 
 Input:
@@ -2077,6 +2225,44 @@ Expected result:
 * parse failure
 * error code `extension_block_bad_closing_margin`
 * reason: extension block closer must appear at the same block margin as the opener
+
+### `seed-list-item-blockquote-raw-block-bad-closing-margin`
+
+Input:
+
+````text
+- Parent
+
+  > ```txt
+  > raw
+  ```
+````
+
+Expected result:
+
+* parse failure
+* error code `raw_block_bad_closing_margin`
+* reason: a raw block closer inside a list-item-contained blockquote must appear at the same inner
+  block margin as the opener
+
+### `seed-list-item-blockquote-extension-block-bad-closing-margin`
+
+Input:
+
+```text
+- Parent
+
+  > +++chart/pie
+  > apples: 1
+  +++
+```
+
+Expected result:
+
+* parse failure
+* error code `extension_block_bad_closing_margin`
+* reason: an extension block closer inside a list-item-contained blockquote must appear at the same
+  inner block margin as the opener
 
 ### `seed-list-item-blockquote`
 
@@ -2208,6 +2394,25 @@ Expected result:
 * reason: a nested table inside a blockquote cannot continue with a body row outside the quoted
   container
 
+### `seed-blockquote-table-horizontal-rule-instead-of-body-row`
+
+Input:
+
+```text
+> Quote intro
+>
+> | A | B |
+> | --- | --- |
+> ---
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a nested table inside a blockquote cannot terminate early and reinterpret a following
+  quoted horizontal rule as a sibling block
+
 ### `seed-blockquote-nested-code-block`
 
 Input:
@@ -2317,6 +2522,25 @@ Expected result:
 * error code `invalid_table_shape`
 * reason: a doubly nested table inside a list-item-contained blockquote cannot continue at the
   outer list-item margin
+
+### `seed-list-item-blockquote-table-horizontal-rule-instead-of-body-row`
+
+Input:
+
+```text
+- Parent
+
+  > | A | B |
+  > | --- | --- |
+  > ---
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a doubly nested table inside a list-item-contained blockquote cannot terminate early and
+  reinterpret a quoted horizontal rule as a sibling block
 
 ### `seed-blockquote-escaped-inline-opener`
 
@@ -2870,6 +3094,52 @@ Expected result:
 * inline spans inside the following nested table remain exact after both list-item and blockquote
   margin stripping
 
+### `seed-source-spans-list-item-blockquote-code-block`
+
+Input:
+
+````text
+&ND v1
+
+- Parent
+
+  > Quote intro
+  >
+  > ```txt
+  > raw
+  > lines
+  > ```
+````
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested blockquote spans begin at the trimmed inner block margin inside the list item
+* nested code block spans begin at the trimmed inner block margin after both list-item and
+  blockquote stripping
+* raw block spans cover the full fenced source region rather than only the payload lines
+
+### `seed-source-spans-ordered-code-block`
+
+Input:
+
+````text
+&ND v1
+
+````txt
+a
+b
+````
+````
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* ordered code block spans cover the full quadruple-fence source region
+* ordered code block spans begin at the opening fence rather than the first payload line
+
 ---
 
 # **8. Structural Constraints**
@@ -2949,27 +3219,40 @@ Inline:
 
 ## 10.3 Error Categories
 
+The categories below describe the stable strict-mode diagnostics currently exercised by the
+conformance suite. Implementations MAY expose additional internal diagnostics, but they MUST NOT
+change the meaning of these stable codes.
+
 ### Structural
 
 * `unclosed_inline`
-* `invalid_nesting`
 * `unexpected_closing`
 * `unknown_inline_type`
+* `missing_link_label`
+* `missing_blank_line_before_nested_block`
+* `invalid_ordered_list_sequence`
 
 ### Block
 
 * `unclosed_code_block`
 * `unclosed_extension_block`
+* `raw_block_bad_closing_margin`
 * `extension_block_bad_closing_margin`
 * `orphan_fallback_block`
 * `nested_fallback_block`
 * `invalid_table_shape`
-* `invalid_ordered_list_sequence`
+* `invalid_extension_name`
+* `block_opener_on_paragraph_continuation`
 
 ### Lexical
 
 * `invalid_escape`
-* `invalid_token`
+* `invalid_indentation`
+* `invalid_link_target`
+
+### Resource Limits
+
+* `nd_budget_exceeded`
 
 ---
 

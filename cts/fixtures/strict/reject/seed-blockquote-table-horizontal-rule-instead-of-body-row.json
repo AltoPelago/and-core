@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-table-horizontal-rule-instead-of-body-row",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> | A | B |\n> | --- | --- |\n> ---\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_shape",
+    "assertions": [
+      "parse failure",
+      "a nested table inside a blockquote cannot terminate early and reinterpret a following quoted horizontal rule as a sibling block",
+      "the line after the recognized quoted separator row is still checked against table shape"
+    ]
+  }
+}

@@ -508,6 +508,34 @@ function evaluateFixture(fixture) {
           lines[8] === '  > | Alpha | Link\\|Text |',
       };
 
+    case 'seed-source-spans-list-item-blockquote-code-block':
+      return {
+        ok:
+          lines.length === 10 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  > Quote intro' &&
+          lines[5] === '  >' &&
+          lines[6] === '  > ```txt' &&
+          lines[7] === '  > raw' &&
+          lines[8] === '  > lines' &&
+          lines[9] === '  > ```',
+      };
+
+    case 'seed-source-spans-ordered-code-block':
+      return {
+        ok:
+          lines.length === 6 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '````txt' &&
+          lines[3] === 'a' &&
+          lines[4] === 'b' &&
+          lines[5] === '````',
+      };
+
     case 'seed-table-mismatched-body-row':
       return {
         ok: false,
@@ -526,6 +554,12 @@ function evaluateFixture(fixture) {
       return {
         ok: false,
         errorCode: lines[2] === '| escaped | pipe | ok |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
+    case 'seed-table-heading-instead-of-body-row':
+      return {
+        ok: false,
+        errorCode: lines[2] === '# Heading' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
     case 'seed-escaped-inline-opener':
@@ -743,6 +777,12 @@ function evaluateFixture(fixture) {
         errorCode: lines[4] === '| 1 | 2 |' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
+    case 'seed-list-item-table-horizontal-rule-instead-of-body-row':
+      return {
+        ok: false,
+        errorCode: lines[4] === '  ---' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
     case 'seed-list-item-blockquote':
       return {
         ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  > Quote line',
@@ -803,6 +843,12 @@ function evaluateFixture(fixture) {
         errorCode: lines[2] === '| 1 | 2 |' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
+    case 'seed-blockquote-table-horizontal-rule-instead-of-body-row':
+      return {
+        ok: false,
+        errorCode: lines[4] === '> ---' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
     case 'seed-blockquote-nested-code-block':
       return {
         ok:
@@ -839,6 +885,12 @@ function evaluateFixture(fixture) {
       return {
         ok: false,
         errorCode: lines[4] === '  | 1 | 2 |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-blockquote-table-horizontal-rule-instead-of-body-row':
+      return {
+        ok: false,
+        errorCode: lines[4] === '  > ---' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
     case 'seed-blockquote-escaped-inline-opener':
@@ -879,6 +931,50 @@ function evaluateFixture(fixture) {
       return {
         ok: false,
         errorCode: lines[0] === '````aeon' && lines[2] === '```' ? 'unclosed_code_block' : 'unexpected_structure',
+      };
+
+    case 'seed-blockquote-ordered-code-block-wrong-closing-fence':
+      return {
+        ok: false,
+        errorCode:
+          lines[2] === '> ````aeon' && lines[4] === '> ```' ? 'unclosed_code_block' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-ordered-code-block-wrong-closing-fence':
+      return {
+        ok: false,
+        errorCode:
+          lines[2] === '  ````aeon' && lines[4] === '  ```' ? 'unclosed_code_block' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-blockquote-ordered-code-block-wrong-closing-fence':
+      return {
+        ok: false,
+        errorCode:
+          lines[2] === '  > ````aeon' && lines[4] === '  > ```' ? 'unclosed_code_block' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-unclosed-extension-block':
+      return {
+        ok: false,
+        errorCode:
+          lines[2] === '  +++chart/pie' && lines[3] === '  apples: 1' ? 'unclosed_extension_block' : 'unexpected_structure',
+      };
+
+    case 'seed-blockquote-unclosed-extension-block':
+      return {
+        ok: false,
+        errorCode:
+          lines[2] === '> +++chart/pie' && lines[3] === '> apples: 1' ? 'unclosed_extension_block' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-blockquote-unclosed-extension-block':
+      return {
+        ok: false,
+        errorCode:
+          lines[2] === '  > +++chart/pie' && lines[3] === '  > apples: 1'
+            ? 'unclosed_extension_block'
+            : 'unexpected_structure',
       };
 
     case 'seed-horizontal-rule-needs-boundary':
@@ -938,6 +1034,18 @@ function evaluateFixture(fixture) {
       return {
         ok: false,
         errorCode: lines[4] === '+++' ? 'extension_block_bad_closing_margin' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-blockquote-raw-block-bad-closing-margin':
+      return {
+        ok: false,
+        errorCode: lines[4] === '  ```' ? 'raw_block_bad_closing_margin' : 'unexpected_structure',
+      };
+
+    case 'seed-list-item-blockquote-extension-block-bad-closing-margin':
+      return {
+        ok: false,
+        errorCode: lines[4] === '  +++' ? 'extension_block_bad_closing_margin' : 'unexpected_structure',
       };
 
     default:

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-list-item-unclosed-extension-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  +++chart/pie\n  apples: 1\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_extension_block",
+    "assertions": [
+      "parse failure",
+      "a list-item-contained extension block must end with a matching closer at the same nested margin",
+      "reaching end of input without a closer leaves the nested extension block unclosed"
+    ]
+  }
+}

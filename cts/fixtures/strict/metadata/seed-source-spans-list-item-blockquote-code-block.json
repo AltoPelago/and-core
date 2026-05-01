@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-list-item-blockquote-code-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n- Parent\n\n  > Quote intro\n  >\n  > ```txt\n  > raw\n  > lines\n  > ```\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "nested blockquote spans begin at the trimmed inner block margin inside the list item",
+      "nested code block spans begin at the trimmed inner block margin after both list-item and blockquote stripping",
+      "raw block spans cover the full fenced source region rather than only the payload lines"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 74,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 10,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 74,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 10,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1]",
+        "span": {
+          "startOffset": 20,
+          "endOffset": 74,
+          "startLine": 5,
+          "startColumn": 3,
+          "endLine": 10,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[0]",
+        "span": {
+          "startOffset": 22,
+          "endOffset": 33,
+          "startLine": 5,
+          "startColumn": 5,
+          "endLine": 5,
+          "endColumn": 16
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1]",
+        "span": {
+          "startOffset": 42,
+          "endOffset": 74,
+          "startLine": 7,
+          "startColumn": 5,
+          "endLine": 10,
+          "endColumn": 8
+        }
+      }
+    ]
+  }
+}

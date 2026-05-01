@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-ordered-code-block",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n````txt\na\nb\n````\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "ordered code block spans cover the full quadruple-fence source region",
+      "ordered code block spans begin at the opening fence rather than the first payload line"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 24,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 6,
+          "endColumn": 5
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 24,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 6,
+          "endColumn": 5
+        }
+      }
+    ]
+  }
+}

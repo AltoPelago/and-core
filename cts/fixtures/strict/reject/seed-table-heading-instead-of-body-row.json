@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-heading-instead-of-body-row",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| A | B |\n| --- | --- |\n# Heading\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_shape",
+    "assertions": [
+      "parse failure",
+      "once a table is recognized, a following heading line cannot terminate the table early",
+      "a non-row block opener after the recognized separator row still fails as invalid table shape"
+    ]
+  }
+}

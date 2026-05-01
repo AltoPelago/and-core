@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 121,
+    "fixtures": 135,
     "pending": 0,
-    "pass": 121,
+    "pass": 135,
     "fail": 0,
     "error": 0
   },
@@ -17,15 +17,15 @@
     "failed": 0
   },
   "spanChecks": {
-    "expected": 10,
+    "expected": 12,
     "checked": 0,
     "matched": 0,
     "failed": 0,
-    "skipped": 10
+    "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 60,
-    "matched": 60,
+    "expected": 72,
+    "matched": 72,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -235,6 +235,25 @@
     {
       "id": "seed-table-unescaped-pipe-extra-cell",
       "path": "strict/reject/seed-table-unescaped-pipe-extra-cell.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-table-heading-instead-of-body-row",
+      "path": "strict/reject/seed-table-heading-instead-of-body-row.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
@@ -671,6 +690,25 @@
       ]
     },
     {
+      "id": "seed-list-item-table-horizontal-rule-instead-of-body-row",
+      "path": "strict/reject/seed-list-item-table-horizontal-rule-instead-of-body-row.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
       "id": "seed-list-item-blockquote",
       "path": "strict/accept/seed-list-item-blockquote.json",
       "status": "pass",
@@ -817,6 +855,25 @@
       ]
     },
     {
+      "id": "seed-blockquote-table-horizontal-rule-instead-of-body-row",
+      "path": "strict/reject/seed-blockquote-table-horizontal-rule-instead-of-body-row.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
       "id": "seed-blockquote-nested-code-block",
       "path": "strict/accept/seed-blockquote-nested-code-block.json",
       "status": "pass",
@@ -855,6 +912,25 @@
     {
       "id": "seed-list-item-blockquote-table-crosses-boundary",
       "path": "strict/reject/seed-list-item-blockquote-table-crosses-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-table-horizontal-rule-instead-of-body-row",
+      "path": "strict/reject/seed-list-item-blockquote-table-horizontal-rule-instead-of-body-row.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
@@ -1094,6 +1170,63 @@
     {
       "id": "seed-unclosed-extension-block",
       "path": "strict/reject/seed-unclosed-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_extension_block",
+      "actualOk": false,
+      "errorCode": "unclosed_extension_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-unclosed-extension-block",
+      "path": "strict/reject/seed-list-item-unclosed-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_extension_block",
+      "actualOk": false,
+      "errorCode": "unclosed_extension_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-blockquote-unclosed-extension-block",
+      "path": "strict/reject/seed-blockquote-unclosed-extension-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_extension_block",
+      "actualOk": false,
+      "errorCode": "unclosed_extension_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-unclosed-extension-block",
+      "path": "strict/reject/seed-list-item-blockquote-unclosed-extension-block.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
@@ -1652,6 +1785,44 @@
       ]
     },
     {
+      "id": "seed-list-item-blockquote-raw-block-bad-closing-margin",
+      "path": "strict/reject/seed-list-item-blockquote-raw-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "raw_block_bad_closing_margin",
+      "actualOk": false,
+      "errorCode": "raw_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-extension-block-bad-closing-margin",
+      "path": "strict/reject/seed-list-item-blockquote-extension-block-bad-closing-margin.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "extension_block_bad_closing_margin",
+      "actualOk": false,
+      "errorCode": "extension_block_bad_closing_margin",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
       "id": "seed-inline-unclosed-strong",
       "path": "strict/reject/seed-inline-unclosed-strong.json",
       "status": "pass",
@@ -1939,6 +2110,63 @@
     {
       "id": "seed-ordered-code-block-wrong-closing-fence",
       "path": "strict/reject/seed-ordered-code-block-wrong-closing-fence.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "actualOk": false,
+      "errorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-blockquote-ordered-code-block-wrong-closing-fence",
+      "path": "strict/reject/seed-blockquote-ordered-code-block-wrong-closing-fence.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "actualOk": false,
+      "errorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-ordered-code-block-wrong-closing-fence",
+      "path": "strict/reject/seed-list-item-ordered-code-block-wrong-closing-fence.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "actualOk": false,
+      "errorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-ordered-code-block-wrong-closing-fence",
+      "path": "strict/reject/seed-list-item-blockquote-ordered-code-block-wrong-closing-fence.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
@@ -2253,6 +2481,42 @@
     {
       "id": "seed-source-spans-list-item-blockquote-paragraph-then-table",
       "path": "strict/metadata/seed-source-spans-list-item-blockquote-paragraph-then-table.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Source span expectation skipped; adapter does not declare spans capability."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-blockquote-code-block",
+      "path": "strict/metadata/seed-source-spans-list-item-blockquote-code-block.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference subset adapter.",
+        "Source span expectation skipped; adapter does not declare spans capability."
+      ]
+    },
+    {
+      "id": "seed-source-spans-ordered-code-block",
+      "path": "strict/metadata/seed-source-spans-ordered-code-block.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,
