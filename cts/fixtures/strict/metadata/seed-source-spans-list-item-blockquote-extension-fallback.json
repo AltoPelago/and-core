@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-list-item-blockquote-extension-fallback",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n- Parent\n\n  > Quote intro\n  >\n  > +++unsupported/extension\n  > opaque payload\n  > +++\n  > +++fallback\n  > Show [* this] instead\n  > +++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "nested extension block span covers only the primary opaque block after both list-item and blockquote stripping",
+      "fallback paragraph spans begin at the trimmed inner block margin after the list item, blockquote, and reserved fallback opener",
+      "nested inline spans inside doubly nested fallback content point at their exact source ranges"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 143,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 12,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 143,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 12,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1]",
+        "span": {
+          "startOffset": 20,
+          "endOffset": 143,
+          "startLine": 5,
+          "startColumn": 3,
+          "endLine": 12,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1]",
+        "span": {
+          "startOffset": 42,
+          "endOffset": 93,
+          "startLine": 7,
+          "startColumn": 5,
+          "endLine": 9,
+          "endColumn": 8
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1].fallback.children[0]",
+        "span": {
+          "startOffset": 114,
+          "endOffset": 135,
+          "startLine": 11,
+          "startColumn": 5,
+          "endLine": 11,
+          "endColumn": 26
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1].fallback.children[0].children[1]",
+        "span": {
+          "startOffset": 119,
+          "endOffset": 127,
+          "startLine": 11,
+          "startColumn": 10,
+          "endLine": 11,
+          "endColumn": 18
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1].fallback.children[0].children[1].children[0]",
+        "span": {
+          "startOffset": 122,
+          "endOffset": 126,
+          "startLine": 11,
+          "startColumn": 13,
+          "endLine": 11,
+          "endColumn": 17
+        }
+      }
+    ]
+  }
+}

@@ -134,3 +134,13 @@ fixtures. Use `error` for adapter/runtime failures.
 
 Capability-gated lanes do not require the adapter to set `status`; the runner adds those checks on
 top of the returned result.
+
+## Nested Container Fixtures
+
+Many fixtures intentionally exercise list-item and blockquote local rules, including trimmed nested
+tables, nested extension fallback, and container-local orphan-fallback failure.
+
+Smoke-test or subset adapters do not need a full AST to participate well here. A practical approach
+is to normalize line endings first, then recognize the nested container shape from trimmed source
+lines at the exact inner margin. This keeps adapters simple while still matching the Core v1 rule
+that nested structure is local to its current container margin rather than reinterpreted globally.

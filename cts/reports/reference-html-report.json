@@ -1,8 +1,8 @@
 {
   "generatedBy": "scripts/check-html-renderer.mjs",
   "totals": {
-    "fixtures": 49,
-    "checked": 49,
+    "fixtures": 51,
+    "checked": 51,
     "skipped": 0,
     "failed": 0
   },
@@ -221,6 +221,22 @@
       "status": "pass",
       "fragment": "<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>First paragraph</p>\n<p>Second paragraph</p>\n</blockquote></li>\n</ul>",
       "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>First paragraph</p>\n<p>Second paragraph</p>\n</blockquote></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-blockquote-extension-fallback",
+      "path": "strict/accept/seed-list-item-blockquote-extension-fallback.json",
+      "status": "pass",
+      "fragment": "<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>Quote intro</p>\n<p>Show <strong>this</strong> instead</p>\n</blockquote></li>\n</ul>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<ul>\n<li><p>Parent</p>\n<blockquote>\n<p>Quote intro</p>\n<p>Show <strong>this</strong> instead</p>\n</blockquote></li>\n</ul>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-extension-fallback",
+      "path": "strict/accept/seed-blockquote-extension-fallback.json",
+      "status": "pass",
+      "fragment": "<blockquote>\n<p>Quote intro</p>\n<p>Show <strong>this</strong> instead</p>\n</blockquote>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<blockquote>\n<p>Quote intro</p>\n<p>Show <strong>this</strong> instead</p>\n</blockquote>\n</body>\n</html>\n",
       "notes": []
     },
     {

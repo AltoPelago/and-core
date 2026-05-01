@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-fallback-crosses-into-blockquote-boundary",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "+++unsupported/extension\nopaque payload\n+++\n\n> +++fallback\n> Quoted fallback\n> +++\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "orphan_fallback_block",
+    "assertions": [
+      "parse failure",
+      "a quoted fallback block cannot attach to an extension block outside the blockquote container",
+      "fallback adjacency is local to the immediately preceding extension block in the same container"
+    ]
+  }
+}

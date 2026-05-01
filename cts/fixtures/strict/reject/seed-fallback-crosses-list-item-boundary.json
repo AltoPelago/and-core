@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-fallback-crosses-list-item-boundary",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  +++unsupported/extension\n  opaque payload\n  +++\n\n+++fallback\nOutside fallback\n+++\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "orphan_fallback_block",
+    "assertions": [
+      "parse failure",
+      "a fallback block cannot attach across a list-item container boundary",
+      "fallback adjacency is local to the immediately preceding extension block in the same container"
+    ]
+  }
+}

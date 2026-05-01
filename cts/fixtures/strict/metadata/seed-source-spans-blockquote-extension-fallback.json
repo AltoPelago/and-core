@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-blockquote-extension-fallback",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n> Quote intro\n>\n> +++unsupported/extension\n> opaque payload\n> +++\n> +++fallback\n> Show [* this] instead\n> +++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "nested extension block span covers only the primary opaque block inside the blockquote, not the attached fallback",
+      "fallback paragraph spans begin at the trimmed inner block margin after the blockquote and reserved fallback opener",
+      "nested inline spans inside blockquote-contained fallback content point at their exact source ranges"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 117,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 10,
+          "endColumn": 6
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 117,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 10,
+          "endColumn": 6
+        }
+      },
+      {
+        "path": "$.children[0].children[1]",
+        "span": {
+          "startOffset": 26,
+          "endOffset": 73,
+          "startLine": 5,
+          "startColumn": 3,
+          "endLine": 7,
+          "endColumn": 6
+        }
+      },
+      {
+        "path": "$.children[0].children[1].fallback.children[0]",
+        "span": {
+          "startOffset": 90,
+          "endOffset": 111,
+          "startLine": 9,
+          "startColumn": 3,
+          "endLine": 9,
+          "endColumn": 24
+        }
+      },
+      {
+        "path": "$.children[0].children[1].fallback.children[0].children[1]",
+        "span": {
+          "startOffset": 95,
+          "endOffset": 103,
+          "startLine": 9,
+          "startColumn": 8,
+          "endLine": 9,
+          "endColumn": 16
+        }
+      },
+      {
+        "path": "$.children[0].children[1].fallback.children[0].children[1].children[0]",
+        "span": {
+          "startOffset": 98,
+          "endOffset": 102,
+          "startLine": 9,
+          "startColumn": 11,
+          "endLine": 9,
+          "endColumn": 15
+        }
+      }
+    ]
+  }
+}

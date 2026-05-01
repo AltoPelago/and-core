@@ -1181,6 +1181,142 @@ Expected result:
 * error code `orphan_fallback_block`
 * reason: any intervening block makes the fallback orphaned
 
+### `seed-fallback-crosses-blockquote-boundary`
+
+Input:
+
+```text
+> Quote intro
+>
+> +++unsupported/extension
+> opaque payload
+> +++
+
++++fallback
+Outside fallback
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: fallback cannot attach across a blockquote container boundary
+
+### `seed-fallback-crosses-into-blockquote-boundary`
+
+Input:
+
+```text
++++unsupported/extension
+opaque payload
++++
+
+> +++fallback
+> Quoted fallback
+> +++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: quoted fallback cannot attach to an extension block outside the quoted container
+
+### `seed-fallback-crosses-list-item-boundary`
+
+Input:
+
+```text
+- Parent
+
+  +++unsupported/extension
+  opaque payload
+  +++
+
++++fallback
+Outside fallback
++++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: fallback cannot attach across a list-item container boundary
+
+### `seed-fallback-crosses-into-list-item-boundary`
+
+Input:
+
+```text
++++unsupported/extension
+opaque payload
++++
+
+- Parent
+
+  +++fallback
+  Nested fallback
+  +++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: nested list-item fallback cannot attach to an extension block outside the list item
+
+### `seed-list-item-blockquote-fallback-not-immediately-after-extension`
+
+Input:
+
+```text
+- Parent
+
+  > Quote intro
+  >
+  > +++unsupported/extension
+  > opaque payload
+  > +++
+  > Intervening paragraph
+  >
+  > +++fallback
+  > Show fallback
+  > +++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: fallback adjacency is local to the immediately preceding extension block even inside
+  nested blockquote/list-item containers
+
+### `seed-blockquote-fallback-not-immediately-after-extension`
+
+Input:
+
+```text
+> Quote intro
+>
+> +++unsupported/extension
+> opaque payload
+> +++
+> Intervening paragraph
+>
+> +++fallback
+> Show fallback
+> +++
+```
+
+Expected result:
+
+* parse failure
+* error code `orphan_fallback_block`
+* reason: fallback adjacency remains local to the immediately preceding extension block inside the
+  same blockquote container
+
 ### `seed-nested-fallback-block`
 
 Input:
@@ -1724,6 +1860,28 @@ Expected result:
 * one blockquote block
 * blockquote contains two paragraph children
 
+### `seed-blockquote-extension-fallback`
+
+Input:
+
+```text
+> Quote intro
+>
+> +++unsupported/extension
+> opaque payload
+> +++
+> +++fallback
+> Show [* this] instead
+> +++
+```
+
+Expected result:
+
+* parse success
+* one blockquote block
+* blockquote contains one paragraph child followed by one nested extension block child
+* fallback belongs to that immediately preceding extension block within the quoted container
+
 ### `seed-blockquote-escaped-inline`
 
 Input:
@@ -1866,6 +2024,25 @@ Expected result:
 * reason: nested table body row has a different cell count from the header row and MUST fail
   rather than falling back to paragraph text
 
+### `seed-list-item-table-crosses-boundary`
+
+Input:
+
+```text
+- Parent
+
+  | A | B |
+  | --- | --- |
+| 1 | 2 |
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a nested table inside a list item cannot continue with a body row outside the list-item
+  container
+
 ### `seed-list-item-raw-block-bad-closing-margin`
 
 Input:
@@ -1937,6 +2114,31 @@ Expected result:
 * first item contains one nested blockquote block
 * blockquote contains two paragraph children
 
+### `seed-list-item-blockquote-extension-fallback`
+
+Input:
+
+```text
+- Parent
+
+  > Quote intro
+  >
+  > +++unsupported/extension
+  > opaque payload
+  > +++
+  > +++fallback
+  > Show [* this] instead
+  > +++
+```
+
+Expected result:
+
+* parse success
+* one unordered list block
+* first item contains one nested blockquote block
+* blockquote contains one paragraph child followed by one nested extension block child
+* nested extension fallback content is parsed as ordinary `&ND` inside the same blockquote context
+
 ### `seed-blockquote-nested-list`
 
 Input:
@@ -1988,6 +2190,23 @@ Expected result:
 * error code `invalid_table_shape`
 * reason: a nested table inside a blockquote uses the same recognized table shape rules and MUST
   fail rather than falling back to quoted paragraph text
+
+### `seed-blockquote-table-crosses-boundary`
+
+Input:
+
+```text
+> | A | B |
+> | --- | --- |
+| 1 | 2 |
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a nested table inside a blockquote cannot continue with a body row outside the quoted
+  container
 
 ### `seed-blockquote-nested-code-block`
 
@@ -2079,6 +2298,25 @@ Expected result:
 * one unordered list block
 * first item contains one nested blockquote child
 * second parent item is a sibling at the outer list level
+
+### `seed-list-item-blockquote-table-crosses-boundary`
+
+Input:
+
+```text
+- Parent
+
+  > | A | B |
+  > | --- | --- |
+  | 1 | 2 |
+```
+
+Expected result:
+
+* parse failure
+* error code `invalid_table_shape`
+* reason: a doubly nested table inside a list-item-contained blockquote cannot continue at the
+  outer list-item margin
 
 ### `seed-blockquote-escaped-inline-opener`
 
@@ -2451,6 +2689,186 @@ Expected result:
 * list item spans cover the full nested block range belonging to that item
 * nested blockquote spans include both quoted paragraphs but not the blank line before the nested block
 * quoted paragraph spans point at the trimmed inner content after the list and blockquote margins
+
+### `seed-source-spans-list-item-table`
+
+Input:
+
+```text
+&ND v1
+
+- Parent
+
+  |  Name  | [* Strong] |
+  | --- | --- |
+  | Alpha | Link\|Text |
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested table span begins at the trimmed inner block margin inside the list item
+* inline spans inside nested table cells point at trimmed cell content after both list and table
+  margin stripping
+* nested inline spans inside list-contained table cells point at their exact source ranges
+
+### `seed-source-spans-blockquote-table`
+
+Input:
+
+```text
+&ND v1
+
+> Quote intro
+>
+> |  Name  | [* Strong] |
+> | --- | --- |
+> | Alpha | Link\|Text |
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested table span begins at the trimmed inner block margin inside the blockquote
+* inline spans inside nested quoted table cells point at trimmed cell content after both blockquote
+  and table margin stripping
+* nested inline spans inside blockquote-contained table cells point at their exact source ranges
+
+### `seed-source-spans-list-item-extension-fallback`
+
+Input:
+
+```text
+&ND v1
+
+- Parent
+
+  +++unsupported/extension
+  opaque payload
+  +++
+  +++fallback
+  Show [* this] instead
+  +++
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested extension block span covers only the primary opaque block inside the list item, not the
+  attached fallback
+* fallback paragraph spans begin at the trimmed inner block margin after the list item and reserved
+  fallback opener
+* nested inline spans inside list-contained fallback content point at their exact source ranges
+
+### `seed-source-spans-blockquote-extension-fallback`
+
+Input:
+
+```text
+&ND v1
+
+> Quote intro
+>
+> +++unsupported/extension
+> opaque payload
+> +++
+> +++fallback
+> Show [* this] instead
+> +++
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested extension block span covers only the primary opaque block inside the blockquote, not the
+  attached fallback
+* fallback paragraph spans begin at the trimmed inner block margin after the blockquote and reserved
+  fallback opener
+* nested inline spans inside blockquote-contained fallback content point at their exact source ranges
+
+### `seed-source-spans-list-item-blockquote-table`
+
+Input:
+
+```text
+&ND v1
+
+- Parent
+
+  > Quote intro
+  >
+  > |  Name  | [* Strong] |
+  > | --- | --- |
+  > | Alpha | Link\|Text |
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested blockquote span begins at the trimmed inner block margin inside the list item
+* nested table span begins at the trimmed inner block margin after both list-item and blockquote
+  stripping
+* inline spans inside doubly nested table cells point at their exact source ranges
+
+### `seed-source-spans-list-item-blockquote-extension-fallback`
+
+Input:
+
+```text
+&ND v1
+
+- Parent
+
+  > Quote intro
+  >
+  > +++unsupported/extension
+  > opaque payload
+  > +++
+  > +++fallback
+  > Show [* this] instead
+  > +++
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested extension block span covers only the primary opaque block after both list-item and
+  blockquote stripping
+* fallback paragraph spans begin at the trimmed inner block margin after the list item, blockquote,
+  and reserved fallback opener
+* nested inline spans inside doubly nested fallback content point at their exact source ranges
+
+### `seed-source-spans-list-item-blockquote-paragraph-then-table`
+
+Input:
+
+```text
+&ND v1
+
+- Parent
+
+  > First paragraph
+  >
+  > |  Name  | [* Strong] |
+  > | --- | --- |
+  > | Alpha | Link\|Text |
+```
+
+Expected result:
+
+* parse success
+* optional source-span CTS metadata checks may be evaluated separately from semantic AST equality
+* nested blockquote span covers both its leading paragraph and following structured child
+* the paragraph span ends before the blank quoted separator line while the nested table span begins
+  after it
+* inline spans inside the following nested table remain exact after both list-item and blockquote
+  margin stripping
 
 ---
 

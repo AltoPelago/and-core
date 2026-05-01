@@ -1,9 +1,9 @@
 {
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
-    "fixtures": 49,
+    "fixtures": 51,
     "profiles": 2,
-    "checked": 98,
+    "checked": 102,
     "skipped": 0,
     "failed": 0
   },
@@ -489,6 +489,42 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\n- Parent\n\n  > First paragraph\n  >\n  > Second paragraph\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-list-item-blockquote-extension-fallback",
+      "path": "strict/accept/seed-list-item-blockquote-extension-fallback.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "- Parent\n\n  > Quote intro\n  >\n  > +++unsupported/extension\n  > opaque payload\n  > +++\n  > +++fallback\n  > Show [* this] instead\n  > +++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n- Parent\n\n  > Quote intro\n  >\n  > +++unsupported/extension\n  > opaque payload\n  > +++\n  > +++fallback\n  > Show [* this] instead\n  > +++\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-blockquote-extension-fallback",
+      "path": "strict/accept/seed-blockquote-extension-fallback.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "> Quote intro\n>\n> +++unsupported/extension\n> opaque payload\n> +++\n> +++fallback\n> Show [* this] instead\n> +++\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n> Quote intro\n>\n> +++unsupported/extension\n> opaque payload\n> +++\n> +++fallback\n> Show [* this] instead\n> +++\n",
           "notes": []
         }
       },

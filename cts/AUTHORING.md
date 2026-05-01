@@ -85,8 +85,33 @@ Good metadata targets include:
 - nested block spans where blank separator lines and exact margins matter
 - fallback content spans attached to extension blocks
 
+Common nested metadata patterns worth reusing:
+
+- `container -> table`: pin the block span at the trimmed inner margin and then one or two
+  representative cell or inline spans
+- `container -> extension fallback`: pin the primary extension block span separately from the
+  attached fallback paragraph span
+- `container -> paragraph + structured child`: pin that the paragraph span stops before the blank
+  separator line and the following child span starts after it
+- `container -> container -> child`: prefer one doubly nested case per structural family instead of
+  repeating every permutation
+
+When choosing paths, prefer:
+
+- one outer ownership span such as the list item or blockquote
+- one nested block span whose start/end boundary is easy to accidentally shift
+- one inline child span proving delimiter and padding trimming
+
+Avoid fixtures that only restate already-pinned behavior at a different depth unless the added
+container changes the trimming or boundary rules.
+
 Avoid overspecifying every node in the tree. Metadata fixtures work best when they pin a few
 high-value paths that are likely to drift during parser refactors.
+
+For fallback fixtures, treat adjacency as container-local rather than purely textual. Good negative
+cases include the same fallback surface syntax crossing a blockquote or list-item boundary; those
+should still fail as `orphan_fallback_block` because the immediately preceding extension block is
+not in the same nested container context.
 
 ## Assertions
 
@@ -193,3 +218,4 @@ npm run precommit:check
 - Adding `expected.document` to a reject fixture.
 - Forgetting to update smoke/reference adapters for new seeds.
 - Treating skipped document checks as equivalent to checked document matches.
+- Pinning every span in a subtree instead of selecting the few boundaries most likely to drift.

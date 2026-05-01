@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-list-item-blockquote-table-crosses-boundary",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "- Parent\n\n  > | A | B |\n  > | --- | --- |\n  | 1 | 2 |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_shape",
+    "assertions": [
+      "parse failure",
+      "a doubly nested table inside a list-item-contained blockquote cannot continue at the outer list-item margin",
+      "table continuation remains local to the innermost recognized table container and current block margin"
+    ]
+  }
+}

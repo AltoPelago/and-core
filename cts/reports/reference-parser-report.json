@@ -3,29 +3,29 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 103,
+    "fixtures": 121,
     "pending": 0,
-    "pass": 103,
+    "pass": 121,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 49,
-    "checked": 49,
-    "matched": 49,
+    "expected": 51,
+    "checked": 51,
+    "matched": 51,
     "skipped": 0,
     "failed": 0
   },
   "spanChecks": {
-    "expected": 3,
-    "checked": 3,
-    "matched": 17,
+    "expected": 10,
+    "checked": 10,
+    "matched": 64,
     "failed": 0,
     "skipped": 0
   },
   "errorCodeChecks": {
-    "expected": 51,
-    "matched": 51,
+    "expected": 60,
+    "matched": 60,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -677,6 +677,25 @@
       ]
     },
     {
+      "id": "seed-list-item-table-crosses-boundary",
+      "path": "strict/reject/seed-list-item-table-crosses-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
       "id": "seed-list-item-blockquote",
       "path": "strict/accept/seed-list-item-blockquote.json",
       "status": "pass",
@@ -698,6 +717,44 @@
     {
       "id": "seed-list-item-blockquote-two-paragraphs",
       "path": "strict/accept/seed-list-item-blockquote-two-paragraphs.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-extension-fallback",
+      "path": "strict/accept/seed-list-item-blockquote-extension-fallback.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-blockquote-extension-fallback",
+      "path": "strict/accept/seed-blockquote-extension-fallback.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,
@@ -772,6 +829,25 @@
       ]
     },
     {
+      "id": "seed-blockquote-table-crosses-boundary",
+      "path": "strict/reject/seed-blockquote-table-crosses-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
       "id": "seed-blockquote-nested-code-block",
       "path": "strict/accept/seed-blockquote-nested-code-block.json",
       "status": "pass",
@@ -807,6 +883,25 @@
       "notes": [
         "Evaluated by reference parser.",
         "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-table-crosses-boundary",
+      "path": "strict/reject/seed-list-item-blockquote-table-crosses-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_shape",
+      "actualOk": false,
+      "errorCode": "invalid_table_shape",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
       ]
     },
     {
@@ -1931,6 +2026,120 @@
       ]
     },
     {
+      "id": "seed-fallback-crosses-blockquote-boundary",
+      "path": "strict/reject/seed-fallback-crosses-blockquote-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-fallback-crosses-into-blockquote-boundary",
+      "path": "strict/reject/seed-fallback-crosses-into-blockquote-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-fallback-crosses-list-item-boundary",
+      "path": "strict/reject/seed-fallback-crosses-list-item-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-fallback-crosses-into-list-item-boundary",
+      "path": "strict/reject/seed-fallback-crosses-into-list-item-boundary.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-blockquote-fallback-not-immediately-after-extension",
+      "path": "strict/reject/seed-blockquote-fallback-not-immediately-after-extension.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-list-item-blockquote-fallback-not-immediately-after-extension",
+      "path": "strict/reject/seed-list-item-blockquote-fallback-not-immediately-after-extension.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "orphan_fallback_block",
+      "actualOk": false,
+      "errorCode": "orphan_fallback_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
       "id": "seed-source-spans-table-inline",
       "path": "strict/metadata/seed-source-spans-table-inline.json",
       "status": "pass",
@@ -1982,6 +2191,132 @@
       "notes": [
         "Evaluated by reference parser.",
         "Span expectations matched (6/6)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-table",
+      "path": "strict/metadata/seed-source-spans-list-item-table.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 7,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (7/7)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-blockquote-table",
+      "path": "strict/metadata/seed-source-spans-blockquote-table.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 7,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (7/7)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-extension-fallback",
+      "path": "strict/metadata/seed-source-spans-list-item-extension-fallback.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 6,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (6/6)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-blockquote-extension-fallback",
+      "path": "strict/metadata/seed-source-spans-blockquote-extension-fallback.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 6,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (6/6)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-blockquote-table",
+      "path": "strict/metadata/seed-source-spans-list-item-blockquote-table.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 7,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (7/7)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-blockquote-extension-fallback",
+      "path": "strict/metadata/seed-source-spans-list-item-blockquote-extension-fallback.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 7,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (7/7)."
+      ]
+    },
+    {
+      "id": "seed-source-spans-list-item-blockquote-paragraph-then-table",
+      "path": "strict/metadata/seed-source-spans-list-item-blockquote-paragraph-then-table.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": true,
+      "spansChecked": true,
+      "spansMatched": 7,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Span expectations matched (7/7)."
       ]
     }
   ]

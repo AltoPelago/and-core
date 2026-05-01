@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-source-spans-list-item-blockquote-table",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n- Parent\n\n  > Quote intro\n  >\n  > |  Name  | [* Strong] |\n  > | --- | --- |\n  > | Alpha | Link\\|Text |\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "source spans are optional CTS metadata checks, separate from semantic AST equality",
+      "nested blockquote span begins at the trimmed inner block margin inside the list item",
+      "nested table span begins at the trimmed inner block margin after both list-item and blockquote stripping",
+      "inline spans inside doubly nested table cells point at their exact source ranges"
+    ],
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 110,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 9,
+          "endColumn": 27
+        }
+      },
+      {
+        "path": "$.children[0].items[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 110,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 9,
+          "endColumn": 27
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1]",
+        "span": {
+          "startOffset": 20,
+          "endOffset": 110,
+          "startLine": 5,
+          "startColumn": 3,
+          "endLine": 9,
+          "endColumn": 27
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1]",
+        "span": {
+          "startOffset": 42,
+          "endOffset": 110,
+          "startLine": 7,
+          "startColumn": 5,
+          "endLine": 9,
+          "endColumn": 27
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1].header[0].children[0]",
+        "span": {
+          "startOffset": 45,
+          "endOffset": 49,
+          "startLine": 7,
+          "startColumn": 8,
+          "endLine": 7,
+          "endColumn": 12
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1].header[1].children[0].children[0]",
+        "span": {
+          "startOffset": 56,
+          "endOffset": 62,
+          "startLine": 7,
+          "startColumn": 19,
+          "endLine": 7,
+          "endColumn": 25
+        }
+      },
+      {
+        "path": "$.children[0].items[0].children[1].children[1].rows[0][1].children[0]",
+        "span": {
+          "startOffset": 98,
+          "endOffset": 108,
+          "startLine": 9,
+          "startColumn": 15,
+          "endLine": 9,
+          "endColumn": 25
+        }
+      }
+    ]
+  }
+}

@@ -408,6 +408,106 @@ function evaluateFixture(fixture) {
           lines[6] === '  > Second paragraph',
       };
 
+    case 'seed-source-spans-list-item-table':
+      return {
+        ok:
+          lines.length === 7 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  |  Name  | [* Strong] |' &&
+          matchesTableSeparator(lines[5]) &&
+          lines[6] === '  | Alpha | Link\\|Text |',
+      };
+
+    case 'seed-source-spans-blockquote-table':
+      return {
+        ok:
+          lines.length === 7 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '> Quote intro' &&
+          lines[3] === '>' &&
+          lines[4] === '> |  Name  | [* Strong] |' &&
+          matchesTableSeparator(lines[5].replace(/^>\s?/, '')) &&
+          lines[6] === '> | Alpha | Link\\|Text |',
+      };
+
+    case 'seed-source-spans-list-item-extension-fallback':
+      return {
+        ok:
+          lines.length === 10 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  +++unsupported/extension' &&
+          lines[6] === '  +++' &&
+          lines[7] === '  +++fallback' &&
+          lines[9] === '  +++',
+      };
+
+    case 'seed-source-spans-blockquote-extension-fallback':
+      return {
+        ok:
+          lines.length === 10 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '> Quote intro' &&
+          lines[3] === '>' &&
+          lines[4] === '> +++unsupported/extension' &&
+          lines[6] === '> +++' &&
+          lines[7] === '> +++fallback' &&
+          lines[9] === '> +++',
+      };
+
+    case 'seed-source-spans-list-item-blockquote-table':
+      return {
+        ok:
+          lines.length === 9 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  > Quote intro' &&
+          lines[5] === '  >' &&
+          lines[6] === '  > |  Name  | [* Strong] |' &&
+          matchesTableSeparator(lines[7].replace(/^\s*>\s?/, '')) &&
+          lines[8] === '  > | Alpha | Link\\|Text |',
+      };
+
+    case 'seed-source-spans-list-item-blockquote-extension-fallback':
+      return {
+        ok:
+          lines.length === 12 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  > Quote intro' &&
+          lines[5] === '  >' &&
+          lines[6] === '  > +++unsupported/extension' &&
+          lines[8] === '  > +++' &&
+          lines[9] === '  > +++fallback' &&
+          lines[11] === '  > +++',
+      };
+
+    case 'seed-source-spans-list-item-blockquote-paragraph-then-table':
+      return {
+        ok:
+          lines.length === 9 &&
+          lines[0] === '&ND v1' &&
+          lines[1] === '' &&
+          lines[2] === '- Parent' &&
+          lines[3] === '' &&
+          lines[4] === '  > First paragraph' &&
+          lines[5] === '  >' &&
+          lines[6] === '  > |  Name  | [* Strong] |' &&
+          matchesTableSeparator(lines[7].replace(/^\s*>\s?/, '')) &&
+          lines[8] === '  > | Alpha | Link\\|Text |',
+      };
+
     case 'seed-table-mismatched-body-row':
       return {
         ok: false,
@@ -475,9 +575,15 @@ function evaluateFixture(fixture) {
 
     case 'seed-orphan-fallback-block':
     case 'seed-fallback-not-immediately-after-extension':
+    case 'seed-fallback-crosses-blockquote-boundary':
+    case 'seed-fallback-crosses-into-blockquote-boundary':
+    case 'seed-fallback-crosses-list-item-boundary':
+    case 'seed-fallback-crosses-into-list-item-boundary':
+    case 'seed-blockquote-fallback-not-immediately-after-extension':
+    case 'seed-list-item-blockquote-fallback-not-immediately-after-extension':
       return {
         ok: false,
-        errorCode: lines.includes('+++fallback') ? 'orphan_fallback_block' : 'unexpected_structure',
+        errorCode: source.includes('+++fallback') ? 'orphan_fallback_block' : 'unexpected_structure',
       };
 
     case 'seed-nested-fallback-block':
@@ -555,6 +661,18 @@ function evaluateFixture(fixture) {
           lines[2] === '> Second paragraph',
       };
 
+    case 'seed-blockquote-extension-fallback':
+      return {
+        ok:
+          lines.length === 8 &&
+          lines[0] === '> Quote intro' &&
+          lines[1] === '>' &&
+          lines[2] === '> +++unsupported/extension' &&
+          lines[4] === '> +++' &&
+          lines[5] === '> +++fallback' &&
+          lines[7] === '> +++',
+      };
+
     case 'seed-blockquote-escaped-inline':
       return {
         ok: lines.length === 1 && lines[0] === '> \\[* not strong]',
@@ -619,6 +737,12 @@ function evaluateFixture(fixture) {
         errorCode: lines[4] === '  | 1 | 2 | 3 |' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
+    case 'seed-list-item-table-crosses-boundary':
+      return {
+        ok: false,
+        errorCode: lines[4] === '| 1 | 2 |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
     case 'seed-list-item-blockquote':
       return {
         ok: lines.length === 3 && lines[0] === '- Parent' && lines[1] === '' && lines[2] === '  > Quote line',
@@ -633,6 +757,20 @@ function evaluateFixture(fixture) {
           lines[2] === '  > First paragraph' &&
           lines[3] === '  >' &&
           lines[4] === '  > Second paragraph',
+      };
+
+    case 'seed-list-item-blockquote-extension-fallback':
+      return {
+        ok:
+          lines.length === 10 &&
+          lines[0] === '- Parent' &&
+          lines[1] === '' &&
+          lines[2] === '  > Quote intro' &&
+          lines[3] === '  >' &&
+          lines[4] === '  > +++unsupported/extension' &&
+          lines[6] === '  > +++' &&
+          lines[7] === '  > +++fallback' &&
+          lines[9] === '  > +++',
       };
 
     case 'seed-blockquote-nested-list':
@@ -657,6 +795,12 @@ function evaluateFixture(fixture) {
       return {
         ok: false,
         errorCode: lines[4] === '> | 1 | 2 | 3 |' ? 'invalid_table_shape' : 'unexpected_structure',
+      };
+
+    case 'seed-blockquote-table-crosses-boundary':
+      return {
+        ok: false,
+        errorCode: lines[2] === '| 1 | 2 |' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
     case 'seed-blockquote-nested-code-block':
@@ -689,6 +833,12 @@ function evaluateFixture(fixture) {
           lines[1] === '' &&
           lines[2] === '  > Quote line' &&
           lines[3] === '- Next parent',
+      };
+
+    case 'seed-list-item-blockquote-table-crosses-boundary':
+      return {
+        ok: false,
+        errorCode: lines[4] === '  | 1 | 2 |' ? 'invalid_table_shape' : 'unexpected_structure',
       };
 
     case 'seed-blockquote-escaped-inline-opener':

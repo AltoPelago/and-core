@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-blockquote-extension-fallback",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "> Quote intro\n>\n> +++unsupported/extension\n> opaque payload\n> +++\n> +++fallback\n> Show [* this] instead\n> +++\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "one blockquote block",
+      "blockquote contains one paragraph child followed by one nested extension block child",
+      "nested extension fallback content is parsed as ordinary &ND inside the same blockquote context"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Quote intro"
+                }
+              ]
+            },
+            {
+              "type": "extension_block",
+              "name": "unsupported/extension",
+              "text": "opaque payload",
+              "fallback": {
+                "type": "document_fragment",
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Show "
+                      },
+                      {
+                        "type": "strong",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "this"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " instead"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
