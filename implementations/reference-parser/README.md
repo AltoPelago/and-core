@@ -2,6 +2,10 @@
 
 This is the first parser-shaped `&ND Core v1` implementation.
 
+Repository consumers that want the stable package boundary should now prefer importing from the
+repo root entrypoint at [`index.mjs`](../../index.mjs). This folder remains the implementation home
+for that public surface.
+
 It is still deliberately small, but unlike the bootstrap subset adapter it exposes parser-facing
 entrypoints:
 

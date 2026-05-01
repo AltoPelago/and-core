@@ -1,6 +1,4 @@
-import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
-import { renderHtml } from '../implementations/reference-html/renderer.mjs';
-import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+import { emitCanonical, parseAnd, renderHtml } from '../index.mjs';
 
 const sample = `&ND v1
 

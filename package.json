@@ -1,11 +1,14 @@
 {
   "name": "and-core",
   "private": true,
+  "exports": {
+    ".": "./index.mjs"
+  },
   "bin": {
     "and": "./bin/and.mjs"
   },
   "scripts": {
-    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run check:html-renderer && npm run check:vscode && npm run vscode:package && npm run check:vscode-package && npm run cli:smoke && npm run playground:check",
+    "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run check:html-renderer && npm run check:vscode && npm run vscode:package && npm run check:vscode-package && npm run check:public-api && npm run cli:smoke && npm run playground:check",
     "and": "node ./bin/and.mjs",
     "playground": "node scripts/serve-playground.mjs",
     "playground:check": "node scripts/check-playground.mjs",
@@ -17,6 +20,7 @@
     "check:reports": "node scripts/check-reports-fresh.mjs",
     "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
     "check:html-renderer": "node scripts/check-html-renderer.mjs",
+    "check:public-api": "node scripts/check-public-api.mjs",
     "check:vscode": "node scripts/check-vscode.mjs",
     "check:vscode-package": "node scripts/check-vscode-package.mjs",
     "html:report": "node scripts/check-html-renderer.mjs --out ./cts/reports/reference-html-report.json",
@@ -30,6 +34,6 @@
     "cts:report:subset": "node scripts/run-cts.mjs --adapter ./implementations/reference-subset/adapter.mjs --json --quiet --out ./cts/reports/reference-subset-report.json",
     "cts:report:reference": "node scripts/run-cts.mjs --adapter ./implementations/reference-parser/adapter.mjs --json --quiet --out ./cts/reports/reference-parser-report.json",
     "cts:report:all": "npm run cts:report:reference && npm run cts:report:subset && npm run cts:report:example && npm run canonical:report && npm run html:report",
-    "precommit:check": "bash scripts/pre-commit-check.sh"
+    "precommit:check": "bash scripts/pre-commit-check.sh && npm run check:public-api"
   }
 }

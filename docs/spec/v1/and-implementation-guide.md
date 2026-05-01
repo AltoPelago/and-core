@@ -50,6 +50,21 @@ Each layer SHOULD have a narrow responsibility.
 Avoid implementations that blur lexing, structural parsing, and emission into one large stateful
 routine.
 
+### 3.1 Recommended Build Order
+
+For a fresh implementation, the least risky order is usually:
+
+1. line normalization and source-span bookkeeping
+2. strict block scanning for headings, paragraphs, raw blocks, blockquotes, and lists
+3. inline scanning for text, strong, emphasis, links, and inline code
+4. table recognition and validation
+5. canonical emission
+6. parser-backed diagnostics and editor adapters
+7. recovery or forward-compatibility modes
+
+This keeps the parser core small while the high-signal structural rules stabilize.
+It also reduces the chance of overfitting an editor-first recovery strategy into strict parsing.
+
 ---
 
 ## 4. Core Principles For Implementers
@@ -85,6 +100,21 @@ Do not recursively parse their interiors as block or inline trees.
 
 Do not build unbounded intermediate structures and check limits afterward.
 Budgets should be enforced during scanning and parsing.
+
+### 4.6 Container Locality Matters
+
+Many `&ND` rules are intentionally local to the current container.
+
+Examples:
+
+- a fallback block applies only to the immediately preceding extension block in the same container
+- a recognized table must continue within its current container and must not resume across a
+  container boundary
+- raw block closers belong to the margin depth at which the raw block was opened
+
+Implementations that flatten nested content too early often get these wrong.
+When in doubt, preserve explicit container ownership in parser state rather than inferring it later
+from line text alone.
 
 ---
 
@@ -324,6 +354,15 @@ If the separator row is missing:
 - do not create a table
 - treat the lines according to the normal fallback block rules
 
+Once a table has been recognized:
+
+- remain in table-reading mode until the table ends or fails
+- require all subsequent body rows in that container to conform to the recognized table shape
+- do not reinterpret a non-conforming row as a paragraph, heading, rule, or some other block
+- do not allow a nested or outer container boundary to terminate the table “cleanly”
+
+This is one of the main places where `&ND` intentionally rejects Markdown-style reinterpretation.
+
 ### 8.5 Raw Block Handling
 
 For code and extension blocks:
@@ -334,6 +373,19 @@ For code and extension blocks:
 - fail immediately if EOF arrives first
 
 Do not parse inside the payload.
+
+Keep opener ownership explicit.
+A raw block opened inside a nested container must close at that same effective block margin, not at
+some visually similar outer margin.
+
+This matters most in paths like:
+
+- list item -> code block
+- blockquote -> extension block
+- list item -> blockquote -> code block
+
+If the scanner loses track of which container owns the opener, it will often accept invalid closers
+or misattribute payload spans.
 
 ---
 
@@ -356,6 +408,8 @@ Implementation strategy:
 
 This recursive-inner-document model is often cleaner than trying to parse blockquotes inline with
 the outer block scanner.
+It also makes container-local rules such as fallback attachment, raw-block closing margins, and
+table continuation rules much easier to preserve consistently.
 
 ---
 
@@ -376,6 +430,8 @@ Important:
 - one-space indentation must not be accepted as a relaxed variant
 
 If the indentation contract is broken, fail in strict mode.
+Resist the temptation to “soften” indentation just to match author expectations from Markdown.
+That tradeoff usually reintroduces ambiguity and weakens canonical equivalence.
 
 ---
 
@@ -533,6 +589,11 @@ Prefer:
 - precise spans
 
 Do not rely only on free-form prose messages.
+The stable code should be the primary machine contract; wording may improve over time.
+
+Also prefer first-failure reporting over speculative downstream cascades.
+One precise structural error with an exact location is usually more useful than many derivative
+errors caused by continuing after the parser has already lost the true document shape.
 
 ---
 
@@ -627,6 +688,18 @@ Recommended suites:
 - canonical text reparses to the same AST
 - non-canonical but valid source emits canonical output after parse + emit
 
+### 16.4 High-Value CTS Priorities
+
+If implementation time is limited, prioritize fixtures that lock down:
+
+- container-local fallback attachment
+- nested raw block closing margins
+- table recognition and non-reinterpretation after recognition
+- block-open eligibility around paragraphs and nested list content
+- source spans for nested containers, especially tables, raw blocks, and fallback content
+
+Those are the areas most likely to diverge across independent implementations.
+
 ---
 
 ## 17. VS Code And Language Server Integration
@@ -678,7 +751,39 @@ conformance fixtures is strongly recommended.
 
 ---
 
-## 19. Final Recommendation
+## 19. Public Package Boundary And Ecosystem Split
+
+As `and-core` matures, keep two boundaries explicit:
+
+1. the `and-core` package boundary
+2. the future AES-facing model or tonic boundary
+
+`and-core` should own:
+
+- parsing `&ND` text into AST
+- collecting diagnostics
+- canonical emission
+- projection helpers such as HTML, if exposed clearly as downstream renderers
+
+The future AES-facing package should own:
+
+- `AES -> typed document model`
+- typed document model -> `AES`
+- model-level validation that a given node tree matches the supported `fmt.and` vocabulary
+
+Do not blur these layers too early.
+If the parser package starts owning AES projection and in-memory model mutation semantics directly,
+it becomes harder to keep the language contract small and harder to evolve tonic-specific behavior
+independently.
+
+See also:
+
+- [`and-public-api.md`](./and-public-api.md)
+- [`fmt-and-reference.md`](./fmt-and-reference.md)
+
+---
+
+## 20. Final Recommendation
 
 Build `&ND` as:
 
@@ -703,3 +808,18 @@ path as other unassigned Core v1 inline forms.
 
 If the implementation stays scanner-first, budget-aware, and conformance-driven, it should preserve
 the core value of `&ND`: explicit structure without Markdown-style ambiguity.
+
+---
+
+## 21. Parser Author Checklist
+
+Before calling an implementation “strict-mode ready”, confirm that it:
+
+- enforces block-open eligibility rather than relying on visual resemblance
+- preserves container ownership for tables, fallback blocks, and raw block closers
+- treats raw block payloads as opaque islands
+- rejects invalid escapes rather than falling back to literal text
+- enforces budgets during scanning and parsing, not afterward
+- emits stable diagnostic codes with precise source locations
+- canonicalizes from validated AST, not by rewriting raw source heuristically
+- passes the CTS accept, reject, error-code, and metadata lanes it claims to support

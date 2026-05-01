@@ -12,7 +12,7 @@ function isAndDocument(document) {
 
 function diagnosticsModule() {
   if (diagnosticsModulePromise === null) {
-    const modulePath = path.join(__dirname, '..', 'implementations', 'reference-parser', 'diagnostics.mjs');
+    const modulePath = path.join(__dirname, '..', 'index.mjs');
     diagnosticsModulePromise = import(modulePath);
   }
   return diagnosticsModulePromise;

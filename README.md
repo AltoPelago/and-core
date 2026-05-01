@@ -12,6 +12,9 @@ editor integration, canonicalization, and future conformance-tested implementati
 ## Repository Layout
 
 * [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
+* [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md) — parser-author guidance and recommended architecture
+* [docs/spec/v1/and-public-api.md](./docs/spec/v1/and-public-api.md) — proposed stable package surface for external consumers
+* [docs/spec/v1/fmt-and-reference.md](./docs/spec/v1/fmt-and-reference.md) — proposed AES-facing `fmt.and` vocabulary and model boundary
 * [docs/tooling/playground.md](./docs/tooling/playground.md) — local playground direction and usage
 * [docs/tooling/html-renderer.md](./docs/tooling/html-renderer.md) — AST-to-HTML projection contract
 * [vscode/](./vscode/) — first-pass VS Code language prototype
@@ -30,6 +33,7 @@ The repository is currently spec-and-CTS first:
 * CTS fixtures are machine-readable and indexed
 * a reference parser adapter validates strict accept/reject fixtures, expected ASTs, and expected error codes
 * a smaller reference subset adapter demonstrates capability-scoped CTS participation
+* an initial root package surface is available through [`index.mjs`](./index.mjs)
 * CI runs the repository safety checks and both CTS adapters
 
 ## Suggested Reading Order
@@ -39,6 +43,40 @@ The repository is currently spec-and-CTS first:
 3. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
 4. [docs/spec/v1/and-vscode-support.md](./docs/spec/v1/and-vscode-support.md)
 5. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
+
+## Common Entry Paths
+
+If you are here to understand the language itself:
+
+1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
+2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
+
+If you want to build a parser or canonical emitter:
+
+1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
+2. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
+3. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
+4. [cts/README.md](./cts/README.md)
+5. [implementations/README.md](./implementations/README.md)
+
+If you want to connect `&ND` into the AES ecosystem:
+
+1. [docs/spec/v1/and-public-api.md](./docs/spec/v1/and-public-api.md)
+2. [docs/spec/v1/fmt-and-reference.md](./docs/spec/v1/fmt-and-reference.md)
+3. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
+
+If you want to work on editor tooling:
+
+1. [docs/spec/v1/and-vscode-support.md](./docs/spec/v1/and-vscode-support.md)
+2. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
+3. [vscode/](./vscode/)
+4. [playground/](./playground/)
+
+If you want to extend or audit the CTS:
+
+1. [cts/README.md](./cts/README.md)
+2. [cts/AUTHORING.md](./cts/AUTHORING.md)
+3. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
 
 ## Near-Term Next Steps
 
@@ -76,6 +114,7 @@ The repository is currently spec-and-CTS first:
 * `npm run check:reports` — verifies generated CTS/canonical/HTML report artifacts are fresh
 * `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
 * `npm run check:html-renderer` — checks escaped HTML fragment/full-document output and fail-closed behavior
+* `npm run check:public-api` — verifies the root package surface for parse, inline parse, diagnostics, canonical emission, and HTML projection
 * `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands
 * `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
 * `npm run html:report` — writes HTML renderer output snapshots to `cts/reports/`

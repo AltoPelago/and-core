@@ -1,8 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { renderHtml } from '../implementations/reference-html/renderer.mjs';
-import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+import { parseAnd, renderHtml } from '../index.mjs';
 
 const repoRoot = path.resolve(new URL('..', import.meta.url).pathname);
 const args = process.argv.slice(2);

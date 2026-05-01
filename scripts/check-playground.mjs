@@ -1,8 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
-import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+import { emitCanonical, parseAnd } from '../index.mjs';
 
 const repoRoot = path.resolve(new URL('..', import.meta.url).pathname);
 
@@ -20,12 +19,7 @@ assert(index.includes('src="./app.mjs"'), 'playground index should load app.mjs'
 assert(index.includes('href="./styles.css"'), 'playground index should load styles.css');
 assert(index.includes('data-tab="html"'), 'playground should expose an HTML output tab');
 assert(index.includes('data-budget="maxLineLength"'), 'playground should expose parser budget controls');
-assert(app.includes("from '../implementations/reference-parser/parser.mjs'"), 'playground should import the parser');
-assert(
-  app.includes("from '../implementations/reference-canonical/emitter.mjs'"),
-  'playground should import the canonical emitter'
-);
-assert(app.includes("from '../implementations/reference-html/renderer.mjs'"), 'playground should import the HTML renderer');
+assert(app.includes("from '../index.mjs'"), 'playground should import the root public API');
 assert(app.includes('function readBudgets()'), 'playground should read optional parser budgets');
 assert(app.includes('nd_budget_exceeded'), 'playground should explain budget diagnostics');
 assert(styles.includes('@media (max-width: 900px)'), 'playground should include a mobile layout breakpoint');

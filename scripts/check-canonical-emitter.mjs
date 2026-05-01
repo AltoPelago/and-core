@@ -1,8 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
-import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+import { emitCanonical, parseAnd } from '../index.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const indexPath = path.join(repoRoot, 'cts/fixtures/index.json');

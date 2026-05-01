@@ -18,6 +18,12 @@ This folder contains the current `&ND Core v1` specification bundle.
 - [`and-implementation-guide.md`](./and-implementation-guide.md)
   Non-normative implementation guide covering parser architecture, scanners, AST design, budgets,
   canonical emission, and conformance strategy.
+- [`and-public-api.md`](./and-public-api.md)
+  Non-normative plan for promoting the current reference entrypoints into a stable consumer package
+  surface.
+- [`fmt-and-reference.md`](./fmt-and-reference.md)
+  Non-normative proposal for the future AES-facing `fmt.and.aes` / `fmt.and.aeon` node vocabulary
+  and model boundary.
 
 ## Suggested Reading Order
 
@@ -25,7 +31,39 @@ This folder contains the current `&ND Core v1` specification bundle.
 2. [`and-canonical-rules.md`](./and-canonical-rules.md)
 3. [`and-ast-contract.md`](./and-ast-contract.md)
 4. [`and-implementation-guide.md`](./and-implementation-guide.md)
-5. [`and-vscode-support.md`](./and-vscode-support.md)
+5. [`and-public-api.md`](./and-public-api.md)
+6. [`fmt-and-reference.md`](./fmt-and-reference.md)
+7. [`and-vscode-support.md`](./and-vscode-support.md)
+
+## By Goal
+
+If you want to understand the language:
+
+1. [`and-core-proposal.md`](./and-core-proposal.md)
+2. [`and-canonical-rules.md`](./and-canonical-rules.md)
+
+If you want to implement a parser:
+
+1. [`and-core-proposal.md`](./and-core-proposal.md)
+2. [`and-implementation-guide.md`](./and-implementation-guide.md)
+3. [`and-ast-contract.md`](./and-ast-contract.md)
+
+If you want to implement canonical emission:
+
+1. [`and-canonical-rules.md`](./and-canonical-rules.md)
+2. [`and-implementation-guide.md`](./and-implementation-guide.md)
+3. [`and-ast-contract.md`](./and-ast-contract.md)
+
+If you want to connect `&ND` into the AES ecosystem:
+
+1. [`and-public-api.md`](./and-public-api.md)
+2. [`fmt-and-reference.md`](./fmt-and-reference.md)
+3. [`and-ast-contract.md`](./and-ast-contract.md)
+
+If you want to work on editor support:
+
+1. [`and-vscode-support.md`](./and-vscode-support.md)
+2. [`and-implementation-guide.md`](./and-implementation-guide.md)
 
 ## Scope
 

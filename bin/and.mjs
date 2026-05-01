@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
-import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
-import { renderHtml } from '../implementations/reference-html/renderer.mjs';
-import { collectDiagnostics } from '../implementations/reference-parser/diagnostics.mjs';
-import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+import { collectDiagnostics, emitCanonical, parseAnd, renderHtml } from '../index.mjs';
 
 function usage() {
   return `Usage:
