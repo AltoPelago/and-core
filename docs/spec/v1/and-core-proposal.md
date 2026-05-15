@@ -499,19 +499,21 @@ MUST error.
 [~ ...]   reserved for references/mentions if ever needed
 [! ...]   reserved for warnings/admonitions if ever needed
 [? ...]   reserved for hints/questions if ever needed
-[+ ...]   reserved for insertion/addition if ever needed
-[- ...]   reserved for deletion/removal if ever needed
+[+ ...]   reserved for consumer defined tags if ever needed
+[- ...]   reserved for strikethrough if ever needed
 [" ...]   reserved for inline quoted text if ever needed
 [' ...]   reserved for comments if ever needed
 [: ...]   reserved for typed values like datetime if ever needed
-[> ...]   reserved for consumer defined tags if ever needed
-[^ ...]   reserved for references if ever needed
+[= ...]   reserved for highlighting text if ever needed
+[_ ...]   reserved for underline text if ever needed
 
 [ ]   reserved for todo/unchecked if ever needed
 [x]   reserved for todo/checked if ever needed
-[=]   reserved for todo/in progress if ever needed
+[,]   reserved for todo/in progress if ever needed
 [.]   reserved for todo/cancelled if ever needed
-[>]   reserved if ever needed
+[>]   reserved for forward arrow if ever needed
+[<]   reserved for backward arrow if ever needed
+[%]   reserved for auto numbered list items if ever needed
 
 [n]   reserved for auto-number marker in headers if ever needed
 
