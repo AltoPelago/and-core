@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-comment-tag-trimmed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse ['   private-note   ] now.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts comment tags with surrounding payload whitespace",
+      "comment tag payload is interpreted after trim"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Use "
+            },
+            {
+              "type": "comment_tag",
+              "value": "private-note"
+            },
+            {
+              "type": "text",
+              "value": " now."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

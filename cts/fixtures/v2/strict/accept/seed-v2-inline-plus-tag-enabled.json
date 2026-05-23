@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-plus-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [+ review-needed] now.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts plus-tag inline form",
+      "plus tag payload is preserved as an explicit node value"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Use "
+            },
+            {
+              "type": "plus_tag",
+              "value": "review-needed"
+            },
+            {
+              "type": "text",
+              "value": " now."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-comment-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [' note-to-self] now.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts comment-tag inline form",
+      "comment tag payload is preserved as explicit node value"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Use "
+            },
+            {
+              "type": "comment_tag",
+              "value": "note-to-self"
+            },
+            {
+              "type": "text",
+              "value": " now."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

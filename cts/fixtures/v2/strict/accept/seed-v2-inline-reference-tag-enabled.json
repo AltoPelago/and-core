@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-reference-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nPing [~ alice] now.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts reference-tag inline form",
+      "reference tag content is trimmed and preserved as explicit node value"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Ping "
+            },
+            {
+              "type": "reference_tag",
+              "value": "alice"
+            },
+            {
+              "type": "text",
+              "value": " now."
+            }
+          ]
+        }
+      ]
+    },
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 27,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 20
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 27,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 20
+        }
+      },
+      {
+        "path": "$.children[0].children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 13,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 6
+        }
+      },
+      {
+        "path": "$.children[0].children[1]",
+        "span": {
+          "startOffset": 13,
+          "endOffset": 22,
+          "startLine": 3,
+          "startColumn": 6,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      },
+      {
+        "path": "$.children[0].children[2]",
+        "span": {
+          "startOffset": 22,
+          "endOffset": 27,
+          "startLine": 3,
+          "startColumn": 15,
+          "endLine": 3,
+          "endColumn": 20
+        }
+      }
+    ]
+  }
+}

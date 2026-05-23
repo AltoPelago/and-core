@@ -2,6 +2,13 @@
 
 This folder contains the current `&ND Core v1` specification bundle.
 
+## Stage
+
+`&ND Core v1` is currently in **draft** stage. Behavior may still change, including breaking
+changes, while implementation and CTS validation continue.
+
+For repository-wide stage policy, see [`../../../CONTRIBUTING.md`](../../../CONTRIBUTING.md).
+
 ## Documents
 
 - [`and-core-proposal.md`](./and-core-proposal.md)

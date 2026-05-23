@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-date",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nToday is [:date 2012-10-10].\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts typed values with date payloads",
+      "typed value node preserves the declared datatype and scalar value"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Today is "
+            },
+            {
+              "type": "typed_value",
+              "datatype": "date",
+              "value": "2012-10-10"
+            },
+            {
+              "type": "text",
+              "value": "."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

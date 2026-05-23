@@ -3,6 +3,22 @@
 `and-core` is spec-and-CTS first. Changes should keep the language prose, machine-readable
 fixtures, and implementation behavior moving together.
 
+## Version Stage Policy
+
+Current stage assignments:
+
+1. `&ND Core v1` is **draft**.
+2. `&ND Core v2` is **proposal**.
+
+Practical implications:
+
+1. v1 is not yet frozen and may still accept breaking changes while it remains draft.
+2. v2 proposal work is the current primary design focus.
+3. Any behavior changes should state which version they target and whether they are intentionally
+	breaking within that stage.
+4. No version is treated as published/final in this repository until formal publication by
+	`aeonite-org`.
+
 ## Development Loop
 
 Use the full local check before opening or updating a PR:
@@ -30,6 +46,14 @@ When changing normative language in `docs/spec/v1/and-core-proposal.md`:
 5. Regenerate report artifacts when expected output changes.
 
 The seed coverage check fails when named spec seeds and indexed CTS fixtures drift apart.
+
+When changing proposal language in `docs/spec/v2/and-core-v2-proposal.md`:
+
+1. Add named seeds only for areas where behavior expectations are concrete enough to test.
+2. Record open questions and unresolved compatibility assumptions explicitly.
+3. Keep unstable alternatives in proposal docs, not in v1 normative docs.
+4. Introduce v2 CTS fixtures only after the seed names and expected outcomes are stable enough
+	for repeatable checks.
 
 ## CTS Changes
 

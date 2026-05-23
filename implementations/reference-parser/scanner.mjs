@@ -41,15 +41,19 @@ function validateScanBudgets(normalized, lines, options) {
   return { ok: true };
 }
 
-function stripDocumentHeader(lines) {
+function stripDocumentHeader(lines, options = {}) {
   if (lines[0] === '&ND v1') {
     const consumed = lines[1] === '' ? 2 : 1;
-    return { ok: true, lines: lines.slice(consumed), lineOffset: consumed };
+    return { ok: true, lines: lines.slice(consumed), lineOffset: consumed, version: 'v1' };
+  }
+  if (lines[0] === '&ND v2' && options.allowV2 === true) {
+    const consumed = lines[1] === '' ? 2 : 1;
+    return { ok: true, lines: lines.slice(consumed), lineOffset: consumed, version: 'v2' };
   }
   if (lines[0]?.startsWith('&ND ')) {
     return failAt('invalid_header', 0, 0);
   }
-  return { ok: true, lines, lineOffset: 0 };
+  return { ok: true, lines, lineOffset: 0, version: null };
 }
 
 function lineStartOffsets(lines) {
@@ -186,7 +190,7 @@ export function scanDocument(source, options = {}) {
   }
 
   const sourceLineStartOffsets = lineStartOffsets(sourceLines);
-  const header = stripDocumentHeader(sourceLines);
+  const header = stripDocumentHeader(sourceLines, options);
   if (!header.ok) {
     return {
       ...header,
@@ -202,6 +206,7 @@ export function scanDocument(source, options = {}) {
     lineStartOffsets: sourceLineStartOffsets.slice(header.lineOffset),
     sourceLineStartOffsets,
     includeSpans: options.includeSpans === true,
+    documentVersion: header.version,
   };
 
   const raw = scanRawIslands(lines);

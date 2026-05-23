@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-tag-escaped-bracket",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nParagraph with [# sec\\]1] escaped bracket in id.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts escaped bracket in anchor payload",
+      "escaped inline characters remain deterministic inside promoted syntax"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Paragraph with "
+            },
+            {
+              "type": "anchor_tag",
+              "id": "sec]1"
+            },
+            {
+              "type": "text",
+              "value": " escaped bracket in id."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-strike-tag-missing-space-prefix",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nThis is [-obsolete] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "v2 strict mode rejects near-miss strike opener without required space",
+      "syntax activation remains explicit and deterministic"
+    ]
+  }
+}

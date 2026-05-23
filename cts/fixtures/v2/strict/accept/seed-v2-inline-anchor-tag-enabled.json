@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nParagraph with [# section-1] anchor tag.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts anchor-tag inline form",
+      "v1 strict mode remains reject for the same source"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Paragraph with "
+            },
+            {
+              "type": "anchor_tag",
+              "id": "section-1"
+            },
+            {
+              "type": "text",
+              "value": " anchor tag."
+            }
+          ]
+        }
+      ]
+    },
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 48,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 41
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 48,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 41
+        }
+      },
+      {
+        "path": "$.children[0].children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 23,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 16
+        }
+      },
+      {
+        "path": "$.children[0].children[1]",
+        "span": {
+          "startOffset": 23,
+          "endOffset": 36,
+          "startLine": 3,
+          "startColumn": 16,
+          "endLine": 3,
+          "endColumn": 29
+        }
+      },
+      {
+        "path": "$.children[0].children[2]",
+        "span": {
+          "startOffset": 36,
+          "endOffset": 48,
+          "startLine": 3,
+          "startColumn": 29,
+          "endLine": 3,
+          "endColumn": 41
+        }
+      }
+    ]
+  }
+}

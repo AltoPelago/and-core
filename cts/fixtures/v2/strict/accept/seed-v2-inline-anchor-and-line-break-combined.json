@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-and-line-break-combined",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nStart[# section-3][.]End\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts combined anchor and line-break marker usage",
+      "promoted forms compose without changing unrelated inline parsing"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Start"
+            },
+            {
+              "type": "anchor_tag",
+              "id": "section-3"
+            },
+            {
+              "type": "line_break"
+            },
+            {
+              "type": "text",
+              "value": "End"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-tag-missing-space-prefix",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nParagraph with [#section-4] missing space after marker.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "v2 strict mode rejects anchor tags that do not match the promoted opener shape",
+      "fail-closed behavior is preserved for near-miss syntax"
+    ]
+  }
+}

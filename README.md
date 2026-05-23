@@ -11,7 +11,9 @@ editor integration, canonicalization, and future conformance-tested implementati
 
 ## Repository Layout
 
+* [docs/spec/README.md](./docs/spec/README.md) — version-stage index for `&ND` spec tracks
 * [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
+* [docs/spec/v2/README.md](./docs/spec/v2/README.md) — the active v2 proposal track
 * [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md) — parser-author guidance and recommended architecture
 * [docs/spec/v1/and-public-api.md](./docs/spec/v1/and-public-api.md) — proposed stable package surface for external consumers
 * [docs/spec/v1/fmt-and-reference.md](./docs/spec/v1/fmt-and-reference.md) — proposed AES-facing `fmt.and` vocabulary and model boundary
@@ -36,6 +38,21 @@ The repository is currently spec-and-CTS first:
 * an initial root package surface is available through [`index.mjs`](./index.mjs)
 * CI runs the repository safety checks and both CTS adapters
 
+## Version Stages
+
+The repository currently tracks two active language stages:
+
+* `&ND Core v1` is in **draft** stage
+* `&ND Core v2` is in **proposal** stage
+
+Stage meanings in this repository:
+
+* **draft**: semantics and behavior may still change, including breaking changes, while design and CTS pressure continue
+* **proposal**: exploratory design work where shape and boundaries are intentionally fluid
+
+Current working focus is v2 proposal development. v1 remains editable and may still change until
+it is formally published by `aeonite-org`.
+
 ## Suggested Reading Order
 
 1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
@@ -50,6 +67,12 @@ If you are here to understand the language itself:
 
 1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
 2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
+
+If you want to contribute to ongoing design direction:
+
+1. [docs/spec/README.md](./docs/spec/README.md)
+2. [docs/spec/v2/README.md](./docs/spec/v2/README.md)
+3. [docs/spec/v2/and-core-v2-proposal.md](./docs/spec/v2/and-core-v2-proposal.md)
 
 If you want to build a parser or canonical emitter:
 
@@ -80,9 +103,9 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* expand the reference parser from CTS coverage toward complete v1 coverage
-* add canonical emission once the AST contract is stable enough
-* expand the first-pass VS Code tooling into a fuller editor stack
+* define the v2 proposal boundaries and first normative seeds
+* scaffold a v2 CTS lane that can evolve independently from v1 fixtures
+* continue validating and refining v1 draft behavior under implementation pressure
 * keep conformance seeds, CTS fixtures, and reference reports moving together
 
 ## Safety Scripts

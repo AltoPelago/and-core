@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-line-break-marker-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nFirst[.]Second\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts inline line-break marker",
+      "line-break marker remains explicit syntax rather than paragraph soft-wrap inference"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "First"
+            },
+            {
+              "type": "line_break"
+            },
+            {
+              "type": "text",
+              "value": "Second"
+            }
+          ]
+        }
+      ]
+    },
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 22,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 22,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      },
+      {
+        "path": "$.children[0].children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 13,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 6
+        }
+      },
+      {
+        "path": "$.children[0].children[1]",
+        "span": {
+          "startOffset": 13,
+          "endOffset": 16,
+          "startLine": 3,
+          "startColumn": 6,
+          "endLine": 3,
+          "endColumn": 9
+        }
+      },
+      {
+        "path": "$.children[0].children[2]",
+        "span": {
+          "startOffset": 16,
+          "endOffset": 22,
+          "startLine": 3,
+          "startColumn": 9,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      }
+    ]
+  }
+}

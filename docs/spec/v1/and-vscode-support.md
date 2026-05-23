@@ -144,7 +144,7 @@ The grammar SHOULD recognize at least:
 The grammar SHOULD highlight obvious lexical-invalid forms distinctly, for example:
 
 - `[x something]`
-- reserved todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[.]`
+- reserved todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[;]`
 - unassigned bracket forms such as `[_]` and `[<]`
 - invalid escapes such as `\q`
 - fence-like openers in places where only plain text is lexically expected

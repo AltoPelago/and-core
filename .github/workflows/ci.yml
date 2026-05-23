@@ -26,6 +26,12 @@ jobs:
       - name: Run repository safety checks
         run: npm run precommit:check
 
+      - name: Check v2 CTS proposal lane scaffold
+        run: npm run check:cts-v2-lane
+
+      - name: Run v2 proposal CTS slice
+        run: npm run cts:run:v2:proposal
+
       - name: Run reference parser CTS
         run: npm run cts:run:reference
 

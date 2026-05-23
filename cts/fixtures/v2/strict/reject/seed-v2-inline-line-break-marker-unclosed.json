@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-line-break-marker-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nAlpha[.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_line_break_marker",
+    "assertions": [
+      "v2 strict mode rejects unclosed line-break marker syntax",
+      "line-break marker remains a fixed token shape"
+    ]
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-admonition-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nRead [! caution] carefully.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts admonition-tag inline form",
+      "admonition tag content is trimmed and preserved as explicit node value"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Read "
+            },
+            {
+              "type": "admonition_tag",
+              "value": "caution"
+            },
+            {
+              "type": "text",
+              "value": " carefully."
+            }
+          ]
+        }
+      ]
+    },
+    "spans": [
+      {
+        "path": "$",
+        "span": {
+          "startOffset": 0,
+          "endOffset": 35,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 28
+        }
+      },
+      {
+        "path": "$.children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 35,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 28
+        }
+      },
+      {
+        "path": "$.children[0].children[0]",
+        "span": {
+          "startOffset": 8,
+          "endOffset": 13,
+          "startLine": 3,
+          "startColumn": 1,
+          "endLine": 3,
+          "endColumn": 6
+        }
+      },
+      {
+        "path": "$.children[0].children[1]",
+        "span": {
+          "startOffset": 13,
+          "endOffset": 24,
+          "startLine": 3,
+          "startColumn": 6,
+          "endLine": 3,
+          "endColumn": 17
+        }
+      },
+      {
+        "path": "$.children[0].children[2]",
+        "span": {
+          "startOffset": 24,
+          "endOffset": 35,
+          "startLine": 3,
+          "startColumn": 17,
+          "endLine": 3,
+          "endColumn": 28
+        }
+      }
+    ]
+  }
+}

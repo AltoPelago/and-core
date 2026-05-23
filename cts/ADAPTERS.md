@@ -1,7 +1,7 @@
 # CTS Adapter Guide
 
-CTS adapters let an implementation participate in the `&ND Core v1` conformance suite without
-requiring every implementation to expose the same level of detail.
+CTS adapters let an implementation participate in the `&ND` conformance suite without requiring
+every implementation to expose the same level of detail.
 
 Run an adapter with:
 
@@ -37,6 +37,37 @@ ports, and lightweight scanners.
 
 For a runnable copyable example, see
 [`cts/examples/baseline-adapter.mjs`](./examples/baseline-adapter.mjs).
+
+## Version Tracks
+
+Current CTS tracks:
+
+1. `v1` active fixtures at `cts/fixtures/index.json`
+2. `v2` proposal lane metadata at `cts/fixtures/v2/index.proposal.json`
+
+Today, `scripts/run-cts.mjs` executes only the active v1 fixture index.
+
+The v2 lane is intentionally scaffold-only while proposal seeds stabilize. Use
+`npm run check:cts-v2-lane` to verify that the v2 proposal lane metadata remains present and
+well-formed.
+
+## v2 Adapter Strategy (Proposal Stage)
+
+When v2 fixtures move beyond placeholder status, adapters SHOULD choose one of two strategies:
+
+1. Single adapter with explicit version switch:
+  1. `runFixture` branches behavior by fixture-level version metadata.
+  2. The adapter keeps v1 and v2 behavior in one module while preserving fail-closed version
+    gates.
+2. Dedicated v2 adapter module:
+  1. `run-cts` is invoked with a separate adapter path for v2 runs.
+  2. The adapter can evolve independently while v1 remains stable.
+
+In both strategies:
+
+1. v1 and v2 reports MUST remain independently reviewable.
+2. v2 proposal fixtures MUST NOT reduce existing v1 coverage checks.
+3. Unsupported version declarations SHOULD fail with stable error codes instead of silent fallback.
 
 ## Result Shape
 

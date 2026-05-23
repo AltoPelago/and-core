@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-line-break-marker-multiple",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nAlpha[.]Beta[.]Gamma\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts multiple explicit line-break markers in one paragraph",
+      "line-break markers can appear between ordinary text segments"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Alpha"
+            },
+            {
+              "type": "line_break"
+            },
+            {
+              "type": "text",
+              "value": "Beta"
+            },
+            {
+              "type": "line_break"
+            },
+            {
+              "type": "text",
+              "value": "Gamma"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

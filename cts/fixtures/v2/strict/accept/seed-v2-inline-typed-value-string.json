@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-string",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nSay [:string \"hello world\"] here.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts typed values with quoted string payloads",
+      "typed value string payload is unquoted into the node value"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Say "
+            },
+            {
+              "type": "typed_value",
+              "datatype": "string",
+              "value": "hello world"
+            },
+            {
+              "type": "text",
+              "value": " here."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

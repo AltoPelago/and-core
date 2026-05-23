@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-line-break-marker-malformed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nFirst[. x]Second\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_line_break_marker",
+    "assertions": [
+      "v2 strict mode rejects malformed line-break marker payload",
+      "line-break marker shape remains fixed and deterministic"
+    ]
+  }
+}

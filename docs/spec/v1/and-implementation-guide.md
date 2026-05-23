@@ -800,7 +800,7 @@ Avoid:
 - source-rewriting canonicalizers that do not go through the AST
 
 Reserved symbols should remain reserved at implementation time.
-In particular, todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[.]` MUST NOT be interpreted as
+In particular, todo-like markers such as `[ ]`, `[x]`, `[=]`, and `[;]` MUST NOT be interpreted as
 task-list semantics in Core v1 strict mode, and SHOULD produce the same reserved/invalid handling
 path as other unassigned Core v1 inline forms.
 

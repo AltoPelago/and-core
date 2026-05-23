@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-tag-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nParagraph with [# section-5 unclosed anchor.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_inline",
+    "assertions": [
+      "v2 strict mode rejects unclosed anchor tags",
+      "promoted syntax obeys existing inline close requirements"
+    ]
+  }
+}

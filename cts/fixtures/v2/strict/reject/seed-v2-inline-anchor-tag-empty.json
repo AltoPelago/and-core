@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-tag-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nParagraph with [# ] empty anchor tag.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_anchor_tag",
+    "assertions": [
+      "v2 strict mode rejects empty anchor payload",
+      "parsers fail closed for malformed promoted syntax"
+    ]
+  }
+}

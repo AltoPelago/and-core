@@ -510,7 +510,8 @@ MUST error.
 [ ]   reserved for todo/unchecked if ever needed
 [x]   reserved for todo/checked if ever needed
 [,]   reserved for todo/in progress if ever needed
-[.]   reserved for todo/cancelled if ever needed
+[;]   reserved for todo/cancelled if ever needed
+[.]   reserved for inline line break if ever needed
 [>]   reserved for forward arrow if ever needed
 [<]   reserved for backward arrow if ever needed
 [%]   reserved for auto numbered list items if ever needed
@@ -926,14 +927,14 @@ Expected result:
 Input:
 
 ```text
-First[<]Second
+First[.]Second
 ```
 
 Expected result:
 
 * parse failure
 * error code `unknown_inline_type`
-* `[<]` is not assigned in Core v1
+* `[.]` remains reserved in Core v1
 
 ### `seed-table-requires-separator`
 
@@ -2828,14 +2829,14 @@ Expected result:
 Input:
 
 ```text
-[.]
+[;]
 ```
 
 Expected result:
 
 * parse failure
 * error code `unknown_inline_type`
-* `[.]` remains reserved in Core v1
+* `[;]` remains reserved in Core v1
 
 ### `seed-inline-invalid-escape-in-code`
 

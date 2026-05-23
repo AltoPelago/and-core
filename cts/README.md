@@ -25,6 +25,11 @@ Canonical expectations can now live alongside parser fixtures through an optiona
 * [`fixtures/`](./fixtures/) — raw input and expected outcomes
 * [`reports/`](./reports/) — generated adapter reports
 
+`fixtures/` currently contains:
+
+* the active v1 index at `fixtures/index.json`
+* a v2 proposal placeholder lane at `fixtures/v2/index.proposal.json`
+
 ## Current Runner Interface
 
 The repository now includes a small CTS entrypoint:
@@ -38,6 +43,7 @@ The repository now includes a small CTS entrypoint:
 * `npm run cts:report:reference`
 * `npm run cts:report:all`
 * `npm run check:reports`
+* `npm run check:cts-v2-lane`
 
 Current behavior:
 
@@ -46,6 +52,7 @@ Current behavior:
 * emits a placeholder report when no parser adapter is configured
 * reports aggregate document-check and error-code coverage
 * can be paired with `npm run check:cts-seed-coverage` to ensure the index still matches the normative seed list in the spec
+* validates the v2 proposal lane scaffold with `npm run check:cts-v2-lane`
 
 Future parser implementations can plug in through:
 

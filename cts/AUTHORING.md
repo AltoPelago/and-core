@@ -1,6 +1,6 @@
 # CTS Authoring Guide
 
-This guide explains how to add and maintain `&ND Core v1` CTS fixtures.
+This guide explains how to add and maintain `&ND` CTS fixtures.
 
 The CTS has two jobs:
 
@@ -9,6 +9,18 @@ The CTS has two jobs:
 
 Fixtures are normative when they correspond to named conformance seeds in
 [`docs/spec/v1/and-core-proposal.md`](../docs/spec/v1/and-core-proposal.md).
+
+## Version Tracks
+
+Current CTS authoring tracks:
+
+1. `v1` active fixtures under `cts/fixtures/` with index `cts/fixtures/index.json`
+2. `v2` proposal placeholder lane under `cts/fixtures/v2/` with index
+  `cts/fixtures/v2/index.proposal.json`
+
+Until v2 fixture activation criteria are met in
+[`docs/spec/v2/and-core-v2-proposal.md`](../docs/spec/v2/and-core-v2-proposal.md), do not add v2
+fixtures to the active v1 index.
 
 ## Fixture Checklist
 

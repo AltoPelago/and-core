@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-plus-tag-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [+ ] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_plus_tag",
+    "assertions": [
+      "v2 strict mode rejects empty plus-tag payload",
+      "promoted plus tags fail closed for empty content"
+    ]
+  }
+}
