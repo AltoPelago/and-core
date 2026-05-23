@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-todo-markers-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[ ] open [x] done [,] wip [;] canceled\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts all promoted todo marker forms",
+      "each marker maps to one stable todo state"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "todo_marker",
+              "state": "unchecked"
+            },
+            {
+              "type": "text",
+              "value": " open "
+            },
+            {
+              "type": "todo_marker",
+              "state": "checked"
+            },
+            {
+              "type": "text",
+              "value": " done "
+            },
+            {
+              "type": "todo_marker",
+              "state": "in_progress"
+            },
+            {
+              "type": "text",
+              "value": " wip "
+            },
+            {
+              "type": "todo_marker",
+              "state": "cancelled"
+            },
+            {
+              "type": "text",
+              "value": " canceled"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

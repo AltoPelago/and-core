@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-underline-tag-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nMark [_ ] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_underline_tag",
+    "assertions": [
+      "v2 strict mode rejects empty underline-tag payload",
+      "promoted underline tags fail closed for empty content"
+    ]
+  }
+}

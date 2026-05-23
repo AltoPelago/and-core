@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-highlight-tag-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nMark [= ] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_highlight_tag",
+    "assertions": [
+      "v2 strict mode rejects empty highlight-tag payload",
+      "promoted highlight tags fail closed for empty content"
+    ]
+  }
+}

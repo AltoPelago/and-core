@@ -354,6 +354,33 @@ function parseTypedValueTag(text, index, context, baseOffset = 0) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
+function parseHighlightTag(text, index, context, baseOffset = 0) {
+  return parseSimpleV2Tag(text, index, context, baseOffset, '[= ', 'highlight_tag', 'invalid_highlight_tag');
+}
+
+function parseUnderlineTag(text, index, context, baseOffset = 0) {
+  return parseSimpleV2Tag(text, index, context, baseOffset, '[_ ', 'underline_tag', 'invalid_underline_tag');
+}
+
+function parseTodoMarker(text, index, context, baseOffset = 0) {
+  const markers = {
+    '[ ]': 'unchecked',
+    '[x]': 'checked',
+    '[,]': 'in_progress',
+    '[;]': 'cancelled',
+  };
+  const token = text.slice(index, index + 3);
+  const state = markers[token];
+  if (!state) {
+    return { ok: false, errorCode: 'invalid_todo_marker', nextIndex: index };
+  }
+  return {
+    ok: true,
+    nextIndex: index + 3,
+    node: withSpan({ type: 'todo_marker', state }, context, baseOffset + index, baseOffset + index + 3),
+  };
+}
+
 function parseLineBreakMarker(text, index, context, baseOffset = 0) {
   if (text.startsWith('[.]', index)) {
     return {
@@ -591,6 +618,31 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       nodes.push(parsed.node);
       index = parsed.nextIndex;
       continue;
+    }
+
+    if (isV2Document(context) && text.startsWith('[= ', index)) {
+      const parsed = parseHighlightTag(text, index, context, baseOffset);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
+    if (isV2Document(context) && text.startsWith('[_ ', index)) {
+      const parsed = parseUnderlineTag(text, index, context, baseOffset);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
+    if (isV2Document(context) && char === '[') {
+      const parsed = parseTodoMarker(text, index, context, baseOffset);
+      if (parsed.ok) {
+        nodes.push(parsed.node);
+        index = parsed.nextIndex;
+        continue;
+      }
     }
 
     if (isV2Document(context) && text.startsWith('[.', index)) {

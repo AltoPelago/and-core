@@ -98,17 +98,23 @@ Current proposal fixtures for this slice live under `cts/fixtures/v2/strict/`:
 9. `seed-v2-inline-comment-tag-enabled`
 10. `seed-v2-inline-typed-value-date`
 11. `seed-v2-inline-typed-value-string`
-12. `seed-v2-inline-anchor-tag-empty`
-13. `seed-v2-inline-reference-tag-empty`
-14. `seed-v2-inline-admonition-tag-empty`
-15. `seed-v2-inline-question-tag-empty`
-16. `seed-v2-inline-plus-tag-empty`
-17. `seed-v2-inline-strike-tag-empty`
-18. `seed-v2-inline-quoted-tag-empty`
-19. `seed-v2-inline-comment-tag-empty`
-20. `seed-v2-inline-typed-value-empty`
-21. `seed-v2-inline-typed-value-missing-value`
-22. `seed-v2-inline-line-break-marker-malformed`
+12. `seed-v2-inline-highlight-tag-enabled`
+13. `seed-v2-inline-underline-tag-enabled`
+14. `seed-v2-inline-todo-markers-enabled`
+15. `seed-v2-inline-anchor-tag-empty`
+16. `seed-v2-inline-reference-tag-empty`
+17. `seed-v2-inline-admonition-tag-empty`
+18. `seed-v2-inline-question-tag-empty`
+19. `seed-v2-inline-plus-tag-empty`
+20. `seed-v2-inline-strike-tag-empty`
+21. `seed-v2-inline-quoted-tag-empty`
+22. `seed-v2-inline-comment-tag-empty`
+23. `seed-v2-inline-typed-value-empty`
+24. `seed-v2-inline-typed-value-missing-value`
+25. `seed-v2-inline-highlight-tag-empty`
+26. `seed-v2-inline-underline-tag-empty`
+27. `seed-v2-inline-todo-marker-invalid-symbol`
+28. `seed-v2-inline-line-break-marker-malformed`
 
 ## Initial Conformance Seeds (Proposal)
 
@@ -290,6 +296,42 @@ Expected direction:
 
 - v2 strict parse success for valid typed-value forms
 - strict rejection for missing datatype or missing payload with stable error code
+
+### `seed-v2-inline-highlight-tag-enabled`
+
+Intent:
+
+- promote v1-reserved `[= ...]` into a v2 inline highlighting form
+- ensure explicit parse shape and error behavior for malformed cases
+
+Expected direction:
+
+- v2 strict parse success for valid highlight-tag form
+- strict rejection for malformed content with stable error code
+
+### `seed-v2-inline-underline-tag-enabled`
+
+Intent:
+
+- promote v1-reserved `[_ ...]` into a v2 inline underlining form
+- ensure explicit parse shape and error behavior for malformed cases
+
+Expected direction:
+
+- v2 strict parse success for valid underline-tag form
+- strict rejection for malformed content with stable error code
+
+### `seed-v2-inline-todo-markers-enabled`
+
+Intent:
+
+- promote v1-reserved todo markers `[ ]`, `[x]`, `[,]`, `[;]` into explicit v2 inline states
+- ensure each marker maps to one stable semantic state and malformed forms fail closed
+
+Expected direction:
+
+- v2 strict parse success for the four valid todo markers
+- strict rejection for malformed or unknown todo marker forms
 
 ### `seed-v2-inline-footnote-tag-enabled`
 
