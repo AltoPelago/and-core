@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-disclaimer-multiline",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n***\nLine A\nLine B\n***\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "disclaimer blocks support unnamed opener form",
+      "disclaimer blocks support multiline payload with plain *** closer"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "disclaimer_block",
+          "children": [
+            {
+              "type": "text",
+              "value": "Line A\nLine B"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

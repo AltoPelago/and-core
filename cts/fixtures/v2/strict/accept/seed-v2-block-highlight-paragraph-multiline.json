@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-highlight-paragraph-multiline",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~=\nLine one\nLine two\n~~~=\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "highlight paragraph block supports multiline payload",
+      "inline parsing remains active inside highlight block payload"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "highlight_paragraph_block",
+          "children": [
+            {
+              "type": "text",
+              "value": "Line one\nLine two"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

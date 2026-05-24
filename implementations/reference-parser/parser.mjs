@@ -381,6 +381,34 @@ function parseTodoMarker(text, index, context, baseOffset = 0) {
   };
 }
 
+function parseDirectionalMarker(text, index, context, baseOffset = 0) {
+  const markers = {
+    '[>]': 'forward',
+    '[<]': 'backward',
+  };
+  const token = text.slice(index, index + 3);
+  const direction = markers[token];
+  if (!direction) {
+    return { ok: false, errorCode: 'invalid_directional_marker', nextIndex: index };
+  }
+  return {
+    ok: true,
+    nextIndex: index + 3,
+    node: withSpan({ type: 'directional_marker', direction }, context, baseOffset + index, baseOffset + index + 3),
+  };
+}
+
+function parseAutoNumberMarker(text, index, context, baseOffset = 0) {
+  if (!text.startsWith('[%]', index)) {
+    return { ok: false, errorCode: 'invalid_auto_number_marker', nextIndex: index };
+  }
+  return {
+    ok: true,
+    nextIndex: index + 3,
+    node: withSpan({ type: 'auto_number_marker' }, context, baseOffset + index, baseOffset + index + 3),
+  };
+}
+
 function parseLineBreakMarker(text, index, context, baseOffset = 0) {
   if (text.startsWith('[.]', index)) {
     return {
@@ -643,6 +671,20 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
         index = parsed.nextIndex;
         continue;
       }
+
+      const directional = parseDirectionalMarker(text, index, context, baseOffset);
+      if (directional.ok) {
+        nodes.push(directional.node);
+        index = directional.nextIndex;
+        continue;
+      }
+
+      const autoNumber = parseAutoNumberMarker(text, index, context, baseOffset);
+      if (autoNumber.ok) {
+        nodes.push(autoNumber.node);
+        index = autoNumber.nextIndex;
+        continue;
+      }
     }
 
     if (isV2Document(context) && text.startsWith('[.', index)) {
@@ -799,6 +841,153 @@ function parseCodeBlock(lines, start, options, context) {
   }
 
   return { ok: false, errorCode: 'unclosed_code_block' };
+}
+
+function parseHighlightParagraphBlock(lines, start, options, context) {
+  const payload = [];
+
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === '~~~=') {
+      const text = payload.join('\n');
+      if (text.trim().length === 0) {
+        return { ok: false, errorCode: 'invalid_highlight_paragraph_block' };
+      }
+      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
+      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
+
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan(
+          {
+            type: 'highlight_paragraph_block',
+            children: inline.nodes,
+          },
+          context,
+          context.lineStartOffsets[start],
+          context.lineStartOffsets[i] + lines[i].length
+        ),
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_highlight_paragraph_block' };
+}
+
+function parseTaggedPairedBlock(lines, start, options, context, config) {
+  const opener = lines[start];
+  const tag = opener.slice(config.fence.length);
+
+  if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
+    return { ok: false, errorCode: config.invalidCode };
+  }
+
+  const payload = [];
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === opener) {
+      const text = payload.join('\n');
+      if (text.trim().length === 0) {
+        return { ok: false, errorCode: config.invalidCode };
+      }
+      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
+      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
+
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan(
+          {
+            type: config.nodeType,
+            tag,
+            children: inline.nodes,
+          },
+          context,
+          context.lineStartOffsets[start],
+          context.lineStartOffsets[i] + lines[i].length
+        ),
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: config.unclosedCode };
+}
+
+function parseHeaderTextBlock(lines, start, options, context) {
+  const opener = lines[start];
+  const tag = opener.slice(3);
+  if (tag.length > 0 && !/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
+    return { ok: false, errorCode: 'invalid_header_text_block' };
+  }
+
+  const payload = [];
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === '===') {
+      const text = payload.join('\n');
+      if (text.trim().length === 0) {
+        return { ok: false, errorCode: 'invalid_header_text_block' };
+      }
+      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
+      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
+
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan(
+          {
+            type: 'header_text_block',
+            ...(tag.length > 0 ? { tag } : {}),
+            children: inline.nodes,
+          },
+          context,
+          context.lineStartOffsets[start],
+          context.lineStartOffsets[i] + lines[i].length
+        ),
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_header_text_block' };
+}
+
+function parseDisclaimerBlock(lines, start, options, context) {
+  const opener = lines[start];
+  const tag = opener.slice(3);
+  if (tag.length > 0 && !/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
+    return { ok: false, errorCode: 'invalid_disclaimer_block' };
+  }
+
+  const payload = [];
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === '***') {
+      const text = payload.join('\n');
+      if (text.trim().length === 0) {
+        return { ok: false, errorCode: 'invalid_disclaimer_block' };
+      }
+      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
+      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
+
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan(
+          {
+            type: 'disclaimer_block',
+            ...(tag.length > 0 ? { tag } : {}),
+            children: inline.nodes,
+          },
+          context,
+          context.lineStartOffsets[start],
+          context.lineStartOffsets[i] + lines[i].length
+        ),
+      };
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_disclaimer_block' };
 }
 
 function parseExtensionBlock(lines, start, options, context) {
@@ -1162,6 +1351,36 @@ function parseBlocks(lines, options, context) {
       continue;
     }
 
+    if (isV2Document(context) && line === '~~~=') {
+      const highlight = parseHighlightParagraphBlock(lines, index, options, context);
+      if (!highlight.ok) return withLine(highlight, context.lineOffset + index);
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
+      children.push(highlight.node);
+      index = highlight.nextIndex;
+      continue;
+    }
+
+    if (isV2Document(context) && line.startsWith('===')) {
+      const headerText = parseHeaderTextBlock(lines, index, options, context);
+      if (!headerText.ok) return withLine(headerText, context.lineOffset + index);
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
+      children.push(headerText.node);
+      index = headerText.nextIndex;
+      continue;
+    }
+
+    if (isV2Document(context) && line.startsWith('***')) {
+      const disclaimer = parseDisclaimerBlock(lines, index, options, context);
+      if (!disclaimer.ok) return withLine(disclaimer, context.lineOffset + index);
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
+      children.push(disclaimer.node);
+      index = disclaimer.nextIndex;
+      continue;
+    }
+
     const opener = extensionOpener(line);
     if (opener !== null) {
       if (opener.name === 'fallback') {
@@ -1189,11 +1408,26 @@ function parseBlocks(lines, options, context) {
 
     if (/^#{1,6} /.test(line)) {
       const match = line.match(/^(#{1,6}) (.*)$/);
+      let headingText = match[2];
+      let autoNumber = false;
+      let markerConsumed = 0;
+      if (isV2Document(context) && headingText.startsWith('[n]')) {
+        autoNumber = true;
+        headingText = headingText.slice(3);
+        markerConsumed = 3;
+        if (headingText.startsWith(' ')) {
+          headingText = headingText.slice(1);
+          markerConsumed += 1;
+        }
+        if (headingText.length === 0) {
+          return failAt('invalid_heading_auto_number_marker', context.lineOffset + index, match[1].length + 1);
+        }
+      }
       const heading = parseInlineBlock(
         'heading',
-        match[2],
+        headingText,
         options,
-        context.lineStartOffsets[index] + match[1].length + 1,
+        context.lineStartOffsets[index] + match[1].length + 1 + markerConsumed,
         context
       );
       if (!heading.ok) return heading;
@@ -1203,6 +1437,7 @@ function parseBlocks(lines, options, context) {
         {
           type: 'heading',
           level: match[1].length,
+          ...(autoNumber ? { autoNumber: true } : {}),
           children: heading.node.children,
         },
         context,

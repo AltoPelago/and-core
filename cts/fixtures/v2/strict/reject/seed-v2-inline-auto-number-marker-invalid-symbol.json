@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-auto-number-marker-invalid-symbol",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[%x] nope\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "v2 strict mode rejects near-miss auto-number symbol forms",
+      "auto-number marker activation remains exact and fail-closed"
+    ]
+  }
+}

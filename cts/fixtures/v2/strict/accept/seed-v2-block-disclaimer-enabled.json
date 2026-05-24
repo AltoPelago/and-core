@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-disclaimer-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n***disclaimer\nUse with care\n***\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts ***name opener with plain *** closer",
+      "disclaimer block captures tag and inline content"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "disclaimer_block",
+          "tag": "disclaimer",
+          "children": [
+            {
+              "type": "text",
+              "value": "Use with care"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

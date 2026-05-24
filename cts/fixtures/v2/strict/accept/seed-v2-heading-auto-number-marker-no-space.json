@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-heading-auto-number-marker-no-space",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n## [n]Section\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "heading auto-number marker works without a separating space",
+      "heading inline content still parses after the marker"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "heading",
+          "level": 2,
+          "autoNumber": true,
+          "children": [
+            {
+              "type": "text",
+              "value": "Section"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

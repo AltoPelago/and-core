@@ -71,7 +71,7 @@ Current v2 evaluation matrix for reserved syntax:
 [n]   reserved for auto-number marker in headers if ever needed
 
 ===   reserved for header text if ever needed
-~~~   reserved for alternative formating if ever needed
+~~~   reserved for alternative formatting if ever needed
 ***   reserved for disclaimer text
 ```
 
@@ -79,7 +79,7 @@ This matrix is the default backlog for v2 syntax promotion sequencing.
 
 ## Active First Slice
 
-The first implementation slice started with two promoted forms and now expands through adjacent
+The initial implementation slice started with two promoted forms and now expands through adjacent
 reserved inline forms in small increments:
 
 1. `[# ...]` anchor tag
@@ -101,20 +101,58 @@ Current proposal fixtures for this slice live under `cts/fixtures/v2/strict/`:
 12. `seed-v2-inline-highlight-tag-enabled`
 13. `seed-v2-inline-underline-tag-enabled`
 14. `seed-v2-inline-todo-markers-enabled`
-15. `seed-v2-inline-anchor-tag-empty`
-16. `seed-v2-inline-reference-tag-empty`
-17. `seed-v2-inline-admonition-tag-empty`
-18. `seed-v2-inline-question-tag-empty`
-19. `seed-v2-inline-plus-tag-empty`
-20. `seed-v2-inline-strike-tag-empty`
-21. `seed-v2-inline-quoted-tag-empty`
-22. `seed-v2-inline-comment-tag-empty`
-23. `seed-v2-inline-typed-value-empty`
-24. `seed-v2-inline-typed-value-missing-value`
-25. `seed-v2-inline-highlight-tag-empty`
-26. `seed-v2-inline-underline-tag-empty`
-27. `seed-v2-inline-todo-marker-invalid-symbol`
-28. `seed-v2-inline-line-break-marker-malformed`
+15. `seed-v2-inline-directional-markers-enabled`
+16. `seed-v2-inline-auto-number-marker-enabled`
+17. `seed-v2-heading-auto-number-marker-enabled`
+18. `seed-v2-block-highlight-paragraph-enabled`
+19. `seed-v2-block-header-text-enabled`
+20. `seed-v2-block-disclaimer-enabled`
+21. `seed-v2-inline-anchor-tag-empty`
+22. `seed-v2-inline-reference-tag-empty`
+23. `seed-v2-inline-admonition-tag-empty`
+24. `seed-v2-inline-question-tag-empty`
+25. `seed-v2-inline-plus-tag-empty`
+26. `seed-v2-inline-strike-tag-empty`
+27. `seed-v2-inline-quoted-tag-empty`
+28. `seed-v2-inline-comment-tag-empty`
+29. `seed-v2-inline-typed-value-empty`
+30. `seed-v2-inline-typed-value-missing-value`
+31. `seed-v2-inline-highlight-tag-empty`
+32. `seed-v2-inline-underline-tag-empty`
+33. `seed-v2-inline-todo-marker-invalid-symbol`
+34. `seed-v2-inline-directional-marker-invalid-symbol`
+35. `seed-v2-inline-auto-number-marker-invalid-symbol`
+36. `seed-v2-heading-auto-number-marker-empty`
+37. `seed-v2-block-highlight-paragraph-unclosed`
+38. `seed-v2-block-header-text-unclosed`
+39. `seed-v2-block-disclaimer-unclosed`
+40. `seed-v2-inline-line-break-marker-malformed`
+
+## Paired Block Grammar Snapshot (Proposal)
+
+The current paired-block proposal grammar used by the reference parser is:
+
+```text
+highlight paragraph block
+	opener: ~~~=
+	closer: ~~~=
+
+header text block
+	opener: === or ===<tag>
+	closer: ===
+
+disclaimer block
+	opener: *** or ***<tag>
+	closer: ***
+
+<tag> ::= [A-Za-z][A-Za-z0-9_-]*
+```
+
+Validation rules in the current proposal lane:
+
+- unclosed paired blocks fail with stable unclosed error codes
+- empty payload blocks fail with stable invalid error codes
+- tagged paired blocks reject invalid tags when present
 
 ## Initial Conformance Seeds (Proposal)
 
@@ -332,6 +370,78 @@ Expected direction:
 
 - v2 strict parse success for the four valid todo markers
 - strict rejection for malformed or unknown todo marker forms
+
+### `seed-v2-inline-directional-markers-enabled`
+
+Intent:
+
+- promote v1-reserved directional markers `[>]` and `[<]` into explicit v2 inline states
+- keep marker handling deterministic and reject malformed or unknown forms
+
+Expected direction:
+
+- v2 strict parse success for both directional markers
+- strict rejection for malformed or unknown directional marker forms
+
+### `seed-v2-inline-auto-number-marker-enabled`
+
+Intent:
+
+- promote v1-reserved `[%]` into an explicit v2 inline auto-number marker
+- keep recognition exact and fail-closed for malformed near-miss forms
+
+Expected direction:
+
+- v2 strict parse success for valid `[%]` marker usage
+- strict rejection for malformed or unknown auto-number marker forms
+
+### `seed-v2-heading-auto-number-marker-enabled`
+
+Intent:
+
+- promote v1-reserved `[n]` into a header-only v2 auto-number marker
+- keep scope explicit: valid in heading prefix position, rejected elsewhere
+
+Expected direction:
+
+- v2 strict parse success for heading forms like `# [n] Title`
+- strict rejection for marker-only headings and non-heading usage
+
+### `seed-v2-block-highlight-paragraph-enabled`
+
+Intent:
+
+- promote v1-reserved `~~~` into a v2 highlighted paragraph block form using `~~~=` delimiters
+- provide an explicit block-level alternative for highlight semantics
+
+Expected direction:
+
+- v2 strict parse success for balanced `~~~=` blocks with non-empty payload
+- strict rejection for unclosed or empty highlight paragraph blocks
+
+### `seed-v2-block-header-text-enabled`
+
+Intent:
+
+- promote v1-reserved `===` into a v2 paired block form using `===` or `===name` openers
+- keep closing deterministic with a plain `===` closer
+
+Expected direction:
+
+- v2 strict parse success for balanced `===` / `===name` blocks with non-empty payload
+- strict rejection for unclosed blocks or invalid tags when present
+
+### `seed-v2-block-disclaimer-enabled`
+
+Intent:
+
+- promote v1-reserved `***` into a v2 paired block form using `***` or `***name` openers
+- keep closing deterministic with a plain `***` closer
+
+Expected direction:
+
+- v2 strict parse success for balanced `***` / `***name` blocks with non-empty payload
+- strict rejection for unclosed blocks or invalid tags when present
 
 ### `seed-v2-inline-footnote-tag-enabled`
 

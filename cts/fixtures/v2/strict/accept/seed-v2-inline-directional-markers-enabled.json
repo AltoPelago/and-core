@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-directional-markers-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nGo [>] then [<] return.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts both directional marker forms",
+      "directional markers map to stable forward/backward states"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Go "
+            },
+            {
+              "type": "directional_marker",
+              "direction": "forward"
+            },
+            {
+              "type": "text",
+              "value": " then "
+            },
+            {
+              "type": "directional_marker",
+              "direction": "backward"
+            },
+            {
+              "type": "text",
+              "value": " return."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

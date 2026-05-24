@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-directional-markers-adjacent",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nPath [>][<] pivot.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "directional markers parse correctly when adjacent",
+      "marker parsing remains local and deterministic"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Path "
+            },
+            {
+              "type": "directional_marker",
+              "direction": "forward"
+            },
+            {
+              "type": "directional_marker",
+              "direction": "backward"
+            },
+            {
+              "type": "text",
+              "value": " pivot."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

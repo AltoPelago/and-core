@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-auto-number-marker-mixed-text",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nStep [%] next.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "auto-number marker parses inline alongside plain text",
+      "auto-number marker parsing remains deterministic"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Step "
+            },
+            {
+              "type": "auto_number_marker"
+            },
+            {
+              "type": "text",
+              "value": " next."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

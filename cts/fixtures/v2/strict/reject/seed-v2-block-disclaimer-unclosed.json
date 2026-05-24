@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-disclaimer-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n***disclaimer\nStill open\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_disclaimer_block",
+    "assertions": [
+      "v2 strict mode rejects unclosed ***tag blocks",
+      "disclaimer block delimiters must be balanced"
+    ]
+  }
+}

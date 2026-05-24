@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-heading-auto-number-marker-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n# [n]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_heading_auto_number_marker",
+    "assertions": [
+      "v2 strict mode rejects heading auto-number marker without heading text",
+      "marker-only headings fail closed"
+    ]
+  }
+}

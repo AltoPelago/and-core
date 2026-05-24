@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-directional-marker-malformed-spacing",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nGo [ >] nope.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "v2 strict mode rejects near-miss directional marker spacing",
+      "malformed marker forms fail closed"
+    ]
+  }
+}

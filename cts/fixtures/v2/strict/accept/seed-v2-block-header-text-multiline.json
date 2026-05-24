@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-header-text-multiline",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n===\nLine one\nLine two\n===\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "header-text blocks support unnamed opener form",
+      "header-text blocks support multiline payload with plain === closer"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "header_text_block",
+          "children": [
+            {
+              "type": "text",
+              "value": "Line one\nLine two"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

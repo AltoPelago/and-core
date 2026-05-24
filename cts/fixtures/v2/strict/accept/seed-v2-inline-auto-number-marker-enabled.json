@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-auto-number-marker-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[%] item\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts the auto-number marker inline form",
+      "auto-number marker is emitted as an explicit node"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "auto_number_marker"
+            },
+            {
+              "type": "text",
+              "value": " item"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
