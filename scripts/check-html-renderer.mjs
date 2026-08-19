@@ -219,6 +219,36 @@ assert(v2Fragment.includes('<p class="and-highlight-paragraph">Highlighted</p>')
 assert(v2Fragment.includes('<header class="and-header-text" data-tag="hero">Header text</header>'), 'renderer should project v2 header-text blocks');
 assert(v2Fragment.includes('<aside class="and-disclaimer" data-tag="legal">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');
 
+const resolvedV2Fragment = renderHtml(parsedV2.document, {
+  imageBaseUrl: 'https://docs.example/guides/proposal.and',
+});
+assert(
+  resolvedV2Fragment.includes('src="https://docs.example/guides/image.jpg" data-and-source="image.jpg"'),
+  'renderer should resolve path-relative image sources against an explicit base URL',
+);
+assert(
+  resolvedV2Fragment.includes('srcset="https://docs.example/guides/diagram.png 2x" data-and-source="diagram.png"'),
+  'renderer should resolve half-size image candidates without changing density intent',
+);
+assert(
+  resolvedV2Fragment.includes('src="https://docs.example/hero.jpg" data-and-source="/hero.jpg"'),
+  'renderer should resolve root-relative image sources against the explicit base origin',
+);
+assert(
+  parsedV2.document.children[1].children.find((node) => node.type === 'image_tag').src === 'image.jpg',
+  'image resolution should not mutate the document AST',
+);
+
+const absoluteImage = renderHtml({
+  type: 'document',
+  children: [{
+    type: 'paragraph',
+    children: [{ type: 'image_tag', src: 'https://cdn.example/image.png', alt: 'Absolute', mode: 'full' }],
+  }],
+}, { imageBaseUrl: 'https://docs.example/guides/proposal.and' });
+assert(absoluteImage.includes('src="https://cdn.example/image.png"'), 'absolute HTTP(S) image sources should remain unchanged');
+assert(!absoluteImage.includes('data-and-source='), 'unchanged absolute sources should not need provenance metadata');
+
 const unsafeImage = renderHtml({
   type: 'document',
   children: [{
@@ -228,6 +258,52 @@ const unsafeImage = renderHtml({
 });
 assert(!unsafeImage.includes('src="javascript:'), 'renderer should omit unsafe image schemes');
 assert(unsafeImage.includes('alt="Unsafe image"'), 'renderer should retain alt text when omitting an unsafe image source');
+
+const protocolRelativeImage = renderHtml({
+  type: 'document',
+  children: [{
+    type: 'paragraph',
+    children: [{ type: 'image_tag', src: '//cdn.example/image.png', alt: 'Implicit scheme', mode: 'full' }],
+  }],
+}, { imageBaseUrl: 'https://docs.example/guides/proposal.and' });
+assert(
+  protocolRelativeImage.includes('data-and-src-omitted="unsafe"'),
+  'renderer should reject protocol-relative image sources',
+);
+
+const credentialedImage = renderHtml({
+  type: 'document',
+  children: [{
+    type: 'paragraph',
+    children: [{ type: 'image_tag', src: 'https://user:secret@cdn.example/image.png', alt: 'Credentials', mode: 'full' }],
+  }],
+});
+assert(
+  credentialedImage.includes('data-and-src-omitted="unsafe"'),
+  'renderer should reject credentialed image sources',
+);
+
+let invalidImageBaseError = null;
+try {
+  renderHtml(parsedV2.document, { imageBaseUrl: 'file:///tmp/document.and' });
+} catch (error) {
+  invalidImageBaseError = error;
+}
+assert(
+  invalidImageBaseError?.code === 'invalid_image_base_url',
+  'renderer should reject non-HTTP(S) image base URLs with a stable error code',
+);
+
+let credentialedImageBaseError = null;
+try {
+  renderHtml(parsedV2.document, { imageBaseUrl: 'https://user:secret@docs.example/proposal.and' });
+} catch (error) {
+  credentialedImageBaseError = error;
+}
+assert(
+  credentialedImageBaseError?.code === 'invalid_image_base_url',
+  'renderer should reject credentialed image base URLs',
+);
 
 let unsupportedError = null;
 try {

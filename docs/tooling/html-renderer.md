@@ -30,6 +30,7 @@ It supports:
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default
 * complete HTML document output with `{ fragment: false }`
+* explicit relative-image resolution with `{ imageBaseUrl: "https://example.test/path/document.and" }`
 * fail-closed errors for unsupported AST nodes
 
 The local CLI exposes the same projection:
@@ -38,6 +39,7 @@ The local CLI exposes the same projection:
 npm run and -- render-html examples/minimal.and
 npm run and -- render-html examples/minimal.and --document --out output.html
 npm run and -- render-html path/to/proposal.and --version v2
+npm run and -- render-html path/to/proposal.and --version v2 --image-base-url https://docs.example/guide/proposal.and
 ```
 
 ## Safety Behavior
@@ -58,6 +60,17 @@ Image sources accept HTTP(S), root-relative, and relative targets. Unsafe scheme
 alt text remains available. The reference projection maps `inline` to a one-em image height, `half`
 to a 2x density candidate (half intrinsic dimensions), and `full` to the resource's intrinsic
 dimensions. It also emits stable `and-image-*` classes and `data-size` values for consumer styling.
+
+The renderer never derives an image base from the process working directory, input filename, or
+browser globals. With no `imageBaseUrl`, safe relative sources are preserved and the embedding HTML
+document owns their eventual resolution. When an explicit base is provided, it must be an absolute
+credential-free HTTP(S) URL; relative and root-relative sources are resolved with the WHATWG URL
+algorithm, while already-absolute HTTP(S) sources remain unchanged. Resolved output records the
+authored value in `data-and-source`. Invalid bases fail with `invalid_image_base_url`.
+
+Protocol-relative, credentialed, `data:`, `blob:`, `file:`, and other non-HTTP(S) image sources are
+not emitted. The renderer does not insert a `<base>` element, fetch resources, inspect content types,
+or mutate the AST.
 
 Typed values emit `<data>` with the canonical AEON datatype annotation in `data-type` and canonical
 scalar literal in `value`. Visible string and custom-null-reason content is decoded for readers;

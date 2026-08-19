@@ -207,6 +207,7 @@ Canonical emission should continue to require an explicit profile choice.
 ```ts
 interface NdHtmlRenderOptions {
   readonly fragment?: boolean;
+  readonly imageBaseUrl?: string;
 }
 
 declare function renderHtml(

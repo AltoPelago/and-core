@@ -46,5 +46,14 @@ const html = renderHtml(parsed.document);
 assert(html.includes('<h1>Public API</h1>'), 'public HTML projection should succeed');
 const htmlV2 = renderHtml(parsedV2.document);
 assert(htmlV2.includes('data-auto-number="true"'), 'public HTML projection should render v2 intent');
+const imageDocument = {
+  type: 'document',
+  children: [{ type: 'paragraph', children: [inlineImageV2.children[0]] }],
+};
+const resolvedImageHtml = renderHtml(imageDocument, { imageBaseUrl: 'https://docs.example/guide/page.and' });
+assert(
+  resolvedImageHtml.includes('src="https://docs.example/guide/image.jpg"'),
+  'public HTML projection should expose explicit image-base resolution',
+);
 
 console.log('Public API checks passed.');

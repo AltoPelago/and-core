@@ -204,6 +204,19 @@ resolution, loading policy, layout constraints, and failure presentation. Alt te
 every conforming AST carries an accessible text alternative.
 Image sources participate in the inherited `maxLinkTargetLength` resource budget.
 
+The AST and canonical form retain the authored, escape-decoded `src`; Core never resolves it against
+a filesystem path, process working directory, page URL, or document URL. The reference HTML renderer
+accepts an optional explicit `imageBaseUrl`. Without it, safe relative references are emitted unchanged
+and resolution belongs to the embedding HTML document. With it, relative and root-relative references
+are resolved using the WHATWG URL algorithm. The base MUST be an absolute credential-free HTTP(S) URL;
+an invalid base fails with `invalid_image_base_url`. Absolute HTTP(S) sources remain unchanged.
+
+The reference HTML safety policy rejects non-HTTP(S) absolute schemes, credentialed URLs, and
+protocol-relative sources. It preserves alt text while omitting unsafe source attributes. When an
+authored relative source is resolved, the emitted `src` or `srcset` is absolute and the original value
+is retained in `data-and-source`. The renderer does not emit a `<base>` element, fetch the resource, or
+mutate the AST.
+
 ## Compact Inline Markers
 
 ```ts

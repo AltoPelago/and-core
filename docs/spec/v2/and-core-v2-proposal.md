@@ -282,6 +282,9 @@ Expected direction:
 - explicit `inline`, `half`, and `full` modes produce one stable `image_tag` AST shape
 - invalid field counts, empty required fields, and unknown modes fail with `invalid_image_tag`
 - v1 strict mode continues to reject the same spelling
+- Core and canonical output preserve the authored source without ambient filesystem or page resolution
+- HTML consumers may opt into deterministic relative-source resolution with an explicit credential-free
+  HTTP(S) `imageBaseUrl`; unsafe sources retain alt text but no source attribute
 
 ### `seed-v2-inline-strike-tag-enabled`
 

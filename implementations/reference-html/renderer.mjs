@@ -49,13 +49,54 @@ function isExternalWebHref(href) {
   }
 }
 
-function isSafeImageSrc(src) {
+function parseSafeHttpUrl(value) {
+  if (typeof value !== 'string' || !/^https?:\/\//i.test(value)) return null;
   try {
-    const url = new URL(src, 'https://and.invalid/');
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    const url = new URL(value);
+    if (
+      (url.protocol !== 'http:' && url.protocol !== 'https:')
+      || url.username.length > 0
+      || url.password.length > 0
+    ) {
+      return null;
+    }
+    return url;
+  } catch {
+    return null;
+  }
+}
+
+function isSafeRelativeImageReference(src) {
+  try {
+    const sentinel = new URL('https://and.invalid/document.and');
+    const resolved = new URL(src, sentinel);
+    return resolved.origin === sentinel.origin;
   } catch {
     return false;
   }
+}
+
+function normalizeRenderOptions(options) {
+  if (options.imageBaseUrl === undefined) return { ...options, imageBaseUrl: null };
+  if (typeof options.imageBaseUrl !== 'string' || options.imageBaseUrl.trim().length === 0) {
+    throw fail('invalid_image_base_url', 'imageBaseUrl must be an absolute HTTP(S) URL.');
+  }
+  const imageBaseUrl = parseSafeHttpUrl(options.imageBaseUrl);
+  if (!imageBaseUrl) {
+    throw fail('invalid_image_base_url', 'imageBaseUrl must be an absolute HTTP(S) URL without credentials.');
+  }
+  return { ...options, imageBaseUrl };
+}
+
+function resolveImageSource(src, imageBaseUrl) {
+  const absolute = parseSafeHttpUrl(src);
+  if (absolute) return { ok: true, src, resolved: false };
+  if (!isSafeRelativeImageReference(src)) return { ok: false };
+  if (!imageBaseUrl) return { ok: true, src, resolved: false };
+
+  const resolved = new URL(src, imageBaseUrl);
+  if (!parseSafeHttpUrl(resolved.href)) return { ok: false };
+  return { ok: true, src: resolved.href, resolved: resolved.href !== src };
 }
 
 function renderInlineNodes(nodes, options) {
@@ -105,15 +146,19 @@ function renderInlineNode(node, options) {
       }
       const className = `and-image and-image-${node.mode}`;
       const alt = escapeAttribute(node.alt);
-      if (!isSafeImageSrc(node.src)) {
+      const resolvedSource = resolveImageSource(node.src, options.imageBaseUrl);
+      if (!resolvedSource.ok) {
         return `<img class="${className}" alt="${alt}" data-size="${node.mode}" data-and-src-omitted="unsafe" title="Unsafe image source omitted">`;
       }
-      const src = escapeAttribute(node.src);
+      const src = escapeAttribute(resolvedSource.src);
       const sourceAttribute = node.mode === 'half' ? `srcset="${src} 2x"` : `src="${src}"`;
+      const originalSourceAttribute = resolvedSource.resolved
+        ? ` data-and-source="${escapeAttribute(node.src)}"`
+        : '';
       const modeAttributes = node.mode === 'inline'
         ? ' style="height:1em;width:auto;vertical-align:-0.125em"'
         : '';
-      return `<img class="${className}" ${sourceAttribute} alt="${alt}" data-size="${node.mode}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${modeAttributes}>`;
+      return `<img class="${className}" ${sourceAttribute}${originalSourceAttribute} alt="${alt}" data-size="${node.mode}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${modeAttributes}>`;
     }
     case 'strike_tag':
       return `<s>${renderInlineNodes(node.children, options)}</s>`;
@@ -286,6 +331,7 @@ export function renderHtml(document, options = {}) {
     throw fail('invalid_document', 'HTML rendering requires a document node.');
   }
 
-  const body = renderBlocks(document.children, options);
-  return options.fragment === false ? renderFullDocument(body) : body;
+  const normalizedOptions = normalizeRenderOptions(options);
+  const body = renderBlocks(document.children, normalizedOptions);
+  return normalizedOptions.fragment === false ? renderFullDocument(body) : body;
 }

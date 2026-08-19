@@ -8,7 +8,7 @@ function usage() {
   and diagnostics <file> [--json] [--version v1|v2] [--budget name=value]
   and parse <file> [--json] [--spans] [--version v1|v2] [--budget name=value]
   and canonical <file> --profile embedded|standalone [--version v1|v2] [--out <file>] [--budget name=value]
-  and render-html <file> [--fragment|--document] [--version v1|v2] [--out <file>] [--budget name=value]
+  and render-html <file> [--fragment|--document] [--image-base-url <url>] [--version v1|v2] [--out <file>] [--budget name=value]
 `;
 }
 
@@ -182,6 +182,18 @@ async function commandRenderHtml(filePath, args) {
   }
 
   const outPath = readOption(args, '--out');
+  const imageBaseUrl = readOption(args, '--image-base-url');
+  if (
+    hasFlag(args, '--image-base-url')
+    && (imageBaseUrl === undefined || imageBaseUrl.startsWith('--'))
+  ) {
+    writeJson({
+      ok: false,
+      errorCode: 'invalid_image_base_url',
+      message: 'Missing --image-base-url value.',
+    });
+    return 1;
+  }
   const source = await readSource(filePath);
   const parsed = parseAnd(source, parseOptions(args));
   if (!parsed.ok) {
@@ -190,7 +202,10 @@ async function commandRenderHtml(filePath, args) {
   }
 
   try {
-    const html = renderHtml(parsed.document, { fragment: !hasFlag(args, '--document') });
+    const html = renderHtml(parsed.document, {
+      fragment: !hasFlag(args, '--document'),
+      imageBaseUrl,
+    });
     if (outPath) {
       await fs.writeFile(outPath, html);
     } else {

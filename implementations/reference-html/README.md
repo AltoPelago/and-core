@@ -37,3 +37,9 @@ resolution, custom-datatype interpretation, or extension execution. Reserved AEO
 compatibility is already enforced by parsing and canonical emission. Image projection accepts only HTTP(S) and
 relative sources, carries mandatory alt text, and exposes the resolved display mode through stable
 classes and attributes.
+
+Relative image sources are preserved by default. Consumers can pass
+`{ imageBaseUrl: "https://example.test/path/document.and" }` to resolve them deterministically with
+the WHATWG URL algorithm. The base must be an absolute credential-free HTTP(S) URL. Resolved output
+retains the authored source in `data-and-source`; absolute HTTP(S) sources are left unchanged.
+Protocol-relative, credentialed, and non-HTTP(S) sources are omitted while alt text is preserved.

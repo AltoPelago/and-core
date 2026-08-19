@@ -35,6 +35,7 @@ const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'and-cli-'));
 const validPath = path.join(tempDir, 'valid.and');
 const invalidPath = path.join(tempDir, 'invalid.and');
 const v2Path = path.join(tempDir, 'v2.and');
+const imageV2Path = path.join(tempDir, 'image-v2.and');
 const embeddedV2Path = path.join(tempDir, 'embedded-v2.and');
 const invalidBodyPath = path.join(tempDir, 'invalid-body.and');
 const budgetPath = path.join(tempDir, 'budget.and');
@@ -45,6 +46,7 @@ const htmlPath = path.join(tempDir, 'document.html');
 await fs.writeFile(validPath, '&ND v1\n\n# Title\n\nMy number is\n1. not a list\n');
 await fs.writeFile(invalidPath, '&ND v2\n\n# Title\n');
 await fs.writeFile(v2Path, '&ND v2\n\n# [n] Title\n\nStart[# section][.]End\n');
+await fs.writeFile(imageV2Path, '&ND v2\n\n[~ ../media/chart.png | Chart | half]\n');
 await fs.writeFile(embeddedV2Path, 'Start[# embedded][.]End\n');
 await fs.writeFile(invalidBodyPath, '&ND v1\n\nText\n---\n');
 await fs.writeFile(budgetPath, '&ND v1\n\nHello\n');
@@ -204,6 +206,38 @@ assert(renderHtmlV2.ok, 'render-html --version v2 should render v2 input');
 assert(renderHtmlV2.stdout.includes('data-auto-number="true"'), 'v2 HTML should preserve heading auto-number intent');
 assert(renderHtmlV2.stdout.includes('id="section"'), 'v2 HTML should render anchors');
 assert(renderHtmlV2.stdout.includes('<br>'), 'v2 HTML should render inline line breaks');
+
+const renderHtmlImageBase = await run([
+  'render-html',
+  imageV2Path,
+  '--version',
+  'v2',
+  '--image-base-url',
+  'https://docs.example/guides/chapter.and',
+]);
+assert(renderHtmlImageBase.ok, 'render-html --image-base-url should accept an absolute HTTP(S) base');
+assert(
+  renderHtmlImageBase.stdout.includes('srcset="https://docs.example/media/chart.png 2x"'),
+  'render-html --image-base-url should resolve relative sources',
+);
+assert(
+  renderHtmlImageBase.stdout.includes('data-and-source="../media/chart.png"'),
+  'resolved CLI output should retain the authored image source',
+);
+
+const renderHtmlInvalidImageBase = await run([
+  'render-html',
+  imageV2Path,
+  '--version',
+  'v2',
+  '--image-base-url',
+  'file:///tmp/chapter.and',
+]);
+assert(!renderHtmlInvalidImageBase.ok, 'render-html should reject a non-HTTP(S) image base URL');
+assert(
+  JSON.parse(renderHtmlInvalidImageBase.stdout).errorCode === 'invalid_image_base_url',
+  'render-html should report invalid_image_base_url',
+);
 
 const renderHtmlDocument = await run(['render-html', validPath, '--document', '--out', htmlPath]);
 assert(renderHtmlDocument.ok, 'render-html --document --out should succeed');

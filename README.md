@@ -131,6 +131,7 @@ If you want to extend or audit the CTS:
 * `npm run and -- canonical examples/minimal.and --profile standalone` — emits canonical text
 * `npm run and -- render-html examples/minimal.and` — emits an escaped HTML fragment
 * `npm run and -- render-html examples/minimal.and --document --out output.html` — writes a complete HTML document
+* `npm run and -- render-html path/to/proposal.and --version v2 --image-base-url https://docs.example/guide/proposal.and` — resolves relative image sources against an explicit HTTP(S) document base
 * CLI parser budgets use repeatable `--budget name=value` flags. Supported names are `maxDocumentSize`,
   `maxLineLength`, `maxNestingDepth`, `maxInlineDepth`, `maxTableColumns`, `maxBlockSize`,
   `maxBlockCount`, `maxListItemCount`, and `maxLinkTargetLength`.
