@@ -22,7 +22,12 @@
             },
             {
               "type": "quoted_tag",
-              "value": "quoted-note"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "quoted-note"
+                }
+              ]
             },
             {
               "type": "text",

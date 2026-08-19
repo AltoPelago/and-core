@@ -80,6 +80,9 @@ assert(reparsedV2.ok && reparsedV2.version === 'v2', 'playground v2 canonical ou
 const v2Html = renderHtml(v2Result.document);
 assert(v2Html.includes('data-auto-number="true"'), 'playground v2 preview should preserve auto-number intent');
 assert(v2Html.includes('id="overview"'), 'playground v2 preview should render anchors');
+assert(v2Html.includes('href="#overview"'), 'playground v2 preview should link local references');
+assert(v2Html.includes('class="and-image and-image-inline"'), 'playground v2 preview should render inline images');
+assert(v2Html.includes('alt="Ampersand ND sample"'), 'playground v2 preview should preserve image alt text');
 assert(v2Html.includes('class="and-highlight-paragraph"'), 'playground v2 preview should render paired blocks');
 
 console.log('Playground checks passed.');

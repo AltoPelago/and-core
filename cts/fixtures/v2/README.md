@@ -4,7 +4,8 @@ This folder is reserved for `&ND Core v2` CTS fixtures while v2 remains in propo
 
 Current status:
 
-- 78 accept/reject proposal fixtures cover promoted inline, marker, heading, and paired-block forms
+- 87 accept/reject proposal fixtures cover promoted inline image, tag, marker, heading, and paired-block forms,
+  including nested rich inline content and document-local fragment-link integrity
 - `npm run cts:run:v2:proposal` executes the lane in CI
 - the proposal runner checks v1-header rejection, declared-v1 gating, v1-subset compatibility,
   headerless effective-version equivalence, canonical fixed points, HTML projection, nested

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-local-anchor-duplicate-nested",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[# item]First definition.\n\n> [# item]Second definition.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "duplicate_anchor",
+    "assertions": [
+      "local anchor identifiers are unique across the entire document",
+      "nested block contexts share the same anchor namespace"
+    ]
+  }
+}

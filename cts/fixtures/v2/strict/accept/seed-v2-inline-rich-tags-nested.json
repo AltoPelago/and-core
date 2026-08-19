@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-rich-tags-nested",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nRich [- old [* bold]], [\" quoted [/ softly]], [= marked [_ under]], [! caution [? why]], and [' hidden [* note]].\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "content-bearing v2 tags preserve nested inline structure",
+      "rich v2 tags participate in the shared inline-depth model"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Rich "
+            },
+            {
+              "type": "strike_tag",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "old "
+                },
+                {
+                  "type": "strong",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "bold"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": ", "
+            },
+            {
+              "type": "quoted_tag",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "quoted "
+                },
+                {
+                  "type": "emphasis",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "softly"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": ", "
+            },
+            {
+              "type": "highlight_tag",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "marked "
+                },
+                {
+                  "type": "underline_tag",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "under"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": ", "
+            },
+            {
+              "type": "admonition_tag",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "caution "
+                },
+                {
+                  "type": "question_tag",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "why"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": ", and "
+            },
+            {
+              "type": "comment_tag",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "hidden "
+                },
+                {
+                  "type": "strong",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "note"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": "."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

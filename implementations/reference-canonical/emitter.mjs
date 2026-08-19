@@ -8,6 +8,54 @@ function fail(errorCode, detail) {
   return error;
 }
 
+const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
+
+function requireLocalAnchorId(value, errorCode, nodeType) {
+  if (typeof value !== 'string' || !LOCAL_ANCHOR_ID_PATTERN.test(value)) {
+    throw fail(errorCode, `${nodeType} requires a portable local anchor identifier.`);
+  }
+  return value;
+}
+
+function validateLocalAnchorGraph(document) {
+  const anchors = new Set();
+  const localTargets = [];
+
+  function visit(value) {
+    if (Array.isArray(value)) {
+      value.forEach(visit);
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+
+    if (value.type === 'anchor_tag') {
+      const id = requireLocalAnchorId(value.id, 'invalid_anchor_tag', 'anchor_tag');
+      if (anchors.has(id)) {
+        throw fail('duplicate_anchor', `Duplicate local anchor: ${id}`);
+      }
+      anchors.add(id);
+    } else if (
+      value.type === 'link'
+      && typeof value.href === 'string'
+      && value.href.startsWith('#')
+      && value.href.length > 1
+    ) {
+      localTargets.push(requireLocalAnchorId(value.href.slice(1), 'invalid_local_anchor_target', 'link'));
+    }
+
+    for (const [key, child] of Object.entries(value)) {
+      if (key !== 'span') visit(child);
+    }
+  }
+
+  visit(document);
+  for (const target of localTargets) {
+    if (!anchors.has(target)) {
+      throw fail('unresolved_local_anchor', `Unresolved local anchor: ${target}`);
+    }
+  }
+}
+
 function escapeText(value, context = {}) {
   const normalizedValue = context.preserveNewlines
     ? value.replaceAll('\r\n', '\n')
@@ -51,6 +99,20 @@ function emitV2Value(value, context = {}) {
   return escapeText(String(value), context);
 }
 
+function emitImageField(value, fieldName) {
+  if (typeof value !== 'string' || value.trim().length === 0 || value.includes('\n') || value.includes('\r')) {
+    throw fail('invalid_image_tag', `image_tag requires a non-empty single-line ${fieldName}.`);
+  }
+  return value.trim().replace(/[\\[\]|]/g, (char) => `\\${char}`);
+}
+
+function emitImageMode(value) {
+  if (!['inline', 'half', 'full'].includes(value)) {
+    throw fail('invalid_image_tag', `Unsupported image display mode: ${value}`);
+  }
+  return value;
+}
+
 function emitTypedDatatype(value) {
   const datatype = String(value);
   if (datatype.length === 0 || /[\s\n]/.test(datatype)) {
@@ -73,37 +135,37 @@ function emitInlineNode(node, context) {
       return `[$ ${escapeInlineCode(node.text)}]`;
     case 'anchor_tag':
       requireV2(context, node.type);
-      return `[# ${emitV2Value(node.id, context)}]`;
-    case 'reference_tag':
-      requireV2(context, node.type);
-      return `[~ ${emitV2Value(node.value, context)}]`;
+      return `[# ${requireLocalAnchorId(node.id, 'invalid_anchor_tag', node.type)}]`;
     case 'admonition_tag':
       requireV2(context, node.type);
-      return `[! ${emitV2Value(node.value, context)}]`;
+      return `[! ${emitInlineNodes(node.children, context)}]`;
     case 'question_tag':
       requireV2(context, node.type);
-      return `[? ${emitV2Value(node.value, context)}]`;
+      return `[? ${emitInlineNodes(node.children, context)}]`;
     case 'plus_tag':
       requireV2(context, node.type);
       return `[+ ${emitV2Value(node.value, context)}]`;
+    case 'image_tag':
+      requireV2(context, node.type);
+      return `[~ ${emitImageField(node.src, 'source')} | ${emitImageField(node.alt, 'alt text')} | ${emitImageMode(node.mode)}]`;
     case 'strike_tag':
       requireV2(context, node.type);
-      return `[- ${emitV2Value(node.value, context)}]`;
+      return `[- ${emitInlineNodes(node.children, context)}]`;
     case 'quoted_tag':
       requireV2(context, node.type);
-      return `[" ${emitV2Value(node.value, context)}]`;
+      return `[" ${emitInlineNodes(node.children, context)}]`;
     case 'comment_tag':
       requireV2(context, node.type);
-      return `[' ${emitV2Value(node.value, context)}]`;
+      return `[' ${emitInlineNodes(node.children, context)}]`;
     case 'typed_value':
       requireV2(context, node.type);
       return `[:${emitTypedDatatype(node.datatype)} ${emitV2Value(node.value, context)}]`;
     case 'highlight_tag':
       requireV2(context, node.type);
-      return `[= ${emitV2Value(node.value, context)}]`;
+      return `[= ${emitInlineNodes(node.children, context)}]`;
     case 'underline_tag':
       requireV2(context, node.type);
-      return `[_ ${emitV2Value(node.value, context)}]`;
+      return `[_ ${emitInlineNodes(node.children, context)}]`;
     case 'todo_marker': {
       requireV2(context, node.type);
       const markers = { unchecked: '[ ]', checked: '[x]', in_progress: '[,]', cancelled: '[;]' };
@@ -278,6 +340,7 @@ export function emitCanonical(document, options = {}) {
 
   const profile = resolveProfile(options);
   const version = resolveVersion(options);
+  if (version === 'v2') validateLocalAnchorGraph(document);
   const body = emitBlocks(document.children, { version });
   const prefix = profile === 'standalone' ? `&ND ${version}\n\n` : '';
   return `${prefix}${body}\n`;

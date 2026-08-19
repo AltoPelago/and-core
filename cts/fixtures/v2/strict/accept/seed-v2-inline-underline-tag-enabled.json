@@ -8,7 +8,7 @@
     "ok": true,
     "assertions": [
       "v2 strict mode accepts underline-tag inline form",
-      "underline tag payload is preserved as explicit node value"
+      "underline tag payload is preserved as rich inline children"
     ],
     "document": {
       "type": "document",
@@ -22,7 +22,12 @@
             },
             {
               "type": "underline_tag",
-              "value": "underlined"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "underlined"
+                }
+              ]
             },
             {
               "type": "text",

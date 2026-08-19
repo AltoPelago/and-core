@@ -152,6 +152,33 @@ function runApiBoundaryChecks() {
     'parseInline must accept explicit embedded v2 input'
   ));
 
+  const inlineLocalReference = parseInline('[@ #inline-id | inline]', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'public inline local-fragment link shape',
+    inlineLocalReference.ok && inlineLocalReference.nodes?.[0]?.href === '#inline-id',
+    'parseInline validates local fragment syntax while leaving document-level resolution to parseAnd'
+  ));
+
+  const inlineImage = parseInline('[~ image.jpg | Sample image]', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'public inline v2 image shape',
+    inlineImage.ok
+      && inlineImage.nodes?.[0]?.type === 'image_tag'
+      && inlineImage.nodes[0].mode === 'inline',
+    'parseInline must expose the normalized v2 image AST and default mode'
+  ));
+
+  const budgetedImage = parseInline('[~ image.jpg | Sample image]', {
+    allowV2: true,
+    version: 'v2',
+    budgets: { maxLinkTargetLength: 4 },
+  });
+  checks.push(reportCheck(
+    'v2 image source-length budget',
+    !budgetedImage.ok && budgetedImage.errorCode === 'nd_budget_exceeded',
+    'image sources must participate in the inherited link-target length budget'
+  ));
+
   const deniedEmbeddedV2 = parseAnd('[# id]\n', { version: 'v2' });
   checks.push(reportCheck(
     'embedded v2 capability gate',
@@ -173,6 +200,16 @@ function runApiBoundaryChecks() {
       && nestedV2.document.children[0]?.children?.[0]?.children?.[0]?.type === 'anchor_tag'
       && nestedV2.document.children[1]?.items?.[0]?.children?.[1]?.type === 'highlight_paragraph_block',
     'v2 selection must survive blockquote and list child contexts'
+  ));
+
+  const richDepth = parseAnd('&ND v2\n\n[- [* nested]]\n', {
+    allowV2: true,
+    budgets: { maxInlineDepth: 1 },
+  });
+  checks.push(reportCheck(
+    'v2 rich tag inline-depth budget',
+    !richDepth.ok && richDepth.errorCode === 'nd_budget_exceeded',
+    'content-bearing v2 tags must participate in the inherited inline-depth budget'
   ));
 
   for (const [name, fence] of [
@@ -221,6 +258,28 @@ function runApiBoundaryChecks() {
     'v2 canonical fence safety',
     unsafeFenceError?.code === 'unsupported_v2_fence_payload',
     'canonical emission must reject payloads that would terminate their paired block'
+  ));
+
+  let unresolvedCanonicalError = null;
+  try {
+    emitCanonical({
+      type: 'document',
+      children: [{
+        type: 'paragraph',
+        children: [{
+          type: 'link',
+          href: '#missing',
+          children: [{ type: 'text', value: 'missing' }],
+        }],
+      }],
+    }, { profile: 'standalone', version: 'v2' });
+  } catch (error) {
+    unresolvedCanonicalError = error;
+  }
+  checks.push(reportCheck(
+    'v2 canonical local-fragment integrity',
+    unresolvedCanonicalError?.code === 'unresolved_local_anchor',
+    'canonical emission must reject unresolved v2 local-fragment links'
   ));
 
   return checks.reduce(

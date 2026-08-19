@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-image-tag-extra-field",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[~ image.jpg | Alt text | inline | extra]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_image_tag",
+    "assertions": [
+      "v2 image tags accept exactly two or three fields",
+      "extra unescaped delimiters fail closed"
+    ]
+  }
+}

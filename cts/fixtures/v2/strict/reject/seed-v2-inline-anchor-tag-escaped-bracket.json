@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-anchor-tag-escaped-bracket",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nParagraph with [# sec\\]1] invalid anchor id.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_anchor_tag",
+    "assertions": [
+      "v2 strict mode rejects anchor identifiers outside the portable local-id grammar",
+      "escaping a delimiter does not make it valid identifier content"
+    ]
+  }
+}

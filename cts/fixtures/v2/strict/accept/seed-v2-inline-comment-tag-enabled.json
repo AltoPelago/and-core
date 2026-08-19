@@ -8,7 +8,7 @@
     "ok": true,
     "assertions": [
       "v2 strict mode accepts comment-tag inline form",
-      "comment tag payload is preserved as explicit node value"
+      "comment tag payload is preserved as rich inline children"
     ],
     "document": {
       "type": "document",
@@ -22,7 +22,12 @@
             },
             {
               "type": "comment_tag",
-              "value": "note-to-self"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "note-to-self"
+                }
+              ]
             },
             {
               "type": "text",

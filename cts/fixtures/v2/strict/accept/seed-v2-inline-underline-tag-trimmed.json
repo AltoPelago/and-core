@@ -22,7 +22,12 @@
             },
             {
               "type": "underline_tag",
-              "value": "keep-this"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "keep-this"
+                }
+              ]
             },
             {
               "type": "text",

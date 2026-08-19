@@ -28,6 +28,8 @@ const parsedV2 = parseAnd(v2Source, { allowV2: true, includeSpans: true });
 assert(parsedV2.ok && parsedV2.version === 'v2', 'public parse should expose opt-in v2 capability');
 const inlineV2 = parseInline('[# api]', { allowV2: true, version: 'v2' });
 assert(inlineV2.ok && inlineV2.children[0].type === 'anchor_tag', 'public inline parse should expose explicit v2');
+const inlineImageV2 = parseInline('[~ image.jpg | Sample image]', { allowV2: true, version: 'v2' });
+assert(inlineImageV2.ok && inlineImageV2.children[0].type === 'image_tag', 'public inline parse should expose v2 images');
 
 const diagnostics = collectDiagnostics('&ND v2\n');
 assert(!diagnostics.ok, 'public diagnostics should surface invalid input');

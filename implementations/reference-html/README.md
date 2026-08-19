@@ -28,7 +28,11 @@ showing the opaque payload in escaped form.
 
 Unsupported AST node types fail closed with stable error codes.
 
-The proposal-v2 projection includes inert representations for scalar tags, typed values, todo and
-direction markers, explicit line breaks, auto-number intent, highlighted paragraphs, header text,
-and disclaimers. Projection does not perform numbering, reference resolution, datatype validation,
-or extension execution.
+The proposal-v2 projection includes inert representations for scalar metadata tags, rich inline
+tags, typed values, inline images, todo and direction markers, explicit line breaks, auto-number intent,
+highlighted paragraphs, header text, and disclaimers. Projection preserves nested inline structure
+and emits inherited `#id` links as browser-native fragment links. The parser and canonical emitter
+validate the v2 local-anchor graph; projection does not perform numbering, external resource
+resolution, datatype validation, or extension execution. Image projection accepts only HTTP(S) and
+relative sources, carries mandatory alt text, and exposes the resolved display mode through stable
+classes and attributes.

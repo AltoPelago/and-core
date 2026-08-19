@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-image-tag-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nPing [~ ] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_image_tag",
+    "assertions": [
+      "the promoted v2 image family requires source and alt fields",
+      "an empty image tag fails with a stable image-specific error"
+    ]
+  }
+}

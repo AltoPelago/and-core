@@ -43,6 +43,15 @@ function isExternalWebHref(href) {
   }
 }
 
+function isSafeImageSrc(src) {
+  try {
+    const url = new URL(src, 'https://and.invalid/');
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function renderInlineNodes(nodes, options) {
   return nodes.map((node) => renderInlineNode(node, options)).join('');
 }
@@ -70,26 +79,48 @@ function renderInlineNode(node, options) {
     }
     case 'anchor_tag':
       return `<span class="and-anchor" id="${escapeAttribute(node.id)}" aria-hidden="true"></span>`;
-    case 'reference_tag':
-      return `<span class="and-reference" data-reference="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</span>`;
     case 'admonition_tag':
-      return `<span class="and-admonition">${escapeHtml(node.value)}</span>`;
+      return `<span class="and-admonition">${renderInlineNodes(node.children, options)}</span>`;
     case 'question_tag':
-      return `<span class="and-question">${escapeHtml(node.value)}</span>`;
+      return `<span class="and-question">${renderInlineNodes(node.children, options)}</span>`;
     case 'plus_tag':
       return `<span class="and-consumer-tag" data-value="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</span>`;
+    case 'image_tag': {
+      if (!['inline', 'half', 'full'].includes(node.mode)) {
+        throw fail('invalid_image_tag', `Unsupported image display mode: ${node.mode}`);
+      }
+      if (
+        typeof node.src !== 'string'
+        || node.src.trim().length === 0
+        || typeof node.alt !== 'string'
+        || node.alt.trim().length === 0
+      ) {
+        throw fail('invalid_image_tag', 'image_tag requires a non-empty source and alt text.');
+      }
+      const className = `and-image and-image-${node.mode}`;
+      const alt = escapeAttribute(node.alt);
+      if (!isSafeImageSrc(node.src)) {
+        return `<img class="${className}" alt="${alt}" data-size="${node.mode}" data-and-src-omitted="unsafe" title="Unsafe image source omitted">`;
+      }
+      const src = escapeAttribute(node.src);
+      const sourceAttribute = node.mode === 'half' ? `srcset="${src} 2x"` : `src="${src}"`;
+      const modeAttributes = node.mode === 'inline'
+        ? ' style="height:1em;width:auto;vertical-align:-0.125em"'
+        : '';
+      return `<img class="${className}" ${sourceAttribute} alt="${alt}" data-size="${node.mode}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${modeAttributes}>`;
+    }
     case 'strike_tag':
-      return `<s>${escapeHtml(node.value)}</s>`;
+      return `<s>${renderInlineNodes(node.children, options)}</s>`;
     case 'quoted_tag':
-      return `<q>${escapeHtml(node.value)}</q>`;
+      return `<q>${renderInlineNodes(node.children, options)}</q>`;
     case 'comment_tag':
-      return `<span class="and-comment" hidden>${escapeHtml(node.value)}</span>`;
+      return `<span class="and-comment" hidden>${renderInlineNodes(node.children, options)}</span>`;
     case 'typed_value':
       return `<data class="and-typed-value" data-type="${escapeAttribute(node.datatype)}" value="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</data>`;
     case 'highlight_tag':
-      return `<mark>${escapeHtml(node.value)}</mark>`;
+      return `<mark>${renderInlineNodes(node.children, options)}</mark>`;
     case 'underline_tag':
-      return `<u>${escapeHtml(node.value)}</u>`;
+      return `<u>${renderInlineNodes(node.children, options)}</u>`;
     case 'todo_marker': {
       const states = {
         unchecked: { glyph: '☐', label: 'Unchecked' },

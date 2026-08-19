@@ -23,7 +23,8 @@ It supports:
 
 * paragraphs, headings, horizontal rules, blockquotes, lists, code blocks, ordered code blocks, extension blocks, and tables
 * text, strong, emphasis, inline code, and links
-* proposal-v2 scalar tags, compact markers, explicit line breaks, and typed values
+* proposal-v2 scalar metadata tags, inline images, rich inline tags, compact markers, explicit line breaks, and typed values
+* inherited `#id` links projected as browser-native fragment links
 * proposal-v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
@@ -52,6 +53,11 @@ default renderer only emits clickable `href` values for:
 * fragment links
 
 Other link targets are rendered as disabled anchors with their labels preserved.
+
+Image sources accept HTTP(S), root-relative, and relative targets. Unsafe schemes are omitted while
+alt text remains available. The reference projection maps `inline` to a one-em image height, `half`
+to a 2x density candidate (half intrinsic dimensions), and `full` to the resource's intrinsic
+dimensions. It also emits stable `and-image-*` classes and `data-size` values for consumer styling.
 
 For `http:` and `https:` links, the reference renderer also emits conservative browser-facing
 attributes:

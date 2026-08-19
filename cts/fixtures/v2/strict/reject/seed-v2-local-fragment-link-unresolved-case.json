@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-local-fragment-link-unresolved-case",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[# section]See [@ #Section | the section].\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unresolved_local_anchor",
+    "assertions": [
+      "every v2 local fragment link resolves to an anchor in the same document",
+      "anchor matching is case-sensitive"
+    ]
+  }
+}

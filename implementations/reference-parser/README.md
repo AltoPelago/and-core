@@ -27,7 +27,9 @@ Current scope:
 * raw code block margin checks
 * the initial block-boundary and indentation rules covered by the CTS
 * explicit v2 capability and effective-version selection through `allowV2` and `version`
-* proposal-v2 inline tags, compact markers, heading auto-numbering, and paired blocks
+* proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact markers,
+  heading auto-numbering, and paired blocks
+* proposal-v2 document-local anchor uniqueness and case-sensitive `[@ #id | label]` resolution
 * effective-version metadata on successful document parse results
 
 Run it against the CTS with:
@@ -49,6 +51,11 @@ The default remains v1-only. Standalone v2 input requires `&ND v2` plus `{ allow
 Headerless v2 input and standalone inline parsing require
 `{ allowV2: true, version: "v2" }`. A successful `parseAnd` result includes a `version` field with
 the value `"v1"` or `"v2"` beside the document AST.
+
+For v2 input, `parseInline` validates the portable `#id` link-target grammar but cannot resolve it
+without a document namespace. `parseAnd` accepts forward fragment links and rejects duplicate anchors
+or unresolved local targets across the entire document, including nested blocks. V2 image tags use
+`[~ source | alt | mode]`, default omitted modes to `inline`, and require `inline`, `half`, or `full`.
 
 Strict-mode failures currently return:
 

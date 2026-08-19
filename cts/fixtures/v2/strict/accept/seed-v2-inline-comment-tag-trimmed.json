@@ -22,7 +22,12 @@
             },
             {
               "type": "comment_tag",
-              "value": "private-note"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "private-note"
+                }
+              ]
             },
             {
               "type": "text",

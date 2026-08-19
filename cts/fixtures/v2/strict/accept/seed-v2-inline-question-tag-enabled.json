@@ -8,7 +8,7 @@
     "ok": true,
     "assertions": [
       "v2 strict mode accepts question-tag inline form",
-      "question tag content is trimmed and preserved as explicit node value"
+      "question tag content is preserved as rich inline children"
     ],
     "document": {
       "type": "document",
@@ -22,7 +22,12 @@
             },
             {
               "type": "question_tag",
-              "value": "why"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "why"
+                }
+              ]
             },
             {
               "type": "text",

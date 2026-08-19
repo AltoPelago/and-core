@@ -22,7 +22,12 @@
             },
             {
               "type": "strike_tag",
-              "value": "old-value"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "old-value"
+                }
+              ]
             },
             {
               "type": "text",

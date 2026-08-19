@@ -19,7 +19,7 @@ Current scope:
 * tables
 * horizontal rules
 * inline text, strong, emphasis, links, and inline code
-* all promoted v2 scalar tags and compact markers
+* all promoted v2 scalar metadata tags, inline images, rich inline tags, and compact markers
 * v2 heading auto-number intent and paired blocks
 
 Paragraph line breaks preserved in parser AST text nodes are treated as soft wraps during canonical
@@ -37,3 +37,5 @@ emitCanonical(v2Document, { profile: "standalone", version: "v2" });
 The `embedded` profile omits the version header for typed embedding contexts such as annotation
 payloads. The `standalone` profile emits the selected version header followed by one blank line.
 The version defaults to v1 for compatibility. Emitting a v2-only node under v1 fails closed.
+V2 emission also validates portable anchor IDs, document-wide anchor uniqueness, and complete local
+fragment-link resolution before writing output.

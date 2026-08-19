@@ -8,7 +8,7 @@
     "ok": true,
     "assertions": [
       "v2 strict mode accepts quoted-tag inline form",
-      "quoted tag payload is preserved as explicit node value"
+      "quoted tag payload is preserved as rich inline children"
     ],
     "document": {
       "type": "document",
@@ -22,7 +22,12 @@
             },
             {
               "type": "quoted_tag",
-              "value": "cited-value"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "cited-value"
+                }
+              ]
             },
             {
               "type": "text",

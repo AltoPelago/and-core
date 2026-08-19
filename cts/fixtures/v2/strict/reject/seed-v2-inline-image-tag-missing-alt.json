@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-image-tag-missing-alt",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[~ image.jpg | ]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_image_tag",
+    "assertions": [
+      "v2 image tags require non-empty alt text",
+      "missing accessibility text fails closed"
+    ]
+  }
+}

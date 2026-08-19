@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-image-tag-escaped-pipe",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[~ charts/a\\|b.png | Revenue \\| expenses | full]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "escaped pipes remain data inside image source and alt fields",
+      "canonical emission restores delimiter escapes"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "image_tag",
+              "src": "charts/a|b.png",
+              "alt": "Revenue | expenses",
+              "mode": "full"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

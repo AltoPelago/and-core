@@ -64,51 +64,37 @@ parseInline(inlineSource, { allowV2: true, version: "v2" });
 input. A source declaration takes precedence, so a document declared as v1 remains governed by v1.
 Successful document parses report the effective `version` beside the document AST.
 
-## Reserved Syntax Promotion Track
+## Capability Disposition
 
-Core v1 reserves a set of inline forms that are currently rejected in strict mode. v2 proposal work
-can promote selected forms into first-class syntax while keeping v1 behavior unchanged.
+Core v1 reserves these spellings and rejects them in strict mode. The v2 first-draft candidate now
+assigns each promoted form an explicit ownership boundary:
 
-Current v2 evaluation matrix for reserved syntax:
+| Forms | Disposition | Contract boundary |
+| :---- | :---------- | :---------------- |
+| `[# ...]` and inherited `[@ #id | label]` | Core | Case-sensitive document-local anchors and resolved fragment links. |
+| `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Core | Rich inline content with stable structural meaning. |
+| `[! ...]`, `[? ...]` | Core syntax + convention | Rich content; presentation and workflow are consumer-defined. |
+| `[+ ...]` | Core syntax + convention | Scalar consumer tag; vocabulary and behavior remain consumer-defined. |
+| `[~ source | alt | mode]` | Core | Inline image with required alt text and `inline`, `half`, or `full` display intent. |
+| `[:type value]` | Core syntax + convention | Datatype and value are preserved; interpretation and validation are consumer-defined. |
+| `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
+| heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
+| `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
+| `[^ ...]` and other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
-```text
-[# ...]   reserved for anchors/IDs if ever needed
-[~ ...]   reserved for references/mentions if ever needed
-[! ...]   reserved for warnings/admonitions if ever needed
-[? ...]   reserved for hints/questions if ever needed
-[+ ...]   reserved for consumer defined tags if ever needed
-[- ...]   reserved for strikethrough if ever needed
-[" ...]   reserved for inline quoted text if ever needed
-[' ...]   reserved for comments if ever needed
-[: ...]   reserved for typed values like datetime if ever needed
-[= ...]   reserved for highlighting text if ever needed
-[_ ...]   reserved for underline text if ever needed
-
-[ ]   reserved for todo/unchecked if ever needed
-[x]   reserved for todo/checked if ever needed
-[,]   reserved for todo/in progress if ever needed
-[;]   reserved for todo/cancelled if ever needed
-[.]   reserved for inline line break if ever needed
-[>]   reserved for forward arrow if ever needed
-[<]   reserved for backward arrow if ever needed
-[%]   reserved for auto numbered list items if ever needed
-
-[n]   reserved for auto-number marker in headers if ever needed
-
-===   reserved for header text if ever needed
-~~~   reserved for alternative formatting if ever needed
-***   reserved for disclaimer text
-```
-
-This matrix is the default backlog for v2 syntax promotion sequencing.
+“Core syntax + convention” does not introduce a feature gate. These forms remain part of one fixed
+v2 strict grammar; Core standardizes parsing and canonical spelling without claiming ownership of
+consumer vocabularies or presentation.
 
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 78-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 87-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 38 accepted fixtures covering inline tags, compact markers, heading auto-numbering, and paired blocks
-- 40 rejected fixtures covering empty payloads, malformed spacing, invalid markers, tags, and fences
+- 40 accepted fixtures covering inline tags, rich nesting, compact markers, heading auto-numbering,
+  and paired blocks
+- 47 rejected fixtures covering empty payloads, malformed spacing, invalid markers, local-fragment
+  integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
 - embedded-version equivalence checks for every proposal fixture
@@ -234,17 +220,18 @@ Expected direction:
 - v2 strict parse success for valid anchor-tag form
 - v1 strict behavior remains reject for the same source
 
-### `seed-v2-inline-reference-tag-enabled`
+### `seed-v2-inline-local-fragment-link-enabled`
 
 Intent:
 
-- promote v1-reserved `[~ ...]` into a v2 reference/mention construct
-- keep deterministic parsing boundaries for link-like inline content
+- reuse inherited `[@ target | label]` with `#id` targets for document-local navigation
+- keep the existing rich-label link AST and browser-native fragment spelling
 
 Expected direction:
 
-- v2 strict parse success for valid reference-tag form
-- stable reject behavior in v1 strict mode
+- declared-v2 strict parse success when the case-sensitive fragment target resolves in the same document
+- forward links are accepted; duplicate anchors and unresolved targets fail with stable errors
+- image resources use the dedicated `[~ source | alt | mode]` v2 form
 
 ### `seed-v2-inline-admonition-tag-enabled`
 
@@ -275,12 +262,26 @@ Expected direction:
 Intent:
 
 - promote v1-reserved `[+ ...]` into a v2 inline consumer-defined tag form
-- ensure explicit parse shape and error behavior for malformed cases
+- keep its vocabulary and behavior outside Core semantics
 
 Expected direction:
 
 - v2 strict parse success for valid plus-tag form
 - strict rejection for malformed content with stable error code
+
+### `seed-v2-inline-image-tag-modes`
+
+Intent:
+
+- promote v1-reserved `[~ ...]` into a v2 inline-image form
+- require source and alt text while preserving a closed display-intent enum
+
+Expected direction:
+
+- v2 strict mode accepts `[~ source | alt]` with an `inline` default
+- explicit `inline`, `half`, and `full` modes produce one stable `image_tag` AST shape
+- invalid field counts, empty required fields, and unknown modes fail with `invalid_image_tag`
+- v1 strict mode continues to reject the same spelling
 
 ### `seed-v2-inline-strike-tag-enabled`
 
@@ -466,16 +467,16 @@ Expected direction:
 
 ## Open Questions
 
-1. Which reserved forms should be promoted first versus deferred to profile-specific layers?
-2. Which current proposal forms should survive into the first v2 draft?
-3. Should any promoted reserved forms remain optional feature gates in strict mode?
-4. Which scalar tag nodes, if any, should become rich inline containers before draft?
+1. Which embedding profiles may supply an external v2 declaration?
+2. Which image source-resolution and failure conventions need a companion projection profile?
+3. How much migration guidance is needed before the first v2 draft is published?
+4. Which consumer conventions need companion, non-Core documents before publication?
 
 ## Next Edits
 
-1. Split accepted decisions from unresolved proposals in this file.
-2. Pin normative HTML projection snapshots for promoted nodes that require interoperable rendering.
-3. Decide whether anchor IDs and typed-value datatypes need tighter Core-level lexical constraints.
+1. Pin normative HTML projection snapshots for promoted nodes that require interoperable rendering.
+2. Settle typed-value datatype/value constraints and image source-resolution conventions.
+3. Add cross-form combination fixtures for the remaining marker and paired-block interactions.
 
 ## Proposal Lane Status
 
@@ -489,6 +490,6 @@ The executable proposal lane is active but is not a published conformance lane. 
 6. Canonical standalone and embedded output for every accepted proposal AST.
 7. Inert HTML projections and CLI/playground access behind explicit v2 selection.
 
-Promotion toward a first v2 draft still requires a decision about which proposed forms remain in
-Core, tighter semantic contracts for consumer-facing tags, and publication-grade conformance
-snapshots beyond the current proposal lane.
+Promotion toward a first v2 draft still requires typed-value lexical decisions, image-resolution
+guidance, companion contracts for consumer conventions, and publication-grade snapshots beyond
+the current proposal lane.

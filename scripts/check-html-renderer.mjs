@@ -182,7 +182,7 @@ const v2Source = `&ND v2
 
 # [n] Proposal
 
-[# anchor][~ ref][! caution][? why][+ custom][- old][" quote][' hidden][:date 2026-08-19][= marked][_ under][ ][x][,][;][>][<][%][.]
+[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][:date 2026-08-19][= marked][_ under][ ][x][,][;][>][<][%][.]
 
 ~~~=
 Highlighted
@@ -201,8 +201,11 @@ assert(parsedV2.ok, `v2 renderer smoke source should parse: ${parsedV2.errorCode
 const v2Fragment = renderHtml(parsedV2.document);
 assert(v2Fragment.includes('<h1 class="and-auto-numbered" data-auto-number="true">Proposal</h1>'), 'renderer should project v2 heading auto-number intent');
 assert(v2Fragment.includes('<span class="and-anchor" id="anchor" aria-hidden="true"></span>'), 'renderer should project v2 anchors');
-assert(v2Fragment.includes('<span class="and-reference" data-reference="ref">ref</span>'), 'renderer should project v2 references');
-assert(v2Fragment.includes('<s>old</s>'), 'renderer should project v2 strike tags');
+assert(v2Fragment.includes('<a href="#anchor">anchor</a>'), 'renderer should project inherited links to v2 local anchors');
+assert(v2Fragment.includes('class="and-image and-image-inline" src="image.jpg" alt="Sample image"'), 'renderer should project inline images with alt text');
+assert(v2Fragment.includes('class="and-image and-image-half" srcset="diagram.png 2x" alt="Diagram"'), 'renderer should express half intrinsic dimensions through image density');
+assert(v2Fragment.includes('class="and-image and-image-full" src="/hero.jpg" alt="Hero"'), 'renderer should project full intrinsic image intent');
+assert(v2Fragment.includes('<s>old <strong>nested</strong></s>'), 'renderer should preserve nested content in rich v2 tags');
 assert(v2Fragment.includes('<q>quote</q>'), 'renderer should project v2 quoted tags');
 assert(v2Fragment.includes('<span class="and-comment" hidden>hidden</span>'), 'renderer should keep v2 comments inert');
 assert(v2Fragment.includes('<data class="and-typed-value" data-type="date" value="2026-08-19">2026-08-19</data>'), 'renderer should project v2 typed values without interpreting them');
@@ -215,6 +218,16 @@ assert(v2Fragment.includes('<br>'), 'renderer should project v2 explicit line br
 assert(v2Fragment.includes('<p class="and-highlight-paragraph">Highlighted</p>'), 'renderer should project v2 highlighted blocks');
 assert(v2Fragment.includes('<header class="and-header-text" data-tag="hero">Header text</header>'), 'renderer should project v2 header-text blocks');
 assert(v2Fragment.includes('<aside class="and-disclaimer" data-tag="legal">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');
+
+const unsafeImage = renderHtml({
+  type: 'document',
+  children: [{
+    type: 'paragraph',
+    children: [{ type: 'image_tag', src: 'javascript:alert(1)', alt: 'Unsafe image', mode: 'inline' }],
+  }],
+});
+assert(!unsafeImage.includes('src="javascript:'), 'renderer should omit unsafe image schemes');
+assert(unsafeImage.includes('alt="Unsafe image"'), 'renderer should retain alt text when omitting an unsafe image source');
 
 let unsupportedError = null;
 try {

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-local-fragment-link-invalid-target",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[# valid]See [@ #bad/target | invalid local target].\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_local_anchor_target",
+    "assertions": [
+      "v2 fragment links use the portable local anchor identifier grammar",
+      "external URLs remain valid ordinary at-sign link targets instead"
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-local-fragment-link-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nSee [@ #section | the section] before [# section]its target.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts a forward fragment link to a local anchor",
+      "local navigation reuses the inherited rich-label link AST"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "See "
+            },
+            {
+              "type": "link",
+              "href": "#section",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "the section"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " before "
+            },
+            {
+              "type": "anchor_tag",
+              "id": "section"
+            },
+            {
+              "type": "text",
+              "value": "its target."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

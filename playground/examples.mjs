@@ -38,11 +38,14 @@ mode = "ordered"
 
 # [n] v2 capabilities
 
-[# overview]Tasks: [ ] draft, [x] parser, [,] documentation, [;] abandoned.
+[# overview]Tasks: [ ] draft, [x] parser, [,] documentation, [;] abandoned. Jump to [@ #overview | overview].
 
 Flow [>] publish and [<] revise.[.]Typed value: [:date 2026-08-19].
 
-Use [= highlighted], [- retired], [_ underlined], and [" quoted] text.
+Inline image: [~ ./image-example.svg | Ampersand ND sample].
+
+Rich content nests: [= highlighted with [* emphasis]], [- retired [/ wording]],
+[_ underlined], and [" quoted [* text]].
 
 ~~~=
 This is a highlighted paragraph with [! proposal] status.

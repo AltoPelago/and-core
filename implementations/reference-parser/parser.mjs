@@ -122,6 +122,8 @@ function isEscapable(char) {
   return char === '[' || char === ']' || char === '|' || char === '\\';
 }
 
+const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
+
 function parseEscape(text, index) {
   const next = text[index + 1];
   if (isEscapable(next)) {
@@ -208,9 +210,10 @@ function parseAnchorTag(text, index, context, baseOffset = 0) {
     }
     if (char === ']') {
       const id = value.trim();
-      if (id.length === 0) {
+      if (!LOCAL_ANCHOR_ID_PATTERN.test(id)) {
         return { ok: false, errorCode: 'invalid_anchor_tag', nextIndex: i };
       }
+      context?.semanticState?.anchors.push({ id, offset: baseOffset + index });
       return {
         ok: true,
         nextIndex: i + 1,
@@ -226,7 +229,7 @@ function parseAnchorTag(text, index, context, baseOffset = 0) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseSimpleV2Tag(text, index, context, baseOffset, opener, nodeType, invalidCode) {
+function parseScalarV2Tag(text, index, context, baseOffset, opener, nodeType, invalidCode) {
   let i = index + opener.length;
   let value = '';
   while (i < text.length) {
@@ -259,32 +262,96 @@ function parseSimpleV2Tag(text, index, context, baseOffset, opener, nodeType, in
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseReferenceTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[~ ', 'reference_tag', 'invalid_reference_tag');
-}
-
-function parseAdmonitionTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[! ', 'admonition_tag', 'invalid_admonition_tag');
-}
-
-function parseQuestionTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[? ', 'question_tag', 'invalid_question_tag');
-}
-
 function parsePlusTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[+ ', 'plus_tag', 'invalid_plus_tag');
+  return parseScalarV2Tag(text, index, context, baseOffset, '[+ ', 'plus_tag', 'invalid_plus_tag');
 }
 
-function parseStrikeTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[- ', 'strike_tag', 'invalid_strike_tag');
+function parseImageTag(text, index, options, context, baseOffset = 0) {
+  let i = index + 3;
+  const fields = [''];
+
+  while (i < text.length) {
+    const char = text[i];
+    if (char === '\\') {
+      const escaped = parseEscape(text, i);
+      if (!escaped.ok) return escaped;
+      fields[fields.length - 1] += escaped.value;
+      i = escaped.nextIndex;
+      continue;
+    }
+    if (char === '|') {
+      if (fields.length === 3) {
+        return { ok: false, errorCode: 'invalid_image_tag', nextIndex: i };
+      }
+      fields.push('');
+      i += 1;
+      continue;
+    }
+    if (char === ']') {
+      if (fields.length < 2) {
+        return { ok: false, errorCode: 'invalid_image_tag', nextIndex: i };
+      }
+      const src = fields[0].trim();
+      const alt = fields[1].trim();
+      const rawMode = fields.length === 3 ? fields[2].trim() : 'inline';
+      if (
+        typeof options?.budgets?.maxLinkTargetLength === 'number'
+        && src.length > options.budgets.maxLinkTargetLength
+      ) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: i };
+      }
+      if (src.length === 0 || alt.length === 0 || !['inline', 'half', 'full'].includes(rawMode)) {
+        return { ok: false, errorCode: 'invalid_image_tag', nextIndex: i };
+      }
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan(
+          { type: 'image_tag', src, alt, mode: rawMode },
+          context,
+          baseOffset + index,
+          baseOffset + i + 1
+        ),
+      };
+    }
+    if (char === '\n') {
+      return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
+    }
+    fields[fields.length - 1] += char;
+    i += 1;
+  }
+
+  return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseQuotedTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[" ', 'quoted_tag', 'invalid_quoted_tag');
+function parseAdmonitionTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[! ', 'admonition_tag', 'invalid_admonition_tag', inlineDepth
+  );
 }
 
-function parseCommentTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, "[' ", 'comment_tag', 'invalid_comment_tag');
+function parseQuestionTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[? ', 'question_tag', 'invalid_question_tag', inlineDepth
+  );
+}
+
+function parseStrikeTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[- ', 'strike_tag', 'invalid_strike_tag', inlineDepth
+  );
+}
+
+function parseQuotedTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[" ', 'quoted_tag', 'invalid_quoted_tag', inlineDepth
+  );
+}
+
+function parseCommentTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, "[' ", 'comment_tag', 'invalid_comment_tag', inlineDepth
+  );
 }
 
 function parseTypedValueTag(text, index, context, baseOffset = 0) {
@@ -354,12 +421,16 @@ function parseTypedValueTag(text, index, context, baseOffset = 0) {
   return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
 }
 
-function parseHighlightTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[= ', 'highlight_tag', 'invalid_highlight_tag');
+function parseHighlightTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[= ', 'highlight_tag', 'invalid_highlight_tag', inlineDepth
+  );
 }
 
-function parseUnderlineTag(text, index, context, baseOffset = 0) {
-  return parseSimpleV2Tag(text, index, context, baseOffset, '[_ ', 'underline_tag', 'invalid_underline_tag');
+function parseUnderlineTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[_ ', 'underline_tag', 'invalid_underline_tag', inlineDepth
+  );
 }
 
 function parseTodoMarker(text, index, context, baseOffset = 0) {
@@ -484,11 +555,20 @@ function parseLink(text, index, options, context, baseOffset = 0, inlineDepth = 
     return { ok: false, errorCode: 'missing_link_label', nextIndex: i };
   }
 
+  const href = target.trim();
+  if (isV2Document(context) && href.startsWith('#') && href.length > 1) {
+    const localTarget = href.slice(1);
+    if (!LOCAL_ANCHOR_ID_PATTERN.test(localTarget)) {
+      return { ok: false, errorCode: 'invalid_local_anchor_target', nextIndex: index };
+    }
+    context?.semanticState?.localLinks.push({ target: localTarget, offset: baseOffset + index });
+  }
+
   return {
     ok: true,
     nextIndex: label.nextIndex,
     node: withSpan(
-      { type: 'link', href: target.trim(), children: label.nodes },
+      { type: 'link', href, children: label.nodes },
       context,
       baseOffset + index,
       baseOffset + label.nextIndex
@@ -502,6 +582,73 @@ function hasInlineContent(nodes) {
     if ('children' in node) return hasInlineContent(node.children);
     return true;
   });
+}
+
+function trimRichInlineBoundaries(nodes, context) {
+  while (nodes[0]?.type === 'text') {
+    const first = nodes[0];
+    const leadingLength = first.value.match(/^\s+/u)?.[0].length ?? 0;
+    if (leadingLength === 0) break;
+    first.value = first.value.slice(leadingLength);
+    if (context?.includeSpans) {
+      first.span = makeSpan(context, first.span.startOffset + leadingLength, first.span.endOffset);
+    }
+    if (first.value.length > 0) break;
+    nodes.shift();
+  }
+
+  while (nodes.at(-1)?.type === 'text') {
+    const last = nodes.at(-1);
+    const trailingLength = last.value.match(/\s+$/u)?.[0].length ?? 0;
+    if (trailingLength === 0) break;
+    last.value = last.value.slice(0, -trailingLength);
+    if (context?.includeSpans) {
+      last.span = makeSpan(context, last.span.startOffset, last.span.endOffset - trailingLength);
+    }
+    if (last.value.length > 0) break;
+    nodes.pop();
+  }
+
+  return nodes;
+}
+
+function parseRichV2Tag(
+  text,
+  index,
+  options,
+  context,
+  baseOffset,
+  opener,
+  nodeType,
+  invalidCode,
+  inlineDepth
+) {
+  const parsed = parseInlineSequence(
+    text,
+    index + opener.length,
+    options,
+    { stopOnClose: true, inlineDepth },
+    context,
+    baseOffset
+  );
+  if (!parsed.ok) return parsed;
+  if (!parsed.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: parsed.nextIndex };
+
+  const children = trimRichInlineBoundaries(parsed.nodes, context);
+  if (!hasInlineContent(children)) {
+    return { ok: false, errorCode: invalidCode, nextIndex: parsed.nextIndex - 1 };
+  }
+
+  return {
+    ok: true,
+    nextIndex: parsed.nextIndex,
+    node: withSpan(
+      { type: nodeType, children },
+      context,
+      baseOffset + index,
+      baseOffset + parsed.nextIndex
+    ),
+  };
 }
 
 function parseInlineSequence(text, startIndex, options, state = {}, context, baseOffset = 0) {
@@ -588,16 +735,12 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       continue;
     }
 
-    if (isV2Document(context) && text.startsWith('[~ ', index)) {
-      const parsed = parseReferenceTag(text, index, context, baseOffset);
-      if (!parsed.ok) return parsed;
-      nodes.push(parsed.node);
-      index = parsed.nextIndex;
-      continue;
-    }
-
     if (isV2Document(context) && text.startsWith('[! ', index)) {
-      const parsed = parseAdmonitionTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseAdmonitionTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -605,7 +748,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (isV2Document(context) && text.startsWith('[? ', index)) {
-      const parsed = parseQuestionTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseQuestionTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -620,8 +767,20 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       continue;
     }
 
+    if (isV2Document(context) && text.startsWith('[~ ', index)) {
+      const parsed = parseImageTag(text, index, options, context, baseOffset);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
     if (isV2Document(context) && text.startsWith('[- ', index)) {
-      const parsed = parseStrikeTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseStrikeTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -629,7 +788,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (isV2Document(context) && text.startsWith('[" ', index)) {
-      const parsed = parseQuotedTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseQuotedTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -637,7 +800,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (isV2Document(context) && text.startsWith("[' ", index)) {
-      const parsed = parseCommentTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseCommentTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -653,7 +820,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (isV2Document(context) && text.startsWith('[= ', index)) {
-      const parsed = parseHighlightTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseHighlightTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -661,7 +832,11 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (isV2Document(context) && text.startsWith('[_ ', index)) {
-      const parsed = parseUnderlineTag(text, index, context, baseOffset);
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseUnderlineTag(text, index, options, context, baseOffset, nextDepth);
       if (!parsed.ok) return parsed;
       nodes.push(parsed.node);
       index = parsed.nextIndex;
@@ -1538,6 +1713,32 @@ function parseBlocks(lines, options, context) {
   return { ok: true, children };
 }
 
+function validateLocalAnchors(semanticState) {
+  const anchors = new Set();
+  for (const anchor of semanticState.anchors) {
+    if (anchors.has(anchor.id)) {
+      return {
+        ok: false,
+        errorCode: 'duplicate_anchor',
+        diagnostic: { code: 'duplicate_anchor', offset: anchor.offset },
+      };
+    }
+    anchors.add(anchor.id);
+  }
+
+  for (const link of semanticState.localLinks) {
+    if (!anchors.has(link.target)) {
+      return {
+        ok: false,
+        errorCode: 'unresolved_local_anchor',
+        diagnostic: { code: 'unresolved_local_anchor', offset: link.offset },
+      };
+    }
+  }
+
+  return { ok: true };
+}
+
 export function parseAnd(source, options = {}) {
   const scanned = scanDocument(source, options);
   if (!scanned.ok) {
@@ -1545,12 +1746,19 @@ export function parseAnd(source, options = {}) {
     return publicFailure(finalizeDiagnostic(shiftDiagnosticLines(scanned, lineOffset), scanned.normalized));
   }
 
+  const semanticState = { anchors: [], localLinks: [] };
   const parsed = parseBlocks(scanned.lines, options, {
     ...scanned.context,
     budgetState: { blockCount: 0, listItemCount: 0 },
+    semanticState,
     depth: 0,
   });
   if (!parsed.ok) return publicFailure(finalizeDiagnostic(parsed, scanned.normalized));
+
+  if (scanned.context.documentVersion === 'v2') {
+    const anchors = validateLocalAnchors(semanticState);
+    if (!anchors.ok) return publicFailure(finalizeDiagnostic(anchors, scanned.normalized));
+  }
 
   const document = {
     type: 'document',

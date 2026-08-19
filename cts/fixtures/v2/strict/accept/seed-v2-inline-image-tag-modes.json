@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-image-tag-modes",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nIcon [~ image.jpg | Status icon] half [~ photos/diagram.png | System diagram | half] full [~ /assets/hero.jpg | Hero image | full].\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts inline image tags with all three display modes",
+      "omitting the display mode defaults to inline",
+      "image source and alt text remain scalar data"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Icon "
+            },
+            {
+              "type": "image_tag",
+              "src": "image.jpg",
+              "alt": "Status icon",
+              "mode": "inline"
+            },
+            {
+              "type": "text",
+              "value": " half "
+            },
+            {
+              "type": "image_tag",
+              "src": "photos/diagram.png",
+              "alt": "System diagram",
+              "mode": "half"
+            },
+            {
+              "type": "text",
+              "value": " full "
+            },
+            {
+              "type": "image_tag",
+              "src": "/assets/hero.jpg",
+              "alt": "Hero image",
+              "mode": "full"
+            },
+            {
+              "type": "text",
+              "value": "."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

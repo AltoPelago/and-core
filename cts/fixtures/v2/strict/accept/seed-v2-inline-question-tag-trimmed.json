@@ -22,7 +22,12 @@
             },
             {
               "type": "question_tag",
-              "value": "next-step"
+              "children": [
+                {
+                  "type": "text",
+                  "value": "next-step"
+                }
+              ]
             },
             {
               "type": "text",
