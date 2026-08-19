@@ -23,3 +23,4 @@ Current compatibility direction: treat v1 as a subset of v2 while v2 proposal wo
 
 - [`and-core-v2-proposal.md`](./and-core-v2-proposal.md) — working proposal index and open decisions.
 - [`and-ast-contract.md`](./and-ast-contract.md) — executable proposal AST additions and canonical version metadata.
+- [`and-core-v2-first-draft-readiness.md`](./and-core-v2-first-draft-readiness.md) — evidence-based promotion audit, blockers, and explicit deferrals.

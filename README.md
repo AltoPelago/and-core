@@ -106,8 +106,10 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* pin AEON-inline-scalar drift checks and publication-grade image projection behavior
+* freeze the v2 embedding-authority and public API type contract
 * pin publication-grade canonical and HTML snapshots for the v2 first-draft candidate
+* complete v2 source-span and cross-form combination coverage
+* publish v1-to-v2 migration and consumer-convention companion guidance
 * keep the executable v2 proposal lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure
 * keep conformance seeds, CTS fixtures, and reference reports moving together
