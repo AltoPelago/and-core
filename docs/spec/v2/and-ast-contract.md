@@ -306,12 +306,18 @@ and canonical fixed-point stability for every accepted v2 fixture.
 Machine-readable contract `and-v2-projection-v1` in `cts/contracts/v2-projection-v1.json` pins exact
 standalone and embedded canonical text plus inert HTML for every promoted node family, marker state,
 image mode, nested composition boundary, and unsafe-resource case. Its mandatory checker rejects
-missing coverage identifiers and any byte-level snapshot drift.
+missing coverage identifiers and any byte-level snapshot drift. The same contract indexes the
+required cross-form combinations: each paired block in lists and blockquotes, representative rich
+children in each paired block, local links crossing container boundaries, rich resource nesting, and
+compact-marker adjacency.
 
 ## Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
+Contract `and-v2-projection-v1` pins 28 exact span assertions covering every promoted scalar and rich
+inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
+clarifiers, nested rich resources, lists, and blockquotes.
 
 ## Stability
 

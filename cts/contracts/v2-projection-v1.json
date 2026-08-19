@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "id": "and-v2-projection-v1",
-  "description": "Publication-grade canonical and inert HTML snapshots for the &ND Core v2 promoted surface.",
+  "description": "Publication-grade canonical, inert HTML, source-span, and cross-form interaction snapshots for the &ND Core v2 promoted surface.",
   "requiredCoverage": [
     "inherited.heading",
     "inherited.strong",
@@ -44,6 +44,53 @@
     "html.fragment",
     "html.document"
   ],
+  "requiredSpanCoverage": [
+    "inline.anchor",
+    "inline.local_fragment_link",
+    "inline.admonition",
+    "inline.question",
+    "inline.plus",
+    "inline.image",
+    "inline.image.escaped_field",
+    "inline.strike",
+    "inline.quoted",
+    "inline.comment",
+    "inline.typed_value",
+    "inline.typed_value.generic",
+    "inline.typed_value.clarifier",
+    "inline.highlight",
+    "inline.underline",
+    "inline.todo",
+    "inline.direction",
+    "inline.auto_number",
+    "inline.line_break",
+    "heading.auto_number",
+    "block.highlight_paragraph",
+    "block.header_text",
+    "block.disclaimer",
+    "composition.nested_rich",
+    "composition.image_in_rich",
+    "composition.typed_value_in_rich",
+    "context.list",
+    "context.blockquote"
+  ],
+  "requiredCombinationCoverage": [
+    "paired_block.highlight_paragraph.in_list",
+    "paired_block.header_text.in_list",
+    "paired_block.disclaimer.in_list",
+    "paired_block.highlight_paragraph.in_blockquote",
+    "paired_block.header_text.in_blockquote",
+    "paired_block.disclaimer.in_blockquote",
+    "paired_block.highlight_paragraph.with_rich_child",
+    "paired_block.header_text.with_rich_child",
+    "paired_block.disclaimer.with_rich_child",
+    "navigation.blockquote_anchor_to_list_link",
+    "navigation.root_anchor_to_blockquote_link",
+    "rich.image_nested",
+    "rich.typed_value_nested",
+    "adjacency.marker_to_rich",
+    "adjacency.line_break_to_rich"
+  ],
   "cases": [
     {
       "id": "navigation-and-consumer-tags",
@@ -59,6 +106,33 @@
         "canonical.standalone",
         "html.fragment",
         "html.document"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "inline.anchor",
+          "path": "$.children[1].children[0]",
+          "span": { "startOffset": 19, "endOffset": 30, "startLine": 5, "startColumn": 1, "endLine": 5, "endColumn": 12 }
+        },
+        {
+          "cover": "inline.local_fragment_link",
+          "path": "$.children[1].children[1]",
+          "span": { "startOffset": 30, "endOffset": 55, "startLine": 5, "startColumn": 12, "endLine": 5, "endColumn": 37 }
+        },
+        {
+          "cover": "inline.admonition",
+          "path": "$.children[1].children[3]",
+          "span": { "startOffset": 56, "endOffset": 64, "startLine": 5, "startColumn": 38, "endLine": 5, "endColumn": 46 }
+        },
+        {
+          "cover": "inline.question",
+          "path": "$.children[1].children[5]",
+          "span": { "startOffset": 65, "endOffset": 72, "startLine": 5, "startColumn": 47, "endLine": 5, "endColumn": 54 }
+        },
+        {
+          "cover": "inline.plus",
+          "path": "$.children[1].children[7]",
+          "span": { "startOffset": 73, "endOffset": 83, "startLine": 5, "startColumn": 55, "endLine": 5, "endColumn": 65 }
+        }
       ],
       "source": "&ND v2\n\n# Heading\n\n[# section][@ #section | Go [* now]] [! note] [? why] [+ custom]\n",
       "expected": {
@@ -90,6 +164,53 @@
         "inline.auto_number",
         "inline.line_break"
       ],
+      "spanAssertions": [
+        {
+          "cover": "inline.strike",
+          "path": "$.children[0].children[0]",
+          "span": { "startOffset": 8, "endOffset": 24, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 17 }
+        },
+        {
+          "cover": "inline.quoted",
+          "path": "$.children[0].children[2]",
+          "span": { "startOffset": 25, "endOffset": 43, "startLine": 3, "startColumn": 18, "endLine": 3, "endColumn": 36 }
+        },
+        {
+          "cover": "inline.comment",
+          "path": "$.children[0].children[4]",
+          "span": { "startOffset": 44, "endOffset": 54, "startLine": 3, "startColumn": 37, "endLine": 3, "endColumn": 47 }
+        },
+        {
+          "cover": "inline.highlight",
+          "path": "$.children[0].children[6]",
+          "span": { "startOffset": 55, "endOffset": 65, "startLine": 3, "startColumn": 48, "endLine": 3, "endColumn": 58 }
+        },
+        {
+          "cover": "inline.underline",
+          "path": "$.children[0].children[8]",
+          "span": { "startOffset": 66, "endOffset": 75, "startLine": 3, "startColumn": 59, "endLine": 3, "endColumn": 68 }
+        },
+        {
+          "cover": "inline.todo",
+          "path": "$.children[0].children[10]",
+          "span": { "startOffset": 76, "endOffset": 79, "startLine": 3, "startColumn": 69, "endLine": 3, "endColumn": 72 }
+        },
+        {
+          "cover": "inline.direction",
+          "path": "$.children[0].children[18]",
+          "span": { "startOffset": 92, "endOffset": 95, "startLine": 3, "startColumn": 85, "endLine": 3, "endColumn": 88 }
+        },
+        {
+          "cover": "inline.auto_number",
+          "path": "$.children[0].children[22]",
+          "span": { "startOffset": 100, "endOffset": 103, "startLine": 3, "startColumn": 93, "endLine": 3, "endColumn": 96 }
+        },
+        {
+          "cover": "inline.line_break",
+          "path": "$.children[0].children[23]",
+          "span": { "startOffset": 103, "endOffset": 106, "startLine": 3, "startColumn": 96, "endLine": 3, "endColumn": 99 }
+        }
+      ],
       "source": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n",
       "expected": {
         "canonical": {
@@ -108,6 +229,18 @@
         "inline.image.half",
         "inline.image.full",
         "inline.image.escaped_pipe"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "inline.image",
+          "path": "$.children[0].children[2]",
+          "span": { "startOffset": 38, "endOffset": 70, "startLine": 3, "startColumn": 31, "endLine": 3, "endColumn": 63 }
+        },
+        {
+          "cover": "inline.image.escaped_field",
+          "path": "$.children[0].children[0]",
+          "span": { "startOffset": 8, "endOffset": 37, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 30 }
+        }
       ],
       "source": "&ND v2\n\n[~ image\\|one.png | Alt\\|one] [~ diagram.png | Diagram | half] [~ /hero.png | Hero | full]\n",
       "expected": {
@@ -140,6 +273,18 @@
     {
       "id": "aeon-typed-values",
       "covers": ["inline.typed_value"],
+      "spanAssertions": [
+        {
+          "cover": "inline.typed_value",
+          "path": "$.children[0].children[0]",
+          "span": { "startOffset": 8, "endOffset": 28, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 21 }
+        },
+        {
+          "cover": "inline.typed_value.generic",
+          "path": "$.children[0].children[4]",
+          "span": { "startOffset": 49, "endOffset": 74, "startLine": 3, "startColumn": 42, "endLine": 3, "endColumn": 67 }
+        }
+      ],
       "source": "&ND v2\n\n[:number = 1_000.50] [:string = 'hello'] [:null<datetime> = !none]\n",
       "expected": {
         "canonical": {
@@ -159,6 +304,28 @@
         "block.header_text",
         "block.disclaimer"
       ],
+      "spanAssertions": [
+        {
+          "cover": "heading.auto_number",
+          "path": "$.children[0]",
+          "span": { "startOffset": 8, "endOffset": 22, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 15 }
+        },
+        {
+          "cover": "block.highlight_paragraph",
+          "path": "$.children[1]",
+          "span": { "startOffset": 24, "endOffset": 55, "startLine": 5, "startColumn": 1, "endLine": 7, "endColumn": 5 }
+        },
+        {
+          "cover": "block.header_text",
+          "path": "$.children[2]",
+          "span": { "startOffset": 57, "endOffset": 85, "startLine": 9, "startColumn": 1, "endLine": 11, "endColumn": 4 }
+        },
+        {
+          "cover": "block.disclaimer",
+          "path": "$.children[3]",
+          "span": { "startOffset": 87, "endOffset": 114, "startLine": 13, "startColumn": 1, "endLine": 15, "endColumn": 4 }
+        }
+      ],
       "source": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
       "expected": {
         "canonical": {
@@ -177,6 +344,27 @@
         "composition.image_in_rich",
         "composition.typed_value_in_rich"
       ],
+      "combinationCovers": [
+        "rich.image_nested",
+        "rich.typed_value_nested"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "composition.nested_rich",
+          "path": "$.children[0].children[0].children[1]",
+          "span": { "startOffset": 18, "endOffset": 35, "startLine": 3, "startColumn": 11, "endLine": 3, "endColumn": 28 }
+        },
+        {
+          "cover": "composition.image_in_rich",
+          "path": "$.children[0].children[2].children[1]",
+          "span": { "startOffset": 46, "endOffset": 65, "startLine": 3, "startColumn": 39, "endLine": 3, "endColumn": 58 }
+        },
+        {
+          "cover": "composition.typed_value_in_rich",
+          "path": "$.children[0].children[4].children[1]",
+          "span": { "startOffset": 76, "endOffset": 96, "startLine": 3, "startColumn": 69, "endLine": 3, "endColumn": 89 }
+        }
+      ],
       "source": "&ND v2\n\n[= nested [- old [_ under]]] [! image [~ icon.png | Icon]] [? value [:date = 2026-08-20]]\n",
       "expected": {
         "canonical": {
@@ -185,6 +373,138 @@
         },
         "html": {
           "fragment": "<p><mark>nested <s>old <u>under</u></s></mark> <span class=\"and-admonition\">image <img class=\"and-image and-image-inline\" src=\"icon.png\" alt=\"Icon\" data-size=\"inline\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\" style=\"height:1em;width:auto;vertical-align:-0.125em\"></span> <span class=\"and-question\">value <data class=\"and-typed-value\" data-type=\"date\" value=\"2026-08-20\">2026-08-20</data></span></p>"
+        }
+      }
+    },
+    {
+      "id": "aeon-datatype-adornments",
+      "covers": ["inline.typed_value"],
+      "spanAssertions": [
+        {
+          "cover": "inline.typed_value.clarifier",
+          "path": "$.children[0].children[2]",
+          "span": { "startOffset": 34, "endOffset": 54, "startLine": 3, "startColumn": 27, "endLine": 3, "endColumn": 47 }
+        }
+      ],
+      "source": "&ND v2\n\n[:null<datetime> = !none] [:radix[2] = %10_11] [:encoding[\"base58\"] = &abc]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[:null<datetime> = !none] [:radix[2] = %1011] [:encoding[\"base58\"] = &abc]\n",
+          "standalone": "&ND v2\n\n[:null<datetime> = !none] [:radix[2] = %1011] [:encoding[\"base58\"] = &abc]\n"
+        },
+        "html": {
+          "fragment": "<p><data class=\"and-typed-value\" data-type=\"null&lt;datetime&gt;\" value=\"!none\">!none</data> <data class=\"and-typed-value\" data-type=\"radix[2]\" value=\"%1011\">%1011</data> <data class=\"and-typed-value\" data-type=\"encoding[&quot;base58&quot;]\" value=\"&amp;abc\">&amp;abc</data></p>"
+        }
+      }
+    },
+    {
+      "id": "paired-blocks-in-list",
+      "covers": [
+        "block.highlight_paragraph",
+        "block.header_text",
+        "block.disclaimer",
+        "inline.admonition",
+        "inline.question",
+        "inline.strike"
+      ],
+      "combinationCovers": [
+        "paired_block.highlight_paragraph.in_list",
+        "paired_block.header_text.in_list",
+        "paired_block.disclaimer.in_list",
+        "paired_block.highlight_paragraph.with_rich_child",
+        "paired_block.header_text.with_rich_child",
+        "paired_block.disclaimer.with_rich_child"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "context.list",
+          "path": "$.children[0]",
+          "span": { "startOffset": 8, "endOffset": 97, "startLine": 3, "startColumn": 1, "endLine": 15, "endColumn": 6 }
+        }
+      ],
+      "source": "&ND v2\n\n- item\n\n  ~~~=\n  [! note]\n  ~~~=\n\n  ===card\n  [? why]\n  ===\n\n  ***legal\n  [- terms]\n  ***\n",
+      "expected": {
+        "canonical": {
+          "embedded": "- item\n\n  ~~~=\n  [! note]\n  ~~~=\n  \n  ===card\n  [? why]\n  ===\n  \n  ***legal\n  [- terms]\n  ***\n",
+          "standalone": "&ND v2\n\n- item\n\n  ~~~=\n  [! note]\n  ~~~=\n  \n  ===card\n  [? why]\n  ===\n  \n  ***legal\n  [- terms]\n  ***\n"
+        },
+        "html": {
+          "fragment": "<ul>\n<li><p>item</p>\n<p class=\"and-highlight-paragraph\"><span class=\"and-admonition\">note</span></p>\n<header class=\"and-header-text\" data-tag=\"card\"><span class=\"and-question\">why</span></header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\"><s>terms</s></aside></li>\n</ul>"
+        }
+      }
+    },
+    {
+      "id": "paired-blocks-in-blockquote",
+      "covers": [
+        "block.highlight_paragraph",
+        "block.header_text",
+        "block.disclaimer",
+        "inline.admonition",
+        "inline.question",
+        "inline.strike"
+      ],
+      "combinationCovers": [
+        "paired_block.highlight_paragraph.in_blockquote",
+        "paired_block.header_text.in_blockquote",
+        "paired_block.disclaimer.in_blockquote"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "context.blockquote",
+          "path": "$.children[0]",
+          "span": { "startOffset": 8, "endOffset": 91, "startLine": 3, "startColumn": 1, "endLine": 13, "endColumn": 6 }
+        }
+      ],
+      "source": "&ND v2\n\n> ~~~=\n> [! note]\n> ~~~=\n>\n> ===card\n> [? why]\n> ===\n>\n> ***legal\n> [- terms]\n> ***\n",
+      "expected": {
+        "canonical": {
+          "embedded": "> ~~~=\n> [! note]\n> ~~~=\n>\n> ===card\n> [? why]\n> ===\n>\n> ***legal\n> [- terms]\n> ***\n",
+          "standalone": "&ND v2\n\n> ~~~=\n> [! note]\n> ~~~=\n>\n> ===card\n> [? why]\n> ===\n>\n> ***legal\n> [- terms]\n> ***\n"
+        },
+        "html": {
+          "fragment": "<blockquote>\n<p class=\"and-highlight-paragraph\"><span class=\"and-admonition\">note</span></p>\n<header class=\"and-header-text\" data-tag=\"card\"><span class=\"and-question\">why</span></header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\"><s>terms</s></aside>\n</blockquote>"
+        }
+      }
+    },
+    {
+      "id": "cross-container-local-links",
+      "covers": ["inline.anchor", "inline.local_fragment_link"],
+      "combinationCovers": [
+        "navigation.blockquote_anchor_to_list_link",
+        "navigation.root_anchor_to_blockquote_link"
+      ],
+      "source": "&ND v2\n\n> [# quoted]\n\n- [@ #quoted | from list]\n\n[# root]\n\n> [@ #root | from quote]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "> [# quoted]\n\n- [@ #quoted | from list]\n\n[# root]\n\n> [@ #root | from quote]\n",
+          "standalone": "&ND v2\n\n> [# quoted]\n\n- [@ #quoted | from list]\n\n[# root]\n\n> [@ #root | from quote]\n"
+        },
+        "html": {
+          "fragment": "<blockquote>\n<p><span class=\"and-anchor\" id=\"quoted\" aria-hidden=\"true\"></span></p>\n</blockquote>\n<ul>\n<li><p><a href=\"#quoted\">from list</a></p></li>\n</ul>\n<p><span class=\"and-anchor\" id=\"root\" aria-hidden=\"true\"></span></p>\n<blockquote>\n<p><a href=\"#root\">from quote</a></p>\n</blockquote>"
+        }
+      }
+    },
+    {
+      "id": "adjacent-markers-and-rich-tags",
+      "covers": [
+        "inline.admonition",
+        "inline.question",
+        "inline.todo.checked",
+        "inline.auto_number",
+        "inline.line_break"
+      ],
+      "combinationCovers": [
+        "adjacency.marker_to_rich",
+        "adjacency.line_break_to_rich"
+      ],
+      "source": "&ND v2\n\n[! alert][x][.][? next][%]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[! alert][x][.][? next][%]\n",
+          "standalone": "&ND v2\n\n[! alert][x][.][? next][%]\n"
+        },
+        "html": {
+          "fragment": "<p><span class=\"and-admonition\">alert</span><span class=\"and-todo-marker\" data-state=\"checked\" role=\"img\" aria-label=\"Checked\">☑</span><br><span class=\"and-question\">next</span><span class=\"and-auto-number-marker\" data-auto-number=\"true\" aria-hidden=\"true\"></span></p>"
         }
       }
     },

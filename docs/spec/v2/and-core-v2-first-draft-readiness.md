@@ -7,7 +7,7 @@ Audit date: 2026-08-20
 `&ND Core v2` is implementation-ready but not yet publication-ready as a first draft.
 
 The grammar surface and compatibility boundary are coherent and executable. The remaining work is
-principally contract hardening and publication guidance rather than new syntax design. Promotion
+publication guidance rather than syntax design or executable contract hardening. Promotion
 should not occur until the blockers below are closed and the final promotion checks pass together.
 
 ## Evidence Snapshot
@@ -21,9 +21,10 @@ should not occur until the blockers below are closed and the final promotion che
 | AST snapshots | 40 of 41 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 16 exact canonical snapshots across all promoted families. | Ready |
-| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 9 exact inert HTML snapshots across all promoted families and safety cases. | Ready |
-| Source spans | Exact span assertions exist for 3 of 41 accepted fixtures. | Blocker |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 26 exact canonical snapshots across promoted families and interactions. | Ready |
+| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 14 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
+| Source spans | The projection contract pins 28 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
+| Cross-form interactions | A 15-entry executable matrix covers paired blocks in lists/quotes, rich children, cross-container links, rich resources, and marker adjacency. | Ready |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
 | Public API types | `and-public-api.md` defines host authority, v2 capability/version options, result metadata, promoted unions, canonical versioning, diagnostics, and HTML options. | Ready |
 | Editor tooling | The VS Code prototype explicitly targets Core v1. | Deferred, not a blocker |
@@ -76,15 +77,20 @@ projection rather than Core parsing semantics.
 
 ### B5. v2 source-span coverage
 
-Extend span snapshots beyond anchor, admonition, and line-break cases. Cover every new scalar and rich
-inline node family, heading `[n]`, all three paired blocks, escaped fields, datatype adornments, and
-representative nested contexts.
+Status: **closed**.
 
-Closure evidence: an explicit span matrix linked to executable fixtures.
+Contract `and-v2-projection-v1` contains an explicit 28-entry span matrix covering every new scalar
+and rich inline family, heading `[n]`, all three paired blocks, escaped image fields, AEON datatype
+generics and clarifiers, nested rich/image/typed-value content, lists, and blockquotes.
+
+Closure evidence: the mandatory checker reparses each source with spans enabled and byte-compares the
+exact offset and line/column tuple at every indexed AST path.
 
 ### B6. Cross-form combination matrix
 
-Add focused fixtures for interactions not yet publication-pinned:
+Status: **closed**.
+
+The projection contract indexes and pins focused cases for:
 
 - each paired block inside a list item and blockquote;
 - representative v2 inline children inside every paired-block family;
@@ -92,7 +98,8 @@ Add focused fixtures for interactions not yet publication-pinned:
 - images and typed values nested inside rich v2 tags;
 - compact markers adjacent to rich tags and explicit line breaks.
 
-Closure evidence: the matrix is complete, indexed, and included in canonical/HTML snapshots.
+Closure evidence: all 15 required combination identifiers appear exactly once and participate in the
+same 26 canonical and 14 HTML snapshots as the promoted-surface contract.
 
 ### B7. v1-to-v2 migration guide
 
@@ -136,5 +143,5 @@ After B1–B8 close:
    change; do not imply publication merely by renaming a snapshot.
 4. Keep footnotes, recovery, editor expansion, and consumer semantics explicitly deferred.
 
-The recommended next implementation task is B5 and B6 together: complete the v2 source-span and
-cross-form combination matrices, and include those new combinations in the projection contract.
+The recommended next implementation task is B7 and B8 together: publish the v1-to-v2 migration guide
+and consumer-convention companion boundary, then run the final promotion gate.

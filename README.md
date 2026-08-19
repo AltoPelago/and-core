@@ -106,7 +106,6 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* complete v2 source-span and cross-form combination coverage
 * publish v1-to-v2 migration and consumer-convention companion guidance
 * keep the executable v2 proposal lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure

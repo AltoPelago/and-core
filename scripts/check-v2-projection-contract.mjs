@@ -16,19 +16,45 @@ function sameDocument(left, right) {
   return stable(left) === stable(right);
 }
 
+function valueAtPath(value, selector) {
+  if (selector === '$') return value;
+  if (!selector.startsWith('$.')) return undefined;
+  const segments = selector.slice(2).split('.');
+  let current = value;
+
+  for (const segment of segments) {
+    const match = segment.match(/^([A-Za-z_][A-Za-z0-9_]*)(\[(\d+)\])*$/);
+    if (!match) return undefined;
+    current = current?.[match[1]];
+    for (const indexMatch of segment.matchAll(/\[(\d+)\]/g)) {
+      if (!Array.isArray(current)) return undefined;
+      current = current[Number(indexMatch[1])];
+    }
+  }
+
+  return current;
+}
+
 async function main() {
   const contract = JSON.parse(await fs.readFile(contractPath, 'utf8'));
   assert.equal(contract.schemaVersion, '1');
   assert.equal(contract.id, 'and-v2-projection-v1');
   assert.ok(Array.isArray(contract.requiredCoverage) && contract.requiredCoverage.length > 0);
+  assert.ok(Array.isArray(contract.requiredSpanCoverage) && contract.requiredSpanCoverage.length > 0);
+  assert.ok(Array.isArray(contract.requiredCombinationCoverage) && contract.requiredCombinationCoverage.length > 0);
   assert.ok(Array.isArray(contract.cases) && contract.cases.length > 0);
   assert.equal(new Set(contract.requiredCoverage).size, contract.requiredCoverage.length, 'required coverage IDs must be unique');
+  assert.equal(new Set(contract.requiredSpanCoverage).size, contract.requiredSpanCoverage.length, 'required span coverage IDs must be unique');
+  assert.equal(new Set(contract.requiredCombinationCoverage).size, contract.requiredCombinationCoverage.length, 'required combination coverage IDs must be unique');
   assert.equal(new Set(contract.cases.map((entry) => entry.id)).size, contract.cases.length, 'case IDs must be unique');
 
   const observedCoverage = new Set();
+  const observedSpanCoverage = new Set();
+  const observedCombinationCoverage = new Set();
   let canonicalSnapshots = 0;
   let htmlSnapshots = 0;
   let fullDocumentSnapshots = 0;
+  let spanAssertions = 0;
 
   for (const testCase of contract.cases) {
     assert.ok(testCase.source.startsWith('&ND v2\n'), `${testCase.id}: source must be standalone v2`);
@@ -38,9 +64,38 @@ async function main() {
       observedCoverage.add(coverage);
     }
 
+    if (testCase.combinationCovers !== undefined) {
+      assert.ok(Array.isArray(testCase.combinationCovers) && testCase.combinationCovers.length > 0, `${testCase.id}: combinationCovers must not be empty`);
+    }
+    for (const coverage of testCase.combinationCovers ?? []) {
+      assert.ok(contract.requiredCombinationCoverage.includes(coverage), `${testCase.id}: unknown combination coverage ID ${coverage}`);
+      assert.ok(!observedCombinationCoverage.has(coverage), `${testCase.id}: duplicate combination coverage ID ${coverage}`);
+      observedCombinationCoverage.add(coverage);
+    }
+
     const parsed = parseAnd(testCase.source, { allowV2: true });
     assert.equal(parsed.ok, true, `${testCase.id}: source did not parse (${parsed.errorCode ?? 'unknown'})`);
     assert.equal(parsed.version, 'v2', `${testCase.id}: effective version drifted`);
+
+    if (testCase.spanAssertions !== undefined) {
+      assert.ok(Array.isArray(testCase.spanAssertions) && testCase.spanAssertions.length > 0, `${testCase.id}: spanAssertions must not be empty`);
+      const spanned = parseAnd(testCase.source, { allowV2: true, includeSpans: true });
+      assert.equal(spanned.ok, true, `${testCase.id}: span source did not parse`);
+
+      for (const assertion of testCase.spanAssertions) {
+        assert.ok(contract.requiredSpanCoverage.includes(assertion.cover), `${testCase.id}: unknown span coverage ID ${assertion.cover}`);
+        assert.ok(!observedSpanCoverage.has(assertion.cover), `${testCase.id}: duplicate span coverage ID ${assertion.cover}`);
+        assert.equal(typeof assertion.path, 'string', `${testCase.id}: span assertion path must be a string`);
+        assert.ok(assertion.span && typeof assertion.span === 'object' && !Array.isArray(assertion.span), `${testCase.id}: expected span must be an object`);
+        assert.deepEqual(
+          valueAtPath(spanned.document, assertion.path)?.span,
+          assertion.span,
+          `${testCase.id}: source span drifted for ${assertion.cover} at ${assertion.path}`,
+        );
+        observedSpanCoverage.add(assertion.cover);
+        spanAssertions += 1;
+      }
+    }
 
     for (const profile of ['embedded', 'standalone']) {
       const expected = testCase.expected?.canonical?.[profile];
@@ -87,10 +142,20 @@ async function main() {
     [...contract.requiredCoverage].sort(),
     'projection contract does not cover every required promoted surface',
   );
+  assert.deepEqual(
+    [...observedSpanCoverage].sort(),
+    [...contract.requiredSpanCoverage].sort(),
+    'projection contract does not cover every required source-span surface',
+  );
+  assert.deepEqual(
+    [...observedCombinationCoverage].sort(),
+    [...contract.requiredCombinationCoverage].sort(),
+    'projection contract does not cover every required cross-form combination',
+  );
   assert.ok(fullDocumentSnapshots > 0, 'projection contract must pin at least one full HTML document');
 
   console.log(
-    `v2ProjectionContract cases=${contract.cases.length} coverage=${observedCoverage.size} canonicalSnapshots=${canonicalSnapshots} htmlSnapshots=${htmlSnapshots} failed=0`,
+    `v2ProjectionContract cases=${contract.cases.length} coverage=${observedCoverage.size} spanCoverage=${observedSpanCoverage.size} spanAssertions=${spanAssertions} combinationCoverage=${observedCombinationCoverage.size} canonicalSnapshots=${canonicalSnapshots} htmlSnapshots=${htmlSnapshots} failed=0`,
   );
 }
 

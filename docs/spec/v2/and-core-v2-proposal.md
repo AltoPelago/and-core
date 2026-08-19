@@ -486,9 +486,8 @@ publication deliverables rather than unresolved Core syntax questions.
 
 ## Next Edits
 
-1. Complete v2 source-span and cross-form combination matrices.
-2. Write the v1-to-v2 migration guide and consumer-convention companion note.
-3. Run the final promotion gate described in the readiness audit.
+1. Write the v1-to-v2 migration guide and consumer-convention companion note.
+2. Run the final promotion gate described in the readiness audit.
 
 ## Proposal Lane Status
 
@@ -505,5 +504,5 @@ The executable proposal lane is active but is not a published conformance lane. 
 The detailed promotion status is recorded in
 [`and-core-v2-first-draft-readiness.md`](./and-core-v2-first-draft-readiness.md). Image resolution and
 AEON-inline-scalar drift controls, embedding authority, the v2 public API contract, and exact
-canonical/HTML projection contract are complete. Remaining blockers are broader span and combination
-coverage, migration guidance, and a consumer-convention companion boundary.
+canonical/HTML projection, source-span, and cross-form combination contracts are complete. Remaining
+blockers are migration guidance and a consumer-convention companion boundary.
