@@ -18,6 +18,8 @@
     "check:cts-fixtures": "bash scripts/check-cts-fixtures.sh",
     "check:cts-seed-coverage": "bash scripts/check-cts-seed-coverage.sh",
     "check:cts-v2-lane": "bash scripts/check-cts-v2-lane.sh",
+    "check:aeon-inline-scalar-contract": "node scripts/check-aeon-inline-scalar-contract.mjs",
+    "check:aeon-inline-scalar-drift": "node scripts/check-aeon-inline-scalar-drift.mjs",
     "check:reports": "node scripts/check-reports-fresh.mjs",
     "check:canonical-emitter": "node scripts/check-canonical-emitter.mjs",
     "check:html-renderer": "node scripts/check-html-renderer.mjs",

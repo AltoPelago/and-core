@@ -154,6 +154,14 @@ pointer references, bindings, attributes, structural identities, nested typed va
 the enclosed annotation and scalar to these AEON canonical rules.
 Generic datatype nesting uses AEON's default depth lock of one in the v2 reference parser.
 
+The executable compatibility boundary is contract `and-v2-aeon-inline-scalar-v1` in
+`cts/contracts/aeon-inline-scalar-v1.json`. It pins the accepted datatype names and aliases,
+literal-family AST shapes, canonical &ND spelling, HTML projection, and exclusions against AEON
+TypeScript package version `0.12.0`. The contract check is mandatory and dependency-free. A separate
+drift check compares the same cases with the sibling AEON lexer, parser, and canonicalizer when those
+built packages are available; an unavailable sibling checkout does not weaken or fail the standalone
+&ND conformance check.
+
 ## Local Anchors and Fragment Links
 
 Anchor identifiers and the identifier portion of local fragment-link targets use one portable grammar:

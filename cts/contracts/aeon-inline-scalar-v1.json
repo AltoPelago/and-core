@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "1",
+  "id": "and-v2-aeon-inline-scalar-v1",
+  "description": "Pinned AEON scalar boundary used by &ND Core v2 typed values.",
+  "aeon": {
+    "packageVersion": "0.12.0",
+    "syntax": "anonymous typed value :TypeAnnotation = ScalarLiteral",
+    "maxGenericDepth": 1
+  },
+  "unsupportedReservedDatatypes": [
+    "trimtick",
+    "prose",
+    "object",
+    "obj",
+    "o",
+    "envelope",
+    "list",
+    "tuple",
+    "triple",
+    "node"
+  ],
+  "families": [
+    {
+      "id": "string",
+      "datatypes": ["string"],
+      "scalar": "'hello'",
+      "canonicalScalar": "\"hello\"",
+      "value": { "type": "StringLiteral", "value": "hello" },
+      "htmlText": "hello"
+    },
+    {
+      "id": "number",
+      "datatypes": ["number", "n", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "float", "float32", "float64"],
+      "scalar": "+1_000.50",
+      "canonicalScalar": "1000.5",
+      "value": { "type": "NumberLiteral", "value": "1000.5" },
+      "htmlText": "1000.5"
+    },
+    {
+      "id": "infinity",
+      "datatypes": ["infinity"],
+      "scalar": "-Infinity",
+      "canonicalScalar": "-Infinity",
+      "value": { "type": "InfinityLiteral", "value": "-Infinity" },
+      "htmlText": "-Infinity"
+    },
+    {
+      "id": "nan",
+      "datatypes": ["nan"],
+      "scalar": "-NaN",
+      "canonicalScalar": "-NaN",
+      "value": { "type": "NaNLiteral", "value": "-NaN" },
+      "htmlText": "-NaN"
+    },
+    {
+      "id": "null",
+      "datatypes": ["null"],
+      "scalar": "!none",
+      "canonicalScalar": "!none",
+      "value": { "type": "NullLiteral", "mode": "reserved", "value": "none" },
+      "htmlText": "!none"
+    },
+    {
+      "id": "boolean",
+      "datatypes": ["boolean", "bool"],
+      "scalar": "true",
+      "canonicalScalar": "true",
+      "value": { "type": "BooleanLiteral", "value": true },
+      "htmlText": "true"
+    },
+    {
+      "id": "toggle",
+      "datatypes": ["toggle"],
+      "scalar": "on",
+      "canonicalScalar": "on",
+      "value": { "type": "ToggleLiteral", "value": "on" },
+      "htmlText": "on"
+    },
+    {
+      "id": "hex",
+      "datatypes": ["hex"],
+      "scalar": "#FF_00",
+      "canonicalScalar": "#ff00",
+      "value": { "type": "HexLiteral", "value": "ff00" },
+      "htmlText": "#ff00"
+    },
+    {
+      "id": "radix",
+      "datatypes": ["radix", "decimal", "radix2", "radix6", "radix8", "radix12"],
+      "scalar": "%10_11",
+      "canonicalScalar": "%1011",
+      "value": { "type": "RadixLiteral", "value": "1011" },
+      "htmlText": "%1011"
+    },
+    {
+      "id": "encoding",
+      "datatypes": ["encoding", "base64", "embed", "inline"],
+      "scalar": "&QmFzZTY0IQ==",
+      "canonicalScalar": "&QmFzZTY0IQ==",
+      "value": { "type": "EncodingLiteral", "value": "QmFzZTY0IQ==" },
+      "htmlText": "&QmFzZTY0IQ=="
+    },
+    {
+      "id": "date",
+      "datatypes": ["date"],
+      "scalar": "2024-02-29",
+      "canonicalScalar": "2024-02-29",
+      "value": { "type": "DateLiteral", "value": "2024-02-29" },
+      "htmlText": "2024-02-29"
+    },
+    {
+      "id": "time",
+      "datatypes": ["time"],
+      "scalar": "09:30Z",
+      "canonicalScalar": "09:30Z",
+      "value": { "type": "TimeLiteral", "value": "09:30Z" },
+      "htmlText": "09:30Z"
+    },
+    {
+      "id": "datetime",
+      "datatypes": ["datetime"],
+      "scalar": "2025-01-01T09:30:00Z",
+      "canonicalScalar": "2025-01-01T09:30:00Z",
+      "value": { "type": "DateTimeLiteral", "value": "2025-01-01T09:30:00Z", "temporalKind": "datetime" },
+      "htmlText": "2025-01-01T09:30:00Z"
+    },
+    {
+      "id": "wtc",
+      "datatypes": ["wtc"],
+      "scalar": "2025-01-01T09:30Z&Local",
+      "canonicalScalar": "2025-01-01T09:30Z&Local",
+      "value": { "type": "DateTimeLiteral", "value": "2025-01-01T09:30Z&Local", "temporalKind": "wtc" },
+      "htmlText": "2025-01-01T09:30Z&Local"
+    },
+    {
+      "id": "separator",
+      "datatypes": ["sep", "kadot"],
+      "scalar": "^300x250",
+      "canonicalScalar": "^300x250",
+      "value": { "type": "SeparatorLiteral", "value": "300x250" },
+      "htmlText": "^300x250"
+    },
+    {
+      "id": "sansa",
+      "datatypes": ["sansa"],
+      "scalar": "$.contact.name",
+      "canonicalScalar": "$.contact.name",
+      "value": { "type": "SansaAddressLiteral", "value": "$.contact.name" },
+      "htmlText": "$.contact.name"
+    }
+  ],
+  "annotationCases": [
+    {
+      "id": "generic-null-domain",
+      "expression": "null<datetime> = !none",
+      "canonicalExpression": "null<datetime> = !none",
+      "datatype": { "name": "null", "genericArgs": ["datetime"], "clarifiers": [] },
+      "value": { "type": "NullLiteral", "mode": "reserved", "value": "none" },
+      "htmlText": "!none"
+    },
+    {
+      "id": "radix-clarifier",
+      "expression": "radix[2] = %10_11",
+      "canonicalExpression": "radix[2] = %1011",
+      "datatype": { "name": "radix", "genericArgs": [], "clarifiers": [2] },
+      "value": { "type": "RadixLiteral", "value": "1011" },
+      "htmlText": "%1011"
+    },
+    {
+      "id": "encoding-clarifier",
+      "expression": "encoding['base58'] = &abc",
+      "canonicalExpression": "encoding[\"base58\"] = &abc",
+      "datatype": { "name": "encoding", "genericArgs": [], "clarifiers": ["base58"] },
+      "value": { "type": "EncodingLiteral", "value": "abc" },
+      "htmlText": "&abc"
+    },
+    {
+      "id": "separator-clarifier",
+      "expression": "sep['x'] = ^300x250",
+      "canonicalExpression": "sep[\"x\"] = ^300x250",
+      "datatype": { "name": "sep", "genericArgs": [], "clarifiers": ["x"] },
+      "value": { "type": "SeparatorLiteral", "value": "300x250" },
+      "htmlText": "^300x250"
+    },
+    {
+      "id": "custom-datatype",
+      "expression": "temperature = 21.5",
+      "canonicalExpression": "temperature = 21.5",
+      "datatype": { "name": "temperature", "genericArgs": [], "clarifiers": [] },
+      "value": { "type": "NumberLiteral", "value": "21.5" },
+      "htmlText": "21.5"
+    }
+  ],
+  "exclusions": [
+    { "id": "equals-free-spelling", "expression": "date 2026-08-20" },
+    { "id": "object", "expression": "object = { value = 1 }" },
+    { "id": "list", "expression": "list = [1, 2]" },
+    { "id": "tuple", "expression": "tuple = (1, 2)" },
+    { "id": "node", "expression": "node = <item>" },
+    { "id": "clone-reference", "expression": "number = *source" },
+    { "id": "pointer-reference", "expression": "number = ->source" },
+    { "id": "binding", "expression": "number = value = 1" },
+    { "id": "attribute", "expression": "number = @{unit = \"cm\"} = 1" },
+    { "id": "structural-identity", "expression": "number = &id 1" },
+    { "id": "nested-typed-value", "expression": "number = :number = 1" },
+    { "id": "trimtick", "expression": "trimtick = `text`" },
+    { "id": "prose", "expression": "prose = \"text\"" },
+    { "id": "multiline-string", "expression": "string = \"line one\nline two\"" }
+  ]
+}

@@ -6,6 +6,8 @@ Current status:
 
 - 94 accept/reject proposal fixtures cover promoted inline image, AEON scalar, tag, marker, heading, and paired-block forms,
   including nested rich inline content and document-local fragment-link integrity
+- `../../contracts/aeon-inline-scalar-v1.json` pins the complete typed-value datatype/alias list,
+  per-family AST, canonical, and HTML projections, annotation cases, and explicit exclusions
 - `npm run cts:run:v2:proposal` executes the lane in CI
 - the proposal runner checks v1-header rejection, declared-v1 gating, v1-subset compatibility,
   headerless effective-version equivalence, canonical fixed points, HTML projection, nested

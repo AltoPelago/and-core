@@ -26,6 +26,15 @@ const UNSUPPORTED_RESERVED_DATATYPES = new Set([
 ]);
 
 const GENERIC_RESERVED_DATATYPES = new Set(['null', 'nan', 'infinity']);
+const MAX_GENERIC_DEPTH = 1;
+
+export const AEON_INLINE_SCALAR_CONTRACT = Object.freeze({
+  id: 'and-v2-aeon-inline-scalar-v1',
+  aeonPackageVersion: '0.12.0',
+  maxGenericDepth: MAX_GENERIC_DEPTH,
+  datatypes: Object.freeze([...FAMILY_BY_DATATYPE.keys()]),
+  unsupportedReservedDatatypes: Object.freeze([...UNSUPPORTED_RESERVED_DATATYPES]),
+});
 
 function failure() {
   return { ok: false, errorCode: 'invalid_typed_value' };
@@ -165,7 +174,7 @@ function parseClarifierValue(source, index) {
 }
 
 function parseTypeAnnotationAt(source, index = 0, depth = 0) {
-  if (depth > 1) return null;
+  if (depth > MAX_GENERIC_DEPTH) return null;
   const identifier = readIdentifier(source, index);
   if (!identifier || !IDENTIFIER_PATTERN.test(identifier.value)) return null;
   let i = identifier.nextIndex;
