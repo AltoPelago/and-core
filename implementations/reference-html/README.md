@@ -33,6 +33,7 @@ tags, typed values, inline images, todo and direction markers, explicit line bre
 highlighted paragraphs, header text, and disclaimers. Projection preserves nested inline structure
 and emits inherited `#id` links as browser-native fragment links. The parser and canonical emitter
 validate the v2 local-anchor graph; projection does not perform numbering, external resource
-resolution, datatype validation, or extension execution. Image projection accepts only HTTP(S) and
+resolution, custom-datatype interpretation, or extension execution. Reserved AEON datatype/literal
+compatibility is already enforced by parsing and canonical emission. Image projection accepts only HTTP(S) and
 relative sources, carries mandatory alt text, and exposes the resolved display mode through stable
 classes and attributes.

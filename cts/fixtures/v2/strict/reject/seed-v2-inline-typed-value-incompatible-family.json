@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-incompatible-family",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [:date = \"not a date\"] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_typed_value",
+    "assertions": [
+      "reserved AEON datatype labels enforce literal-family compatibility",
+      "a string literal cannot satisfy the reserved date datatype"
+    ]
+  }
+}

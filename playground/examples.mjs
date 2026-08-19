@@ -40,7 +40,7 @@ mode = "ordered"
 
 [# overview]Tasks: [ ] draft, [x] parser, [,] documentation, [;] abandoned. Jump to [@ #overview | overview].
 
-Flow [>] publish and [<] revise.[.]Typed value: [:date 2026-08-19].
+Flow [>] publish and [<] revise.[.]Typed value: [:date = 2026-08-20].
 
 Inline image: [~ ./image-example.svg | Ampersand ND sample].
 

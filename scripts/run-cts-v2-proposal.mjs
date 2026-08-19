@@ -168,6 +168,27 @@ function runApiBoundaryChecks() {
     'parseInline must expose the normalized v2 image AST and default mode'
   ));
 
+  const inlineTypedValue = parseInline('[:radix[2] = %1011]', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'public inline AEON scalar typed-value shape',
+    inlineTypedValue.ok
+      && inlineTypedValue.nodes?.[0]?.type === 'typed_value'
+      && inlineTypedValue.nodes[0].datatype?.name === 'radix'
+      && inlineTypedValue.nodes[0].value?.type === 'RadixLiteral',
+    'parseInline must preserve the AEON datatype annotation and scalar literal family'
+  ));
+
+  const typedCanonicalSource = '&ND v2\n\n[:number = 1_000.50] [:hex = #FF_00] [:string = \'hello\']\n';
+  const typedCanonicalParsed = parseAnd(typedCanonicalSource, { allowV2: true });
+  const typedCanonical = typedCanonicalParsed.ok
+    ? emitCanonical(typedCanonicalParsed.document, { profile: 'standalone', version: 'v2' })
+    : null;
+  checks.push(reportCheck(
+    'AEON scalar canonical spelling',
+    typedCanonical?.includes('[:number = 1000.5] [:hex = #ff00] [:string = "hello"]'),
+    'typed values must use AEON number, hex, and string canonical spellings'
+  ));
+
   const budgetedImage = parseInline('[~ image.jpg | Sample image]', {
     allowV2: true,
     version: 'v2',

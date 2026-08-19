@@ -29,6 +29,8 @@ Current scope:
 * explicit v2 capability and effective-version selection through `allowV2` and `version`
 * proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact markers,
   heading auto-numbering, and paired blocks
+* exact AEON `:type = scalar` syntax for the closed v2 inline typed-value subset, including
+  literal-family compatibility, structured datatype adornments, and custom labels
 * proposal-v2 document-local anchor uniqueness and case-sensitive `[@ #id | label]` resolution
 * effective-version metadata on successful document parse results
 

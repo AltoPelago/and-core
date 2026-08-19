@@ -76,7 +76,7 @@ assigns each promoted form an explicit ownership boundary:
 | `[! ...]`, `[? ...]` | Core syntax + convention | Rich content; presentation and workflow are consumer-defined. |
 | `[+ ...]` | Core syntax + convention | Scalar consumer tag; vocabulary and behavior remain consumer-defined. |
 | `[~ source | alt | mode]` | Core | Inline image with required alt text and `inline`, `half`, or `full` display intent. |
-| `[:type value]` | Core syntax + convention | Datatype and value are preserved; interpretation and validation are consumer-defined. |
+| `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
 | heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
 | `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
@@ -89,11 +89,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 87-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 94-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 40 accepted fixtures covering inline tags, rich nesting, compact markers, heading auto-numbering,
+- 41 accepted fixtures covering inline tags, rich nesting, compact markers, heading auto-numbering,
   and paired blocks
-- 47 rejected fixtures covering empty payloads, malformed spacing, invalid markers, local-fragment
+- 53 rejected fixtures covering empty payloads, malformed spacing, invalid markers, local-fragment
   integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -324,12 +324,15 @@ Expected direction:
 Intent:
 
 - promote v1-reserved `[: ...]` into a v2 typed-value inline form
-- validate concrete examples like `[:date 2012-10-10]` and `[:string "hello world"]`
+- adopt exact AEON anonymous typed-scalar syntax such as `[:date = 2012-10-10]` and
+  `[:string = "hello world"]`
 
 Expected direction:
 
-- v2 strict parse success for valid typed-value forms
-- strict rejection for missing datatype or missing payload with stable error code
+- v2 strict parse success for the listed AEON scalar families and custom datatype labels
+- preserve structured datatype generics/clarifiers and literal-family-aware scalar nodes
+- enforce reserved datatype/literal compatibility and reject structured values, references,
+  multiline families, nested typed values, or the earlier equals-free spelling
 
 ### `seed-v2-inline-highlight-tag-enabled`
 
@@ -475,7 +478,7 @@ Expected direction:
 ## Next Edits
 
 1. Pin normative HTML projection snapshots for promoted nodes that require interoperable rendering.
-2. Settle typed-value datatype/value constraints and image source-resolution conventions.
+2. Pin image source-resolution conventions and AEON-inline-scalar drift checks.
 3. Add cross-form combination fixtures for the remaining marker and paired-block interactions.
 
 ## Proposal Lane Status
@@ -490,6 +493,6 @@ The executable proposal lane is active but is not a published conformance lane. 
 6. Canonical standalone and embedded output for every accepted proposal AST.
 7. Inert HTML projections and CLI/playground access behind explicit v2 selection.
 
-Promotion toward a first v2 draft still requires typed-value lexical decisions, image-resolution
-guidance, companion contracts for consumer conventions, and publication-grade snapshots beyond
+Promotion toward a first v2 draft still requires image-resolution guidance, AEON-inline-scalar
+drift controls, companion contracts for consumer conventions, and publication-grade snapshots beyond
 the current proposal lane.

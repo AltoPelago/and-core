@@ -1,3 +1,5 @@
+import { emitAeonInlineTypedValue } from '../shared/aeon-inline-scalar.mjs';
+
 function normalizeRawText(text) {
   return text.replaceAll('\r\n', '\n');
 }
@@ -113,14 +115,6 @@ function emitImageMode(value) {
   return value;
 }
 
-function emitTypedDatatype(value) {
-  const datatype = String(value);
-  if (datatype.length === 0 || /[\s\n]/.test(datatype)) {
-    throw fail('invalid_typed_value_datatype', 'Typed-value datatypes must be non-empty and contain no whitespace.');
-  }
-  return datatype.replace(/[\\[\]]/g, (char) => `\\${char}`);
-}
-
 function emitInlineNode(node, context) {
   switch (node.type) {
     case 'text':
@@ -159,7 +153,11 @@ function emitInlineNode(node, context) {
       return `[' ${emitInlineNodes(node.children, context)}]`;
     case 'typed_value':
       requireV2(context, node.type);
-      return `[:${emitTypedDatatype(node.datatype)} ${emitV2Value(node.value, context)}]`;
+      try {
+        return `[:${emitAeonInlineTypedValue(node.datatype, node.value)}]`;
+      } catch {
+        throw fail('invalid_typed_value', 'typed_value requires a supported AEON scalar and compatible datatype.');
+      }
     case 'highlight_tag':
       requireV2(context, node.type);
       return `[= ${emitInlineNodes(node.children, context)}]`;

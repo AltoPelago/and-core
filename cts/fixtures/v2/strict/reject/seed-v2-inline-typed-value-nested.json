@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-nested",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [:custom = :number = 3] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_typed_value",
+    "assertions": [
+      "a typed value cannot wrap another typed value",
+      "the inline form contains exactly one datatype annotation and scalar"
+    ]
+  }
+}

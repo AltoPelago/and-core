@@ -3,7 +3,7 @@
   "id": "seed-v2-inline-typed-value-date",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\nToday is [:date 2012-10-10].\n",
+  "source": "&ND v2\n\nToday is [:date = 2012-10-10].\n",
   "expected": {
     "ok": true,
     "assertions": [
@@ -22,8 +22,15 @@
             },
             {
               "type": "typed_value",
-              "datatype": "date",
-              "value": "2012-10-10"
+              "datatype": {
+                "name": "date",
+                "genericArgs": [],
+                "clarifiers": []
+              },
+              "value": {
+                "type": "DateLiteral",
+                "value": "2012-10-10"
+              }
             },
             {
               "type": "text",

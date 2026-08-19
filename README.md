@@ -106,7 +106,7 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* settle typed-value lexical rules and pin publication-grade image projection behavior
+* pin AEON-inline-scalar drift checks and publication-grade image projection behavior
 * pin publication-grade canonical and HTML snapshots for the v2 first-draft candidate
 * keep the executable v2 proposal lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure

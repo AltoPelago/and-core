@@ -59,6 +59,11 @@ alt text remains available. The reference projection maps `inline` to a one-em i
 to a 2x density candidate (half intrinsic dimensions), and `full` to the resource's intrinsic
 dimensions. It also emits stable `and-image-*` classes and `data-size` values for consumer styling.
 
+Typed values emit `<data>` with the canonical AEON datatype annotation in `data-type` and canonical
+scalar literal in `value`. Visible string and custom-null-reason content is decoded for readers;
+other scalar families retain their canonical AEON spelling. The renderer does not assign meaning to
+custom datatype labels.
+
 For `http:` and `https:` links, the reference renderer also emits conservative browser-facing
 attributes:
 

@@ -30,6 +30,8 @@ const inlineV2 = parseInline('[# api]', { allowV2: true, version: 'v2' });
 assert(inlineV2.ok && inlineV2.children[0].type === 'anchor_tag', 'public inline parse should expose explicit v2');
 const inlineImageV2 = parseInline('[~ image.jpg | Sample image]', { allowV2: true, version: 'v2' });
 assert(inlineImageV2.ok && inlineImageV2.children[0].type === 'image_tag', 'public inline parse should expose v2 images');
+const inlineTypedV2 = parseInline('[:date = 2026-08-20]', { allowV2: true, version: 'v2' });
+assert(inlineTypedV2.ok && inlineTypedV2.children[0].value.type === 'DateLiteral', 'public inline parse should expose AEON scalar families');
 
 const diagnostics = collectDiagnostics('&ND v2\n');
 assert(!diagnostics.ok, 'public diagnostics should surface invalid input');

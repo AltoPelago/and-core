@@ -20,6 +20,7 @@ Current scope:
 * horizontal rules
 * inline text, strong, emphasis, links, and inline code
 * all promoted v2 scalar metadata tags, inline images, rich inline tags, and compact markers
+* AEON-canonical type annotations and scalar literals for v2 typed values
 * v2 heading auto-number intent and paired blocks
 
 Paragraph line breaks preserved in parser AST text nodes are treated as soft wraps during canonical

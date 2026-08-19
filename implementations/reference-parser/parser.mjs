@@ -1,4 +1,5 @@
 import { extensionOpener, rawFence, scanDocument } from './scanner.mjs';
+import { parseAeonInlineTypedValue } from '../shared/aeon-inline-scalar.mjs';
 
 function lineStartOffsets(lines) {
   const offsets = [];
@@ -356,55 +357,46 @@ function parseCommentTag(text, index, options, context, baseOffset = 0, inlineDe
 
 function parseTypedValueTag(text, index, context, baseOffset = 0) {
   let i = index + 2;
-  let datatype = '';
-
+  let quote = null;
+  let escaped = false;
+  let bracketDepth = 0;
   while (i < text.length) {
     const char = text[i];
-    if (char === '\\') {
-      const escaped = parseEscape(text, i);
-      if (!escaped.ok) return escaped;
-      datatype += escaped.value;
-      i = escaped.nextIndex;
+
+    if (quote !== null) {
+      if (char === '\n' || char === '\r') {
+        return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
+      }
+      if (quote !== '`' && escaped) escaped = false;
+      else if (quote !== '`' && char === '\\') escaped = true;
+      else if (char === quote) quote = null;
+      i += 1;
       continue;
     }
-    if (char === ']' || char === '\n' || char === ' ') break;
-    datatype += char;
-    i += 1;
-  }
 
-  if (datatype.length === 0) {
-    return { ok: false, errorCode: 'invalid_typed_value', nextIndex: i };
-  }
-  if (i >= text.length || text[i] === '\n') {
-    return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
-  }
-  if (text[i] === ']') {
-    return { ok: false, errorCode: 'invalid_typed_value', nextIndex: i };
-  }
-
-  while (i < text.length && text[i] === ' ') i += 1;
-
-  let rawValue = '';
-  while (i < text.length) {
-    const char = text[i];
-    if (char === '\\') {
-      const escaped = parseEscape(text, i);
-      if (!escaped.ok) return escaped;
-      rawValue += escaped.value;
-      i = escaped.nextIndex;
+    if (char === '"' || char === "'" || char === '`') {
+      quote = char;
+      i += 1;
+      continue;
+    }
+    if (char === '[') {
+      bracketDepth += 1;
+      i += 1;
+      continue;
+    }
+    if (char === ']' && bracketDepth > 0) {
+      bracketDepth -= 1;
+      i += 1;
       continue;
     }
     if (char === ']') {
-      const payload = rawValue.trim();
-      if (payload.length === 0) {
-        return { ok: false, errorCode: 'invalid_typed_value', nextIndex: i };
-      }
-      const value = payload.startsWith('"') && payload.endsWith('"') && payload.length >= 2 ? payload.slice(1, -1) : payload;
+      const parsed = parseAeonInlineTypedValue(text.slice(index + 2, i));
+      if (!parsed.ok) return { ok: false, errorCode: parsed.errorCode, nextIndex: i };
       return {
         ok: true,
         nextIndex: i + 1,
         node: withSpan(
-          { type: 'typed_value', datatype, value },
+          { type: 'typed_value', datatype: parsed.datatype, value: parsed.value },
           context,
           baseOffset + index,
           baseOffset + i + 1
@@ -414,7 +406,6 @@ function parseTypedValueTag(text, index, context, baseOffset = 0) {
     if (char === '\n') {
       return { ok: false, errorCode: 'unclosed_inline', nextIndex: i };
     }
-    rawValue += char;
     i += 1;
   }
 

@@ -1,3 +1,9 @@
+import {
+  displayAeonScalar,
+  emitAeonScalar,
+  formatAeonDatatype,
+} from '../shared/aeon-inline-scalar.mjs';
+
 function fail(errorCode, detail) {
   const error = new Error(detail ?? errorCode);
   error.code = errorCode;
@@ -116,7 +122,11 @@ function renderInlineNode(node, options) {
     case 'comment_tag':
       return `<span class="and-comment" hidden>${renderInlineNodes(node.children, options)}</span>`;
     case 'typed_value':
-      return `<data class="and-typed-value" data-type="${escapeAttribute(node.datatype)}" value="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</data>`;
+      try {
+        return `<data class="and-typed-value" data-type="${escapeAttribute(formatAeonDatatype(node.datatype))}" value="${escapeAttribute(emitAeonScalar(node.value))}">${escapeHtml(displayAeonScalar(node.value))}</data>`;
+      } catch {
+        throw fail('invalid_typed_value', 'typed_value requires a supported AEON scalar AST.');
+      }
     case 'highlight_tag':
       return `<mark>${renderInlineNodes(node.children, options)}</mark>`;
     case 'underline_tag':

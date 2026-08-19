@@ -42,7 +42,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[! ...]`, `[? ...]` | Core syntax + convention | Rich inline content; presentation and product workflow are consumer-defined. |
 | `[+ ...]` | Core syntax + convention | Scalar consumer tag; vocabulary and behavior remain consumer-defined. |
 | `[~ source | alt | mode]` | Core | Inline image with required source and alt text; mode is `inline`, `half`, or `full`. |
-| `[:type value]` | Core syntax + convention | Core preserves datatype and value; interpretation and validation are consumer-defined. |
+| `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
 | heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
 | `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
@@ -74,9 +74,28 @@ interface NdImageTag {
 
 interface NdTypedValue {
   readonly type: "typed_value";
-  readonly datatype: string;
-  readonly value: string;
+  readonly datatype: NdAeonDatatype;
+  readonly value: NdAeonInlineScalar;
 }
+
+interface NdAeonDatatype {
+  readonly name: string;
+  readonly genericArgs: string[];
+  readonly clarifiers: (string | number)[];
+}
+
+type NdAeonInlineScalar =
+  | { readonly type: "StringLiteral"; readonly value: string }
+  | { readonly type: "NumberLiteral"; readonly value: string }
+  | { readonly type: "InfinityLiteral"; readonly value: "Infinity" | "-Infinity" }
+  | { readonly type: "NaNLiteral"; readonly value: "NaN" | "-NaN" }
+  | { readonly type: "NullLiteral"; readonly mode: "reserved" | "reason"; readonly value: string }
+  | { readonly type: "BooleanLiteral"; readonly value: boolean }
+  | { readonly type: "ToggleLiteral"; readonly value: "yes" | "no" | "on" | "off" }
+  | { readonly type: "HexLiteral" | "RadixLiteral" | "EncodingLiteral"; readonly value: string }
+  | { readonly type: "DateLiteral" | "TimeLiteral"; readonly value: string }
+  | { readonly type: "DateTimeLiteral"; readonly value: string; readonly temporalKind: "datetime" | "wtc" }
+  | { readonly type: "SeparatorLiteral" | "SansaAddressLiteral"; readonly value: string };
 
 interface NdRichV2Tag {
   readonly type:
@@ -91,13 +110,49 @@ interface NdRichV2Tag {
 }
 ```
 
-Identifiers, consumer tags, image fields, datatype names, and typed values are normalized scalars. Content-bearing
+Identifiers, consumer tags, and image fields are normalized scalars. AEON typed values preserve a
+structured datatype annotation and literal-family-aware scalar node. Content-bearing
 tags preserve nested inline structure through `children`. Whitespace at a rich tag's outer content
 boundary is insignificant; whitespace inside its child sequence remains
 content. Rich tags participate in the inherited inline-depth budget.
 
-Datatype names identify a consumer-level interpretation; Core parsing does not validate a value
-against its datatype.
+## AEON Inline Typed Values
+
+The typed-value form wraps one AEON anonymous typed scalar:
+
+```text
+[:TypeAnnotation = ScalarLiteral]
+```
+
+The `=` is mandatory. The earlier proposal spelling `[:date 2026-08-20]` is invalid. &ND uses AEON
+type-annotation syntax, string escapes, literal recognition, reserved datatype aliases, compatibility
+rules, and canonical scalar spelling. Reserved datatype names MUST match their AEON literal family.
+Custom datatype names are accepted and their meaning remains consumer-defined.
+
+The supported inline subset is closed:
+
+| Literal family | Accepted datatype names |
+| :------------- | :---------------------- |
+| string | `string` |
+| finite number | `number`, `n`, `int`, `int8`, `int16`, `int32`, `int64`, `uint`, `uint8`, `uint16`, `uint32`, `uint64`, `float`, `float32`, `float64` |
+| non-finite number | `infinity`, `nan` |
+| null | `null`, including generic domain claims such as `null<datetime>` |
+| Boolean | `boolean`, `bool` |
+| toggle | `toggle` |
+| hex | `hex` |
+| radix | `radix`, `decimal`, `radix2`, `radix6`, `radix8`, `radix12` |
+| encoding | `encoding`, `base64`, `embed`, `inline` |
+| temporal | `date`, `time`, `datetime`, `wtc` |
+| separator | `sep`, `kadot` |
+| SANSA address | `sansa` |
+| supported scalar with consumer meaning | any valid custom AEON datatype name |
+
+Applicable AEON generic arguments and clarifiers remain structured, including `null<datetime>`,
+`radix[2]`, `encoding["base58"]`, and `sep["x"]`. Objects, lists, tuples, nodes, clone references,
+pointer references, bindings, attributes, structural identities, nested typed values, trimticks,
+`prose`, and multiline strings are not valid in this inline context. Canonical &ND output delegates
+the enclosed annotation and scalar to these AEON canonical rules.
+Generic datatype nesting uses AEON's default depth lock of one in the v2 reference parser.
 
 ## Local Anchors and Fragment Links
 

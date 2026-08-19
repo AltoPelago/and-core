@@ -3,7 +3,7 @@
   "id": "seed-v2-inline-typed-value-string",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\nSay [:string \"hello world\"] here.\n",
+  "source": "&ND v2\n\nSay [:string = \"hello world\"] here.\n",
   "expected": {
     "ok": true,
     "assertions": [
@@ -22,8 +22,15 @@
             },
             {
               "type": "typed_value",
-              "datatype": "string",
-              "value": "hello world"
+              "datatype": {
+                "name": "string",
+                "genericArgs": [],
+                "clarifiers": []
+              },
+              "value": {
+                "type": "StringLiteral",
+                "value": "hello world"
+              }
             },
             {
               "type": "text",

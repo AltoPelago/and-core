@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-structured",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [:list = [1, 2]] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_typed_value",
+    "assertions": [
+      "objects, lists, tuples, and nodes are outside the inline typed-value subset",
+      "structured AEON values fail closed in &ND inline context"
+    ]
+  }
+}

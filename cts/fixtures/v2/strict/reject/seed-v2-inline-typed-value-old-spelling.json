@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-old-spelling",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [:date 2026-08-20] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_typed_value",
+    "assertions": [
+      "v2 typed values use exact AEON type-assignment syntax",
+      "the earlier equals-free proposal spelling is rejected"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-typed-value-reference",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUse [:number = ~count] now.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_typed_value",
+    "assertions": [
+      "AEON clone and pointer references are outside the inline typed-value subset",
+      "typed inline values remain self-contained data"
+    ]
+  }
+}

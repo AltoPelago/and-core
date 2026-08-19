@@ -182,7 +182,7 @@ const v2Source = `&ND v2
 
 # [n] Proposal
 
-[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][:date 2026-08-19][= marked][_ under][ ][x][,][;][>][<][%][.]
+[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][:date = 2026-08-20][= marked][_ under][ ][x][,][;][>][<][%][.]
 
 ~~~=
 Highlighted
@@ -208,7 +208,7 @@ assert(v2Fragment.includes('class="and-image and-image-full" src="/hero.jpg" alt
 assert(v2Fragment.includes('<s>old <strong>nested</strong></s>'), 'renderer should preserve nested content in rich v2 tags');
 assert(v2Fragment.includes('<q>quote</q>'), 'renderer should project v2 quoted tags');
 assert(v2Fragment.includes('<span class="and-comment" hidden>hidden</span>'), 'renderer should keep v2 comments inert');
-assert(v2Fragment.includes('<data class="and-typed-value" data-type="date" value="2026-08-19">2026-08-19</data>'), 'renderer should project v2 typed values without interpreting them');
+assert(v2Fragment.includes('<data class="and-typed-value" data-type="date" value="2026-08-20">2026-08-20</data>'), 'renderer should project AEON scalar typed values without interpreting them');
 assert(v2Fragment.includes('<mark>marked</mark>'), 'renderer should project v2 highlights');
 assert(v2Fragment.includes('<u>under</u>'), 'renderer should project v2 underlines');
 assert(v2Fragment.includes('data-state="in_progress"'), 'renderer should project v2 todo states');
