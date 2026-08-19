@@ -34,6 +34,7 @@ The repository is currently spec-and-CTS first:
 * canonical, implementation, and editor-support documents are present
 * CTS fixtures are machine-readable and indexed
 * a reference parser adapter validates strict accept/reject fixtures, expected ASTs, and expected error codes
+* an executable v2 proposal lane validates promoted syntax and cross-version boundaries
 * a smaller reference subset adapter demonstrates capability-scoped CTS participation
 * an initial root package surface is available through [`index.mjs`](./index.mjs)
 * CI runs the repository safety checks and both CTS adapters
@@ -103,8 +104,8 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* define the v2 proposal boundaries and first normative seeds
-* scaffold a v2 CTS lane that can evolve independently from v1 fixtures
+* define v2 canonical output and the remaining proposal boundaries
+* keep the executable v2 proposal lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure
 * keep conformance seeds, CTS fixtures, and reference reports moving together
 
@@ -145,6 +146,7 @@ If you want to extend or audit the CTS:
 * `npm run cts:run:example` — runs the copyable baseline adapter example
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
 * `npm run cts:run:reference` — runs the first reference parser adapter against the CTS
+* `npm run cts:run:v2:proposal` — runs v2 proposal fixtures plus v1/v2 version-boundary checks
 * `npm run cts:report:example` — writes a JSON CTS report artifact for the baseline adapter example
 * `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
 * `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
@@ -158,4 +160,5 @@ The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/
 * `npm run precommit:check`
 * `npm run cts:run:reference`
 * `npm run cts:run:subset`
+* `npm run cts:run:v2:proposal`
 * `npm run check:canonical-emitter`

@@ -1,9 +1,9 @@
 {
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
-    "fixtures": 51,
+    "fixtures": 52,
     "profiles": 2,
-    "checked": 102,
+    "checked": 104,
     "skipped": 0,
     "failed": 0
   },
@@ -21,6 +21,24 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\nMy number is 1. not a list\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-reserved-block-marker-on-paragraph-continuation",
+      "path": "strict/accept/seed-reserved-block-marker-on-paragraph-continuation.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "Lead text ~~~=\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\nLead text ~~~=\n",
           "notes": []
         }
       },

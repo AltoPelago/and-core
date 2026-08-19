@@ -39,6 +39,19 @@ Until publication policy changes, v2 SHOULD be developed with the following stan
 4. v1 remains draft and may still change, but v2 should avoid depending on semantic reinterpretation
 	of already-valid v1 constructs.
 
+The version declaration controls the grammar; parser capability does not override it:
+
+| Declared document | v1-only parser | v2-capable parser |
+| :---------------- | :------------- | :---------------- |
+| v1 syntax under `&ND v1` | accept | accept as v1 |
+| v2 syntax under `&ND v1` | reject | reject as v1 |
+| v1 syntax under `&ND v2` | reject unsupported version | accept as v2 |
+| v2 syntax under `&ND v2` | reject unsupported version | accept as v2 |
+
+Standalone v2 input MUST declare `&ND v2`. Headerless input MUST receive its effective version from
+its embedding profile or typed channel.
+Implementations MUST NOT infer v2 from the presence of v2-looking syntax.
+
 ## Reserved Syntax Promotion Track
 
 Core v1 reserves a set of inline forms that are currently rejected in strict mode. v2 proposal work
@@ -79,54 +92,16 @@ This matrix is the default backlog for v2 syntax promotion sequencing.
 
 ## Active First Slice
 
-The initial implementation slice started with two promoted forms and now expands through adjacent
-reserved inline forms in small increments:
+The initial implementation slice started with anchor and line-break forms and has expanded into an
+executable 78-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-1. `[# ...]` anchor tag
-2. `[.]` inline line-break marker
+- 38 accepted fixtures covering inline tags, compact markers, heading auto-numbering, and paired blocks
+- 40 rejected fixtures covering empty payloads, malformed spacing, invalid markers, tags, and fences
+- corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
+  and preservation of v1 structure under v2
 
-Current proposal fixtures for this slice live under `cts/fixtures/v2/strict/`:
-
-1. `seed-v2-inline-anchor-tag-enabled`
-2. `seed-v2-inline-line-break-marker-enabled`
-3. `seed-v2-inline-reference-tag-enabled`
-4. `seed-v2-inline-admonition-tag-enabled`
-5. `seed-v2-inline-question-tag-enabled`
-6. `seed-v2-inline-plus-tag-enabled`
-7. `seed-v2-inline-strike-tag-enabled`
-8. `seed-v2-inline-quoted-tag-enabled`
-9. `seed-v2-inline-comment-tag-enabled`
-10. `seed-v2-inline-typed-value-date`
-11. `seed-v2-inline-typed-value-string`
-12. `seed-v2-inline-highlight-tag-enabled`
-13. `seed-v2-inline-underline-tag-enabled`
-14. `seed-v2-inline-todo-markers-enabled`
-15. `seed-v2-inline-directional-markers-enabled`
-16. `seed-v2-inline-auto-number-marker-enabled`
-17. `seed-v2-heading-auto-number-marker-enabled`
-18. `seed-v2-block-highlight-paragraph-enabled`
-19. `seed-v2-block-header-text-enabled`
-20. `seed-v2-block-disclaimer-enabled`
-21. `seed-v2-inline-anchor-tag-empty`
-22. `seed-v2-inline-reference-tag-empty`
-23. `seed-v2-inline-admonition-tag-empty`
-24. `seed-v2-inline-question-tag-empty`
-25. `seed-v2-inline-plus-tag-empty`
-26. `seed-v2-inline-strike-tag-empty`
-27. `seed-v2-inline-quoted-tag-empty`
-28. `seed-v2-inline-comment-tag-empty`
-29. `seed-v2-inline-typed-value-empty`
-30. `seed-v2-inline-typed-value-missing-value`
-31. `seed-v2-inline-highlight-tag-empty`
-32. `seed-v2-inline-underline-tag-empty`
-33. `seed-v2-inline-todo-marker-invalid-symbol`
-34. `seed-v2-inline-directional-marker-invalid-symbol`
-35. `seed-v2-inline-auto-number-marker-invalid-symbol`
-36. `seed-v2-heading-auto-number-marker-empty`
-37. `seed-v2-block-highlight-paragraph-unclosed`
-38. `seed-v2-block-header-text-unclosed`
-39. `seed-v2-block-disclaimer-unclosed`
-40. `seed-v2-inline-line-break-marker-malformed`
+The fixture index is the complete machine-readable inventory. This document records the proposal
+semantics and named design anchors rather than duplicating every variant filename.
 
 ## Paired Block Grammar Snapshot (Proposal)
 
@@ -485,23 +460,24 @@ Expected direction:
 
 1. Which reserved forms should be promoted first versus deferred to profile-specific layers?
 2. Should v2 canonicalization guarantee a lossless path back to v1 where possible?
-3. What is the minimum promoted-syntax slice required before creating a reference parser lane?
+3. Which current proposal forms should survive into the first v2 draft?
 4. Should any promoted reserved forms remain optional feature gates in strict mode?
 
 ## Next Edits
 
-1. Add named conformance seeds for each accepted work area.
-2. Define acceptance criteria for creating `cts/fixtures/v2`.
+1. Define canonical output for every promoted node.
+2. Add explicit unknown-extension and forward-compatibility boundary fixtures.
 3. Split accepted decisions from unresolved proposals in this file.
 
-## Acceptance Criteria For v2 Fixture Activation
+## Proposal Lane Status
 
-Move from placeholder lane to active v2 fixtures when all are true:
+The executable proposal lane is active but is not a published conformance lane. It currently has:
 
-1. At least 10 v2 seeds have stable names and expected outcomes documented in this file.
-2. At least one seed exists for each of these areas: header/versioning, extension behavior,
-	canonicalization, compatibility boundaries.
-3. A first v2 fixture schema note is written under `cts/fixtures/v2/`.
-4. A v2 adapter strategy is documented in `cts/ADAPTERS.md` (single parser with version switch or
-	dedicated v2 adapter).
-5. CI can run a non-empty v2 fixture set without reducing v1 coverage checks.
+1. More than 10 stable proposal seed names and executable accept/reject variants.
+2. Explicit header rejection and cross-version compatibility checks in the proposal runner.
+3. A fixture schema note under `cts/fixtures/v2/`.
+4. A single-parser version-switch strategy documented in `cts/ADAPTERS.md`.
+5. Independent CI execution without reducing v1 coverage.
+
+Promotion toward a first v2 draft still requires canonical output coverage, explicit extension and
+forward-compatibility boundaries, and a decision about which proposed forms remain in Core.

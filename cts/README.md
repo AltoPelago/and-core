@@ -28,7 +28,7 @@ Canonical expectations can now live alongside parser fixtures through an optiona
 `fixtures/` currently contains:
 
 * the active v1 index at `fixtures/index.json`
-* a v2 proposal placeholder lane at `fixtures/v2/index.proposal.json`
+* an executable v2 proposal lane at `fixtures/v2/index.proposal.json`
 
 ## Current Runner Interface
 
@@ -38,6 +38,7 @@ The repository now includes a small CTS entrypoint:
 * `npm run cts:run:example`
 * `npm run cts:run:subset`
 * `npm run cts:run:reference`
+* `npm run cts:run:v2:proposal`
 * `npm run cts:report:example`
 * `npm run cts:report:subset`
 * `npm run cts:report:reference`
@@ -52,7 +53,8 @@ Current behavior:
 * emits a placeholder report when no parser adapter is configured
 * reports aggregate document-check and error-code coverage
 * can be paired with `npm run check:cts-seed-coverage` to ensure the index still matches the normative seed list in the spec
-* validates the v2 proposal lane scaffold with `npm run check:cts-v2-lane`
+* validates the v2 proposal lane metadata with `npm run check:cts-v2-lane`
+* executes v2 fixtures and cross-version boundaries with `npm run cts:run:v2:proposal`
 
 Future parser implementations can plug in through:
 

@@ -523,6 +523,10 @@ MUST error.
 ***   reserved for disclaimer text
 ```
 
+In strict Core v1, a reserved block opener at a block-open-eligible position MUST fail with
+`unknown_block_type`. It MUST NOT be accepted as paragraph text. A reserved-looking line on a
+paragraph continuation remains paragraph text because block recognition is not eligible there.
+
 ### Design rule
 
 > A symbol should mean one thing across &ND.
@@ -829,6 +833,21 @@ Expected result:
 * parse success
 * one paragraph block
 * paragraph contains two lines of text
+
+### `seed-reserved-block-marker-on-paragraph-continuation`
+
+Input:
+
+```text
+Lead text
+~~~=
+```
+
+Expected result:
+
+* parse success
+* one paragraph block
+* `~~~=` remains ordinary text because the line is not at a block-open-eligible position
 
 ### `seed-header-standalone`
 
@@ -2837,6 +2856,54 @@ Expected result:
 * parse failure
 * error code `unknown_inline_type`
 * `[;]` remains reserved in Core v1
+
+### `seed-block-reserved-highlight-paragraph`
+
+Input:
+
+```text
+~~~=
+Highlighted text
+~~~=
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_block_type`
+* `~~~=` remains reserved in Core v1
+
+### `seed-block-reserved-header-text`
+
+Input:
+
+```text
+===header
+Header text
+===
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_block_type`
+* `===` remains reserved in Core v1
+
+### `seed-block-reserved-disclaimer`
+
+Input:
+
+```text
+***disclaimer
+Use with care
+***
+```
+
+Expected result:
+
+* parse failure
+* error code `unknown_block_type`
+* `***` remains reserved in Core v1
 
 ### `seed-inline-invalid-escape-in-code`
 

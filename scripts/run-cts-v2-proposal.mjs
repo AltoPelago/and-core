@@ -7,6 +7,8 @@ import process from 'node:process';
 import { parseAnd } from '../implementations/reference-parser/parser.mjs';
 
 const repoRoot = process.cwd();
+const v1FixturesRoot = path.join(repoRoot, 'cts', 'fixtures');
+const v1IndexPath = path.join(v1FixturesRoot, 'index.json');
 const fixturesRoot = path.join(repoRoot, 'cts', 'fixtures', 'v2');
 const indexPath = path.join(fixturesRoot, 'index.proposal.json');
 
@@ -114,6 +116,79 @@ function spansMatch(expectedSpans, document) {
   return true;
 }
 
+function asDeclaredVersion(source, version) {
+  if (source.startsWith('&ND v1')) return source.replace('&ND v1', `&ND ${version}`);
+  if (source.startsWith('&ND v2')) return source.replace('&ND v2', `&ND ${version}`);
+  return `&ND ${version}\n\n${source}`;
+}
+
+async function runVersionBoundaryChecks(v2Index) {
+  let pass = 0;
+  let fail = 0;
+
+  for (const rel of v2Index.fixtures) {
+    const fixture = await loadJson(path.join(fixturesRoot, rel));
+    const v1Only = parseAnd(fixture.source, fixture.options ?? {});
+    if (!v1Only.ok && v1Only.errorCode === 'invalid_header') {
+      pass += 1;
+    } else {
+      fail += 1;
+      console.error(`FAIL ${fixture.id} version boundary`);
+      console.error('  a v1-only parser must reject the v2 declaration with invalid_header');
+    }
+
+    const declaredV1Source = asDeclaredVersion(fixture.source, 'v1');
+    const declaredV1Result = parseAnd(declaredV1Source, {
+      ...(fixture.options ?? {}),
+      allowV2: true,
+    });
+    if (!declaredV1Result.ok) {
+      pass += 1;
+    } else {
+      fail += 1;
+      console.error(`FAIL ${fixture.id} declared-v1 boundary`);
+      console.error('  a v2-capable parser must not enable v2 syntax in a document declared as v1');
+    }
+  }
+
+  const v1Index = await loadJson(v1IndexPath);
+  for (const rel of v1Index.fixtures) {
+    const fixture = await loadJson(path.join(v1FixturesRoot, rel));
+    if (fixture.expected?.ok !== true) continue;
+
+    const parseOptions = fixture.options ?? {};
+    const v1Result = parseAnd(fixture.source, parseOptions);
+    const v2CapableV1Result = parseAnd(fixture.source, { ...parseOptions, allowV2: true });
+    const sameDeclaredV1Document = v1Result.ok
+      && v2CapableV1Result.ok
+      && stableJson(stripSpans(v1Result.document)) === stableJson(stripSpans(v2CapableV1Result.document));
+    if (sameDeclaredV1Document) {
+      pass += 1;
+    } else {
+      fail += 1;
+      console.error(`FAIL ${fixture.id} v1-reader compatibility`);
+      console.error('  a v2-capable parser must preserve v1 parse behavior and document structure');
+    }
+
+    const declaredV2Source = asDeclaredVersion(fixture.source, 'v2');
+    // Header promotion changes source size and positions. This comparison pins grammar and AST
+    // compatibility; configured source budgets remain covered by the exact-source check above.
+    const v2Result = parseAnd(declaredV2Source, { allowV2: true });
+    const sameV2CoreDocument = v1Result.ok
+      && v2Result.ok
+      && stableJson(stripSpans(v1Result.document)) === stableJson(stripSpans(v2Result.document));
+    if (sameV2CoreDocument) {
+      pass += 1;
+    } else {
+      fail += 1;
+      console.error(`FAIL ${fixture.id} v1-subset compatibility`);
+      console.error('  v1 core syntax declared as v2 must retain the same document structure');
+    }
+  }
+
+  return { pass, fail };
+}
+
 async function main() {
   const index = await loadJson(indexPath);
   if (index.schemaVersion !== '1') {
@@ -172,7 +247,11 @@ async function main() {
     }
   }
 
-  console.log(`v2 proposal CTS fixtures: ${pass} pass, ${fail} fail`);
+  const versionBoundaries = await runVersionBoundaryChecks(index);
+  pass += versionBoundaries.pass;
+  fail += versionBoundaries.fail;
+
+  console.log(`v2 proposal CTS and version boundaries: ${pass} pass, ${fail} fail`);
   if (fail > 0) process.exitCode = 1;
 }
 

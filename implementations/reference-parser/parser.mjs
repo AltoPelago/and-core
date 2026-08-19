@@ -424,6 +424,10 @@ function isV2Document(context) {
   return context?.documentVersion === 'v2';
 }
 
+function isReservedV2BlockOpener(line) {
+  return line === '~~~=' || line.startsWith('===') || line.startsWith('***');
+}
+
 function parseSpan(text, index, opener, options, context, baseOffset = 0, inlineDepth = 0) {
   const type = opener === '[* ' ? 'strong' : 'emphasis';
   const parsed = parseInlineSequence(text, index + opener.length, options, { stopOnClose: true, inlineDepth }, context, baseOffset);
@@ -1349,6 +1353,10 @@ function parseBlocks(lines, options, context) {
       children.push(code.node);
       index = code.nextIndex;
       continue;
+    }
+
+    if (!isV2Document(context) && isReservedV2BlockOpener(line)) {
+      return failAt('unknown_block_type', context.lineOffset + index, 0);
     }
 
     if (isV2Document(context) && line === '~~~=') {

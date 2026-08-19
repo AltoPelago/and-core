@@ -1,8 +1,8 @@
 {
   "generatedBy": "scripts/check-html-renderer.mjs",
   "totals": {
-    "fixtures": 51,
-    "checked": 51,
+    "fixtures": 52,
+    "checked": 52,
     "skipped": 0,
     "failed": 0
   },
@@ -13,6 +13,14 @@
       "status": "pass",
       "fragment": "<p>My number is\n1. not a list</p>",
       "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>My number is\n1. not a list</p>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-reserved-block-marker-on-paragraph-continuation",
+      "path": "strict/accept/seed-reserved-block-marker-on-paragraph-continuation.json",
+      "status": "pass",
+      "fragment": "<p>Lead text\n~~~=</p>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<p>Lead text\n~~~=</p>\n</body>\n</html>\n",
       "notes": []
     },
     {

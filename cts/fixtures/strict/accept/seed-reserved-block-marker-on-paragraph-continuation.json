@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-reserved-block-marker-on-paragraph-continuation",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "Lead text\n~~~=\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "reserved block markers are recognized only at block-open-eligible positions",
+      "a reserved-looking paragraph continuation remains ordinary paragraph text"
+    ],
+    "canonical": {
+      "embedded": "Lead text ~~~=\n",
+      "standalone": "&ND v1\n\nLead text ~~~=\n"
+    },
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Lead text\n~~~="
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

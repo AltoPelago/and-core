@@ -15,9 +15,9 @@ Current compatibility direction: treat v1 as a subset of v2 while v2 proposal wo
 
 - define the extension goals that require a v2 line
 - promote selected syntax reserved in v1 into explicit v2 constructs
-- write initial normative seeds for each proposed area
-- identify compatibility and migration expectations relative to v1 draft behavior
-- establish a version-specific CTS fixture lane once seed shape stabilizes
+- keep proposal seeds, executable fixtures, and parser behavior aligned
+- enforce the explicit v1/v2 compatibility matrix
+- define canonical output and migration expectations before promotion to draft
 
 ## Documents
 

@@ -3,17 +3,17 @@
   "mode": "adapter",
   "adapter": "./cts/examples/baseline-adapter.mjs",
   "totals": {
-    "fixtures": 135,
+    "fixtures": 139,
     "pending": 0,
-    "pass": 135,
+    "pass": 139,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 51,
+    "expected": 52,
     "checked": 0,
     "matched": 0,
-    "skipped": 51,
+    "skipped": 52,
     "failed": 0
   },
   "spanChecks": {
@@ -24,8 +24,8 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 72,
-    "matched": 72,
+    "expected": 75,
+    "matched": 75,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -33,6 +33,24 @@
     {
       "id": "seed-paragraph-vs-ordered-list",
       "path": "strict/accept/seed-paragraph-vs-ordered-list.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-reserved-block-marker-on-paragraph-continuation",
+      "path": "strict/accept/seed-reserved-block-marker-on-paragraph-continuation.json",
       "status": "pass",
       "mode": "strict",
       "expectedOk": true,
@@ -2078,6 +2096,63 @@
       "expectedErrorCode": "unknown_inline_type",
       "actualOk": false,
       "errorCode": "unknown_inline_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-block-reserved-highlight-paragraph",
+      "path": "strict/reject/seed-block-reserved-highlight-paragraph.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_block_type",
+      "actualOk": false,
+      "errorCode": "unknown_block_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-block-reserved-header-text",
+      "path": "strict/reject/seed-block-reserved-header-text.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_block_type",
+      "actualOk": false,
+      "errorCode": "unknown_block_type",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-block-reserved-disclaimer",
+      "path": "strict/reject/seed-block-reserved-disclaimer.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_block_type",
+      "actualOk": false,
+      "errorCode": "unknown_block_type",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

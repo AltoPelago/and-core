@@ -15,12 +15,11 @@ Fixtures are normative when they correspond to named conformance seeds in
 Current CTS authoring tracks:
 
 1. `v1` active fixtures under `cts/fixtures/` with index `cts/fixtures/index.json`
-2. `v2` proposal placeholder lane under `cts/fixtures/v2/` with index
+2. `v2` executable proposal lane under `cts/fixtures/v2/` with index
   `cts/fixtures/v2/index.proposal.json`
 
-Until v2 fixture activation criteria are met in
-[`docs/spec/v2/and-core-v2-proposal.md`](../docs/spec/v2/and-core-v2-proposal.md), do not add v2
-fixtures to the active v1 index.
+V2 proposal fixtures belong only in `index.proposal.json`; do not add them to the active v1 index.
+Run `npm run cts:run:v2:proposal` after changing either version's compatibility boundary.
 
 ## Fixture Checklist
 

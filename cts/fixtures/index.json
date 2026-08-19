@@ -3,6 +3,7 @@
   "specVersion": "&ND Core v1",
   "fixtures": [
     "strict/accept/seed-paragraph-vs-ordered-list.json",
+    "strict/accept/seed-reserved-block-marker-on-paragraph-continuation.json",
     "strict/accept/seed-header-standalone.json",
     "strict/reject/seed-invalid-header-version.json",
     "strict/accept/seed-ordered-list-after-blank-line.json",
@@ -113,6 +114,9 @@
     "strict/reject/seed-inline-reserved-todo-marker.json",
     "strict/reject/seed-inline-reserved-todo-in-progress-marker.json",
     "strict/reject/seed-inline-reserved-todo-cancelled-marker.json",
+    "strict/reject/seed-block-reserved-highlight-paragraph.json",
+    "strict/reject/seed-block-reserved-header-text.json",
+    "strict/reject/seed-block-reserved-disclaimer.json",
     "strict/reject/seed-inline-invalid-escape-in-code.json",
     "strict/reject/seed-ordered-code-block-wrong-closing-fence.json",
     "strict/reject/seed-blockquote-ordered-code-block-wrong-closing-fence.json",

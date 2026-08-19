@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-block-reserved-header-text",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "===header\nHeader text\n===\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_block_type",
+    "assertions": [
+      "`===` remains reserved in Core v1",
+      "strict v1 parsers fail closed instead of treating a future block form as paragraph text"
+    ]
+  }
+}

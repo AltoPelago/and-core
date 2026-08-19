@@ -43,17 +43,18 @@ For a runnable copyable example, see
 Current CTS tracks:
 
 1. `v1` active fixtures at `cts/fixtures/index.json`
-2. `v2` proposal lane metadata at `cts/fixtures/v2/index.proposal.json`
+2. `v2` executable proposal fixtures at `cts/fixtures/v2/index.proposal.json`
 
 Today, `scripts/run-cts.mjs` executes only the active v1 fixture index.
 
-The v2 lane is intentionally scaffold-only while proposal seeds stabilize. Use
-`npm run check:cts-v2-lane` to verify that the v2 proposal lane metadata remains present and
-well-formed.
+The dedicated `scripts/run-cts-v2-proposal.mjs` runner executes the v2 lane against the reference
+parser with explicit v2 capability enabled. It also checks that v1-only parsers reject v2 headers,
+that a v2-capable parser honors v1 declarations, and that the v1 accepted corpus retains its
+structure when read by the v2-capable parser.
 
 ## v2 Adapter Strategy (Proposal Stage)
 
-When v2 fixtures move beyond placeholder status, adapters SHOULD choose one of two strategies:
+The current proposal implementation uses the first of these strategies:
 
 1. Single adapter with explicit version switch:
   1. `runFixture` branches behavior by fixture-level version metadata.
@@ -62,6 +63,9 @@ When v2 fixtures move beyond placeholder status, adapters SHOULD choose one of t
 2. Dedicated v2 adapter module:
   1. `run-cts` is invoked with a separate adapter path for v2 runs.
   2. The adapter can evolve independently while v1 remains stable.
+
+The dedicated proposal runner remains separate from the normative v1 runner so reports and stage
+semantics cannot be confused.
 
 In both strategies:
 
