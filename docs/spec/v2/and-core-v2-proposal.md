@@ -482,12 +482,12 @@ Declarations take precedence over external version options. Named embedding-prof
 deferred.
 
 Image resolution and AEON scalar drift are now pinned. Migration and consumer-convention work are
-publication deliverables rather than unresolved Core syntax questions.
+published as proposal-stage companion guidance rather than unresolved Core syntax questions.
 
 ## Next Edits
 
-1. Write the v1-to-v2 migration guide and consumer-convention companion note.
-2. Run the final promotion gate described in the readiness audit.
+1. Run the final promotion gate described in the readiness audit.
+2. Move formal documents and CTS metadata from proposal to draft in one reviewed lifecycle change.
 
 ## Proposal Lane Status
 
@@ -505,4 +505,4 @@ The detailed promotion status is recorded in
 [`and-core-v2-first-draft-readiness.md`](./and-core-v2-first-draft-readiness.md). Image resolution and
 AEON-inline-scalar drift controls, embedding authority, the v2 public API contract, and exact
 canonical/HTML projection, source-span, and cross-form combination contracts are complete. Remaining
-blockers are migration guidance and a consumer-convention companion boundary.
+promotion work is the final clean-baseline review and explicit proposal-to-draft lifecycle change.

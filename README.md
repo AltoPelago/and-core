@@ -106,7 +106,7 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* publish v1-to-v2 migration and consumer-convention companion guidance
+* run the reviewed v2 proposal-to-draft promotion gate
 * keep the executable v2 proposal lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure
 * keep conformance seeds, CTS fixtures, and reference reports moving together
@@ -143,6 +143,7 @@ If you want to extend or audit the CTS:
 * `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
 * `npm run check:html-renderer` — checks escaped HTML fragment/full-document output and fail-closed behavior
 * `npm run check:public-api` — verifies the root package surface for parse, inline parse, diagnostics, canonical emission, and HTML projection
+* `npm run check:v2-guidance` — verifies the migration and consumer-convention boundaries remain complete
 * `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands
 * `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
 * `npm run html:report` — writes HTML renderer output snapshots to `cts/reports/`

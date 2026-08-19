@@ -4,11 +4,12 @@ Audit date: 2026-08-20
 
 ## Verdict
 
-`&ND Core v2` is implementation-ready but not yet publication-ready as a first draft.
+`&ND Core v2` satisfies the documented first-draft candidate gates and is ready for final promotion
+review. It remains proposal-stage until the lifecycle change is explicitly approved.
 
-The grammar surface and compatibility boundary are coherent and executable. The remaining work is
-publication guidance rather than syntax design or executable contract hardening. Promotion
-should not occur until the blockers below are closed and the final promotion checks pass together.
+The grammar surface and compatibility boundary are coherent and executable. Syntax, contracts,
+migration, and consumer guidance are complete. Promotion should occur only through the final
+clean-baseline and lifecycle review described below.
 
 ## Evidence Snapshot
 
@@ -25,6 +26,8 @@ should not occur until the blockers below are closed and the final promotion che
 | HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 14 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
 | Source spans | The projection contract pins 28 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
 | Cross-form interactions | A 15-entry executable matrix covers paired blocks in lists/quotes, rich children, cross-container links, rich resources, and marker adjacency. | Ready |
+| Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |
+| Consumer conventions | The companion boundary maps every consumer-owned surface to its fixed Core fields and non-Core behavior. | Ready |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
 | Public API types | `and-public-api.md` defines host authority, v2 capability/version options, result metadata, promoted unions, canonical versioning, diagnostics, and HTML options. | Ready |
 | Editor tooling | The VS Code prototype explicitly targets Core v1. | Deferred, not a blocker |
@@ -103,20 +106,26 @@ same 26 canonical and 14 HTML snapshots as the promoted-surface contract.
 
 ### B7. v1-to-v2 migration guide
 
-Document declaration changes, parser capability versus effective-version selection, unchanged v1
-meaning, v1 rejection of v2 syntax, canonical profile selection, local-link migration, image syntax,
-and the replacement of the provisional typed-value spelling.
+Status: **closed**.
 
-Closure evidence: a concise migration document with before/after examples and tool guidance.
+[`and-v1-to-v2-migration.md`](./and-v1-to-v2-migration.md) documents declaration changes, parser
+capability versus effective-version selection, unchanged v1 meaning, v1 rejection of v2 syntax,
+canonical profiles, local-link migration, images, exact AEON typed syntax, tool guidance, and the
+absence of automatic downgrade.
+
+Closure evidence: compatibility table, before/after spellings, supported-surface inventory, and a
+mechanical migration checklist.
 
 ### B8. Consumer-convention boundary
 
-Publish one non-Core companion note listing what consumers own: `[!]`, `[?]`, `[+]`, custom typed
-datatypes, optional paired-block tag vocabularies, numbering calculation, image fetching/layout/failure
-UI, external navigation policy, and extension execution.
+Status: **closed**.
 
-Closure evidence: each convention has a Core-guaranteed field and an explicitly consumer-owned
-interpretation; no implementation-specific meaning is presented as Core semantics.
+[`and-consumer-conventions.md`](./and-consumer-conventions.md) maps `[!]`, `[?]`, `[+]`, custom typed
+datatypes, optional paired-block tags, numbering, images, external navigation, extensions, todo and
+direction markers, and comments to their Core-guaranteed fields and consumer-owned interpretation.
+
+Closure evidence: the note defines processing order, registry constraints, non-execution, resource
+and trust policy, independent versioning, and the separate conformance boundary.
 
 ## Explicitly Deferred, Non-Blocking Work
 
@@ -143,5 +152,9 @@ After B1–B8 close:
    change; do not imply publication merely by renaming a snapshot.
 4. Keep footnotes, recovery, editor expansion, and consumer semantics explicitly deferred.
 
-The recommended next implementation task is B7 and B8 together: publish the v1-to-v2 migration guide
-and consumer-convention companion boundary, then run the final promotion gate.
+Candidate baseline recorded 2026-08-20: v1 reference CTS, v2 proposal lane, AEON scalar contract and
+live drift, canonical and HTML checks, projection and guidance contracts, public API, CLI, playground,
+repository safety, formal-spec, and website checks all pass.
+
+All B1–B8 gates are closed. The remaining step is an explicit, reviewed proposal-to-draft lifecycle
+change; the passing baseline alone does not change publication state.

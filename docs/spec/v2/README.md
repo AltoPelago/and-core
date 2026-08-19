@@ -25,3 +25,5 @@ Current compatibility direction: treat v1 as a subset of v2 while v2 proposal wo
 - [`and-ast-contract.md`](./and-ast-contract.md) — executable proposal AST additions and canonical version metadata.
 - [`and-public-api.md`](./and-public-api.md) — host authority, v2 options/results, promoted unions, canonical versioning, diagnostics, and HTML options.
 - [`and-core-v2-first-draft-readiness.md`](./and-core-v2-first-draft-readiness.md) — evidence-based promotion audit, blockers, and explicit deferrals.
+- [`and-v1-to-v2-migration.md`](./and-v1-to-v2-migration.md) — declaration, parser, canonical, local-link, image, and typed-value migration guidance.
+- [`and-consumer-conventions.md`](./and-consumer-conventions.md) — fixed Core fields versus consumer-owned vocabularies and behavior.

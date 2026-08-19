@@ -18,6 +18,9 @@ required_paths=(
   "docs/spec/v1/and-canonical-rules.md"
   "docs/spec/v1/and-implementation-guide.md"
   "docs/spec/v1/and-vscode-support.md"
+  "docs/spec/v2/README.md"
+  "docs/spec/v2/and-v1-to-v2-migration.md"
+  "docs/spec/v2/and-consumer-conventions.md"
   "cts/README.md"
   "examples/README.md"
   "examples/minimal.and"
@@ -42,6 +45,9 @@ docs=(
   "examples/README.md"
   "implementations/README.md"
   "docs/spec/v1/README.md"
+  "docs/spec/v2/README.md"
+  "docs/spec/v2/and-v1-to-v2-migration.md"
+  "docs/spec/v2/and-consumer-conventions.md"
 )
 
 link_errors=0

@@ -63,7 +63,8 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
 the parse shape and canonical spelling while deliberately declining to standardize a consumer
-vocabulary, workflow, or visual treatment.
+vocabulary, workflow, or visual treatment. The complete ownership boundary is defined in
+[`and-consumer-conventions.md`](./and-consumer-conventions.md).
 
 ## Inline Content Models
 
