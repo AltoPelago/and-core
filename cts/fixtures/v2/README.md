@@ -8,6 +8,8 @@ Current status:
   including nested rich inline content and document-local fragment-link integrity
 - `../../contracts/aeon-inline-scalar-v1.json` pins the complete typed-value datatype/alias list,
   per-family AST, canonical, and HTML projections, annotation cases, and explicit exclusions
+- `../../contracts/v2-projection-v1.json` pins exact standalone/embedded canonical text and inert
+  HTML for all promoted node families, marker states, image modes, nested composition, and safety cases
 - `npm run cts:run:v2:proposal` executes the lane in CI
 - the proposal runner checks v1-header rejection, declared-v1 gating, v1-subset compatibility,
   headerless effective-version equivalence, canonical fixed points, HTML projection, nested

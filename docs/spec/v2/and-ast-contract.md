@@ -303,6 +303,11 @@ node has a deterministic spelling, and emitting a v2-only node under version v1 
 executable proposal runner checks standalone and embedded parse–emit–parse structural equivalence
 and canonical fixed-point stability for every accepted v2 fixture.
 
+Machine-readable contract `and-v2-projection-v1` in `cts/contracts/v2-projection-v1.json` pins exact
+standalone and embedded canonical text plus inert HTML for every promoted node family, marker state,
+image mode, nested composition boundary, and unsafe-resource case. Its mandatory checker rejects
+missing coverage identifiers and any byte-level snapshot drift.
+
 ## Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset

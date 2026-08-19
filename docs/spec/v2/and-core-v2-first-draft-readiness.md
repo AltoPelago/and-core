@@ -21,8 +21,8 @@ should not occur until the blockers below are closed and the final promotion che
 | AST snapshots | 40 of 41 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points. No v2 fixture currently stores an exact canonical snapshot. | Blocker |
-| HTML projection | Every accepted fixture renders; promoted-node smoke assertions are exact. No v2 fixture currently stores an exact HTML snapshot. | Blocker |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 16 exact canonical snapshots across all promoted families. | Ready |
+| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 9 exact inert HTML snapshots across all promoted families and safety cases. | Ready |
 | Source spans | Exact span assertions exist for 3 of 41 accepted fixtures. | Blocker |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
 | Public API types | `and-public-api.md` defines host authority, v2 capability/version options, result metadata, promoted unions, canonical versioning, diagnostics, and HTML options. | Ready |
@@ -54,18 +54,22 @@ Closure evidence: the document agrees with the root exports, CLI behavior, and p
 
 ### B3. Exact canonical snapshots
 
-Pin publication-grade canonical text rather than relying only on fixed-point checks. The snapshot set
-must cover each promoted inline and block node, inherited v1 syntax under v2, nested rich content,
-escaped fields, local fragments, AEON scalars, image modes, and standalone/embedded profiles.
+Status: **closed**.
+
+Contract `and-v2-projection-v1` pins publication-grade canonical text for each promoted inline and
+block node, inherited v1 syntax under v2, nested rich content, escaped fields, local fragments, AEON
+scalars, image modes, and standalone/embedded profiles.
 
 Closure evidence: machine-readable expected text checked in CI, with zero accepted candidate forms
 covered only by a smoke test.
 
 ### B4. Exact HTML snapshots
 
-Pin exact inert HTML for every promoted projection family, including nested content, unsafe links and
-images, explicit image-base resolution, typed values, local anchors, display modes, and full-document
-wrapping.
+Status: **closed**.
+
+The same contract pins exact inert HTML for every promoted projection family, including nested
+content, unsafe links and images, explicit image-base resolution, typed values, local anchors, display
+modes, and full-document wrapping.
 
 Closure evidence: machine-readable expected fragments checked in CI. HTML remains a reference
 projection rather than Core parsing semantics.
@@ -132,5 +136,5 @@ After B1–B8 close:
    change; do not imply publication merely by renaming a snapshot.
 4. Keep footnotes, recovery, editor expansion, and consumer semantics explicitly deferred.
 
-The recommended next implementation task is B3 and B4 together: create one machine-readable
-projection contract that pins exact canonical and inert HTML snapshots for every promoted family.
+The recommended next implementation task is B5 and B6 together: complete the v2 source-span and
+cross-form combination matrices, and include those new combinations in the projection contract.

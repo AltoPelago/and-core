@@ -1,0 +1,206 @@
+{
+  "schemaVersion": "1",
+  "id": "and-v2-projection-v1",
+  "description": "Publication-grade canonical and inert HTML snapshots for the &ND Core v2 promoted surface.",
+  "requiredCoverage": [
+    "inherited.heading",
+    "inherited.strong",
+    "inherited.emphasis",
+    "inline.anchor",
+    "inline.local_fragment_link",
+    "inline.admonition",
+    "inline.question",
+    "inline.plus",
+    "inline.image.inline",
+    "inline.image.half",
+    "inline.image.full",
+    "inline.image.escaped_pipe",
+    "inline.image.resolved",
+    "inline.image.unsafe",
+    "inline.strike",
+    "inline.quoted",
+    "inline.comment",
+    "inline.typed_value",
+    "inline.highlight",
+    "inline.underline",
+    "inline.todo.unchecked",
+    "inline.todo.checked",
+    "inline.todo.in_progress",
+    "inline.todo.cancelled",
+    "inline.direction.forward",
+    "inline.direction.backward",
+    "inline.auto_number",
+    "inline.line_break",
+    "heading.auto_number",
+    "block.highlight_paragraph",
+    "block.header_text",
+    "block.disclaimer",
+    "composition.nested_rich",
+    "composition.image_in_rich",
+    "composition.typed_value_in_rich",
+    "safety.unsafe_link",
+    "canonical.embedded",
+    "canonical.standalone",
+    "html.fragment",
+    "html.document"
+  ],
+  "cases": [
+    {
+      "id": "navigation-and-consumer-tags",
+      "covers": [
+        "inherited.heading",
+        "inherited.strong",
+        "inline.anchor",
+        "inline.local_fragment_link",
+        "inline.admonition",
+        "inline.question",
+        "inline.plus",
+        "canonical.embedded",
+        "canonical.standalone",
+        "html.fragment",
+        "html.document"
+      ],
+      "source": "&ND v2\n\n# Heading\n\n[# section][@ #section | Go [* now]] [! note] [? why] [+ custom]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "# Heading\n\n[# section][@ #section | Go [* now]] [! note] [? why] [+ custom]\n",
+          "standalone": "&ND v2\n\n# Heading\n\n[# section][@ #section | Go [* now]] [! note] [? why] [+ custom]\n"
+        },
+        "html": {
+          "fragment": "<h1>Heading</h1>\n<p><span class=\"and-anchor\" id=\"section\" aria-hidden=\"true\"></span><a href=\"#section\">Go <strong>now</strong></a> <span class=\"and-admonition\">note</span> <span class=\"and-question\">why</span> <span class=\"and-consumer-tag\" data-value=\"custom\">custom</span></p>",
+          "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<h1>Heading</h1>\n<p><span class=\"and-anchor\" id=\"section\" aria-hidden=\"true\"></span><a href=\"#section\">Go <strong>now</strong></a> <span class=\"and-admonition\">note</span> <span class=\"and-question\">why</span> <span class=\"and-consumer-tag\" data-value=\"custom\">custom</span></p>\n</body>\n</html>\n"
+        }
+      }
+    },
+    {
+      "id": "rich-inline-and-markers",
+      "covers": [
+        "inherited.emphasis",
+        "inline.strike",
+        "inline.quoted",
+        "inline.comment",
+        "inline.highlight",
+        "inline.underline",
+        "inline.todo.unchecked",
+        "inline.todo.checked",
+        "inline.todo.in_progress",
+        "inline.todo.cancelled",
+        "inline.direction.forward",
+        "inline.direction.backward",
+        "inline.auto_number",
+        "inline.line_break"
+      ],
+      "source": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n",
+          "standalone": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n"
+        },
+        "html": {
+          "fragment": "<p><s>old <strong>bold</strong></s> <q>quote <em>soft</em></q> <span class=\"and-comment\" hidden>hidden</span> <mark>marked</mark> <u>under</u> <span class=\"and-todo-marker\" data-state=\"unchecked\" role=\"img\" aria-label=\"Unchecked\">☐</span> <span class=\"and-todo-marker\" data-state=\"checked\" role=\"img\" aria-label=\"Checked\">☑</span> <span class=\"and-todo-marker\" data-state=\"in_progress\" role=\"img\" aria-label=\"In progress\">◐</span> <span class=\"and-todo-marker\" data-state=\"cancelled\" role=\"img\" aria-label=\"Cancelled\">☒</span> <span class=\"and-directional-marker\" data-direction=\"forward\" role=\"img\" aria-label=\"Forward\">→</span> <span class=\"and-directional-marker\" data-direction=\"backward\" role=\"img\" aria-label=\"Backward\">←</span> <span class=\"and-auto-number-marker\" data-auto-number=\"true\" aria-hidden=\"true\"></span><br></p>"
+        }
+      }
+    },
+    {
+      "id": "image-modes-and-escaping",
+      "covers": [
+        "inline.image.inline",
+        "inline.image.half",
+        "inline.image.full",
+        "inline.image.escaped_pipe"
+      ],
+      "source": "&ND v2\n\n[~ image\\|one.png | Alt\\|one] [~ diagram.png | Diagram | half] [~ /hero.png | Hero | full]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[~ image\\|one.png | Alt\\|one | inline] [~ diagram.png | Diagram | half] [~ /hero.png | Hero | full]\n",
+          "standalone": "&ND v2\n\n[~ image\\|one.png | Alt\\|one | inline] [~ diagram.png | Diagram | half] [~ /hero.png | Hero | full]\n"
+        },
+        "html": {
+          "fragment": "<p><img class=\"and-image and-image-inline\" src=\"image|one.png\" alt=\"Alt|one\" data-size=\"inline\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\" style=\"height:1em;width:auto;vertical-align:-0.125em\"> <img class=\"and-image and-image-half\" srcset=\"diagram.png 2x\" alt=\"Diagram\" data-size=\"half\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\"> <img class=\"and-image and-image-full\" src=\"/hero.png\" alt=\"Hero\" data-size=\"full\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\"></p>"
+        }
+      }
+    },
+    {
+      "id": "resolved-image-source",
+      "covers": ["inline.image.resolved"],
+      "source": "&ND v2\n\n[~ ../asset.png | Asset | full]\n",
+      "htmlOptions": {
+        "imageBaseUrl": "https://docs.example/guide/page.and"
+      },
+      "expected": {
+        "canonical": {
+          "embedded": "[~ ../asset.png | Asset | full]\n",
+          "standalone": "&ND v2\n\n[~ ../asset.png | Asset | full]\n"
+        },
+        "html": {
+          "fragment": "<p><img class=\"and-image and-image-full\" src=\"https://docs.example/asset.png\" data-and-source=\"../asset.png\" alt=\"Asset\" data-size=\"full\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\"></p>"
+        }
+      }
+    },
+    {
+      "id": "aeon-typed-values",
+      "covers": ["inline.typed_value"],
+      "source": "&ND v2\n\n[:number = 1_000.50] [:string = 'hello'] [:null<datetime> = !none]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[:number = 1000.5] [:string = \"hello\"] [:null<datetime> = !none]\n",
+          "standalone": "&ND v2\n\n[:number = 1000.5] [:string = \"hello\"] [:null<datetime> = !none]\n"
+        },
+        "html": {
+          "fragment": "<p><data class=\"and-typed-value\" data-type=\"number\" value=\"1000.5\">1000.5</data> <data class=\"and-typed-value\" data-type=\"string\" value=\"&quot;hello&quot;\">hello</data> <data class=\"and-typed-value\" data-type=\"null&lt;datetime&gt;\" value=\"!none\">!none</data></p>"
+        }
+      }
+    },
+    {
+      "id": "heading-and-paired-blocks",
+      "covers": [
+        "heading.auto_number",
+        "block.highlight_paragraph",
+        "block.header_text",
+        "block.disclaimer"
+      ],
+      "source": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
+      "expected": {
+        "canonical": {
+          "embedded": "# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
+          "standalone": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n"
+        },
+        "html": {
+          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\">Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-admonition\">note</span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-question\">why</span>.</aside>"
+        }
+      }
+    },
+    {
+      "id": "nested-v2-composition",
+      "covers": [
+        "composition.nested_rich",
+        "composition.image_in_rich",
+        "composition.typed_value_in_rich"
+      ],
+      "source": "&ND v2\n\n[= nested [- old [_ under]]] [! image [~ icon.png | Icon]] [? value [:date = 2026-08-20]]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[= nested [- old [_ under]]] [! image [~ icon.png | Icon | inline]] [? value [:date = 2026-08-20]]\n",
+          "standalone": "&ND v2\n\n[= nested [- old [_ under]]] [! image [~ icon.png | Icon | inline]] [? value [:date = 2026-08-20]]\n"
+        },
+        "html": {
+          "fragment": "<p><mark>nested <s>old <u>under</u></s></mark> <span class=\"and-admonition\">image <img class=\"and-image and-image-inline\" src=\"icon.png\" alt=\"Icon\" data-size=\"inline\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\" style=\"height:1em;width:auto;vertical-align:-0.125em\"></span> <span class=\"and-question\">value <data class=\"and-typed-value\" data-type=\"date\" value=\"2026-08-20\">2026-08-20</data></span></p>"
+        }
+      }
+    },
+    {
+      "id": "unsafe-resource-projection",
+      "covers": ["safety.unsafe_link", "inline.image.unsafe"],
+      "source": "&ND v2\n\n[@ javascript:alert(1) | Unsafe] [~ //cdn.example/image.png | Unsafe image | inline]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[@ javascript:alert(1) | Unsafe] [~ //cdn.example/image.png | Unsafe image | inline]\n",
+          "standalone": "&ND v2\n\n[@ javascript:alert(1) | Unsafe] [~ //cdn.example/image.png | Unsafe image | inline]\n"
+        },
+        "html": {
+          "fragment": "<p><a aria-disabled=\"true\" title=\"Unsafe link target omitted\">Unsafe</a> <img class=\"and-image and-image-inline\" alt=\"Unsafe image\" data-size=\"inline\" data-and-src-omitted=\"unsafe\" title=\"Unsafe image source omitted\"></p>"
+        }
+      }
+    }
+  ]
+}
