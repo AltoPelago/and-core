@@ -132,6 +132,7 @@ type NdParseResult =
 
 interface NdParseSuccess {
   readonly ok: true;
+  readonly version: 'v1';
   readonly document: NdDocument;
   readonly mode?: 'strict' | 'forward_compat';
   readonly conformant?: boolean;

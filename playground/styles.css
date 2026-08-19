@@ -105,6 +105,32 @@ h2 {
   border-bottom: 1px solid var(--line);
 }
 
+.source-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.source-actions label {
+  color: var(--muted);
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.source-actions select {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--accent-strong);
+  background: #fff8e8;
+  font: inherit;
+}
+
 #reset,
 .tab {
   border: 1px solid var(--line);

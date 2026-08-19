@@ -28,3 +28,7 @@ Expected may also include:
 
 Field names and error-code taxonomy in this lane are still proposal-scoped and may evolve as v2
 grammar and AST contracts stabilize.
+
+Accepted fixture documents follow
+[`docs/spec/v2/and-ast-contract.md`](../../../docs/spec/v2/and-ast-contract.md). The dedicated runner
+also treats every accepted document as canonical-emitter and HTML-renderer input.

@@ -34,7 +34,8 @@ The repository is currently spec-and-CTS first:
 * canonical, implementation, and editor-support documents are present
 * CTS fixtures are machine-readable and indexed
 * a reference parser adapter validates strict accept/reject fixtures, expected ASTs, and expected error codes
-* an executable v2 proposal lane validates promoted syntax and cross-version boundaries
+* an executable v2 proposal lane validates promoted syntax, cross-version boundaries, canonical
+  round trips, resource budgets, and HTML projection
 * a smaller reference subset adapter demonstrates capability-scoped CTS participation
 * an initial root package surface is available through [`index.mjs`](./index.mjs)
 * CI runs the repository safety checks and both CTS adapters
@@ -74,6 +75,7 @@ If you want to contribute to ongoing design direction:
 1. [docs/spec/README.md](./docs/spec/README.md)
 2. [docs/spec/v2/README.md](./docs/spec/v2/README.md)
 3. [docs/spec/v2/and-core-v2-proposal.md](./docs/spec/v2/and-core-v2-proposal.md)
+4. [docs/spec/v2/and-ast-contract.md](./docs/spec/v2/and-ast-contract.md)
 
 If you want to build a parser or canonical emitter:
 
@@ -104,7 +106,8 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* define v2 canonical output and the remaining proposal boundaries
+* decide which executable v2 proposal forms should advance into the first draft
+* tighten semantic contracts for anchors, typed values, and consumer-facing scalar tags
 * keep the executable v2 proposal lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure
 * keep conformance seeds, CTS fixtures, and reference reports moving together
@@ -119,6 +122,7 @@ If you want to extend or audit the CTS:
 * `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
 * `npm run and -- check examples/minimal.and --budget maxLineLength=120` — checks with an explicit parser budget
+* `npm run and -- check path/to/proposal.and --version v2` — opts the CLI into the v2 proposal parser
 * `npm run and -- diagnostics examples/minimal.and --json` — emits parser-backed diagnostics for editor tooling
 * open the repo in VS Code and run `.vscode/launch.json` → `Run &ND VS Code Prototype` — launches the current editor prototype against `vscode/samples/`
 * `npm run vscode:package` — stages a dependency-free unpacked VS Code extension bundle under `artifacts/`

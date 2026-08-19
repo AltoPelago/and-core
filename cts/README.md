@@ -54,7 +54,9 @@ Current behavior:
 * reports aggregate document-check and error-code coverage
 * can be paired with `npm run check:cts-seed-coverage` to ensure the index still matches the normative seed list in the spec
 * validates the v2 proposal lane metadata with `npm run check:cts-v2-lane`
-* executes v2 fixtures and cross-version boundaries with `npm run cts:run:v2:proposal`
+* executes v2 fixtures, declared/headerless version equivalence, v1 compatibility, canonical
+  round trips, HTML projection, nested contexts, and budget boundaries with
+  `npm run cts:run:v2:proposal`
 
 Future parser implementations can plug in through:
 

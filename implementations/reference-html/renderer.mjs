@@ -68,6 +68,54 @@ function renderInlineNode(node, options) {
         : '';
       return `<a href="${href}"${externalAttributes}>${label}</a>`;
     }
+    case 'anchor_tag':
+      return `<span class="and-anchor" id="${escapeAttribute(node.id)}" aria-hidden="true"></span>`;
+    case 'reference_tag':
+      return `<span class="and-reference" data-reference="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</span>`;
+    case 'admonition_tag':
+      return `<span class="and-admonition">${escapeHtml(node.value)}</span>`;
+    case 'question_tag':
+      return `<span class="and-question">${escapeHtml(node.value)}</span>`;
+    case 'plus_tag':
+      return `<span class="and-consumer-tag" data-value="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</span>`;
+    case 'strike_tag':
+      return `<s>${escapeHtml(node.value)}</s>`;
+    case 'quoted_tag':
+      return `<q>${escapeHtml(node.value)}</q>`;
+    case 'comment_tag':
+      return `<span class="and-comment" hidden>${escapeHtml(node.value)}</span>`;
+    case 'typed_value':
+      return `<data class="and-typed-value" data-type="${escapeAttribute(node.datatype)}" value="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</data>`;
+    case 'highlight_tag':
+      return `<mark>${escapeHtml(node.value)}</mark>`;
+    case 'underline_tag':
+      return `<u>${escapeHtml(node.value)}</u>`;
+    case 'todo_marker': {
+      const states = {
+        unchecked: { glyph: '☐', label: 'Unchecked' },
+        checked: { glyph: '☑', label: 'Checked' },
+        in_progress: { glyph: '◐', label: 'In progress' },
+        cancelled: { glyph: '☒', label: 'Cancelled' },
+      };
+      const state = states[node.state];
+      if (!state) throw fail('invalid_todo_marker_state', `Unsupported todo state: ${node.state}`);
+      return `<span class="and-todo-marker" data-state="${node.state}" role="img" aria-label="${state.label}">${state.glyph}</span>`;
+    }
+    case 'directional_marker': {
+      const directions = {
+        forward: { glyph: '→', label: 'Forward' },
+        backward: { glyph: '←', label: 'Backward' },
+      };
+      const direction = directions[node.direction];
+      if (!direction) {
+        throw fail('invalid_directional_marker_direction', `Unsupported direction: ${node.direction}`);
+      }
+      return `<span class="and-directional-marker" data-direction="${node.direction}" role="img" aria-label="${direction.label}">${direction.glyph}</span>`;
+    }
+    case 'auto_number_marker':
+      return '<span class="and-auto-number-marker" data-auto-number="true" aria-hidden="true"></span>';
+    case 'line_break':
+      return '<br>';
     default:
       throw fail('unsupported_inline_node', `Unsupported inline node type: ${node.type}`);
   }
@@ -83,7 +131,8 @@ function renderBlock(block, options) {
       return `<p>${renderInlineNodes(block.children, options)}</p>`;
     case 'heading': {
       const level = Math.min(Math.max(Number(block.level), 1), 6);
-      return `<h${level}>${renderInlineNodes(block.children, options)}</h${level}>`;
+      const autoNumber = block.autoNumber ? ' class="and-auto-numbered" data-auto-number="true"' : '';
+      return `<h${level}${autoNumber}>${renderInlineNodes(block.children, options)}</h${level}>`;
     }
     case 'horizontal_rule':
       return '<hr>';
@@ -105,6 +154,16 @@ function renderBlock(block, options) {
     }
     case 'table':
       return renderTable(block, options);
+    case 'highlight_paragraph_block':
+      return `<p class="and-highlight-paragraph">${renderInlineNodes(block.children, options)}</p>`;
+    case 'header_text_block': {
+      const tag = block.tag ? ` data-tag="${escapeAttribute(block.tag)}"` : '';
+      return `<header class="and-header-text"${tag}>${renderInlineNodes(block.children, options)}</header>`;
+    }
+    case 'disclaimer_block': {
+      const tag = block.tag ? ` data-tag="${escapeAttribute(block.tag)}"` : '';
+      return `<aside class="and-disclaimer"${tag}>${renderInlineNodes(block.children, options)}</aside>`;
+    }
     default:
       throw fail('unsupported_block_node', `Unsupported block node type: ${block.type}`);
   }

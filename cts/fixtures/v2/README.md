@@ -6,7 +6,9 @@ Current status:
 
 - 78 accept/reject proposal fixtures cover promoted inline, marker, heading, and paired-block forms
 - `npm run cts:run:v2:proposal` executes the lane in CI
-- the proposal runner checks v1-header rejection, declared-v1 gating, and v1-subset compatibility
+- the proposal runner checks v1-header rejection, declared-v1 gating, v1-subset compatibility,
+  headerless effective-version equivalence, canonical fixed points, HTML projection, nested
+  contexts, resource budgets, and strict forward boundaries
 - the normative v1 CTS runner remains separate
 - lane metadata lives in `index.proposal.json`
 

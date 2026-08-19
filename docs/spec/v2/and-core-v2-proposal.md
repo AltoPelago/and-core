@@ -52,6 +52,18 @@ Standalone v2 input MUST declare `&ND v2`. Headerless input MUST receive its eff
 its embedding profile or typed channel.
 Implementations MUST NOT infer v2 from the presence of v2-looking syntax.
 
+The reference API expresses this distinction as follows:
+
+```js
+parseAnd(standaloneSource, { allowV2: true });
+parseAnd(embeddedSource, { allowV2: true, version: "v2" });
+parseInline(inlineSource, { allowV2: true, version: "v2" });
+```
+
+`allowV2` declares parser capability. `version` selects the effective grammar only for headerless
+input. A source declaration takes precedence, so a document declared as v1 remains governed by v1.
+Successful document parses report the effective `version` beside the document AST.
+
 ## Reserved Syntax Promotion Track
 
 Core v1 reserves a set of inline forms that are currently rejected in strict mode. v2 proposal work
@@ -99,6 +111,10 @@ executable 78-fixture proposal lane under `cts/fixtures/v2/strict/`:
 - 40 rejected fixtures covering empty payloads, malformed spacing, invalid markers, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
+- embedded-version equivalence checks for every proposal fixture
+- canonical standalone and embedded round trips plus inert HTML projection for every accepted fixture
+- direct boundary checks for nested v2 contexts, paired-block budgets, opaque extensions, and
+  unpromoted syntax
 
 The fixture index is the complete machine-readable inventory. This document records the proposal
 semantics and named design anchors rather than duplicating every variant filename.
@@ -156,16 +172,17 @@ Expected direction:
 
 - v1 strict parse failure with stable error code for unsupported header version
 
-### `seed-v2-unknown-extension-default-reject`
+### `seed-v2-opaque-extension-inherited`
 
 Intent:
 
-- confirm v2 retains fail-closed behavior for unknown extension constructs by default
-- avoid silent acceptance drift while extension surface is still being proposed
+- preserve the v1 opaque-extension compatibility model in v2
+- distinguish syntactic extension validity from consumer support for an extension name
 
 Expected direction:
 
-- strict parse failure for unknown extension names unless an explicit compatibility rule allows it
+- syntactically valid extension blocks parse into inherited `extension_block` nodes
+- consumers that do not support an extension render its fallback or an explicit unsupported-extension diagnostic
 
 ### `seed-v2-canonical-roundtrip-core-subset`
 
@@ -179,16 +196,19 @@ Expected direction:
 - deterministic canonical text for the selected core subset
 - reparsed canonical document is structurally equivalent
 
+Current status: active for every accepted proposal fixture in both standalone and embedded profiles.
+
 ### `seed-v2-forward-compat-boundary`
 
 Intent:
 
-- define what forward compatibility mode may recover versus what must still hard-fail
-- prevent ambiguous recovery behavior between strict and forward compatibility modes
+- define the strict boundary before any recovery mode is introduced
+- prevent unpromoted reserved syntax from being silently accepted
 
 Expected direction:
 
-- clear, testable mode-specific distinction for the same input
+- strict mode rejects unpromoted forms such as `[^ ...]` with `unknown_inline_type`
+- no v2 recovery or forward-compatibility mode is currently defined
 
 ### `seed-v2-accepts-v1-strict-core`
 
@@ -432,18 +452,6 @@ Expected direction:
 - v2 strict parse success for valid footnote-tag form
 - v1 strict behavior remains reject for the same source
 
-### `seed-v2-inline-todo-markers-enabled`
-
-Intent:
-
-- promote v1-reserved todo markers `[ ]`, `[x]`, `[,]`, `[;]` into explicit v2 inline states
-- ensure each marker maps to one stable semantic state
-
-Expected direction:
-
-- v2 strict parse success for each valid todo marker form
-- malformed markers still fail-closed with stable error codes
-
 ### `seed-v2-inline-line-break-marker-enabled`
 
 Intent:
@@ -459,15 +467,15 @@ Expected direction:
 ## Open Questions
 
 1. Which reserved forms should be promoted first versus deferred to profile-specific layers?
-2. Should v2 canonicalization guarantee a lossless path back to v1 where possible?
-3. Which current proposal forms should survive into the first v2 draft?
-4. Should any promoted reserved forms remain optional feature gates in strict mode?
+2. Which current proposal forms should survive into the first v2 draft?
+3. Should any promoted reserved forms remain optional feature gates in strict mode?
+4. Which scalar tag nodes, if any, should become rich inline containers before draft?
 
 ## Next Edits
 
-1. Define canonical output for every promoted node.
-2. Add explicit unknown-extension and forward-compatibility boundary fixtures.
-3. Split accepted decisions from unresolved proposals in this file.
+1. Split accepted decisions from unresolved proposals in this file.
+2. Pin normative HTML projection snapshots for promoted nodes that require interoperable rendering.
+3. Decide whether anchor IDs and typed-value datatypes need tighter Core-level lexical constraints.
 
 ## Proposal Lane Status
 
@@ -478,6 +486,9 @@ The executable proposal lane is active but is not a published conformance lane. 
 3. A fixture schema note under `cts/fixtures/v2/`.
 4. A single-parser version-switch strategy documented in `cts/ADAPTERS.md`.
 5. Independent CI execution without reducing v1 coverage.
+6. Canonical standalone and embedded output for every accepted proposal AST.
+7. Inert HTML projections and CLI/playground access behind explicit v2 selection.
 
-Promotion toward a first v2 draft still requires canonical output coverage, explicit extension and
-forward-compatibility boundaries, and a decision about which proposed forms remain in Core.
+Promotion toward a first v2 draft still requires a decision about which proposed forms remain in
+Core, tighter semantic contracts for consumer-facing tags, and publication-grade conformance
+snapshots beyond the current proposal lane.

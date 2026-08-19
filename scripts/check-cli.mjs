@@ -34,6 +34,8 @@ function assert(condition, message) {
 const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'and-cli-'));
 const validPath = path.join(tempDir, 'valid.and');
 const invalidPath = path.join(tempDir, 'invalid.and');
+const v2Path = path.join(tempDir, 'v2.and');
+const embeddedV2Path = path.join(tempDir, 'embedded-v2.and');
 const invalidBodyPath = path.join(tempDir, 'invalid-body.and');
 const budgetPath = path.join(tempDir, 'budget.and');
 const tablePath = path.join(tempDir, 'table.and');
@@ -42,6 +44,8 @@ const htmlPath = path.join(tempDir, 'document.html');
 
 await fs.writeFile(validPath, '&ND v1\n\n# Title\n\nMy number is\n1. not a list\n');
 await fs.writeFile(invalidPath, '&ND v2\n\n# Title\n');
+await fs.writeFile(v2Path, '&ND v2\n\n# [n] Title\n\nStart[# section][.]End\n');
+await fs.writeFile(embeddedV2Path, 'Start[# embedded][.]End\n');
 await fs.writeFile(invalidBodyPath, '&ND v1\n\nText\n---\n');
 await fs.writeFile(budgetPath, '&ND v1\n\nHello\n');
 await fs.writeFile(
@@ -57,6 +61,19 @@ assert(!checkInvalid.ok, 'check should reject an invalid document');
 assert(JSON.parse(checkInvalid.stdout).errorCode === 'invalid_header', 'check should report invalid_header');
 assert(JSON.parse(checkInvalid.stdout).diagnostic.line === 1, 'check should report diagnostic line');
 assert(JSON.parse(checkInvalid.stdout).diagnostic.column === 1, 'check should report diagnostic column');
+
+const checkV2 = await run(['check', v2Path, '--version', 'v2']);
+assert(checkV2.ok && checkV2.stdout === 'ok\n', 'check --version v2 should accept declared v2 input');
+
+const checkEmbeddedV2 = await run(['check', embeddedV2Path, '--version', 'v2']);
+assert(checkEmbeddedV2.ok, 'check --version v2 should accept headerless embedded v2 input');
+
+const checkInvalidVersion = await run(['check', validPath, '--version', 'v3']);
+assert(!checkInvalidVersion.ok, 'check should reject unknown --version values');
+assert(
+  JSON.parse(checkInvalidVersion.stdout).errorCode === 'invalid_version_option',
+  'check should report invalid_version_option for unknown versions'
+);
 
 const checkInvalidBody = await run(['check', invalidBodyPath, '--json']);
 assert(!checkInvalidBody.ok, 'check should reject invalid body syntax');
@@ -120,6 +137,12 @@ assert(
   'parse --spans should emit paragraph inline spans'
 );
 
+const parseV2 = await run(['parse', v2Path, '--json', '--version', 'v2']);
+assert(parseV2.ok, 'parse --version v2 should accept v2 input');
+const parsedV2 = JSON.parse(parseV2.stdout);
+assert(parsedV2.version === 'v2', 'parse --version v2 should report the effective version');
+assert(parsedV2.document.children[0].autoNumber === true, 'parse --version v2 should emit v2 AST fields');
+
 const parseTableWithSpans = await run(['parse', tablePath, '--json', '--spans']);
 assert(parseTableWithSpans.ok, 'parse --json --spans should accept a valid table document');
 const parsedTable = JSON.parse(parseTableWithSpans.stdout);
@@ -155,6 +178,13 @@ assert(
   'standalone canonical output mismatch'
 );
 
+const canonicalV2 = await run(['canonical', v2Path, '--profile', 'standalone', '--version', 'v2']);
+assert(canonicalV2.ok, 'canonical --version v2 should emit v2 documents');
+assert(
+  canonicalV2.stdout === '&ND v2\n\n# [n] Title\n\nStart[# section][.]End\n',
+  'canonical --version v2 output mismatch'
+);
+
 const canonicalMissingProfile = await run(['canonical', validPath]);
 assert(!canonicalMissingProfile.ok, 'canonical should require --profile');
 assert(
@@ -168,6 +198,12 @@ assert(
   renderHtmlFragment.stdout === '<h1>Title</h1>\n<p>My number is\n1. not a list</p>\n',
   'render-html fragment output mismatch'
 );
+
+const renderHtmlV2 = await run(['render-html', v2Path, '--version', 'v2']);
+assert(renderHtmlV2.ok, 'render-html --version v2 should render v2 input');
+assert(renderHtmlV2.stdout.includes('data-auto-number="true"'), 'v2 HTML should preserve heading auto-number intent');
+assert(renderHtmlV2.stdout.includes('id="section"'), 'v2 HTML should render anchors');
+assert(renderHtmlV2.stdout.includes('<br>'), 'v2 HTML should render inline line breaks');
 
 const renderHtmlDocument = await run(['render-html', validPath, '--document', '--out', htmlPath]);
 assert(renderHtmlDocument.ok, 'render-html --document --out should succeed');

@@ -4,11 +4,11 @@ import { collectDiagnostics, emitCanonical, parseAnd, renderHtml } from '../inde
 
 function usage() {
   return `Usage:
-  and check <file> [--json] [--budget name=value]
-  and diagnostics <file> [--json] [--budget name=value]
-  and parse <file> [--json] [--spans] [--budget name=value]
-  and canonical <file> --profile embedded|standalone [--out <file>] [--budget name=value]
-  and render-html <file> [--fragment|--document] [--out <file>] [--budget name=value]
+  and check <file> [--json] [--version v1|v2] [--budget name=value]
+  and diagnostics <file> [--json] [--version v1|v2] [--budget name=value]
+  and parse <file> [--json] [--spans] [--version v1|v2] [--budget name=value]
+  and canonical <file> --profile embedded|standalone [--version v1|v2] [--out <file>] [--budget name=value]
+  and render-html <file> [--fragment|--document] [--version v1|v2] [--out <file>] [--budget name=value]
 `;
 }
 
@@ -57,6 +57,28 @@ function parseBudgetOptions(args) {
   return Object.keys(budgets).length > 0 ? { budgets } : {};
 }
 
+function parseVersionOptions(args) {
+  const version = readOption(args, '--version');
+  if (args.includes('--version') && (version === undefined || version.startsWith('--'))) {
+    throw Object.assign(new Error('Missing --version value.'), { code: 'invalid_version_option' });
+  }
+  if (version === undefined) return {};
+  if (version !== 'v1' && version !== 'v2') {
+    throw Object.assign(new Error('--version must be v1 or v2.'), { code: 'invalid_version_option' });
+  }
+  return {
+    version,
+    allowV2: version === 'v2',
+  };
+}
+
+function parseOptions(args) {
+  return {
+    ...parseBudgetOptions(args),
+    ...parseVersionOptions(args),
+  };
+}
+
 function writeJson(value) {
   process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
 }
@@ -86,7 +108,7 @@ async function readSource(filePath) {
 
 async function commandCheck(filePath, args) {
   const source = await readSource(filePath);
-  const result = parseAnd(source, parseBudgetOptions(args));
+  const result = parseAnd(source, parseOptions(args));
   if (hasFlag(args, '--json')) {
     writeJson(result.ok ? { ok: true } : failurePayload(result));
   } else {
@@ -97,7 +119,7 @@ async function commandCheck(filePath, args) {
 
 async function commandParse(filePath, args) {
   const source = await readSource(filePath);
-  const result = parseAnd(source, { ...parseBudgetOptions(args), includeSpans: hasFlag(args, '--spans') });
+  const result = parseAnd(source, { ...parseOptions(args), includeSpans: hasFlag(args, '--spans') });
   if (hasFlag(args, '--json')) {
     writeJson(result);
   } else if (result.ok) {
@@ -110,7 +132,7 @@ async function commandParse(filePath, args) {
 
 async function commandDiagnostics(filePath, args) {
   const source = await readSource(filePath);
-  const result = collectDiagnostics(source, parseBudgetOptions(args));
+  const result = collectDiagnostics(source, parseOptions(args));
   if (hasFlag(args, '--json')) {
     writeJson(result);
   } else if (result.ok) {
@@ -129,14 +151,14 @@ async function commandCanonical(filePath, args) {
   const profile = readOption(args, '--profile');
   const outPath = readOption(args, '--out');
   const source = await readSource(filePath);
-  const parsed = parseAnd(source, parseBudgetOptions(args));
+  const parsed = parseAnd(source, parseOptions(args));
   if (!parsed.ok) {
     writeJson(failurePayload(parsed));
     return 1;
   }
 
   try {
-    const canonical = emitCanonical(parsed.document, { profile });
+    const canonical = emitCanonical(parsed.document, { profile, version: parsed.version });
     if (outPath) {
       await fs.writeFile(outPath, canonical);
     } else {
@@ -161,7 +183,7 @@ async function commandRenderHtml(filePath, args) {
 
   const outPath = readOption(args, '--out');
   const source = await readSource(filePath);
-  const parsed = parseAnd(source, parseBudgetOptions(args));
+  const parsed = parseAnd(source, parseOptions(args));
   if (!parsed.ok) {
     writeJson(failurePayload(parsed));
     return 1;

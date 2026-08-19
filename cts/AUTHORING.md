@@ -20,6 +20,8 @@ Current CTS authoring tracks:
 
 V2 proposal fixtures belong only in `index.proposal.json`; do not add them to the active v1 index.
 Run `npm run cts:run:v2:proposal` after changing either version's compatibility boundary.
+Accepted v2 fixtures must remain representable by the proposal AST contract and pass canonical
+standalone/embedded round trips and HTML projection through the dedicated runner.
 
 ## Fixture Checklist
 

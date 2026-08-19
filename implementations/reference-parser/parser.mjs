@@ -718,7 +718,19 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
 }
 
 export function parseInline(text, options = {}, baseOffset = 0, context = null) {
-  const parsed = parseInlineSequence(text, 0, options, {}, context, baseOffset);
+  const requestedVersion = options.version ?? 'v1';
+  if (context === null && requestedVersion !== 'v1' && requestedVersion !== 'v2') {
+    return { ok: false, errorCode: 'invalid_version_option', nextIndex: 0 };
+  }
+  if (context === null && requestedVersion === 'v2' && options.allowV2 !== true) {
+    return { ok: false, errorCode: 'unsupported_version', nextIndex: 0 };
+  }
+  const effectiveContext = context ?? {
+    documentVersion: requestedVersion,
+    includeSpans: options.includeSpans === true,
+    sourceLineStartOffsets: lineStartOffsets(text.replaceAll('\r\n', '\n').split('\n')),
+  };
+  const parsed = parseInlineSequence(text, 0, options, {}, effectiveContext, baseOffset);
   if (!parsed.ok) return parsed;
   return { ok: true, nodes: parsed.nodes };
 }
@@ -809,6 +821,7 @@ function recordListItem(options, context, lineIndex) {
 
 function makeChildContext(context, fields = {}) {
   return {
+    ...context,
     ...fields,
     budgetState: context.budgetState,
     depth: (context.depth ?? 0) + 1,
@@ -849,6 +862,7 @@ function parseCodeBlock(lines, start, options, context) {
 
 function parseHighlightParagraphBlock(lines, start, options, context) {
   const payload = [];
+  let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === '~~~=') {
@@ -872,6 +886,10 @@ function parseHighlightParagraphBlock(lines, start, options, context) {
           context.lineStartOffsets[i] + lines[i].length
         ),
       };
+    }
+    payloadSize = addPayloadSize(payloadSize, lines[i]);
+    if (exceedsBlockBudget(payloadSize, options)) {
+      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
     }
     payload.push(lines[i]);
   }
@@ -926,6 +944,7 @@ function parseHeaderTextBlock(lines, start, options, context) {
   }
 
   const payload = [];
+  let payloadSize = 0;
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === '===') {
       const text = payload.join('\n');
@@ -950,6 +969,10 @@ function parseHeaderTextBlock(lines, start, options, context) {
         ),
       };
     }
+    payloadSize = addPayloadSize(payloadSize, lines[i]);
+    if (exceedsBlockBudget(payloadSize, options)) {
+      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
+    }
     payload.push(lines[i]);
   }
 
@@ -964,6 +987,7 @@ function parseDisclaimerBlock(lines, start, options, context) {
   }
 
   const payload = [];
+  let payloadSize = 0;
   for (let i = start + 1; i < lines.length; i += 1) {
     if (lines[i] === '***') {
       const text = payload.join('\n');
@@ -987,6 +1011,10 @@ function parseDisclaimerBlock(lines, start, options, context) {
           context.lineStartOffsets[i] + lines[i].length
         ),
       };
+    }
+    payloadSize = addPayloadSize(payloadSize, lines[i]);
+    if (exceedsBlockBudget(payloadSize, options)) {
+      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
     }
     payload.push(lines[i]);
   }
@@ -1531,6 +1559,7 @@ export function parseAnd(source, options = {}) {
 
   return {
     ok: true,
+    version: scanned.context.documentVersion,
     document: withSpan(
       document,
       scanned.context,

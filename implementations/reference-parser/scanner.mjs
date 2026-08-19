@@ -53,7 +53,14 @@ function stripDocumentHeader(lines, options = {}) {
   if (lines[0]?.startsWith('&ND ')) {
     return failAt('invalid_header', 0, 0);
   }
-  return { ok: true, lines, lineOffset: 0, version: null };
+  const embeddedVersion = options.version ?? 'v1';
+  if (embeddedVersion !== 'v1' && embeddedVersion !== 'v2') {
+    return failAt('invalid_version_option', 0, 0);
+  }
+  if (embeddedVersion === 'v2' && options.allowV2 !== true) {
+    return failAt('unsupported_version', 0, 0);
+  }
+  return { ok: true, lines, lineOffset: 0, version: embeddedVersion };
 }
 
 function lineStartOffsets(lines) {

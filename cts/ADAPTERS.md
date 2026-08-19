@@ -50,7 +50,9 @@ Today, `scripts/run-cts.mjs` executes only the active v1 fixture index.
 The dedicated `scripts/run-cts-v2-proposal.mjs` runner executes the v2 lane against the reference
 parser with explicit v2 capability enabled. It also checks that v1-only parsers reject v2 headers,
 that a v2-capable parser honors v1 declarations, and that the v1 accepted corpus retains its
-structure when read by the v2-capable parser.
+structure when read by the v2-capable parser. Accepted v2 ASTs additionally pass standalone and
+embedded canonical round trips plus inert HTML projection; direct checks cover effective-version
+selection, nested contexts, block budgets, opaque extensions, and the strict forward boundary.
 
 ## v2 Adapter Strategy (Proposal Stage)
 

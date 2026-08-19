@@ -178,6 +178,44 @@ const fullDocument = renderHtml(parsed.document, { fragment: false });
 assert(fullDocument.startsWith('<!doctype html>\n<html lang="en">'), 'renderer should emit full HTML documents');
 assert(fullDocument.endsWith('</html>\n'), 'full HTML document should end with a newline');
 
+const v2Source = `&ND v2
+
+# [n] Proposal
+
+[# anchor][~ ref][! caution][? why][+ custom][- old][" quote][' hidden][:date 2026-08-19][= marked][_ under][ ][x][,][;][>][<][%][.]
+
+~~~=
+Highlighted
+~~~=
+
+===hero
+Header text
+===
+
+***legal
+Disclaimer
+***
+`;
+const parsedV2 = parseAnd(v2Source, { allowV2: true });
+assert(parsedV2.ok, `v2 renderer smoke source should parse: ${parsedV2.errorCode ?? 'unknown_error'}`);
+const v2Fragment = renderHtml(parsedV2.document);
+assert(v2Fragment.includes('<h1 class="and-auto-numbered" data-auto-number="true">Proposal</h1>'), 'renderer should project v2 heading auto-number intent');
+assert(v2Fragment.includes('<span class="and-anchor" id="anchor" aria-hidden="true"></span>'), 'renderer should project v2 anchors');
+assert(v2Fragment.includes('<span class="and-reference" data-reference="ref">ref</span>'), 'renderer should project v2 references');
+assert(v2Fragment.includes('<s>old</s>'), 'renderer should project v2 strike tags');
+assert(v2Fragment.includes('<q>quote</q>'), 'renderer should project v2 quoted tags');
+assert(v2Fragment.includes('<span class="and-comment" hidden>hidden</span>'), 'renderer should keep v2 comments inert');
+assert(v2Fragment.includes('<data class="and-typed-value" data-type="date" value="2026-08-19">2026-08-19</data>'), 'renderer should project v2 typed values without interpreting them');
+assert(v2Fragment.includes('<mark>marked</mark>'), 'renderer should project v2 highlights');
+assert(v2Fragment.includes('<u>under</u>'), 'renderer should project v2 underlines');
+assert(v2Fragment.includes('data-state="in_progress"'), 'renderer should project v2 todo states');
+assert(v2Fragment.includes('data-direction="forward"'), 'renderer should project v2 directions');
+assert(v2Fragment.includes('class="and-auto-number-marker"'), 'renderer should project v2 inline auto-number intent');
+assert(v2Fragment.includes('<br>'), 'renderer should project v2 explicit line breaks');
+assert(v2Fragment.includes('<p class="and-highlight-paragraph">Highlighted</p>'), 'renderer should project v2 highlighted blocks');
+assert(v2Fragment.includes('<header class="and-header-text" data-tag="hero">Header text</header>'), 'renderer should project v2 header-text blocks');
+assert(v2Fragment.includes('<aside class="and-disclaimer" data-tag="legal">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');
+
 let unsupportedError = null;
 try {
   renderHtml({ type: 'document', children: [{ type: 'future_block' }] });

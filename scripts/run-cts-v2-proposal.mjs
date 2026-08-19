@@ -4,7 +4,9 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
-import { parseAnd } from '../implementations/reference-parser/parser.mjs';
+import { emitCanonical } from '../implementations/reference-canonical/emitter.mjs';
+import { renderHtml } from '../implementations/reference-html/renderer.mjs';
+import { parseAnd, parseInline } from '../implementations/reference-parser/parser.mjs';
 
 const repoRoot = process.cwd();
 const v1FixturesRoot = path.join(repoRoot, 'cts', 'fixtures');
@@ -122,6 +124,111 @@ function asDeclaredVersion(source, version) {
   return `&ND ${version}\n\n${source}`;
 }
 
+function withoutDeclaredHeader(source) {
+  const lines = source.split('\n');
+  if (!lines[0]?.startsWith('&ND ')) return source;
+  lines.shift();
+  if (lines[0] === '') lines.shift();
+  return lines.join('\n');
+}
+
+function sameDocument(left, right) {
+  return stableJson(stripSpans(left)) === stableJson(stripSpans(right));
+}
+
+function reportCheck(label, condition, detail) {
+  if (condition) return { pass: 1, fail: 0 };
+  console.error(`FAIL ${label}`);
+  if (detail) console.error(`  ${detail}`);
+  return { pass: 0, fail: 1 };
+}
+
+function runApiBoundaryChecks() {
+  const checks = [];
+  const inlineV2 = parseInline('[# inline-id]', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'public inline v2 selection',
+    inlineV2.ok && inlineV2.nodes?.[0]?.type === 'anchor_tag',
+    'parseInline must accept explicit embedded v2 input'
+  ));
+
+  const deniedEmbeddedV2 = parseAnd('[# id]\n', { version: 'v2' });
+  checks.push(reportCheck(
+    'embedded v2 capability gate',
+    !deniedEmbeddedV2.ok && deniedEmbeddedV2.errorCode === 'unsupported_version',
+    'embedded v2 must require allowV2 capability'
+  ));
+
+  const invalidVersion = parseAnd('text\n', { version: 'v3', allowV2: true });
+  checks.push(reportCheck(
+    'invalid embedded version option',
+    !invalidVersion.ok && invalidVersion.errorCode === 'invalid_version_option',
+    'unknown effective versions must fail closed'
+  ));
+
+  const nestedV2 = parseAnd('&ND v2\n\n> [# quoted]\n\n- item\n\n  ~~~=\n  highlighted\n  ~~~=\n', { allowV2: true });
+  checks.push(reportCheck(
+    'nested v2 context propagation',
+    nestedV2.ok
+      && nestedV2.document.children[0]?.children?.[0]?.children?.[0]?.type === 'anchor_tag'
+      && nestedV2.document.children[1]?.items?.[0]?.children?.[1]?.type === 'highlight_paragraph_block',
+    'v2 selection must survive blockquote and list child contexts'
+  ));
+
+  for (const [name, fence] of [
+    ['highlight paragraph', '~~~='],
+    ['header text', '==='],
+    ['disclaimer', '***'],
+  ]) {
+    const budgeted = parseAnd(`&ND v2\n\n${fence}\ntoo long\n${fence}\n`, {
+      allowV2: true,
+      budgets: { maxBlockSize: 1 },
+    });
+    checks.push(reportCheck(
+      `${name} block size budget`,
+      !budgeted.ok && budgeted.errorCode === 'nd_budget_exceeded',
+      'v2 paired blocks must enforce maxBlockSize'
+    ));
+  }
+
+  const unknownExtension = parseAnd('&ND v2\n\n+++future/widget\nopaque\n+++\n', { allowV2: true });
+  checks.push(reportCheck(
+    'v2 opaque extension inheritance',
+    unknownExtension.ok && unknownExtension.document.children[0]?.type === 'extension_block',
+    'v2 must preserve the v1 opaque-extension compatibility model'
+  ));
+
+  const unknownInline = parseAnd('&ND v2\n\n[^ future]\n', { allowV2: true });
+  checks.push(reportCheck(
+    'v2 strict forward boundary',
+    !unknownInline.ok && unknownInline.errorCode === 'unknown_inline_type',
+    'unpromoted syntax must fail in strict mode'
+  ));
+
+  let unsafeFenceError = null;
+  try {
+    emitCanonical({
+      type: 'document',
+      children: [{
+        type: 'highlight_paragraph_block',
+        children: [{ type: 'text', value: 'before\n~~~=\nafter' }],
+      }],
+    }, { profile: 'standalone', version: 'v2' });
+  } catch (error) {
+    unsafeFenceError = error;
+  }
+  checks.push(reportCheck(
+    'v2 canonical fence safety',
+    unsafeFenceError?.code === 'unsupported_v2_fence_payload',
+    'canonical emission must reject payloads that would terminate their paired block'
+  ));
+
+  return checks.reduce(
+    (totals, check) => ({ pass: totals.pass + check.pass, fail: totals.fail + check.fail }),
+    { pass: 0, fail: 0 }
+  );
+}
+
 async function runVersionBoundaryChecks(v2Index) {
   let pass = 0;
   let fail = 0;
@@ -217,39 +324,102 @@ async function main() {
     const documentMatches = fixture.expected.document === undefined
       || (result.ok && stableJson(stripSpans(result.document)) === stableJson(stripSpans(fixture.expected.document)));
     const spanMatches = spansMatch(fixture.expected.spans, result.document);
+    const versionMatches = result.ok !== true || result.version === 'v2';
 
-    if (okMatches && errorMatches && documentMatches && spanMatches) {
+    if (okMatches && errorMatches && documentMatches && spanMatches && versionMatches) {
       pass += 1;
-      continue;
-    }
-
-    fail += 1;
-    const expected = `ok=${fixture.expected.ok}${fixture.expected.errorCode ? ` errorCode=${fixture.expected.errorCode}` : ''}`;
-    const actual = `ok=${result.ok}${result.errorCode ? ` errorCode=${result.errorCode}` : ''}`;
-    console.error(`FAIL ${fixture.id} (${rel})`);
-    console.error(`  expected: ${expected}`);
-    console.error(`  actual:   ${actual}`);
-    if (fixture.expected.document !== undefined) {
-      console.error('  expected.document and actual document differ');
-      console.error(`  expected.document: ${stableJson(fixture.expected.document)}`);
-      console.error(`  actual.document:   ${stableJson(stripSpans(result.document))}`);
-    }
-    if (fixture.expected.spans !== undefined && !spanMatches) {
-      console.error('  expected.spans and actual spans differ');
-      for (const entry of fixture.expected.spans) {
-        const actualSpan = valueAtPath(result.document, entry.path)?.span;
-        if (stableJson(actualSpan) !== stableJson(entry.span)) {
-          console.error(`  path: ${entry.path}`);
-          console.error(`  expected.span: ${stableJson(entry.span)}`);
-          console.error(`  actual.span:   ${stableJson(actualSpan)}`);
+    } else {
+      fail += 1;
+      const expected = `ok=${fixture.expected.ok}${fixture.expected.errorCode ? ` errorCode=${fixture.expected.errorCode}` : ''}`;
+      const actual = `ok=${result.ok}${result.errorCode ? ` errorCode=${result.errorCode}` : ''}`;
+      console.error(`FAIL ${fixture.id} (${rel})`);
+      console.error(`  expected: ${expected}`);
+      console.error(`  actual:   ${actual}`);
+      if (!versionMatches) console.error(`  expected version=v2, actual version=${result.version}`);
+      if (fixture.expected.document !== undefined) {
+        console.error('  expected.document and actual document differ');
+        console.error(`  expected.document: ${stableJson(fixture.expected.document)}`);
+        console.error(`  actual.document:   ${stableJson(stripSpans(result.document))}`);
+      }
+      if (fixture.expected.spans !== undefined && !spanMatches) {
+        console.error('  expected.spans and actual spans differ');
+        for (const entry of fixture.expected.spans) {
+          const actualSpan = valueAtPath(result.document, entry.path)?.span;
+          if (stableJson(actualSpan) !== stableJson(entry.span)) {
+            console.error(`  path: ${entry.path}`);
+            console.error(`  expected.span: ${stableJson(entry.span)}`);
+            console.error(`  actual.span:   ${stableJson(actualSpan)}`);
+          }
         }
       }
+    }
+
+    const embeddedResult = parseAnd(withoutDeclaredHeader(fixture.source), {
+      allowV2: true,
+      version: 'v2',
+      includeSpans: Array.isArray(fixture.expected.spans),
+      ...(fixture.options ?? {}),
+    });
+    const embeddedMatches = embeddedResult.ok === fixture.expected.ok
+      && (fixture.expected.errorCode === undefined || embeddedResult.errorCode === fixture.expected.errorCode)
+      && (fixture.expected.document === undefined || sameDocument(embeddedResult.document, fixture.expected.document));
+    if (embeddedMatches) {
+      pass += 1;
+    } else {
+      fail += 1;
+      console.error(`FAIL ${fixture.id} embedded-v2 equivalence`);
+      console.error('  headerless input with explicit version=v2 must preserve declared-v2 behavior');
+    }
+
+    if (!result.ok) continue;
+
+    for (const profile of ['standalone', 'embedded']) {
+      try {
+        const emitted = emitCanonical(result.document, { profile, version: 'v2' });
+        const reparsed = parseAnd(emitted, {
+          allowV2: true,
+          ...(profile === 'embedded' ? { version: 'v2' } : {}),
+        });
+        const reemitted = reparsed.ok
+          ? emitCanonical(reparsed.document, { profile, version: 'v2' })
+          : null;
+        if (reparsed.ok && sameDocument(result.document, reparsed.document) && reemitted === emitted) {
+          pass += 1;
+        } else {
+          fail += 1;
+          console.error(`FAIL ${fixture.id} canonical ${profile} roundtrip`);
+          console.error('  v2 canonical output must preserve AST structure and reach a fixed point');
+        }
+      } catch (error) {
+        fail += 1;
+        console.error(`FAIL ${fixture.id} canonical ${profile} roundtrip`);
+        console.error(`  ${error.code ?? error.message}`);
+      }
+    }
+
+    try {
+      const fragment = renderHtml(result.document);
+      const documentHtml = renderHtml(result.document, { fragment: false });
+      if (typeof fragment === 'string' && documentHtml.startsWith('<!doctype html>')) {
+        pass += 1;
+      } else {
+        fail += 1;
+        console.error(`FAIL ${fixture.id} HTML projection`);
+      }
+    } catch (error) {
+      fail += 1;
+      console.error(`FAIL ${fixture.id} HTML projection`);
+      console.error(`  ${error.code ?? error.message}`);
     }
   }
 
   const versionBoundaries = await runVersionBoundaryChecks(index);
   pass += versionBoundaries.pass;
   fail += versionBoundaries.fail;
+
+  const apiBoundaries = runApiBoundaryChecks();
+  pass += apiBoundaries.pass;
+  fail += apiBoundaries.fail;
 
   console.log(`v2 proposal CTS and version boundaries: ${pass} pass, ${fail} fail`);
   if (fail > 0) process.exitCode = 1;

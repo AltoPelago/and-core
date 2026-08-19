@@ -10,7 +10,7 @@ ad-hoc DOM rendering logic.
 
 Input:
 
-* an `NdDocument` AST following [`docs/spec/v1/and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md)
+* an `NdDocument` AST following the v1 or proposal-v2 AST contract
 
 Output:
 
@@ -27,3 +27,8 @@ reference renderer emits an explicit HTML diagnostic block naming the unsupporte
 showing the opaque payload in escaped form.
 
 Unsupported AST node types fail closed with stable error codes.
+
+The proposal-v2 projection includes inert representations for scalar tags, typed values, todo and
+direction markers, explicit line breaks, auto-number intent, highlighted paragraphs, header text,
+and disclaimers. Projection does not perform numbering, reference resolution, datatype validation,
+or extension execution.

@@ -26,6 +26,11 @@ The smoke check verifies that the page is wired to the parser and canonical emit
 npm run playground:check
 ```
 
+The source header includes an explicit parser selector. `v1` remains the default; selecting the
+`v2 proposal` enables v2 capability and supplies v2 as the effective version for headerless input.
+The adjacent example selector provides version-aware v1 and v2 documents. Choosing an example loads
+its source and parser version together, and Reset restores the currently selected example.
+
 ## Parser Budgets
 
 The source pane includes optional parser-budget controls for hostile-input and agent workflow
@@ -73,7 +78,7 @@ The right pane uses tabs:
 
 The playground should keep the same separation as the repository:
 
-1. Parse source with the reference parser and any explicit playground budgets.
+1. Parse source with the selected effective version and any explicit playground budgets.
 2. If parsing succeeds, emit canonical text with the canonical emitter.
 3. Optionally show AST/spans for debugging and editor-tooling work.
 4. Optionally pass the AST to a renderer for HTML preview.

@@ -24,7 +24,19 @@
               <p class="panel-kicker">Source</p>
               <h2>&amp;ND input</h2>
             </div>
-            <button id="reset" type="button">Reset</button>
+            <div class="source-actions">
+              <label for="example">Example</label>
+              <select id="example" aria-label="&ND example document">
+                <option value="v1">v1 reference</option>
+                <option value="v2">v2 capabilities</option>
+              </select>
+              <label for="version">Parser</label>
+              <select id="version" aria-label="Effective &ND parser version">
+                <option value="v1">v1</option>
+                <option value="v2">v2 proposal</option>
+              </select>
+              <button id="reset" type="button">Reset</button>
+            </div>
           </div>
           <details class="budget-panel">
             <summary>Parser budgets</summary>

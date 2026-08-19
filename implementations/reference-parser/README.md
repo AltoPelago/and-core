@@ -1,6 +1,6 @@
 # Reference Parser
 
-This is the first parser-shaped `&ND Core v1` implementation.
+This is the reference parser for `&ND Core v1` and the executable `&ND Core v2` proposal lane.
 
 Repository consumers that want the stable package boundary should now prefer importing from the
 repo root entrypoint at [`index.mjs`](../../index.mjs). This folder remains the implementation home
@@ -26,6 +26,9 @@ Current scope:
   list item count, nesting depth, inline depth, table columns, and link target length
 * raw code block margin checks
 * the initial block-boundary and indentation rules covered by the CTS
+* explicit v2 capability and effective-version selection through `allowV2` and `version`
+* proposal-v2 inline tags, compact markers, heading auto-numbering, and paired blocks
+* effective-version metadata on successful document parse results
 
 Run it against the CTS with:
 
@@ -37,9 +40,15 @@ The implementation is now AST-producing for the fixture-covered subset.
 It is not yet a complete parser, but the current CTS is its behavioral guardrail as the supported
 grammar expands.
 
-The emitted document shape follows the CTS AST contract in
-[`docs/spec/v1/and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md). Table output uses
+The emitted document shape follows the CTS AST contracts in
+[`docs/spec/v1/and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md) and
+[`docs/spec/v2/and-ast-contract.md`](../../docs/spec/v2/and-ast-contract.md). Table output uses
 structured header/body cells with inline children, matching the current CTS contract.
+
+The default remains v1-only. Standalone v2 input requires `&ND v2` plus `{ allowV2: true }`.
+Headerless v2 input and standalone inline parsing require
+`{ allowV2: true, version: "v2" }`. A successful `parseAnd` result includes a `version` field with
+the value `"v1"` or `"v2"` beside the document AST.
 
 Strict-mode failures currently return:
 

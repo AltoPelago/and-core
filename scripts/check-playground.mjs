@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { emitCanonical, parseAnd } from '../index.mjs';
+import { emitCanonical, parseAnd, renderHtml } from '../index.mjs';
+import { examples } from '../playground/examples.mjs';
 
 const repoRoot = path.resolve(new URL('..', import.meta.url).pathname);
 
@@ -19,11 +20,19 @@ assert(index.includes('src="./app.mjs"'), 'playground index should load app.mjs'
 assert(index.includes('href="./styles.css"'), 'playground index should load styles.css');
 assert(index.includes('data-tab="html"'), 'playground should expose an HTML output tab');
 assert(index.includes('data-budget="maxLineLength"'), 'playground should expose parser budget controls');
+assert(index.includes('id="version"'), 'playground should expose an explicit parser-version selector');
+assert(index.includes('id="example"'), 'playground should expose an example selector');
+assert(index.includes('value="v2">v2 capabilities'), 'playground should expose a visible v2 example');
 assert(app.includes("from '../index.mjs'"), 'playground should import the root public API');
 assert(app.includes('function readBudgets()'), 'playground should read optional parser budgets');
 assert(app.includes('nd_budget_exceeded'), 'playground should explain budget diagnostics');
+assert(app.includes("allowV2: selectedVersion === 'v2'"), 'playground should gate v2 through explicit selection');
+assert(app.includes("import { examples } from './examples.mjs'"), 'playground should load shared version-aware examples');
+assert(app.includes('function loadExample('), 'playground should load source and parser version together');
+assert(app.includes("loadExample(elements.example.value)"), 'playground reset should restore the selected example');
 assert(styles.includes('@media (max-width: 900px)'), 'playground should include a mobile layout breakpoint');
 assert(styles.includes('.budget-grid'), 'playground should style parser budget controls');
+assert(styles.includes('.source-actions select'), 'playground should style the parser-version selector');
 assert(styles.includes('.preview .and-code-block figcaption'), 'playground should style visible code block language tags');
 
 const source = `&ND v1
@@ -59,5 +68,18 @@ assert(canonical.startsWith('&ND v1\n\n# Playground\n\n'), 'playground source sh
 assert(canonical.includes('```aeon\ntitle = "Playground"\nmode = "strict"\n```'), 'playground source should preserve aeon code blocks');
 assert(canonical.includes('````aeon\ntitle = "Playground"\nmode = "ordered"\n````'), 'playground source should preserve ordered aeon code blocks');
 assert(canonical.includes('escaped \\| pipe'), 'canonical table output should preserve escaped table pipes');
+
+assert(examples.v1.version === 'v1' && examples.v1.source.startsWith('&ND v1'), 'v1 example metadata should agree with its declaration');
+assert(examples.v2.version === 'v2' && examples.v2.source.startsWith('&ND v2'), 'v2 example metadata should agree with its declaration');
+
+const v2Result = parseAnd(examples.v2.source, { allowV2: true, version: examples.v2.version, includeSpans: true });
+assert(v2Result.ok && v2Result.version === 'v2', 'playground v2 selection should parse v2 input');
+const v2Canonical = emitCanonical(v2Result.document, { profile: 'standalone', version: v2Result.version });
+const reparsedV2 = parseAnd(v2Canonical, { allowV2: true });
+assert(reparsedV2.ok && reparsedV2.version === 'v2', 'playground v2 canonical output should reparse as v2');
+const v2Html = renderHtml(v2Result.document);
+assert(v2Html.includes('data-auto-number="true"'), 'playground v2 preview should preserve auto-number intent');
+assert(v2Html.includes('id="overview"'), 'playground v2 preview should render anchors');
+assert(v2Html.includes('class="and-highlight-paragraph"'), 'playground v2 preview should render paired blocks');
 
 console.log('Playground checks passed.');

@@ -1,39 +1,11 @@
 import { emitCanonical, parseAnd, renderHtml } from '../index.mjs';
-
-const sample = `&ND v1
-
-+++document/meta
-title = "Hello World"
-author = "Patrik"
-date = 2026-04-01
-+++
-
-# Playground
-
-This is [* deterministic] prose with [/ visible structure].
-
-\`\`\`aeon
-title = "Playground"
-mode = "strict"
-\`\`\`
-
-\`\`\`\`aeon
-title = "Playground"
-mode = "ordered"
-\`\`\`\`
-
-- Parse strict documents
-
-  > Inspect spans and canonical output
-
-| Name | Note |
-| --- | --- |
-| &ND | escaped \\| pipe |
-`;
+import { examples } from './examples.mjs';
 
 const elements = {
   source: document.querySelector('#source'),
   reset: document.querySelector('#reset'),
+  example: document.querySelector('#example'),
+  version: document.querySelector('#version'),
   status: document.querySelector('#status'),
   badge: document.querySelector('#badge'),
   canonical: document.querySelector('#canonical'),
@@ -149,14 +121,23 @@ function updatePreview(result) {
 
 function update() {
   const budgetRead = readBudgets();
-  const parseOptions = budgetRead.ok ? budgetRead.options : {};
+  const selectedVersion = elements.version.value;
+  const parseOptions = budgetRead.ok
+    ? {
+        ...budgetRead.options,
+        version: selectedVersion,
+        allowV2: selectedVersion === 'v2',
+      }
+    : {};
   const result = budgetRead.ok
     ? parseAnd(elements.source.value, { ...parseOptions, includeSpans: true })
     : budgetRead.error;
   const diagnostics = diagnosticMessage(result, parseOptions);
 
   elements.status.textContent = result.ok ? 'Parsed' : 'Parse error';
-  elements.badge.textContent = result.ok ? 'strict: ok' : 'strict: failed';
+  elements.badge.textContent = result.ok
+    ? `${result.version}: strict ok`
+    : `${selectedVersion}: strict failed`;
   elements.badge.classList.toggle('is-error', !result.ok);
   elements.ast.textContent = formatJson(result);
   elements.diagnostics.textContent = formatJson(diagnostics);
@@ -169,7 +150,10 @@ function update() {
   }
 
   try {
-    elements.canonical.textContent = emitCanonical(result.document, { profile: 'standalone' });
+    elements.canonical.textContent = emitCanonical(result.document, {
+      profile: 'standalone',
+      version: result.version,
+    });
   } catch (error) {
     elements.canonical.textContent = formatJson({
       ok: false,
@@ -204,21 +188,29 @@ function activateTab(name) {
   }
 }
 
-elements.source.value = sample;
+function loadExample(name, { clearBudgets = true } = {}) {
+  const example = examples[name] ?? examples.v1;
+  elements.example.value = name in examples ? name : 'v1';
+  elements.version.value = example.version;
+  elements.source.value = example.source;
+  if (clearBudgets) {
+    for (const input of elements.budgetInputs) input.value = '';
+  }
+  update();
+}
+
 elements.source.addEventListener('input', update);
 for (const input of elements.budgetInputs) {
   input.addEventListener('input', update);
 }
+elements.version.addEventListener('change', update);
+elements.example.addEventListener('change', () => loadExample(elements.example.value));
 elements.reset.addEventListener('click', () => {
-  elements.source.value = sample;
-  for (const input of elements.budgetInputs) {
-    input.value = '';
-  }
-  update();
+  loadExample(elements.example.value);
 });
 
 for (const tab of elements.tabs) {
   tab.addEventListener('click', () => activateTab(tab.dataset.tab));
 }
 
-update();
+loadExample('v1');

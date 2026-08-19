@@ -23,6 +23,8 @@ It supports:
 
 * paragraphs, headings, horizontal rules, blockquotes, lists, code blocks, ordered code blocks, extension blocks, and tables
 * text, strong, emphasis, inline code, and links
+* proposal-v2 scalar tags, compact markers, explicit line breaks, and typed values
+* proposal-v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default
@@ -34,6 +36,7 @@ The local CLI exposes the same projection:
 ```sh
 npm run and -- render-html examples/minimal.and
 npm run and -- render-html examples/minimal.and --document --out output.html
+npm run and -- render-html path/to/proposal.and --version v2
 ```
 
 ## Safety Behavior
