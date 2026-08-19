@@ -474,22 +474,22 @@ Expected direction:
 - v2 strict parse success for valid `[.]` line-break marker usage
 - v1 strict behavior remains reject for the same source
 
-## Open Questions
+## Embedding Decision
 
-The readiness audit leaves one Core-facing design question: which host authority may select v2 for
-headerless input. The recommended first-draft rule is a host-controlled typed channel that explicitly
-supplies both v2 capability and `version: "v2"`; named embedding-profile registries remain deferred.
+The Core-facing embedding question is resolved: only a host-controlled typed channel may select v2
+for headerless input, and it must explicitly supply both v2 capability and `version: "v2"`.
+Declarations take precedence over external version options. Named embedding-profile registries remain
+deferred.
 
 Image resolution and AEON scalar drift are now pinned. Migration and consumer-convention work are
 publication deliverables rather than unresolved Core syntax questions.
 
 ## Next Edits
 
-1. Freeze embedding authority and write the v2 public API type contract.
-2. Pin exact standalone/embedded canonical and inert HTML snapshots for every promoted family.
-3. Complete v2 source-span and cross-form combination matrices.
-4. Write the v1-to-v2 migration guide and consumer-convention companion note.
-5. Run the final promotion gate described in the readiness audit.
+1. Pin exact standalone/embedded canonical and inert HTML snapshots for every promoted family.
+2. Complete v2 source-span and cross-form combination matrices.
+3. Write the v1-to-v2 migration guide and consumer-convention companion note.
+4. Run the final promotion gate described in the readiness audit.
 
 ## Proposal Lane Status
 
@@ -505,6 +505,6 @@ The executable proposal lane is active but is not a published conformance lane. 
 
 The detailed promotion status is recorded in
 [`and-core-v2-first-draft-readiness.md`](./and-core-v2-first-draft-readiness.md). Image resolution and
-AEON-inline-scalar drift controls are complete. Remaining blockers are embedding/API contract text,
-publication-grade canonical and HTML snapshots, broader span and combination coverage, migration
-guidance, and a consumer-convention companion boundary.
+AEON-inline-scalar drift controls, embedding authority, and the v2 public API contract are complete.
+Remaining blockers are publication-grade canonical and HTML snapshots, broader span and combination
+coverage, migration guidance, and a consumer-convention companion boundary.

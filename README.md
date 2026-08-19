@@ -106,7 +106,6 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* freeze the v2 embedding-authority and public API type contract
 * pin publication-grade canonical and HTML snapshots for the v2 first-draft candidate
 * complete v2 source-span and cross-form combination coverage
 * publish v1-to-v2 migration and consumer-convention companion guidance

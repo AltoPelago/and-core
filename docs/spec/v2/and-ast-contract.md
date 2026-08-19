@@ -23,6 +23,19 @@ option. The parser MUST NOT infer v2 from body syntax.
 Canonical emitters receive the effective version explicitly. This preserves the existing v1 AST
 shape while allowing a v2 document containing only inherited v1 nodes to retain its v2 declaration.
 
+### Host-Controlled Embedded Version Selection
+
+Only the host of a headerless typed channel may supply an effective v2 version. It MUST explicitly
+provide both v2 reader capability and `version: "v2"`; capability alone does not select v2, and a
+version request without capability fails with `unsupported_version`. Missing version selection
+defaults to v1. Unknown version values fail with `invalid_version_option`.
+
+A source declaration always takes precedence over an external version option. Declared-v1 input
+remains v1 even when the host requests v2, and declared-v2 input remains v2 even when the host passes
+`version: "v1"`. A declared-v2 document still requires a v2-capable reader. Implementations MUST NOT
+infer capability or effective version from document content. Registries of named embedding profiles
+are outside this first-draft Core boundary.
+
 ## Inherited Nodes
 
 The complete v1 block and inline node unions remain valid in v2. A v2-capable reader MUST preserve

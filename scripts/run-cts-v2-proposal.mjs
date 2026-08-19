@@ -207,6 +207,34 @@ function runApiBoundaryChecks() {
     'embedded v2 must require allowV2 capability'
   ));
 
+  const capabilityOnlyEmbedded = parseAnd('[# id]\n', { allowV2: true });
+  checks.push(reportCheck(
+    'embedded v2 requires explicit version selection',
+    !capabilityOnlyEmbedded.ok && capabilityOnlyEmbedded.errorCode === 'unknown_inline_type',
+    'allowV2 declares capability but must not infer v2 for headerless input'
+  ));
+
+  const hostSelectedEmbedded = parseAnd('[# id]\n', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'host-selected embedded v2',
+    hostSelectedEmbedded.ok && hostSelectedEmbedded.version === 'v2',
+    'a host-controlled typed channel must supply both v2 capability and effective version'
+  ));
+
+  const declaredV1Precedence = parseAnd('&ND v1\n\ntext\n', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'declared v1 precedence over host version',
+    declaredV1Precedence.ok && declaredV1Precedence.version === 'v1',
+    'a host version option must not reinterpret a declared-v1 document'
+  ));
+
+  const declaredV2Precedence = parseAnd('&ND v2\n\n[# id]\n', { allowV2: true, version: 'v1' });
+  checks.push(reportCheck(
+    'declared v2 precedence over host version',
+    declaredV2Precedence.ok && declaredV2Precedence.version === 'v2',
+    'a host version option must not reinterpret a declared-v2 document'
+  ));
+
   const invalidVersion = parseAnd('text\n', { version: 'v3', allowV2: true });
   checks.push(reportCheck(
     'invalid embedded version option',

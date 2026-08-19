@@ -17,7 +17,7 @@ should not occur until the blockers below are closed and the final promotion che
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
 | v1 compatibility | All 139 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
 | v2 grammar | 94 indexed strict fixtures: 41 accept and 53 reject. | Ready |
-| v2 executable checks | 644 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| v2 executable checks | 648 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
 | AST snapshots | 40 of 41 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
@@ -25,26 +25,30 @@ should not occur until the blockers below are closed and the final promotion che
 | HTML projection | Every accepted fixture renders; promoted-node smoke assertions are exact. No v2 fixture currently stores an exact HTML snapshot. | Blocker |
 | Source spans | Exact span assertions exist for 3 of 41 accepted fixtures. | Blocker |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
-| Public API types | The existing API plan still types successful parses as v1-only and does not specify the v2 capability/version options or v2 AST union. | Blocker |
+| Public API types | `and-public-api.md` defines host authority, v2 capability/version options, result metadata, promoted unions, canonical versioning, diagnostics, and HTML options. | Ready |
 | Editor tooling | The VS Code prototype explicitly targets Core v1. | Deferred, not a blocker |
 | Formal mirrors | Proposal and AST-contract mirrors pass repository and website checks. | Ready |
 
-## Promotion Blockers
+## Promotion Gates
 
 ### B1. Embedding authority
 
-Decide the one remaining Core-facing question: who may select v2 for headerless input. Recommended
-first-draft rule: only a host-controlled typed channel may supply the effective version, and it must
+Status: **closed**.
+
+Only a host-controlled typed channel may supply the effective version, and it must
 select both v2 capability and `version: "v2"`; document content cannot request or infer promotion.
 Named embedding-profile registries can remain outside the first Core draft.
 
-Closure evidence: normative processing text plus positive and negative API fixtures for host-selected,
-missing-capability, conflicting-declaration, and unknown-version cases.
+Closure evidence: the AST contract and public API contract contain the processing rule; positive and
+negative API checks cover host-selected input, capability-only input, missing capability, declaration
+precedence, and unknown versions.
 
 ### B2. v2 public API contract
 
-Write a v2 API delta that types `allowV2`, headerless `version`, the `"v1" | "v2"` success result,
-the promoted AST union, explicit canonical version selection, diagnostics, and `imageBaseUrl`.
+Status: **closed**.
+
+`and-public-api.md` types `allowV2`, headerless `version`, the `"v1" | "v2"` success result,
+the promoted AST union, canonical version selection, budgets, spans, diagnostics, and `imageBaseUrl`.
 
 Closure evidence: the document agrees with the root exports, CLI behavior, and public API checks.
 
@@ -128,5 +132,5 @@ After B1–B8 close:
    change; do not imply publication merely by renaming a snapshot.
 4. Keep footnotes, recovery, editor expansion, and consumer semantics explicitly deferred.
 
-The recommended next implementation task is B1 and B2 together: freeze embedding authority while
-writing the v2 public API contract. That removes the last Core-facing decision before snapshot work.
+The recommended next implementation task is B3 and B4 together: create one machine-readable
+projection contract that pins exact canonical and inert HTML snapshots for every promoted family.
