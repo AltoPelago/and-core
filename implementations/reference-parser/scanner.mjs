@@ -80,6 +80,8 @@ export function rawFence(line) {
   if (quoteMatch) return { prefix: quoteMatch[1], fence: quoteMatch[2] };
   const nestedQuoteMatch = line.match(/^(  > ?)(`{3,4})/);
   if (nestedQuoteMatch) return { prefix: nestedQuoteMatch[1], fence: nestedQuoteMatch[2] };
+  const tildeMatch = line.match(/^((?: {2})?|> ?|  > ?)(~{3,4})([A-Za-z][A-Za-z0-9_-]*)$/);
+  if (tildeMatch) return { prefix: tildeMatch[1], fence: tildeMatch[2] };
   return null;
 }
 
@@ -106,7 +108,11 @@ function scanRawIslands(lines) {
           i = j;
           break;
         }
-        if (lines[j].trim() === fence.fence && lines[j] !== `${fence.prefix}${fence.fence}`) {
+        if (
+          fence.fence.startsWith('`')
+          && lines[j].trim() === fence.fence
+          && lines[j] !== `${fence.prefix}${fence.fence}`
+        ) {
           return failAt('raw_block_bad_closing_margin', j, lines[j].indexOf(fence.fence));
         }
       }

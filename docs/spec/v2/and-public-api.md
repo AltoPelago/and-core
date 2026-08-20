@@ -127,6 +127,7 @@ type NdInlineNode =
   | NdFootnoteDefinition
   | NdFootnoteReference
   | NdDirectionalMarker
+  | NdAdvisoryMarker
   | NdLineBreak;
 
 type NdBlockNode =
@@ -137,6 +138,9 @@ type NdBlockNode =
   | NdStrongParagraphBlock
   | NdEmphasisParagraphBlock
   | NdUnderlineParagraphBlock
+  | NdQuestionParagraphBlock
+  | NdAdmonitionParagraphBlock
+  | NdCommentBlock
   | NdHeaderTextBlock
   | NdDisclaimerBlock;
 

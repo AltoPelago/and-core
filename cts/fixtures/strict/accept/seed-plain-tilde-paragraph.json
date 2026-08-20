@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-plain-tilde-paragraph",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "~~~\nordinary text\n~~~\n",
+  "expected": {
+    "ok": true,
+    "assertions": ["bare triple tildes remain ordinary paragraph text without a language suffix"],
+    "canonical": {
+      "embedded": "~~~ ordinary text ~~~\n",
+      "standalone": "&ND v1\n\n~~~ ordinary text ~~~\n"
+    },
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "paragraph",
+        "children": [{ "type": "text", "value": "~~~\nordinary text\n~~~" }]
+      }]
+    }
+  }
+}

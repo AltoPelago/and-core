@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-advisory-list-malformed-spacing",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [?]hint\n",
+  "expected": { "ok": false, "errorCode": "invalid_advisory_list_item", "assertions": ["compact advisory markers require a separating space"] }
+}

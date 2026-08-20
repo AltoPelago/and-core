@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-admonition-paragraph-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~!\nunclosed attention\n",
+  "expected": { "ok": false, "errorCode": "unclosed_admonition_paragraph_block", "assertions": ["attention paragraph fences must close exactly"] }
+}

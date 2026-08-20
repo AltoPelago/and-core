@@ -140,6 +140,10 @@
     "strict/metadata/seed-source-spans-list-item-blockquote-extension-fallback.json",
     "strict/metadata/seed-source-spans-list-item-blockquote-paragraph-then-table.json",
     "strict/metadata/seed-source-spans-list-item-blockquote-code-block.json",
-    "strict/metadata/seed-source-spans-ordered-code-block.json"
+    "strict/metadata/seed-source-spans-ordered-code-block.json",
+    "strict/accept/seed-tilde-code-fences.json",
+    "strict/accept/seed-plain-tilde-paragraph.json",
+    "strict/reject/seed-tilde-code-block-unclosed.json",
+    "strict/reject/seed-ordered-tilde-code-block-wrong-closing-fence.json"
   ]
 }

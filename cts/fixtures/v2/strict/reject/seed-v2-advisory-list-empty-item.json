@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-advisory-list-empty-item",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [!]\n",
+  "expected": { "ok": false, "errorCode": "invalid_advisory_list_item", "assertions": ["compact advisory list markers require visible content"] }
+}

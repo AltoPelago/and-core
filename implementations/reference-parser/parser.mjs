@@ -560,6 +560,21 @@ const V2_FORMATTED_PARAGRAPH_FENCES = {
     invalidCode: 'invalid_underline_paragraph_block',
     unclosedCode: 'unclosed_underline_paragraph_block',
   },
+  '~~~?': {
+    nodeType: 'question_paragraph_block',
+    invalidCode: 'invalid_question_paragraph_block',
+    unclosedCode: 'unclosed_question_paragraph_block',
+  },
+  '~~~!': {
+    nodeType: 'admonition_paragraph_block',
+    invalidCode: 'invalid_admonition_paragraph_block',
+    unclosedCode: 'unclosed_admonition_paragraph_block',
+  },
+  "~~~'": {
+    nodeType: 'comment_block',
+    invalidCode: 'invalid_comment_block',
+    unclosedCode: 'unclosed_comment_block',
+  },
 };
 
 function formattedParagraphFence(line) {
@@ -1495,6 +1510,17 @@ function parseList(lines, start, options, context) {
     return { ok: true, text: text.slice(4), prefixLength: 4 };
   }
 
+  function advisoryPrefix(text) {
+    const token = text.slice(0, 3);
+    const kinds = { '[?]': 'question', '[!]': 'admonition' };
+    const kind = kinds[token];
+    if (!kind) return null;
+    if (text.length < 5 || text[3] !== ' ' || text.slice(4).trim().length === 0) {
+      return { ok: false, errorCode: 'invalid_advisory_list_item' };
+    }
+    return { ok: true, kind, text: text.slice(3), prefixLength: 3 };
+  }
+
   function isImmediateNestedList(line) {
     if (!isV2Document(context) || typeof line !== 'string' || !line.startsWith('  ')) return false;
     const nestedLine = line.slice(2);
@@ -1512,17 +1538,24 @@ function parseList(lines, start, options, context) {
     const itemText = ordered ? markerMatch[2] : markerMatch[1];
     const parsedTodoPrefix = isV2Document(context) ? todoPrefix(itemText) : null;
     const parsedAutoNumberPrefix = isV2Document(context) ? autoNumberPrefix(itemText) : null;
+    const parsedAdvisoryPrefix = isV2Document(context) ? advisoryPrefix(itemText) : null;
     if (parsedTodoPrefix && !parsedTodoPrefix.ok) {
       return failAt(parsedTodoPrefix.errorCode, context.lineOffset + index, lines[index].length - itemText.length);
     }
     if (parsedAutoNumberPrefix && !parsedAutoNumberPrefix.ok) {
       return failAt(parsedAutoNumberPrefix.errorCode, context.lineOffset + index, lines[index].length - itemText.length);
     }
+    if (parsedAdvisoryPrefix && !parsedAdvisoryPrefix.ok) {
+      return failAt(parsedAdvisoryPrefix.errorCode, context.lineOffset + index, lines[index].length - itemText.length);
+    }
     if (ordered && parsedTodoPrefix?.ok) {
       return failAt('todo_list_requires_unordered_marker', context.lineOffset + index, 0);
     }
     if (ordered && parsedAutoNumberPrefix?.ok) {
       return failAt('auto_number_list_requires_unordered_marker', context.lineOffset + index, 0);
+    }
+    if (ordered && parsedAdvisoryPrefix?.ok) {
+      return failAt('advisory_list_requires_unordered_marker', context.lineOffset + index, 0);
     }
     const itemKind = parsedTodoPrefix?.ok
       ? 'todo'
@@ -1545,7 +1578,13 @@ function parseList(lines, start, options, context) {
     const item = parsedTodoPrefix?.ok
       ? { type: 'todo_item', state: parsedTodoPrefix.state, children: [] }
       : { type: 'list_item', children: [] };
-    const structuralPrefix = parsedTodoPrefix?.ok ? parsedTodoPrefix : parsedAutoNumberPrefix?.ok ? parsedAutoNumberPrefix : null;
+    const structuralPrefix = parsedTodoPrefix?.ok
+      ? parsedTodoPrefix
+      : parsedAutoNumberPrefix?.ok
+        ? parsedAutoNumberPrefix
+        : parsedAdvisoryPrefix?.ok
+          ? parsedAdvisoryPrefix
+          : null;
     const headText = structuralPrefix ? structuralPrefix.text : itemText;
     const markerLength = lines[index].length - itemText.length + (structuralPrefix?.prefixLength ?? 0);
     const headBaseOffset = context.lineStartOffsets[index] + markerLength;
@@ -1570,6 +1609,15 @@ function parseList(lines, start, options, context) {
     );
     if (!head.ok) return head;
     stripListContinuationIndent(head.node.children);
+    if (parsedAdvisoryPrefix?.ok) {
+      const markerStart = context.lineStartOffsets[itemStart] + (ordered ? markerMatch[1].length + 2 : 2);
+      head.node.children.unshift(withSpan(
+        { type: 'advisory_marker', kind: parsedAdvisoryPrefix.kind },
+        context,
+        markerStart,
+        markerStart + 3
+      ));
+    }
     const headBlockBudget = recordBlock(options, context, itemStart);
     if (!headBlockBudget.ok) return headBlockBudget;
     item.children.push(head.node);

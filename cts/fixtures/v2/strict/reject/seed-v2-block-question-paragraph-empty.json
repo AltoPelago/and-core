@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-question-paragraph-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~?\n~~~?\n",
+  "expected": { "ok": false, "errorCode": "invalid_question_paragraph_block", "assertions": ["hint paragraph blocks require non-empty rich content"] }
+}

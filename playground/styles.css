@@ -300,6 +300,111 @@ textarea {
   margin: 0 0 1rem;
 }
 
+.preview .and-highlight-paragraph {
+  padding: 0.18em 0.42em;
+  border-radius: 0.2em;
+  background: #f6df72;
+  box-shadow: inset 0 -0.08em 0 rgba(153, 105, 0, 0.16);
+}
+
+.preview .and-callout {
+  position: relative;
+  display: inline-flex;
+  vertical-align: 0.08em;
+  outline: none;
+}
+
+.preview .and-callout-icon,
+.preview .and-advisory-list-marker,
+.preview .and-advisory-paragraph-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.1em solid currentColor;
+  border-radius: 50%;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8em;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.preview .and-question,
+.preview .and-question-paragraph,
+.preview [data-kind="question"] {
+  color: #145c71;
+}
+
+.preview .and-admonition,
+.preview .and-admonition-paragraph,
+.preview [data-kind="admonition"] {
+  color: #8a3b16;
+}
+
+.preview .and-callout:focus-visible .and-callout-icon {
+  outline: 3px solid color-mix(in srgb, currentColor 35%, transparent);
+  outline-offset: 2px;
+}
+
+.preview .and-callout-content {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  bottom: calc(100% + 0.55rem);
+  width: max-content;
+  max-width: min(30rem, 75vw);
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #cdbf9c;
+  border-radius: 0.55rem;
+  color: var(--ink);
+  background: #fffaf0;
+  box-shadow: 0 10px 26px rgba(38, 33, 22, 0.18);
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.25rem);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.preview .and-callout:hover .and-callout-content,
+.preview .and-callout:focus .and-callout-content,
+.preview .and-callout:focus-within .and-callout-content {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.preview .and-advisory-list-item > p {
+  display: flex;
+  align-items: baseline;
+  gap: 0.48em;
+}
+
+.preview .and-advisory-list-marker {
+  flex: 0 0 auto;
+}
+
+.preview .and-advisory-paragraph {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-left-width: 4px;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, currentColor 7%, #fffaf0);
+}
+
+.preview .and-advisory-paragraph-icon {
+  margin-top: 0.22em;
+}
+
+.preview .and-advisory-paragraph p {
+  margin: 0;
+  color: var(--ink);
+}
+
 .preview blockquote {
   border-left: 4px solid var(--accent);
   padding-left: 1rem;

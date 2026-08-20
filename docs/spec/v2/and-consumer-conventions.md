@@ -26,6 +26,9 @@ parse error, rewrite Core canonical text, or infer the document grammar version.
 | :------ | :-------------- | :------------ |
 | `[! ...]` | `admonition_tag` with rich inline `children` | Severity vocabulary, colors, icons, labels, accessibility phrasing, and workflow effects |
 | `[? ...]` | `question_tag` with rich inline `children` | Whether it is a question, hint, review request, expandable help, or task prompt in a product |
+| `- [?] ...` / `- [!] ...` | Stable advisory kind plus leading-unordered-item bullet-replacement intent; item content stays visible | Marker glyphs, labels, colors, and list styling |
+| `~~~?` / `~~~!` | Visible rich hint/question or attention/admonition paragraph structure | Iconography, severity vocabulary, colors, layout, and accessibility phrasing |
+| `~~~'` | Preserved rich `comment_block` children | Visibility, reviewer identity, export/redaction policy, and collaboration workflow |
 | `[+ value]` | `plus_tag` with one preserved scalar `value` | Value registry, action mapping, analytics, workflow, and UI |
 | Custom `[:type = scalar]` | Structured datatype label/adornments and a validated inline scalar | Datatype registry, domain validation, units, display formatting, and business meaning |
 | `===tag` and `***tag` | Validated optional `tag` string on the paired-block AST | Tag vocabulary, templates, placement, styling, and product behavior |
@@ -41,6 +44,11 @@ parse error, rewrite Core canonical text, or infer the document grammar version.
 Local anchors are different: Core owns their identifier grammar, uniqueness, case-sensitive matching,
 and full-document fragment resolution. A consumer owns scrolling, focus, history updates, and other
 navigation UI after resolution succeeds.
+
+Inline `[? ...]` and `[! ...]` content may be projected as hover/focus callouts, always-visible
+annotations, review affordances, or another accessible UI. Core does not require the literal labels
+“hint” or “warning.” The reference playground uses focusable circled `?` and `!` controls and calls
+the broad `!` category “Attention”; that projection is illustrative, not additional grammar.
 
 ## No Implicit Vocabulary
 

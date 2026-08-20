@@ -1,9 +1,9 @@
 {
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
-    "fixtures": 52,
+    "fixtures": 54,
     "profiles": 2,
-    "checked": 104,
+    "checked": 108,
     "skipped": 0,
     "failed": 0
   },
@@ -939,6 +939,42 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-tilde-code-fences",
+      "path": "strict/accept/seed-tilde-code-fences.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "```aeon\nnote:prose = >`\n  text\n  ~~~json\n    code\n  ~~~\n`\n```\n\n````aeon\nnumbered code\n````\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n```aeon\nnote:prose = >`\n  text\n  ~~~json\n    code\n  ~~~\n`\n```\n\n````aeon\nnumbered code\n````\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-plain-tilde-paragraph",
+      "path": "strict/accept/seed-plain-tilde-paragraph.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "~~~ ordinary text ~~~\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n~~~ ordinary text ~~~\n",
           "notes": []
         }
       },

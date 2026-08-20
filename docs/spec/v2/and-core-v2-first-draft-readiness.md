@@ -16,16 +16,16 @@ clean-baseline and lifecycle review described below.
 | Area | Current evidence | Assessment |
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
-| v1 compatibility | All 139 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
-| v2 grammar | 121 indexed strict fixtures: 47 accept and 74 reject. | Ready |
-| v2 executable checks | 781 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
-| AST snapshots | 46 of 47 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
+| v1 compatibility | All 143 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
+| v2 grammar | 134 indexed strict fixtures: 51 accept and 83 reject. | Ready |
+| v2 executable checks | 849 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| AST snapshots | 50 of 51 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 36 exact canonical snapshots across promoted families and interactions. | Ready |
-| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 19 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
-| Source spans | The projection contract pins 34 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
-| Cross-form interactions | A 24-entry executable matrix covers paired blocks in lists/quotes, formatted paragraphs with rich children, cross-container links, rich resources, contextual list-item content, directional bullet replacement, heading-number hierarchy, and rich/reused footnotes. | Ready |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 40 exact canonical snapshots across promoted families and interactions. | Ready |
+| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 21 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
+| Source spans | The projection contract pins 38 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
+| Cross-form interactions | A 28-entry executable matrix covers paired blocks in lists/quotes, formatted/advisory/comment blocks with rich children, cross-container links, rich resources, contextual list-item content, directional/advisory bullet replacement, heading-number hierarchy, and rich/reused footnotes. | Ready |
 | Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |
 | Consumer conventions | The companion boundary maps every consumer-owned surface to its fixed Core fields and non-Core behavior. | Ready |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
@@ -82,7 +82,7 @@ projection rather than Core parsing semantics.
 
 Status: **closed**.
 
-Contract `and-v2-projection-v1` contains an explicit 34-entry span matrix covering every new scalar
+Contract `and-v2-projection-v1` contains an explicit 38-entry span matrix covering every new scalar
 and rich inline family, first-class todo lists/items, heading and list `[n]`, all seven paired blocks,
 escaped image fields, AEON datatype generics and clarifiers, nested rich/image/typed-value content,
 ordinary lists, and blockquotes.
@@ -103,10 +103,12 @@ The projection contract indexes and pins focused cases for:
 - images and typed values nested inside rich v2 tags;
 - rich inline and explicit line-break content inside first-class todo and auto-number items;
 - leading directional markers replacing unordered-item bullets while later markers remain inline;
+- leading hint/attention markers replacing unordered-item bullets while keeping item content visible;
+- inline advisory callouts and visible `~~~?` / `~~~!` advisory paragraphs;
 - heading-number hierarchy plus rich footnote content and repeated named references.
 
-Closure evidence: all 24 required combination identifiers appear exactly once and participate in the
-same 36 canonical and 19 HTML snapshots as the promoted-surface contract.
+Closure evidence: all 28 required combination identifiers appear exactly once and participate in the
+same 40 canonical and 21 HTML snapshots as the promoted-surface contract.
 
 ### B7. v1-to-v2 migration guide
 

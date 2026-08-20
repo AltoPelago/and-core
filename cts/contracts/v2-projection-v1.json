@@ -40,6 +40,10 @@
     "block.strong_paragraph",
     "block.emphasis_paragraph",
     "block.underline_paragraph",
+    "block.question_paragraph",
+    "block.admonition_paragraph",
+    "inline.advisory_marker",
+    "block.comment",
     "block.header_text",
     "block.disclaimer",
     "composition.nested_rich",
@@ -79,6 +83,10 @@
     "block.strong_paragraph",
     "block.emphasis_paragraph",
     "block.underline_paragraph",
+    "block.question_paragraph",
+    "block.admonition_paragraph",
+    "inline.advisory_marker",
+    "block.comment",
     "block.header_text",
     "block.disclaimer",
     "composition.nested_rich",
@@ -111,7 +119,11 @@
     "directional_marker.list_bullet_replacement",
     "formatted_paragraph.strong.with_rich_child",
     "formatted_paragraph.emphasis.with_rich_child",
-    "formatted_paragraph.underline.with_rich_child"
+    "formatted_paragraph.underline.with_rich_child",
+    "advisory_marker.list_bullet_replacement",
+    "question_paragraph.with_rich_child",
+    "admonition_paragraph.with_rich_child",
+    "comment_block.with_rich_child"
   ],
   "cases": [
     {
@@ -163,8 +175,8 @@
           "standalone": "&ND v2\n\n# Heading\n\n[# section][@ #section | Go [* now]] [! note] [? why] [+ custom]\n"
         },
         "html": {
-          "fragment": "<h1>Heading</h1>\n<p><span class=\"and-anchor\" id=\"section\" aria-hidden=\"true\"></span><a href=\"#section\">Go <strong>now</strong></a> <span class=\"and-admonition\">note</span> <span class=\"and-question\">why</span> <span class=\"and-consumer-tag\" data-value=\"custom\">custom</span></p>",
-          "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<h1>Heading</h1>\n<p><span class=\"and-anchor\" id=\"section\" aria-hidden=\"true\"></span><a href=\"#section\">Go <strong>now</strong></a> <span class=\"and-admonition\">note</span> <span class=\"and-question\">why</span> <span class=\"and-consumer-tag\" data-value=\"custom\">custom</span></p>\n</body>\n</html>\n"
+          "fragment": "<h1>Heading</h1>\n<p><span class=\"and-anchor\" id=\"section\" aria-hidden=\"true\"></span><a href=\"#section\">Go <strong>now</strong></a> <span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">note</span></span> <span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">why</span></span> <span class=\"and-consumer-tag\" data-value=\"custom\">custom</span></p>",
+          "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<h1>Heading</h1>\n<p><span class=\"and-anchor\" id=\"section\" aria-hidden=\"true\"></span><a href=\"#section\">Go <strong>now</strong></a> <span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">note</span></span> <span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">why</span></span> <span class=\"and-consumer-tag\" data-value=\"custom\">custom</span></p>\n</body>\n</html>\n"
         }
       }
     },
@@ -363,7 +375,7 @@
           "standalone": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n~~~*\nStrong [/ nested].\n~~~*\n\n~~~/\nEmphasis [* nested].\n~~~/\n\n~~~_\nUnderline [? why].\n~~~_\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n"
         },
         "html": {
-          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1\"><span class=\"and-heading-number\">1.</span> Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<p class=\"and-strong-paragraph\"><strong>Strong <em>nested</em>.</strong></p>\n<p class=\"and-emphasis-paragraph\"><em>Emphasis <strong>nested</strong>.</em></p>\n<p class=\"and-underline-paragraph\"><u>Underline <span class=\"and-question\">why</span>.</u></p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-admonition\">note</span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-question\">why</span>.</aside>"
+          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1\"><span class=\"and-heading-number\">1.</span> Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<p class=\"and-strong-paragraph\"><strong>Strong <em>nested</em>.</strong></p>\n<p class=\"and-emphasis-paragraph\"><em>Emphasis <strong>nested</strong>.</em></p>\n<p class=\"and-underline-paragraph\"><u>Underline <span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">why</span></span>.</u></p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">note</span></span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">why</span></span>.</aside>"
         }
       }
     },
@@ -407,7 +419,7 @@
           "standalone": "&ND v2\n\n- [n] [! first]\n- [n] second[.]\n"
         },
         "html": {
-          "fragment": "<ol class=\"and-auto-number-list\" data-auto-number=\"true\">\n<li><p><span class=\"and-admonition\">first</span></p></li>\n<li><p>second<br></p></li>\n</ol>"
+          "fragment": "<ol class=\"and-auto-number-list\" data-auto-number=\"true\">\n<li><p><span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">first</span></span></p></li>\n<li><p>second<br></p></li>\n</ol>"
         }
       }
     },
@@ -446,7 +458,7 @@
           "standalone": "&ND v2\n\n[= nested [- old [_ under]]] [! image [~ icon.png | Icon | inline]] [? value [:date = 2026-08-20]]\n"
         },
         "html": {
-          "fragment": "<p><mark>nested <s>old <u>under</u></s></mark> <span class=\"and-admonition\">image <img class=\"and-image and-image-inline\" src=\"icon.png\" alt=\"Icon\" data-size=\"inline\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\" style=\"height:1em;width:auto;vertical-align:-0.125em\"></span> <span class=\"and-question\">value <data class=\"and-typed-value\" data-type=\"date\" value=\"2026-08-20\">2026-08-20</data></span></p>"
+          "fragment": "<p><mark>nested <s>old <u>under</u></s></mark> <span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">image <img class=\"and-image and-image-inline\" src=\"icon.png\" alt=\"Icon\" data-size=\"inline\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\" style=\"height:1em;width:auto;vertical-align:-0.125em\"></span></span> <span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">value <data class=\"and-typed-value\" data-type=\"date\" value=\"2026-08-20\">2026-08-20</data></span></span></p>"
         }
       }
     },
@@ -503,7 +515,7 @@
           "standalone": "&ND v2\n\n- item\n\n  ~~~=\n  [! note]\n  ~~~=\n  \n  ===card\n  [? why]\n  ===\n  \n  ***legal\n  [- terms]\n  ***\n"
         },
         "html": {
-          "fragment": "<ul>\n<li><p>item</p>\n<p class=\"and-highlight-paragraph\"><span class=\"and-admonition\">note</span></p>\n<header class=\"and-header-text\" data-tag=\"card\"><span class=\"and-question\">why</span></header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\"><s>terms</s></aside></li>\n</ul>"
+          "fragment": "<ul>\n<li><p>item</p>\n<p class=\"and-highlight-paragraph\"><span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">note</span></span></p>\n<header class=\"and-header-text\" data-tag=\"card\"><span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">why</span></span></header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\"><s>terms</s></aside></li>\n</ul>"
         }
       }
     },
@@ -536,7 +548,7 @@
           "standalone": "&ND v2\n\n> ~~~=\n> [! note]\n> ~~~=\n>\n> ===card\n> [? why]\n> ===\n>\n> ***legal\n> [- terms]\n> ***\n"
         },
         "html": {
-          "fragment": "<blockquote>\n<p class=\"and-highlight-paragraph\"><span class=\"and-admonition\">note</span></p>\n<header class=\"and-header-text\" data-tag=\"card\"><span class=\"and-question\">why</span></header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\"><s>terms</s></aside>\n</blockquote>"
+          "fragment": "<blockquote>\n<p class=\"and-highlight-paragraph\"><span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">note</span></span></p>\n<header class=\"and-header-text\" data-tag=\"card\"><span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">why</span></span></header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\"><s>terms</s></aside>\n</blockquote>"
         }
       }
     },
@@ -624,7 +636,7 @@
           "standalone": "&ND v2\n\n- [x] [! alert][.][? next]\n"
         },
         "html": {
-          "fragment": "<ul class=\"and-todo-list\" style=\"list-style:none;padding-inline-start:0\">\n<li class=\"and-todo-item\" data-state=\"checked\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"Checked\">☑</span> <span class=\"and-todo-content\"><span class=\"and-admonition\">alert</span><br><span class=\"and-question\">next</span></span></li>\n</ul>"
+          "fragment": "<ul class=\"and-todo-list\" style=\"list-style:none;padding-inline-start:0\">\n<li class=\"and-todo-item\" data-state=\"checked\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"Checked\">☑</span> <span class=\"and-todo-content\"><span class=\"and-callout and-admonition\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">!</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Attention\">alert</span></span><br><span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">next</span></span></span></li>\n</ul>"
         }
       }
     },
@@ -658,7 +670,63 @@
           "standalone": "&ND v2\n\nHello [% anonymous [* note]]. Named [% (A1) rich [? detail]] again [% (A1)].\n"
         },
         "html": {
-          "fragment": "<p>Hello <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-1-1\"><a href=\"#and-footnote-1\" aria-label=\"Footnote 1\">1</a></sup>. Named <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-2-1\" data-footnote-id=\"A1\"><a href=\"#and-footnote-2\" aria-label=\"Footnote 2\">2</a></sup> again <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-2-2\" data-footnote-id=\"A1\"><a href=\"#and-footnote-2\" aria-label=\"Footnote 2\">2</a></sup>.</p>\n<section class=\"and-footnotes\" aria-label=\"Footnotes\">\n<hr>\n<ol>\n<li id=\"and-footnote-1\"><span class=\"and-footnote-content\">anonymous <strong>note</strong></span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-1-1\" aria-label=\"Back to footnote 1 reference 1\">↩</a></li>\n<li id=\"and-footnote-2\" data-footnote-id=\"A1\"><span class=\"and-footnote-content\">rich <span class=\"and-question\">detail</span></span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-2-1\" aria-label=\"Back to footnote 2 reference 1\">↩ 1</a> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-2-2\" aria-label=\"Back to footnote 2 reference 2\">↩ 2</a></li>\n</ol>\n</section>"
+          "fragment": "<p>Hello <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-1-1\"><a href=\"#and-footnote-1\" aria-label=\"Footnote 1\">1</a></sup>. Named <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-2-1\" data-footnote-id=\"A1\"><a href=\"#and-footnote-2\" aria-label=\"Footnote 2\">2</a></sup> again <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-2-2\" data-footnote-id=\"A1\"><a href=\"#and-footnote-2\" aria-label=\"Footnote 2\">2</a></sup>.</p>\n<section class=\"and-footnotes\" aria-label=\"Footnotes\">\n<hr>\n<ol>\n<li id=\"and-footnote-1\"><span class=\"and-footnote-content\">anonymous <strong>note</strong></span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-1-1\" aria-label=\"Back to footnote 1 reference 1\">↩</a></li>\n<li id=\"and-footnote-2\" data-footnote-id=\"A1\"><span class=\"and-footnote-content\">rich <span class=\"and-callout and-question\" tabindex=\"0\"><span class=\"and-callout-icon\" aria-hidden=\"true\">?</span><span class=\"and-callout-content\" role=\"note\" aria-label=\"Hint\">detail</span></span></span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-2-1\" aria-label=\"Back to footnote 2 reference 1\">↩ 1</a> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-2-2\" aria-label=\"Back to footnote 2 reference 2\">↩ 2</a></li>\n</ol>\n</section>"
+        }
+      }
+    },
+    {
+      "id": "advisory-list-and-paragraphs",
+      "covers": ["inline.advisory_marker", "block.question_paragraph", "block.admonition_paragraph"],
+      "combinationCovers": [
+        "advisory_marker.list_bullet_replacement",
+        "question_paragraph.with_rich_child",
+        "admonition_paragraph.with_rich_child"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "inline.advisory_marker",
+          "path": "$.children[0].items[0].children[0].children[0]",
+          "span": { "startOffset": 10, "endOffset": 13, "startLine": 3, "startColumn": 3, "endLine": 3, "endColumn": 6 }
+        },
+        {
+          "cover": "block.question_paragraph",
+          "path": "$.children[1]",
+          "span": { "startOffset": 46, "endOffset": 69, "startLine": 6, "startColumn": 1, "endLine": 8, "endColumn": 5 }
+        },
+        {
+          "cover": "block.admonition_paragraph",
+          "path": "$.children[2]",
+          "span": { "startOffset": 71, "endOffset": 99, "startLine": 10, "startColumn": 1, "endLine": 12, "endColumn": 5 }
+        }
+      ],
+      "source": "&ND v2\n\n- [?] hint item\n- [!] attention item\n\n~~~?\nHint [* rich]\n~~~?\n\n~~~!\nAttention [/ rich]\n~~~!\n",
+      "expected": {
+        "canonical": {
+          "embedded": "- [?] hint item\n- [!] attention item\n\n~~~?\nHint [* rich]\n~~~?\n\n~~~!\nAttention [/ rich]\n~~~!\n",
+          "standalone": "&ND v2\n\n- [?] hint item\n- [!] attention item\n\n~~~?\nHint [* rich]\n~~~?\n\n~~~!\nAttention [/ rich]\n~~~!\n"
+        },
+        "html": {
+          "fragment": "<ul>\n<li class=\"and-advisory-list-item\" data-kind=\"question\" style=\"list-style:none\"><p><span class=\"and-advisory-list-marker\" data-kind=\"question\" role=\"img\" aria-label=\"Hint\">?</span> hint item</p></li>\n<li class=\"and-advisory-list-item\" data-kind=\"admonition\" style=\"list-style:none\"><p><span class=\"and-advisory-list-marker\" data-kind=\"admonition\" role=\"img\" aria-label=\"Attention\">!</span> attention item</p></li>\n</ul>\n<aside class=\"and-advisory-paragraph and-question-paragraph\" aria-label=\"Hint\"><span class=\"and-advisory-paragraph-icon\" aria-hidden=\"true\">?</span><p>Hint <strong>rich</strong></p></aside>\n<aside class=\"and-advisory-paragraph and-admonition-paragraph\" aria-label=\"Attention\"><span class=\"and-advisory-paragraph-icon\" aria-hidden=\"true\">!</span><p>Attention <em>rich</em></p></aside>"
+        }
+      }
+    },
+    {
+      "id": "comment-block",
+      "covers": ["block.comment"],
+      "combinationCovers": ["comment_block.with_rich_child"],
+      "spanAssertions": [{
+        "cover": "block.comment",
+        "path": "$.children[0]",
+        "span": { "startOffset": 8, "endOffset": 42, "startLine": 3, "startColumn": 1, "endLine": 5, "endColumn": 5 }
+      }],
+      "source": "&ND v2\n\n~~~'\nReview [* this section].\n~~~'\n",
+      "expected": {
+        "canonical": {
+          "embedded": "~~~'\nReview [* this section].\n~~~'\n",
+          "standalone": "&ND v2\n\n~~~'\nReview [* this section].\n~~~'\n"
+        },
+        "html": {
+          "fragment": "<aside class=\"and-comment-block\" hidden>Review <strong>this section</strong>.</aside>"
         }
       }
     },

@@ -124,6 +124,19 @@
     "strict/reject/seed-v2-block-disclaimer-invalid-tag.json",
     "strict/reject/seed-v2-inline-line-break-marker-malformed.json",
     "strict/reject/seed-v2-inline-line-break-marker-unclosed.json",
-    "strict/reject/seed-v2-inline-line-break-marker-extra-dot.json"
+    "strict/reject/seed-v2-inline-line-break-marker-extra-dot.json",
+    "strict/accept/seed-v2-advisory-list-markers.json",
+    "strict/accept/seed-v2-block-question-paragraph-enabled.json",
+    "strict/accept/seed-v2-block-admonition-paragraph-enabled.json",
+    "strict/reject/seed-v2-advisory-list-ordered-marker.json",
+    "strict/reject/seed-v2-advisory-list-malformed-spacing.json",
+    "strict/reject/seed-v2-advisory-list-empty-item.json",
+    "strict/reject/seed-v2-block-question-paragraph-unclosed.json",
+    "strict/reject/seed-v2-block-admonition-paragraph-unclosed.json",
+    "strict/reject/seed-v2-block-question-paragraph-empty.json",
+    "strict/reject/seed-v2-block-admonition-paragraph-empty.json",
+    "strict/accept/seed-v2-block-comment-enabled.json",
+    "strict/reject/seed-v2-block-comment-empty.json",
+    "strict/reject/seed-v2-block-comment-unclosed.json"
   ]
 }

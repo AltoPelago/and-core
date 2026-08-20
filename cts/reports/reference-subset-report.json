@@ -3,17 +3,17 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 139,
-    "pending": 4,
+    "fixtures": 143,
+    "pending": 8,
     "pass": 135,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 52,
+    "expected": 54,
     "checked": 0,
     "matched": 0,
-    "skipped": 52,
+    "skipped": 54,
     "failed": 0
   },
   "spanChecks": {
@@ -24,9 +24,9 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 75,
+    "expected": 77,
     "matched": 72,
-    "missingActual": 3,
+    "missingActual": 5,
     "mismatched": 0
   },
   "results": [
@@ -2598,6 +2598,74 @@
       "notes": [
         "Evaluated by reference subset adapter.",
         "Source span expectation skipped; adapter does not declare spans capability."
+      ]
+    },
+    {
+      "id": "seed-tilde-code-fences",
+      "path": "strict/accept/seed-tilde-code-fences.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-plain-tilde-paragraph",
+      "path": "strict/accept/seed-plain-tilde-paragraph.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-tilde-code-block-unclosed",
+      "path": "strict/reject/seed-tilde-code-block-unclosed.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet."
+      ]
+    },
+    {
+      "id": "seed-ordered-tilde-code-block-wrong-closing-fence",
+      "path": "strict/reject/seed-ordered-tilde-code-block-wrong-closing-fence.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet."
       ]
     }
   ]

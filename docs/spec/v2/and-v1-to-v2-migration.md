@@ -147,10 +147,11 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[:type = scalar]` | AEON typed scalar |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
 | `[>]`, `[<]`, `[.]` | Direction and explicit line break; leading list-item arrows replace bullets |
+| `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading auto-number intent |
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_` | Highlight, strong, emphasis, and underline paragraph blocks |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `===`, `***` paired blocks | Header text and disclaimer blocks |
 
 The consumer-owned meaning of advisory tags, custom tags and datatypes, numbering, optional block
@@ -248,6 +249,9 @@ The list remains an ordinary unordered list and the leading marker remains in it
 This permits ordinary and directional items to coexist. Only the leading position is contextual;
 later markers and markers in paragraphs or ordered lists retain their inline behavior.
 
+The exact leading forms `- [?] content` and `- [!] content` follow the same contextual rule, but
+their list content remains visible. Use rich `[? ...]` or `[! ...]` for inline callout content.
+
 ## Tooling Checklist
 
 1. Enable v2 reader capability explicitly.
@@ -261,7 +265,7 @@ later markers and markers in paragraphs or ordered lists retain their inline beh
 9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
    reference; remove forward references and nesting.
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
-11. Convert paragraph-wide formatting to the exact matching `~~~=`, `~~~*`, `~~~/`, or `~~~_` fence;
+11. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
     do not treat plain `~~~` as a block delimiter.
 12. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
 13. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized

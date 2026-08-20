@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-ordered-tilde-code-block-wrong-closing-fence",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "~~~~aeon\nnumbered code\n~~~\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_code_block",
+    "assertions": ["an ordered tilde code block requires a matching quadruple-tilde closer"]
+  }
+}

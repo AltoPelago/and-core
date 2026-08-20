@@ -60,7 +60,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, header, and disclaimer block structure. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header, and disclaimer block structure. |
 | `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
@@ -278,6 +278,11 @@ interface NdDirectionalMarker {
   readonly direction: "forward" | "backward";
 }
 
+interface NdAdvisoryMarker {
+  readonly type: "advisory_marker";
+  readonly kind: "question" | "admonition";
+}
+
 interface NdLineBreak {
   readonly type: "line_break";
 }
@@ -296,6 +301,11 @@ permits directional and ordinary items to coexist and keeps nesting unchanged. O
 child has bullet-replacement intent. Later markers and every marker outside that position remain
 inline. Ordered-list markers do not receive this behavior. Canonical output preserves the source
 shape as `- [direction] content`.
+
+The exact leading forms `- [?] content` and `- [!] content` similarly produce an
+`advisory_marker` followed by visible content. They remain inherited unordered lists, may coexist
+with ordinary items, and replace only that item's bullet. Compact `[?]` and `[!]` are not general
+inline forms; rich `[? ...]` and `[! ...]` tags retain their ordinary inline meaning elsewhere.
 
 ## Footnotes
 
@@ -374,6 +384,21 @@ interface NdUnderlineParagraphBlock {
   readonly children: NdInlineNode[];
 }
 
+interface NdQuestionParagraphBlock {
+  readonly type: "question_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
+interface NdAdmonitionParagraphBlock {
+  readonly type: "admonition_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
+interface NdCommentBlock {
+  readonly type: "comment_block";
+  readonly children: NdInlineNode[];
+}
+
 interface NdHeaderTextBlock {
   readonly type: "header_text_block";
   readonly tag?: string;
@@ -387,7 +412,7 @@ interface NdDisclaimerBlock {
 }
 ```
 
-The four formatted paragraph fences are exact and self-closing by matching delimiter:
+The seven formatted, advisory, and comment fences are exact and self-closing by matching delimiter:
 
 | Fence | AST node | Paragraph-wide projection |
 | :---- | :------- | :------------------------ |
@@ -395,6 +420,9 @@ The four formatted paragraph fences are exact and self-closing by matching delim
 | `~~~*` | `strong_paragraph_block` | Strong |
 | `~~~/` | `emphasis_paragraph_block` | Emphasis |
 | `~~~_` | `underline_paragraph_block` | Underline |
+| `~~~?` | `question_paragraph_block` | Visible hint/question paragraph |
+| `~~~!` | `admonition_paragraph_block` | Visible attention/admonition paragraph |
+| `~~~'` | `comment_block` | Consumer-controlled block comment, hidden by the reference HTML projection |
 
 Their payloads are non-empty rich inline content, not nested block documents. Empty and unclosed
 forms reject with family-specific diagnostics. Plain `~~~` has no block meaning: it remains ordinary
@@ -428,7 +456,7 @@ rich/reused footnotes, including rich children across every formatted paragraph 
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 34 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 38 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
 clarifiers, footnotes, nested rich resources, lists, and blockquotes.
 

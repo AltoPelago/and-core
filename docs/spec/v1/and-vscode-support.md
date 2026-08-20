@@ -118,7 +118,7 @@ The grammar SHOULD recognize at least:
 - ordered list markers `1. `
 - blockquote markers `>`
 - horizontal rule `---`
-- code fences ````` ``` `````
+- backtick code fences and language-qualified `~~~language` / `~~~~language` alternatives
 - extension fences `+++`
 - table pipes `|`
 - table separator cells `---`
@@ -181,6 +181,7 @@ Suggested scope families:
 - code fence:
   - `markup.fence.code.and`
   - `entity.name.section.code-language.and`
+  - bare `~~~` remains ordinary paragraph text
 - extension fence:
   - `markup.fence.extension.and`
   - `entity.name.type.extension.and`

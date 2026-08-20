@@ -161,6 +161,16 @@ function renderInlineNodes(nodes, options) {
   return nodes.map((node) => renderInlineNode(node, options)).join('');
 }
 
+function renderInlineCallout(kind, children, options) {
+  const definitions = {
+    question: { glyph: '?', label: 'Hint', className: 'and-question' },
+    admonition: { glyph: '!', label: 'Attention', className: 'and-admonition' },
+  };
+  const definition = definitions[kind];
+  const content = renderInlineNodes(children, options);
+  return `<span class="and-callout ${definition.className}" tabindex="0"><span class="and-callout-icon" aria-hidden="true">${definition.glyph}</span><span class="and-callout-content" role="note" aria-label="${definition.label}">${content}</span></span>`;
+}
+
 function renderInlineNode(node, options) {
   switch (node.type) {
     case 'text':
@@ -185,9 +195,9 @@ function renderInlineNode(node, options) {
     case 'anchor_tag':
       return `<span class="and-anchor" id="${escapeAttribute(node.id)}" aria-hidden="true"></span>`;
     case 'admonition_tag':
-      return `<span class="and-admonition">${renderInlineNodes(node.children, options)}</span>`;
+      return renderInlineCallout('admonition', node.children, options);
     case 'question_tag':
-      return `<span class="and-question">${renderInlineNodes(node.children, options)}</span>`;
+      return renderInlineCallout('question', node.children, options);
     case 'footnote_definition': {
       const number = options.footnoteState.definitions.length + 1;
       const definition = {
@@ -258,6 +268,8 @@ function renderInlineNode(node, options) {
       const direction = requireDirection(node.direction);
       return `<span class="and-directional-marker" data-direction="${node.direction}" role="img" aria-label="${direction.label}">${direction.glyph}</span>`;
     }
+    case 'advisory_marker':
+      throw fail('invalid_advisory_marker_context', 'advisory_marker is valid only as the leading marker of an unordered list item.');
     case 'line_break':
       return '<br>';
     default:
@@ -281,18 +293,41 @@ function renderListItem(item, ordered, options) {
   const [firstChild, ...nestedChildren] = item.children;
   const leadingMarker = !ordered
     && firstChild?.type === 'paragraph'
-    && firstChild.children?.[0]?.type === 'directional_marker'
+    && ['directional_marker', 'advisory_marker'].includes(firstChild.children?.[0]?.type)
     ? firstChild.children[0]
     : null;
 
   if (!leadingMarker) return `<li>${renderBlocks(item.children, options)}</li>`;
 
-  const direction = requireDirection(leadingMarker.direction);
   const content = renderInlineNodes(firstChild.children.slice(1), options);
-  const marker = `<span class="and-directional-list-marker" data-direction="${leadingMarker.direction}" role="img" aria-label="${direction.label}">${direction.glyph}</span>`;
+  let marker;
+  let itemAttributes;
+  if (leadingMarker.type === 'directional_marker') {
+    const direction = requireDirection(leadingMarker.direction);
+    marker = `<span class="and-directional-list-marker" data-direction="${leadingMarker.direction}" role="img" aria-label="${direction.label}">${direction.glyph}</span>`;
+    itemAttributes = `class="and-directional-list-item" data-direction="${leadingMarker.direction}"`;
+  } else {
+    const definitions = {
+      question: { glyph: '?', label: 'Hint' },
+      admonition: { glyph: '!', label: 'Attention' },
+    };
+    const definition = definitions[leadingMarker.kind];
+    if (!definition) throw fail('invalid_advisory_marker_kind', `Unsupported advisory marker kind: ${leadingMarker.kind}`);
+    marker = `<span class="and-advisory-list-marker" data-kind="${leadingMarker.kind}" role="img" aria-label="${definition.label}">${definition.glyph}</span>`;
+    itemAttributes = `class="and-advisory-list-item" data-kind="${leadingMarker.kind}"`;
+  }
   const paragraph = `<p>${marker}${content}</p>`;
   const nested = nestedChildren.length > 0 ? `\n${renderBlocks(nestedChildren, options)}` : '';
-  return `<li class="and-directional-list-item" data-direction="${leadingMarker.direction}" style="list-style:none">${paragraph}${nested}</li>`;
+  return `<li ${itemAttributes} style="list-style:none">${paragraph}${nested}</li>`;
+}
+
+function renderAdvisoryParagraph(kind, children, options) {
+  const definitions = {
+    question: { glyph: '?', label: 'Hint', className: 'and-question-paragraph' },
+    admonition: { glyph: '!', label: 'Attention', className: 'and-admonition-paragraph' },
+  };
+  const definition = definitions[kind];
+  return `<aside class="and-advisory-paragraph ${definition.className}" aria-label="${definition.label}"><span class="and-advisory-paragraph-icon" aria-hidden="true">${definition.glyph}</span><p>${renderInlineNodes(children, options)}</p></aside>`;
 }
 
 function renderFootnoteReference(definition) {
@@ -409,6 +444,12 @@ function renderBlock(block, options) {
       return `<p class="and-emphasis-paragraph"><em>${renderInlineNodes(block.children, options)}</em></p>`;
     case 'underline_paragraph_block':
       return `<p class="and-underline-paragraph"><u>${renderInlineNodes(block.children, options)}</u></p>`;
+    case 'question_paragraph_block':
+      return renderAdvisoryParagraph('question', block.children, options);
+    case 'admonition_paragraph_block':
+      return renderAdvisoryParagraph('admonition', block.children, options);
+    case 'comment_block':
+      return `<aside class="and-comment-block" hidden>${renderInlineNodes(block.children, options)}</aside>`;
     case 'header_text_block': {
       const tag = block.tag ? ` data-tag="${escapeAttribute(block.tag)}"` : '';
       return `<header class="and-header-text"${tag}>${renderInlineNodes(block.children, options)}</header>`;

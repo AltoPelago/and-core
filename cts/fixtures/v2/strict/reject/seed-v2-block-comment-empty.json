@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-comment-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~'\n~~~'\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_comment_block",
+    "assertions": ["block comments require non-empty rich content"]
+  }
+}

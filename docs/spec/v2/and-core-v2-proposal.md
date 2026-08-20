@@ -79,9 +79,10 @@ assigns each promoted form an explicit ownership boundary:
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo lists and item states; workflow and presentation are projections. |
 | `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
+| `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, header, and disclaimer block structure. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header, and disclaimer block structure. |
 | `[^ ...]` and other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” does not introduce a feature gate. These forms remain part of one fixed
@@ -91,11 +92,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 121-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 134-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 47 accepted fixtures covering inline tags, rich nesting, footnotes, formatted paragraphs, first-class todo and auto-number
+- 51 accepted fixtures covering inline tags, rich nesting, footnotes, formatted/advisory/comment blocks, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 74 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
+- 83 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -127,6 +128,18 @@ emphasis paragraph block
 underline paragraph block
 	opener: ~~~_
 	closer: ~~~_
+
+hint paragraph block
+	opener: ~~~?
+	closer: ~~~?
+
+attention paragraph block
+	opener: ~~~!
+	closer: ~~~!
+
+comment block
+	opener: ~~~'
+	closer: ~~~'
 
 header text block
 	opener: === or ===<tag>
@@ -447,7 +460,8 @@ Expected direction:
 
 Intent:
 
-- extend the paired paragraph family with `~~~*` strong, `~~~/` emphasis, and `~~~_` underline
+- extend the paired paragraph family with `~~~*` strong, `~~~/` emphasis, `~~~_` underline,
+  `~~~?` hint/question, `~~~!` attention/admonition, and `~~~'` block comments
 - preserve rich inline payloads and exact canonical fences
 - leave plain `~~~` as inherited ordinary paragraph text rather than a block delimiter
 
@@ -455,7 +469,7 @@ Expected direction:
 
 - v2 strict parse success for balanced, non-empty formatted paragraph blocks
 - strict family-specific rejection for empty or unclosed blocks
-- v1 strict rejection for the three v2-only fences at block-open position
+- v1 strict rejection for the five v2-only fences at block-open position
 
 ### `seed-v2-block-header-text-enabled`
 

@@ -34,6 +34,9 @@ assert(styles.includes('@media (max-width: 900px)'), 'playground should include 
 assert(styles.includes('.budget-grid'), 'playground should style parser budget controls');
 assert(styles.includes('.source-actions select'), 'playground should style the parser-version selector');
 assert(styles.includes('.preview .and-code-block figcaption'), 'playground should style visible code block language tags');
+assert(styles.includes('.preview .and-highlight-paragraph'), 'playground should visibly style highlighted paragraph blocks');
+assert(styles.includes('.preview .and-callout-content'), 'playground should style inline advisory callouts');
+assert(styles.includes('.preview .and-advisory-paragraph'), 'playground should style advisory paragraph blocks');
 
 const source = `&ND v1
 
@@ -94,5 +97,11 @@ assert(v2Html.includes('class="and-highlight-paragraph"'), 'playground v2 previe
 assert(v2Html.includes('class="and-strong-paragraph"'), 'playground v2 preview should render strong paragraph blocks');
 assert(v2Html.includes('class="and-emphasis-paragraph"'), 'playground v2 preview should render emphasis paragraph blocks');
 assert(v2Html.includes('class="and-underline-paragraph"'), 'playground v2 preview should render underline paragraph blocks');
+assert(v2Html.includes('class="and-callout and-question" tabindex="0"'), 'playground v2 preview should render keyboard-focusable inline hints');
+assert(v2Html.includes('class="and-callout and-admonition" tabindex="0"'), 'playground v2 preview should render keyboard-focusable inline admonitions');
+assert(v2Html.includes('class="and-advisory-list-item"'), 'playground v2 preview should replace advisory list bullets');
+assert(v2Html.includes('and-question-paragraph'), 'playground v2 preview should render hint paragraph blocks');
+assert(v2Html.includes('and-admonition-paragraph'), 'playground v2 preview should render attention paragraph blocks');
+assert(v2Html.includes('class="and-comment-block" hidden'), 'playground v2 preview should preserve hidden block comments');
 
 console.log('Playground checks passed.');

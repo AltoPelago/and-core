@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-tilde-code-block-unclosed",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "~~~aeon\ntitle = \"Unclosed\"\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_code_block",
+    "assertions": ["a language-qualified tilde code fence requires an exact bare closer"]
+  }
+}

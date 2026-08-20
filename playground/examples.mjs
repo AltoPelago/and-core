@@ -13,15 +13,15 @@ date = 2026-04-01
 
 This is [* deterministic] prose with [/ visible structure].
 
-\`\`\`aeon
+~~~aeon
 title = "Playground"
 mode = "strict"
-\`\`\`
+~~~
 
-\`\`\`\`aeon
+~~~~aeon
 title = "Playground"
 mode = "ordered"
-\`\`\`\`
+~~~~
 
 - Parse strict documents
 
@@ -56,6 +56,11 @@ Directional steps:
 - [>] advance, while [<] still works inline
 - [<] revisit, while [>] still works inline
 
+Advisory items:
+
+- [?] this is a visible hint item
+- [!] this item asks for attention
+
 Jump to [@ #overview | overview].
 
 Footnotes can be anonymous [% supporting context] or named [% (A1) reusable context], then reused [% (A1)].
@@ -66,6 +71,9 @@ Inline image: [~ ./image-example.svg | Ampersand ND sample].
 
 Rich content nests: [= highlighted with [* emphasis]], [- retired [/ wording]],
 [_ underlined], and [" quoted [* text]].
+
+Hello world [? used to describe the most basic way to print text in a programming language].
+Review this carefully [! proposal syntax can still change].
 
 ~~~=
 This is a highlighted paragraph with [! proposal] status.
@@ -82,6 +90,18 @@ This entire paragraph is emphasized, with [* nested strong].
 ~~~_
 This entire paragraph is underlined, with [? rich content].
 ~~~_
+
+~~~?
+This paragraph is a visible hint with [* rich content].
+~~~?
+
+~~~!
+This paragraph calls for attention, with [/ rich content].
+~~~!
+
+~~~'
+This block comment is preserved but hidden from the preview.
+~~~'
 
 ===hero
 Header text can carry a validated tag.

@@ -478,8 +478,8 @@ MUST error.
 -     unordered list item
 1.    ordered list item
 ---   horizontal rule
-```   code block
-````  ordered code block
+``` or ~~~<language>    code block
+```` or ~~~~<language> ordered code block
 +++   extension block
 `````
 
@@ -3520,10 +3520,10 @@ margin.
 CodeBlock       ::= PlainCodeBlock | OrderedCodeBlock ;
 PlainCodeBlock  ::= CodeOpen RawLines CodeClose ;
 OrderedCodeBlock ::= OrderedCodeOpen RawLines OrderedCodeClose ;
-CodeOpen        ::= "```" CodeLang? LineEnd ;
-CodeClose       ::= "```" WS? LineEnd ;
-OrderedCodeOpen ::= "````" CodeLang? LineEnd ;
-OrderedCodeClose ::= "````" WS? LineEnd ;
+CodeOpen        ::= "```" CodeLang? LineEnd | "~~~" CodeLang LineEnd ;
+CodeClose       ::= "```" WS? LineEnd | "~~~" LineEnd ;
+OrderedCodeOpen ::= "````" CodeLang? LineEnd | "~~~~" CodeLang LineEnd ;
+OrderedCodeClose ::= "````" WS? LineEnd | "~~~~" LineEnd ;
 CodeLang        ::= Ident ;
 ````
 
@@ -3531,6 +3531,29 @@ CodeLang        ::= Ident ;
 corresponding closing fence at the same block margin. Triple backticks produce a plain code block.
 Quadruple backticks produce an ordered code block whose payload lines retain their raw text while
 explicitly requesting line ordering in downstream projections.
+
+Language-qualified triple and quadruple tilde openers are equivalent alternatives. Their closers
+are the matching bare tilde fence at the exact outer block margin. A tilde opener requires a
+language suffix so plain `~~~` remains ordinary paragraph text. Differently indented tilde fences
+remain opaque payload, allowing AEON prose and other embedded formats to contain their own fences.
+
+### `seed-tilde-code-fences`
+
+* language-qualified triple and quadruple tilde fences parse as plain and ordered code blocks
+* differently indented tilde fences remain opaque code payload
+* canonical output normalizes both alternatives to the inherited backtick spelling
+
+### `seed-plain-tilde-paragraph`
+
+* bare `~~~` without a language suffix remains ordinary paragraph text
+
+### `seed-tilde-code-block-unclosed`
+
+* a tilde code opener requires its exact bare closer at the same block margin
+
+### `seed-ordered-tilde-code-block-wrong-closing-fence`
+
+* a quadruple-tilde ordered block is not closed by a triple-tilde fence
 
 ## Extension blocks
 

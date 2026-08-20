@@ -32,6 +32,9 @@ It supports:
 * proposal-v2 strong, emphasis, and underline paragraph-wide formatting blocks
 * proposal-v2 footnotes projected as linked numeric superscripts and a trailing endnote section
 * leading directional markers in unordered items projected in place of those items' bullets
+* leading hint/attention markers projected in place of unordered-item bullets
+* focusable inline hint/attention callouts and visible advisory paragraph blocks
+* preserved but hidden rich block comments
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default

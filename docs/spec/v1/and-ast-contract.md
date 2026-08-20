@@ -102,7 +102,9 @@ interface NdCodeBlock {
 
 `text` is the raw payload after line-ending normalization and margin removal. It does not include
 opening or closing fences. `ordered` is `true` when the block was opened with a quadruple backtick
-fence and requests explicit line ordering in downstream projections.
+or language-qualified quadruple-tilde fence and requests explicit line ordering in downstream
+projections. Language-qualified triple/quadruple tilde fences are parsing alternatives for the same
+AST nodes; bare `~~~` remains paragraph text and canonical output uses backtick fences.
 
 ### Extension Block
 

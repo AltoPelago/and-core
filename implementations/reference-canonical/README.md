@@ -19,7 +19,7 @@ Current scope:
 * tables
 * horizontal rules
 * inline text, strong, emphasis, links, and inline code
-* all promoted v2 scalar metadata tags, inline images, rich inline tags, compact directional markers,
+* all promoted v2 scalar metadata tags, inline images, rich inline tags, compact directional and advisory list markers,
   footnote definitions/references, and first-class todo and auto-number lists
 * AEON-canonical type annotations and scalar literals for v2 typed values
 * v2 heading auto-number intent and paired blocks

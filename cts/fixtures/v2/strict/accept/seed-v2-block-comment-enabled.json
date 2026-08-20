@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-comment-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~'\nReview [* this section].\n~~~'\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 accepts a rich block comment delimited by matching ~~~' fences",
+      "block comments remain structural even when a projection hides them"
+    ],
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "comment_block",
+        "children": [
+          { "type": "text", "value": "Review " },
+          { "type": "strong", "children": [{ "type": "text", "value": "this section" }] },
+          { "type": "text", "value": "." }
+        ]
+      }]
+    }
+  }
+}

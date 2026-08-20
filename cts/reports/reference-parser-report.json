@@ -3,16 +3,16 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 139,
+    "fixtures": 143,
     "pending": 0,
-    "pass": 139,
+    "pass": 143,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 52,
-    "checked": 52,
-    "matched": 52,
+    "expected": 54,
+    "checked": 54,
+    "matched": 54,
     "skipped": 0,
     "failed": 0
   },
@@ -24,8 +24,8 @@
     "skipped": 0
   },
   "errorCodeChecks": {
-    "expected": 75,
-    "matched": 75,
+    "expected": 77,
+    "matched": 77,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -2657,6 +2657,82 @@
       "notes": [
         "Evaluated by reference parser.",
         "Span expectations matched (2/2)."
+      ]
+    },
+    {
+      "id": "seed-tilde-code-fences",
+      "path": "strict/accept/seed-tilde-code-fences.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-plain-tilde-paragraph",
+      "path": "strict/accept/seed-plain-tilde-paragraph.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-tilde-code-block-unclosed",
+      "path": "strict/reject/seed-tilde-code-block-unclosed.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "actualOk": false,
+      "errorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
+      ]
+    },
+    {
+      "id": "seed-ordered-tilde-code-block-wrong-closing-fence",
+      "path": "strict/reject/seed-ordered-tilde-code-block-wrong-closing-fence.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unclosed_code_block",
+      "actualOk": false,
+      "errorCode": "unclosed_code_block",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
       ]
     }
   ]

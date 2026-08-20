@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-advisory-list-ordered-marker",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n1. [?] hint\n",
+  "expected": { "ok": false, "errorCode": "advisory_list_requires_unordered_marker", "assertions": ["compact advisory markers require unordered list items"] }
+}

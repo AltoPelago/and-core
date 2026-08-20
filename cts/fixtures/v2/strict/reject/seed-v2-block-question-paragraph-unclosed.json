@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-question-paragraph-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~?\nunclosed hint\n",
+  "expected": { "ok": false, "errorCode": "unclosed_question_paragraph_block", "assertions": ["hint paragraph fences must close exactly"] }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-advisory-list-markers",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [?] visible hint\n- ordinary item with [? inline hint]\n- [!] visible attention item\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "leading compact question and admonition markers replace unordered bullets",
+      "advisory list content remains visible",
+      "rich inline advisory tags remain valid later in an item"
+    ],
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "list",
+        "ordered": false,
+        "items": [
+          { "type": "list_item", "children": [{ "type": "paragraph", "children": [
+            { "type": "advisory_marker", "kind": "question" },
+            { "type": "text", "value": " visible hint" }
+          ] }] },
+          { "type": "list_item", "children": [{ "type": "paragraph", "children": [
+            { "type": "text", "value": "ordinary item with " },
+            { "type": "question_tag", "children": [{ "type": "text", "value": "inline hint" }] }
+          ] }] },
+          { "type": "list_item", "children": [{ "type": "paragraph", "children": [
+            { "type": "advisory_marker", "kind": "admonition" },
+            { "type": "text", "value": " visible attention item" }
+          ] }] }
+        ]
+      }]
+    }
+  }
+}

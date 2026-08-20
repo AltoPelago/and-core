@@ -237,6 +237,8 @@ function emitInlineNode(node, context) {
       }
       return markers[node.direction];
     }
+    case 'advisory_marker':
+      throw fail('invalid_advisory_marker_context', 'advisory_marker is valid only as the leading marker of an unordered list item.');
     case 'line_break':
       requireV2(context, node.type);
       return '[.]';
@@ -284,7 +286,19 @@ function emitList(node, context) {
         throw fail('unsupported_list_item_shape', 'Canonical list items currently require a paragraph head.');
       }
 
-      const head = `${marker} ${emitInlineNodes(firstChild.children, context)}`;
+      const leadingAdvisory = firstChild.children?.[0]?.type === 'advisory_marker'
+        ? firstChild.children[0]
+        : null;
+      if (leadingAdvisory && node.ordered) {
+        throw fail('advisory_list_requires_unordered_marker', 'Advisory list markers require an unordered list.');
+      }
+      const advisoryTokens = { question: '[?]', admonition: '[!]' };
+      const advisoryToken = leadingAdvisory ? advisoryTokens[leadingAdvisory.kind] : null;
+      if (leadingAdvisory && !advisoryToken) {
+        throw fail('invalid_advisory_marker_kind', `Unsupported advisory marker kind: ${leadingAdvisory.kind}`);
+      }
+      const inlineChildren = leadingAdvisory ? firstChild.children.slice(1) : firstChild.children;
+      const head = `${marker} ${advisoryToken ?? ''}${emitInlineNodes(inlineChildren, context)}`;
       if (nestedChildren.length === 0) return head;
 
       const nested = emitBlocks(nestedChildren, context);
@@ -410,6 +424,15 @@ function emitBlock(node, context) {
     case 'underline_paragraph_block':
       requireV2(context, node.type);
       return emitPairedInlineBlock('~~~_', '~~~_', node.children, context);
+    case 'question_paragraph_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock('~~~?', '~~~?', node.children, context);
+    case 'admonition_paragraph_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock('~~~!', '~~~!', node.children, context);
+    case 'comment_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock("~~~'", "~~~'", node.children, context);
     case 'header_text_block': {
       requireV2(context, node.type);
       const tag = emitV2BlockTag(node.tag);
