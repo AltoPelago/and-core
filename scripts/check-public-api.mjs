@@ -87,6 +87,17 @@ assert(
     && directionalListV2.document.children[0].items[0].children[0].children[2]?.type === 'directional_marker',
   'public parse should retain leading and later directional markers in inherited list ASTs',
 );
+const formattedParagraphsV2 = parseAnd(
+  '&ND v2\n\n~~~*\nStrong\n~~~*\n\n~~~/\nEmphasis\n~~~/\n\n~~~_\nUnderline\n~~~_\n',
+  { allowV2: true },
+);
+assert(
+  formattedParagraphsV2.ok
+    && formattedParagraphsV2.document.children[0]?.type === 'strong_paragraph_block'
+    && formattedParagraphsV2.document.children[1]?.type === 'emphasis_paragraph_block'
+    && formattedParagraphsV2.document.children[2]?.type === 'underline_paragraph_block',
+  'public parse should expose all formatted paragraph block families',
+);
 const footnoteV2 = parseAnd('&ND v2\n\nhello [% (A1) world] again [% (A1)]\n', { allowV2: true });
 assert(
   footnoteV2.ok
@@ -117,6 +128,10 @@ assert(renderHtml(autoNumberListV2.document).includes('class="and-auto-number-li
 const directionalListHtml = renderHtml(directionalListV2.document);
 assert(directionalListHtml.includes('class="and-directional-list-marker"'), 'public HTML projection should replace a leading directional-list bullet');
 assert(directionalListHtml.includes('class="and-directional-marker"'), 'public HTML projection should keep later directional markers inline');
+const formattedParagraphsHtml = renderHtml(formattedParagraphsV2.document);
+assert(formattedParagraphsHtml.includes('class="and-strong-paragraph"'), 'public HTML projection should expose strong paragraph blocks');
+assert(formattedParagraphsHtml.includes('class="and-emphasis-paragraph"'), 'public HTML projection should expose emphasis paragraph blocks');
+assert(formattedParagraphsHtml.includes('class="and-underline-paragraph"'), 'public HTML projection should expose underline paragraph blocks');
 assert(renderHtml(footnoteV2.document).includes('class="and-footnotes"'), 'public HTML projection should expose linked endnotes');
 const imageDocument = {
   type: 'document',

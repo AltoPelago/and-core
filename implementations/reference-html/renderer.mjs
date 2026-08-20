@@ -403,6 +403,12 @@ function renderBlock(block, options) {
       return renderTable(block, options);
     case 'highlight_paragraph_block':
       return `<p class="and-highlight-paragraph">${renderInlineNodes(block.children, options)}</p>`;
+    case 'strong_paragraph_block':
+      return `<p class="and-strong-paragraph"><strong>${renderInlineNodes(block.children, options)}</strong></p>`;
+    case 'emphasis_paragraph_block':
+      return `<p class="and-emphasis-paragraph"><em>${renderInlineNodes(block.children, options)}</em></p>`;
+    case 'underline_paragraph_block':
+      return `<p class="and-underline-paragraph"><u>${renderInlineNodes(block.children, options)}</u></p>`;
     case 'header_text_block': {
       const tag = block.tag ? ` data-tag="${escapeAttribute(block.tag)}"` : '';
       return `<header class="and-header-text"${tag}>${renderInlineNodes(block.children, options)}</header>`;

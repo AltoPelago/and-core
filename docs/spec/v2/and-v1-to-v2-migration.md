@@ -150,11 +150,38 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | heading `[n]` | Heading auto-number intent |
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
-| `~~~=`, `===`, `***` paired blocks | Highlight paragraph, header text, and disclaimer blocks |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_` | Highlight, strong, emphasis, and underline paragraph blocks |
+| `===`, `***` paired blocks | Header text and disclaimer blocks |
 
 The consumer-owned meaning of advisory tags, custom tags and datatypes, numbering, optional block
 tags, image behavior, and external navigation is defined in
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
+
+## Formatted Paragraphs
+
+V2 provides four exact matching-fence paragraph forms:
+
+```and
+~~~=
+Highlighted paragraph
+~~~=
+
+~~~*
+Strong paragraph
+~~~*
+
+~~~/
+Emphasized paragraph
+~~~/
+
+~~~_
+Underlined paragraph
+~~~_
+```
+
+Each requires non-empty rich inline content. The opening and closing fence must match. Plain `~~~`
+is not a fence and remains ordinary paragraph text in both v1 and v2; canonicalization therefore
+treats its line breaks as inherited soft wraps.
 
 ## Todo Lists
 
@@ -234,8 +261,10 @@ later markers and markers in paragraphs or ordered lists retain their inline beh
 9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
    reference; remove forward references and nesting.
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
-11. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
-12. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
+11. Convert paragraph-wide formatting to the exact matching `~~~=`, `~~~*`, `~~~/`, or `~~~_` fence;
+    do not treat plain `~~~` as a block delimiter.
+12. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
+13. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
    image modes and AEON scalar spellings.
 
 There is no automatic downgrade for v2-only syntax. To return a document to v1, remove every v2-only

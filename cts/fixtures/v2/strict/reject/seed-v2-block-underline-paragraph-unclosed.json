@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-underline-paragraph-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~_\nUnderline but unclosed\n",
+  "expected": { "ok": false, "errorCode": "unclosed_underline_paragraph_block", "assertions": ["underline paragraph fences must be balanced"] }
+}

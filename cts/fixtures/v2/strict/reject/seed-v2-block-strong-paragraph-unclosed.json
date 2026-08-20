@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-strong-paragraph-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~*\nStrong but unclosed\n",
+  "expected": { "ok": false, "errorCode": "unclosed_strong_paragraph_block", "assertions": ["strong paragraph fences must be balanced"] }
+}

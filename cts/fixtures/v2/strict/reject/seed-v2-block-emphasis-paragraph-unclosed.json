@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-emphasis-paragraph-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~/\nEmphasis but unclosed\n",
+  "expected": { "ok": false, "errorCode": "unclosed_emphasis_paragraph_block", "assertions": ["emphasis paragraph fences must be balanced"] }
+}

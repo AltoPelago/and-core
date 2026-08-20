@@ -37,6 +37,9 @@
     "heading.auto_number",
     "block.auto_number_list",
     "block.highlight_paragraph",
+    "block.strong_paragraph",
+    "block.emphasis_paragraph",
+    "block.underline_paragraph",
     "block.header_text",
     "block.disclaimer",
     "composition.nested_rich",
@@ -73,6 +76,9 @@
     "heading.auto_number",
     "block.auto_number_list",
     "block.highlight_paragraph",
+    "block.strong_paragraph",
+    "block.emphasis_paragraph",
+    "block.underline_paragraph",
     "block.header_text",
     "block.disclaimer",
     "composition.nested_rich",
@@ -102,7 +108,10 @@
     "heading.auto_number.hierarchy",
     "footnote.rich_content",
     "footnote.reused_reference",
-    "directional_marker.list_bullet_replacement"
+    "directional_marker.list_bullet_replacement",
+    "formatted_paragraph.strong.with_rich_child",
+    "formatted_paragraph.emphasis.with_rich_child",
+    "formatted_paragraph.underline.with_rich_child"
   ],
   "cases": [
     {
@@ -299,8 +308,16 @@
       "covers": [
         "heading.auto_number",
         "block.highlight_paragraph",
+        "block.strong_paragraph",
+        "block.emphasis_paragraph",
+        "block.underline_paragraph",
         "block.header_text",
         "block.disclaimer"
+      ],
+      "combinationCovers": [
+        "formatted_paragraph.strong.with_rich_child",
+        "formatted_paragraph.emphasis.with_rich_child",
+        "formatted_paragraph.underline.with_rich_child"
       ],
       "spanAssertions": [
         {
@@ -314,24 +331,39 @@
           "span": { "startOffset": 24, "endOffset": 55, "startLine": 5, "startColumn": 1, "endLine": 7, "endColumn": 5 }
         },
         {
-          "cover": "block.header_text",
+          "cover": "block.strong_paragraph",
           "path": "$.children[2]",
-          "span": { "startOffset": 57, "endOffset": 85, "startLine": 9, "startColumn": 1, "endLine": 11, "endColumn": 4 }
+          "span": { "startOffset": 57, "endOffset": 85, "startLine": 9, "startColumn": 1, "endLine": 11, "endColumn": 5 }
+        },
+        {
+          "cover": "block.emphasis_paragraph",
+          "path": "$.children[3]",
+          "span": { "startOffset": 87, "endOffset": 117, "startLine": 13, "startColumn": 1, "endLine": 15, "endColumn": 5 }
+        },
+        {
+          "cover": "block.underline_paragraph",
+          "path": "$.children[4]",
+          "span": { "startOffset": 119, "endOffset": 147, "startLine": 17, "startColumn": 1, "endLine": 19, "endColumn": 5 }
+        },
+        {
+          "cover": "block.header_text",
+          "path": "$.children[5]",
+          "span": { "startOffset": 149, "endOffset": 177, "startLine": 21, "startColumn": 1, "endLine": 23, "endColumn": 4 }
         },
         {
           "cover": "block.disclaimer",
-          "path": "$.children[3]",
-          "span": { "startOffset": 87, "endOffset": 114, "startLine": 13, "startColumn": 1, "endLine": 15, "endColumn": 4 }
+          "path": "$.children[6]",
+          "span": { "startOffset": 179, "endOffset": 206, "startLine": 25, "startColumn": 1, "endLine": 27, "endColumn": 4 }
         }
       ],
-      "source": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
+      "source": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n~~~*\nStrong [/ nested].\n~~~*\n\n~~~/\nEmphasis [* nested].\n~~~/\n\n~~~_\nUnderline [? why].\n~~~_\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
       "expected": {
         "canonical": {
-          "embedded": "# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
-          "standalone": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n"
+          "embedded": "# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n~~~*\nStrong [/ nested].\n~~~*\n\n~~~/\nEmphasis [* nested].\n~~~/\n\n~~~_\nUnderline [? why].\n~~~_\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n",
+          "standalone": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n~~~*\nStrong [/ nested].\n~~~*\n\n~~~/\nEmphasis [* nested].\n~~~/\n\n~~~_\nUnderline [? why].\n~~~_\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n"
         },
         "html": {
-          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1\"><span class=\"and-heading-number\">1.</span> Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-admonition\">note</span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-question\">why</span>.</aside>"
+          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1\"><span class=\"and-heading-number\">1.</span> Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<p class=\"and-strong-paragraph\"><strong>Strong <em>nested</em>.</strong></p>\n<p class=\"and-emphasis-paragraph\"><em>Emphasis <strong>nested</strong>.</em></p>\n<p class=\"and-underline-paragraph\"><u>Underline <span class=\"and-question\">why</span>.</u></p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-admonition\">note</span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-question\">why</span>.</aside>"
         }
       }
     },

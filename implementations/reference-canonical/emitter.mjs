@@ -401,6 +401,15 @@ function emitBlock(node, context) {
     case 'highlight_paragraph_block':
       requireV2(context, node.type);
       return emitPairedInlineBlock('~~~=', '~~~=', node.children, context);
+    case 'strong_paragraph_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock('~~~*', '~~~*', node.children, context);
+    case 'emphasis_paragraph_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock('~~~/', '~~~/', node.children, context);
+    case 'underline_paragraph_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock('~~~_', '~~~_', node.children, context);
     case 'header_text_block': {
       requireV2(context, node.type);
       const tag = emitV2BlockTag(node.tag);

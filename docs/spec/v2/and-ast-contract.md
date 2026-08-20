@@ -42,7 +42,7 @@ The complete v1 block and inline node unions remain valid in v2. A v2-capable re
 the same fields and containment relationships for inherited syntax.
 
 `NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`, and the
-three paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
+paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
 
 ## Capability Disposition
 
@@ -60,7 +60,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
-| `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, header, and disclaimer block structure. |
 | `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
@@ -359,6 +359,21 @@ interface NdHighlightParagraphBlock {
   readonly children: NdInlineNode[];
 }
 
+interface NdStrongParagraphBlock {
+  readonly type: "strong_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
+interface NdEmphasisParagraphBlock {
+  readonly type: "emphasis_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
+interface NdUnderlineParagraphBlock {
+  readonly type: "underline_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
 interface NdHeaderTextBlock {
   readonly type: "header_text_block";
   readonly tag?: string;
@@ -372,8 +387,19 @@ interface NdDisclaimerBlock {
 }
 ```
 
-Paired-block payloads are inline content, not nested block documents. Optional tags preserve the
-validated suffix from a tagged opener.
+The four formatted paragraph fences are exact and self-closing by matching delimiter:
+
+| Fence | AST node | Paragraph-wide projection |
+| :---- | :------- | :------------------------ |
+| `~~~=` | `highlight_paragraph_block` | Highlight |
+| `~~~*` | `strong_paragraph_block` | Strong |
+| `~~~/` | `emphasis_paragraph_block` | Emphasis |
+| `~~~_` | `underline_paragraph_block` | Underline |
+
+Their payloads are non-empty rich inline content, not nested block documents. Empty and unclosed
+forms reject with family-specific diagnostics. Plain `~~~` has no block meaning: it remains ordinary
+paragraph text under both v1 and v2 and follows inherited soft-wrap canonicalization. Optional tags
+on header and disclaimer blocks preserve the validated suffix from a tagged opener.
 
 ## Canonical Contract
 
@@ -396,13 +422,13 @@ missing coverage identifiers and any byte-level snapshot drift. The same contrac
 required cross-form combinations: each paired block in lists and blockquotes, representative rich
 children in each paired block, local links crossing container boundaries, rich resource nesting, and
 contextual list-item content, leading directional bullet replacement, heading-number hierarchy, and
-rich/reused footnotes.
+rich/reused footnotes, including rich children across every formatted paragraph family.
 
 ## Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 31 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 34 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
 clarifiers, footnotes, nested rich resources, lists, and blockquotes.
 

@@ -81,7 +81,7 @@ assigns each promoted form an explicit ownership boundary:
 | `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
-| `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, header, and disclaimer block structure. |
 | `[^ ...]` and other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” does not introduce a feature gate. These forms remain part of one fixed
@@ -91,11 +91,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 112-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 121-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 44 accepted fixtures covering inline tags, rich nesting, footnotes, first-class todo and auto-number
+- 47 accepted fixtures covering inline tags, rich nesting, footnotes, formatted paragraphs, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 68 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
+- 74 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -115,6 +115,18 @@ The current paired-block proposal grammar used by the reference parser is:
 highlight paragraph block
 	opener: ~~~=
 	closer: ~~~=
+
+strong paragraph block
+	opener: ~~~*
+	closer: ~~~*
+
+emphasis paragraph block
+	opener: ~~~/
+	closer: ~~~/
+
+underline paragraph block
+	opener: ~~~_
+	closer: ~~~_
 
 header text block
 	opener: === or ===<tag>
@@ -430,6 +442,20 @@ Expected direction:
 
 - v2 strict parse success for balanced `~~~=` blocks with non-empty payload
 - strict rejection for unclosed or empty highlight paragraph blocks
+
+### Formatted paragraph fence family
+
+Intent:
+
+- extend the paired paragraph family with `~~~*` strong, `~~~/` emphasis, and `~~~_` underline
+- preserve rich inline payloads and exact canonical fences
+- leave plain `~~~` as inherited ordinary paragraph text rather than a block delimiter
+
+Expected direction:
+
+- v2 strict parse success for balanced, non-empty formatted paragraph blocks
+- strict family-specific rejection for empty or unclosed blocks
+- v1 strict rejection for the three v2-only fences at block-open position
 
 ### `seed-v2-block-header-text-enabled`
 

@@ -202,6 +202,18 @@ Footnote [% (A1) supporting [* detail]] and reuse [% (A1)].
 Highlighted
 ~~~=
 
+~~~*
+Strong paragraph
+~~~*
+
+~~~/
+Emphasis paragraph
+~~~/
+
+~~~_
+Underline paragraph
+~~~_
+
 ===hero
 Header text
 ===
@@ -234,6 +246,9 @@ assert(v2Fragment.includes('<sup class="and-footnote-reference" id="and-footnote
 assert(v2Fragment.includes('<section class="and-footnotes" aria-label="Footnotes">'), 'renderer should append a footnote section');
 assert(v2Fragment.includes('<strong>detail</strong>'), 'renderer should preserve rich footnote content');
 assert(v2Fragment.includes('<p class="and-highlight-paragraph">Highlighted</p>'), 'renderer should project v2 highlighted blocks');
+assert(v2Fragment.includes('<p class="and-strong-paragraph"><strong>Strong paragraph</strong></p>'), 'renderer should project v2 strong paragraph blocks');
+assert(v2Fragment.includes('<p class="and-emphasis-paragraph"><em>Emphasis paragraph</em></p>'), 'renderer should project v2 emphasis paragraph blocks');
+assert(v2Fragment.includes('<p class="and-underline-paragraph"><u>Underline paragraph</u></p>'), 'renderer should project v2 underline paragraph blocks');
 assert(v2Fragment.includes('<header class="and-header-text" data-tag="hero">Header text</header>'), 'renderer should project v2 header-text blocks');
 assert(v2Fragment.includes('<aside class="and-disclaimer" data-tag="legal">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');
 

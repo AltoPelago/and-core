@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-strong-paragraph-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~*\n~~~*\n",
+  "expected": { "ok": false, "errorCode": "invalid_strong_paragraph_block", "assertions": ["strong paragraph blocks require non-empty content"] }
+}

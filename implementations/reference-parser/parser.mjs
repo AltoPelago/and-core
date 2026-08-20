@@ -539,8 +539,35 @@ function isV2Document(context) {
   return context?.documentVersion === 'v2';
 }
 
+const V2_FORMATTED_PARAGRAPH_FENCES = {
+  '~~~=': {
+    nodeType: 'highlight_paragraph_block',
+    invalidCode: 'invalid_highlight_paragraph_block',
+    unclosedCode: 'unclosed_highlight_paragraph_block',
+  },
+  '~~~*': {
+    nodeType: 'strong_paragraph_block',
+    invalidCode: 'invalid_strong_paragraph_block',
+    unclosedCode: 'unclosed_strong_paragraph_block',
+  },
+  '~~~/': {
+    nodeType: 'emphasis_paragraph_block',
+    invalidCode: 'invalid_emphasis_paragraph_block',
+    unclosedCode: 'unclosed_emphasis_paragraph_block',
+  },
+  '~~~_': {
+    nodeType: 'underline_paragraph_block',
+    invalidCode: 'invalid_underline_paragraph_block',
+    unclosedCode: 'unclosed_underline_paragraph_block',
+  },
+};
+
+function formattedParagraphFence(line) {
+  return V2_FORMATTED_PARAGRAPH_FENCES[line] ?? null;
+}
+
 function isReservedV2BlockOpener(line) {
-  return line === '~~~=' || line.startsWith('===') || line.startsWith('***');
+  return formattedParagraphFence(line) !== null || line.startsWith('===') || line.startsWith('***');
 }
 
 function parseSpan(text, index, opener, options, context, baseOffset = 0, inlineDepth = 0) {
@@ -1082,15 +1109,16 @@ function parseCodeBlock(lines, start, options, context) {
   return { ok: false, errorCode: 'unclosed_code_block' };
 }
 
-function parseHighlightParagraphBlock(lines, start, options, context) {
+function parseFormattedParagraphBlock(lines, start, options, context, config) {
+  const fence = lines[start];
   const payload = [];
   let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === '~~~=') {
+    if (lines[i] === fence) {
       const text = payload.join('\n');
       if (text.trim().length === 0) {
-        return { ok: false, errorCode: 'invalid_highlight_paragraph_block' };
+        return { ok: false, errorCode: config.invalidCode };
       }
       const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
       if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
@@ -1100,7 +1128,7 @@ function parseHighlightParagraphBlock(lines, start, options, context) {
         nextIndex: i + 1,
         node: withSpan(
           {
-            type: 'highlight_paragraph_block',
+            type: config.nodeType,
             children: inline.nodes,
           },
           context,
@@ -1116,7 +1144,7 @@ function parseHighlightParagraphBlock(lines, start, options, context) {
     payload.push(lines[i]);
   }
 
-  return { ok: false, errorCode: 'unclosed_highlight_paragraph_block' };
+  return { ok: false, errorCode: config.unclosedCode };
 }
 
 function parseTaggedPairedBlock(lines, start, options, context, config) {
@@ -1674,13 +1702,14 @@ function parseBlocks(lines, options, context) {
       return failAt('unknown_block_type', context.lineOffset + index, 0);
     }
 
-    if (isV2Document(context) && line === '~~~=') {
-      const highlight = parseHighlightParagraphBlock(lines, index, options, context);
-      if (!highlight.ok) return withLine(highlight, context.lineOffset + index);
+    const formattedParagraph = isV2Document(context) ? formattedParagraphFence(line) : null;
+    if (formattedParagraph !== null) {
+      const parsedFormattedParagraph = parseFormattedParagraphBlock(lines, index, options, context, formattedParagraph);
+      if (!parsedFormattedParagraph.ok) return withLine(parsedFormattedParagraph, context.lineOffset + index);
       const blockBudget = recordBlock(options, context, index);
       if (!blockBudget.ok) return blockBudget;
-      children.push(highlight.node);
-      index = highlight.nextIndex;
+      children.push(parsedFormattedParagraph.node);
+      index = parsedFormattedParagraph.nextIndex;
       continue;
     }
 

@@ -134,6 +134,9 @@ type NdBlockNode =
   | NdTodoList
   | NdAutoNumberList
   | NdHighlightParagraphBlock
+  | NdStrongParagraphBlock
+  | NdEmphasisParagraphBlock
+  | NdUnderlineParagraphBlock
   | NdHeaderTextBlock
   | NdDisclaimerBlock;
 

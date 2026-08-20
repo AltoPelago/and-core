@@ -91,5 +91,8 @@ assert(v2Html.includes('href="#overview"'), 'playground v2 preview should link l
 assert(v2Html.includes('class="and-image and-image-inline"'), 'playground v2 preview should render inline images');
 assert(v2Html.includes('alt="Ampersand ND sample"'), 'playground v2 preview should preserve image alt text');
 assert(v2Html.includes('class="and-highlight-paragraph"'), 'playground v2 preview should render paired blocks');
+assert(v2Html.includes('class="and-strong-paragraph"'), 'playground v2 preview should render strong paragraph blocks');
+assert(v2Html.includes('class="and-emphasis-paragraph"'), 'playground v2 preview should render emphasis paragraph blocks');
+assert(v2Html.includes('class="and-underline-paragraph"'), 'playground v2 preview should render underline paragraph blocks');
 
 console.log('Playground checks passed.');

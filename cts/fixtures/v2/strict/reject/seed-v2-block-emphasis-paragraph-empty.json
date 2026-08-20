@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-emphasis-paragraph-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~/\n~~~/\n",
+  "expected": { "ok": false, "errorCode": "invalid_emphasis_paragraph_block", "assertions": ["emphasis paragraph blocks require non-empty content"] }
+}

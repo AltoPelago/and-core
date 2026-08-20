@@ -23,6 +23,7 @@ Current scope:
   footnote definitions/references, and first-class todo and auto-number lists
 * AEON-canonical type annotations and scalar literals for v2 typed values
 * v2 heading auto-number intent and paired blocks
+* exact matching fences for highlight, strong, emphasis, and underline paragraph blocks
 
 Paragraph line breaks preserved in parser AST text nodes are treated as soft wraps during canonical
 emission and serialized as a single space. The canonical-emitter check therefore verifies canonical

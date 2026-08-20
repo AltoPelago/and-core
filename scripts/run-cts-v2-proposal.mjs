@@ -145,6 +145,23 @@ function reportCheck(label, condition, detail) {
 
 function runApiBoundaryChecks() {
   const checks = [];
+  const plainTildeV1 = parseAnd('&ND v1\n\n~~~\nordinary paragraph text\n~~~\n');
+  const plainTildeV2 = parseAnd('&ND v2\n\n~~~\nordinary paragraph text\n~~~\n', { allowV2: true });
+  checks.push(reportCheck(
+    'plain tilde remains an inherited paragraph',
+    plainTildeV1.ok
+      && plainTildeV2.ok
+      && plainTildeV1.document.children[0]?.type === 'paragraph'
+      && sameDocument(plainTildeV1.document, plainTildeV2.document),
+    'plain ~~~ lines must remain ordinary paragraph text in both v1 and v2'
+  ));
+  checks.push(reportCheck(
+    'plain tilde canonical soft-wrap normalization',
+    plainTildeV2.ok
+      && emitCanonical(plainTildeV2.document, { profile: 'standalone', version: 'v2' })
+        === '&ND v2\n\n~~~ ordinary paragraph text ~~~\n',
+    'plain ~~~ is not a retained fence and follows inherited paragraph canonicalization'
+  ));
   const inlineV2 = parseInline('[# inline-id]', { allowV2: true, version: 'v2' });
   checks.push(reportCheck(
     'public inline v2 selection',

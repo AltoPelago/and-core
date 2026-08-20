@@ -71,6 +71,18 @@ Rich content nests: [= highlighted with [* emphasis]], [- retired [/ wording]],
 This is a highlighted paragraph with [! proposal] status.
 ~~~=
 
+~~~*
+This entire paragraph is strong, with [/ nested emphasis].
+~~~*
+
+~~~/
+This entire paragraph is emphasized, with [* nested strong].
+~~~/
+
+~~~_
+This entire paragraph is underlined, with [? rich content].
+~~~_
+
 ===hero
 Header text can carry a validated tag.
 ===

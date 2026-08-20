@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-underline-paragraph-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~_\n~~~_\n",
+  "expected": { "ok": false, "errorCode": "invalid_underline_paragraph_block", "assertions": ["underline paragraph blocks require non-empty content"] }
+}

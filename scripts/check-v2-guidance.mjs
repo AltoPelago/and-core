@@ -25,6 +25,8 @@ const migrationRequirements = [
   ['footnote named reuse', 'hello [% (A1) reusable context], again [% (A1)]'],
   ['footnote forward rejection', 'unresolved or forward'],
   ['directional list marker', '- [>] advance while [<] remains inline'],
+  ['formatted paragraphs', '~~~*'],
+  ['plain tilde paragraph', 'Plain `~~~`'],
   ['downgrade limit', 'There is no automatic downgrade'],
   ['consumer companion link', './and-consumer-conventions.md'],
 ];
