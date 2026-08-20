@@ -1,8 +1,8 @@
 {
   "generatedBy": "scripts/check-html-renderer.mjs",
   "totals": {
-    "fixtures": 53,
-    "checked": 53,
+    "fixtures": 54,
+    "checked": 54,
     "skipped": 0,
     "failed": 0
   },
@@ -421,6 +421,14 @@
       "status": "pass",
       "fragment": "<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table>",
       "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<table>\n<thead>\n<tr><th>A</th><th>B</th></tr>\n</thead>\n<tbody>\n<tr><td>1</td><td>2</td></tr>\n</tbody>\n</table>\n</body>\n</html>\n",
+      "notes": []
+    },
+    {
+      "id": "seed-dollar-code-fences",
+      "path": "strict/accept/seed-dollar-code-fences.json",
+      "status": "pass",
+      "fragment": "<figure class=\"and-code-block\">\n\n<pre><code>plain code</code></pre>\n</figure>\n<figure class=\"and-code-block\" data-language=\"aeon\">\n<figcaption>aeon</figcaption>\n<pre><code class=\"language-aeon\">title = &quot;v1 dollar&quot;</code></pre>\n</figure>\n<figure class=\"and-code-block\">\n\n<pre><code>```</code></pre>\n</figure>",
+      "document": "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>&amp;ND Document</title>\n</head>\n<body>\n<figure class=\"and-code-block\">\n\n<pre><code>plain code</code></pre>\n</figure>\n<figure class=\"and-code-block\" data-language=\"aeon\">\n<figcaption>aeon</figcaption>\n<pre><code class=\"language-aeon\">title = &quot;v1 dollar&quot;</code></pre>\n</figure>\n<figure class=\"and-code-block\">\n\n<pre><code>```</code></pre>\n</figure>\n</body>\n</html>\n",
       "notes": []
     },
     {

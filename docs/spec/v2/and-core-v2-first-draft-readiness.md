@@ -16,9 +16,9 @@ clean-baseline and lifecycle review described below.
 | Area | Current evidence | Assessment |
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
-| v1 compatibility | All 143 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
+| v1 compatibility | All 145 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
 | v2 grammar | 158 indexed strict fixtures: 57 accept and 101 reject. | Ready |
-| v2 executable checks | 962 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| v2 executable checks | 964 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
 | AST snapshots | 56 of 57 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |

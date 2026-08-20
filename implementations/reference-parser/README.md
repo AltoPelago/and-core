@@ -25,7 +25,8 @@ Current scope:
 * normative resource budget enforcement for document size, line length, block count, block payload size,
   list item count, nesting depth, inline depth, table columns, and link target length
 * raw code block margin checks
-* inherited triple/quadruple backtick code fences and v2 `~~~$` code fences
+* inherited triple/quadruple backtick code fences, v1/v2 `~~~$` code fences, and v2-only `[n]`
+  dollar-fence numbering
 * the initial block-boundary and indentation rules covered by the CTS
 * explicit v2 capability and effective-version selection through `allowV2` and `version`
 * proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact directional and

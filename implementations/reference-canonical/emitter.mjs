@@ -418,15 +418,22 @@ function emitBlock(node, context) {
       return emitBlockquote(node, context);
     case 'code_block': {
       const language = node.language ? node.language.toLowerCase() : '';
+      const payloadLines = normalizeRawText(node.text).split('\n');
       if (context.version === 'v2') {
-        const fence = '~~~$';
-        const opener = `${fence}${node.ordered ? ' [n]' : ''}${language ? ` ${language}` : ''}`;
-        const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
-        return `${opener}\n${payload}\n${fence}`;
+        if (!payloadLines.includes('~~~$')) {
+          const fence = '~~~$';
+          const opener = `${fence}${node.ordered ? ' [n]' : ''}${language ? ` ${language}` : ''}`;
+          const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
+          return `${opener}\n${payload}\n${fence}`;
+        }
+        const fallbackFence = node.ordered ? '````' : '```';
+        const fallbackPayload = emitRawBlockFencePayload(node.text, fallbackFence, 'unsupported_code_fence_payload');
+        return `${fallbackFence}${language}\n${fallbackPayload}\n${fallbackFence}`;
       }
-      const fence = node.ordered ? '````' : '```';
+      const fence = node.ordered ? '````' : payloadLines.includes('```') ? '~~~$' : '```';
       const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
-      return `${fence}${language}\n${payload}\n${fence}`;
+      const opener = fence === '~~~$' && language ? `${fence} ${language}` : `${fence}${language}`;
+      return `${opener}\n${payload}\n${fence}`;
     }
     case 'extension_block': {
       const payload = emitExtensionPayload(node.text);

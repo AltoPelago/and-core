@@ -74,6 +74,11 @@ assert(canonical.includes('escaped \\| pipe'), 'canonical table output should pr
 
 assert(examples.v1.version === 'v1' && examples.v1.source.startsWith('&ND v1'), 'v1 example metadata should agree with its declaration');
 assert(examples.v2.version === 'v2' && examples.v2.source.startsWith('&ND v2'), 'v2 example metadata should agree with its declaration');
+const v1ExampleResult = parseAnd(examples.v1.source, { includeSpans: true });
+assert(v1ExampleResult.ok && v1ExampleResult.version === 'v1', 'playground v1 example should parse dollar code fences');
+const v1ExampleCanonical = emitCanonical(v1ExampleResult.document, { profile: 'standalone', version: v1ExampleResult.version });
+assert(v1ExampleCanonical.includes('```aeon\ntitle = "Playground"\nmode = "strict"\n```'), 'v1 canonical output should normalize an unnumbered dollar fence to backticks');
+assert(v1ExampleCanonical.includes('````aeon\ntitle = "Playground"\nmode = "ordered"\n````'), 'v1 canonical output should retain ordered backtick fences');
 
 const v2Result = parseAnd(examples.v2.source, { allowV2: true, version: examples.v2.version, includeSpans: true });
 assert(v2Result.ok && v2Result.version === 'v2', 'playground v2 selection should parse v2 input');

@@ -18,6 +18,19 @@ assert(parsed.ok, `public parse should succeed: ${parsed.errorCode ?? 'unknown_e
 assert(parsed.version === 'v1', 'public parse should report the effective v1 version');
 assert(parsed.document.type === 'document', 'public parse should return a document root');
 assert(parsed.document.children[0].type === 'heading', 'public parse should expose block nodes');
+const dollarCodeV1 = parseAnd('&ND v1\n\n~~~$ aeon\nplain\n~~~$\n');
+assert(
+  dollarCodeV1.ok
+    && dollarCodeV1.document.children[0]?.type === 'code_block'
+    && dollarCodeV1.document.children[0]?.ordered === false
+    && dollarCodeV1.document.children[0]?.language === 'aeon',
+  'public v1 parse should accept unnumbered dollar code fences',
+);
+const numberedDollarCodeV1 = parseAnd('&ND v1\n\n~~~$ [n] aeon\nnumbered\n~~~$\n');
+assert(
+  !numberedDollarCodeV1.ok && numberedDollarCodeV1.errorCode === 'invalid_code_fence',
+  'public v1 parse should reject v2-only dollar-fence numbering',
+);
 
 const inline = parseInline('Hello [* world]');
 assert(inline.ok, `public inline parse should succeed: ${inline.errorCode ?? 'unknown_error'}`);

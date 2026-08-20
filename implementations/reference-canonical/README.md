@@ -13,8 +13,8 @@ Current scope:
 * headings
 * lists with paragraph heads and nested block children
 * blockquotes
-* code blocks, retaining v1 backtick emission and using the v2 `~~~$` family with optional `[n]`
-  and language metadata
+* code blocks, preferring v1 backtick emission and the v2 `~~~$` family with optional `[n]` and
+  language metadata, with deterministic safe-fence fallback on payload collisions
 * extension blocks
 * extension block fallback regions
 * tables

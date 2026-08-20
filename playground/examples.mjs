@@ -13,10 +13,10 @@ date = 2026-04-01
 
 This is [* deterministic] prose with [/ visible structure].
 
-\`\`\`aeon
+~~~$ aeon
 title = "Playground"
 mode = "strict"
-\`\`\`
+~~~$
 
 \`\`\`\`aeon
 title = "Playground"

@@ -82,7 +82,7 @@ assigns each promoted form an explicit ownership boundary:
 | `[.]` | Core | Explicit inline line break; never a directional marker. |
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
-| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Core | Code blocks with optional language and numbered-line intent; inherited backtick fences remain accepted. |
+| inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
@@ -115,7 +115,8 @@ semantics and named design anchors rather than duplicating every variant filenam
 
 ## Code Block Grammar Snapshot (Proposal)
 
-V2 retains all v1 triple- and quadruple-backtick code blocks and adds these exact spellings:
+V2 retains all v1 triple- and quadruple-backtick code blocks and the first two dollar spellings,
+then adds `[n]` to the latter two:
 
 ```text
 ~~~$
@@ -139,9 +140,11 @@ The optional language matches `[A-Za-z][A-Za-z0-9_-]*`; canonical output lowerca
 records numbered-line intent in the inherited `code_block.ordered` field. Every new form closes with
 bare `~~~$`, and its payload has inherited raw-code semantics and budgets.
 
-A v2 parser accepts inherited backtick fences, while a v1 parser rejects the v2-only `~~~$` family.
-Canonical v2 emission uses `~~~$` for every code block, including code parsed from backticks;
-canonical v1 emission continues to use backticks. The briefly introduced `~~~language` and
+A v1 parser accepts `~~~$` and `~~~$ language` but rejects the v2-only `[n]` variants. A v2 parser
+accepts every inherited backtick and dollar fence. Canonical v2 emission prefers `~~~$`, including
+for code parsed from backticks, and falls back to the matching inherited backtick fence when the
+payload contains an exact `~~~$` line. Canonical v1 emission prefers backticks, using `~~~$` only
+when needed to preserve an exact triple-backtick payload line. The briefly introduced `~~~language` and
 `~~~~language` forms have been removed and reject with `deprecated_code_fence`. Plain `~~~` remains
 ordinary paragraph text.
 
@@ -491,15 +494,17 @@ Expected direction:
 
 Intent:
 
-- add an explicit `~~~$` v2 code-block family consistent with inline `[$ code]`
-- retain inherited backtick code fences for v1 compatibility
-- carry optional language and `[n]` numbered-line intent in the inherited `code_block` AST
+- extend the v1 `~~~$` code-block family consistently with inline `[$ code]`
+- retain inherited backtick and unnumbered dollar code fences for v1 compatibility
+- carry v2-only `[n]` numbered-line intent in the inherited `code_block` AST
 
 Expected direction:
 
 - v2 strict parse success for the four exact `~~~$` openers and inherited backtick fences
-- canonical v2 output normalizes every code-block AST to the applicable `~~~$` form
-- v1 strict rejection for `~~~$`; both versions reject removed `~~~language` / `~~~~language`
+- canonical v2 output prefers the applicable `~~~$` form and safely falls back to backticks on a
+  dollar-closer payload collision
+- v1 acceptance for unnumbered dollar fences and strict rejection for their `[n]` variants; both
+  versions reject removed `~~~language` / `~~~~language`
 - malformed, mismatched, and unclosed dollar fences fail with stable diagnostics
 
 ### `seed-v2-block-highlight-paragraph-enabled`

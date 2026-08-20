@@ -160,9 +160,10 @@ case-sensitive `[A-Za-z0-9][A-Za-z0-9._:-]*` lexical grammar. The exact promoted
 union, containment rules, and local-anchor invariants are defined by
 [`and-ast-contract.md`](./and-ast-contract.md). No v1 node changes meaning under v2.
 
-Code blocks keep the inherited `NdCodeBlock` shape. V2 accepts v1 triple- and quadruple-backtick
-fences and adds `~~~$` with optional `[n]` and language metadata. V2 canonical emission spells every
-code block with `~~~$`; v1 canonical emission retains backticks. Removed `~~~language` and
+Code blocks keep the inherited `NdCodeBlock` shape. V1 accepts triple/quadruple backticks plus
+unnumbered `~~~$` with optional language; v2 adds `[n]` numbered-line intent to the dollar opener.
+V2 canonical emission prefers `~~~$`; v1 canonical emission prefers backticks. Each falls back to
+the alternate supported fence on an exact payload-closer collision. Removed `~~~language` and
 `~~~~language` inputs fail with `deprecated_code_fence`.
 
 ## Budgets And Spans
@@ -240,8 +241,8 @@ declare function emitCanonical(
 `profile` is mandatory. `version` defaults to v1 for backward compatibility, but v2 callers must
 forward the successful parse result's `version`. Standalone v2 output declares `&ND v2`; embedded
 output omits the declaration. Emitting any v2-only node with `version: "v1"` fails closed.
-For inherited `NdCodeBlock` nodes, the selected version also determines the fence family: backticks
-for v1 and `~~~$` for v2.
+For inherited `NdCodeBlock` nodes, the selected version also determines the preferred fence family:
+backticks for v1 and `~~~$` for v2, subject to the safe-fence fallback above.
 
 ## HTML Projection
 

@@ -46,6 +46,7 @@ assert(launchConfig.configurations.some((entry) => Array.isArray(entry.args) && 
 assert(config.brackets?.some((pair) => pair[0] === '[' && pair[1] === ']'), 'language configuration should register square brackets');
 assert(Array.isArray(grammar.patterns) && grammar.patterns.length > 0, 'grammar should expose top-level patterns');
 assert(grammar.repository?.code_block, 'grammar should define code block tokenization');
+assert(JSON.stringify(grammar.repository.code_block).includes('~~~\\\\$'), 'grammar should tokenize v1 dollar code fences');
 assert(grammar.repository?.extension_block, 'grammar should define extension block tokenization');
 assert(grammar.repository?.reserved, 'grammar should define reserved inline tokenization');
 assert(readme.includes('Run &ND VS Code Prototype'), 'VS Code prototype README should document the repo launch workflow');
@@ -59,6 +60,7 @@ assert(extensionSource.includes('registerHoverProvider'), 'extension should regi
 assert(extensionSource.includes('unknown_inline_type'), 'extension should explain reserved inline syntax or common strict diagnostics');
 assert(extensionSource.includes('registerCompletionItemProvider'), 'extension should register authoring completions');
 assert(extensionSource.includes("'+++fallback'"), 'extension should offer fallback block completion');
+assert(extensionSource.includes("snippetCompletion('~~~$ code block'"), 'extension should offer dollar code-block completion');
 assert(extensionSource.includes('[@ ${1:https://example.com} | ${2:label}]'), 'extension should offer inline link completion');
 assert(extensionSource.includes('[* ${1:text}]'), 'extension should offer inline strong completion');
 assert(extensionSource.includes('scanDocumentContext'), 'extension should scan simple document context for completion gating');

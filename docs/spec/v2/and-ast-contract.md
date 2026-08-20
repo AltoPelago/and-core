@@ -60,7 +60,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[>]`, `[<]` | Core | Directional author-intent markers; a leading marker replaces an unordered-list bullet in projection. |
 | `[.]` | Core | Explicit inline line break; never a directional marker. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
-| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Core | V2 code-block spelling with optional language and numbered-line intent; inherited backtick fences remain accepted. |
+| inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared dollar code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only their content. |
@@ -398,9 +398,8 @@ behavior, or formatting.
 
 ## Code Blocks
 
-V2 retains the inherited `NdCodeBlock` AST and every v1 backtick-fence form. It additionally defines
-a tilde-dollar spelling whose delimiters are easier to embed inside backtick- or trimtick-delimited
-host strings:
+V2 retains the inherited `NdCodeBlock` AST, every v1 backtick-fence form, and v1's unnumbered
+tilde-dollar forms. It extends the dollar opener with optional `[n]` numbered-line intent:
 
 ```text
 code-open ::= "~~~$" [ " " ( code-language | "[n]" [ " " code-language ] ) ]
@@ -432,9 +431,13 @@ The opener spacing is exact, the language is optional, and `[n]` maps to the inh
 Payload text remains raw and uses the inherited code-block resource budgets. Canonical language
 spelling is lowercase.
 
-A v2 parser accepts inherited triple- and quadruple-backtick code blocks without changing their AST
-meaning. V2 canonical emission uses the `~~~$` family for every code-block AST, including one parsed
-from backticks. V1 canonical emission continues to use backticks. The briefly proposed
+A v1 parser accepts `~~~$` and `~~~$ language`, but rejects either `[n]` opener with
+`invalid_code_fence`; v1 ordered code remains spelled with quadruple backticks. A v2 parser accepts
+all inherited backtick and unnumbered dollar forms without changing their AST meaning. V2 canonical
+emission prefers the `~~~$` family, including for code parsed from backticks, and falls back to the
+matching inherited backtick fence when the payload contains an exact `~~~$` line. V1 canonical
+emission prefers backticks and uses an unnumbered dollar fence only to avoid an exact triple-backtick
+payload line. The briefly proposed
 `~~~language` and `~~~~language` forms are not supported; parsers reject them with
 `deprecated_code_fence`. Plain `~~~` remains ordinary paragraph text.
 

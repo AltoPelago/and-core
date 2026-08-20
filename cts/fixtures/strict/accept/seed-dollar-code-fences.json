@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-dollar-code-fences",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "~~~$\nplain code\n~~~$\n\n~~~$ AEON\ntitle = \"v1 dollar\"\n~~~$\n\n~~~$\n```\n~~~$\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v1 accepts dollar code fences with or without a language",
+      "dollar code fences are always unnumbered in v1"
+    ],
+    "canonical": {
+      "embedded": "```\nplain code\n```\n\n```aeon\ntitle = \"v1 dollar\"\n```\n\n~~~$\n```\n~~~$\n",
+      "standalone": "&ND v1\n\n```\nplain code\n```\n\n```aeon\ntitle = \"v1 dollar\"\n```\n\n~~~$\n```\n~~~$\n"
+    },
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "code_block",
+          "language": null,
+          "ordered": false,
+          "text": "plain code"
+        },
+        {
+          "type": "code_block",
+          "language": "AEON",
+          "ordered": false,
+          "text": "title = \"v1 dollar\""
+        },
+        {
+          "type": "code_block",
+          "language": null,
+          "ordered": false,
+          "text": "```"
+        }
+      ]
+    }
+  }
+}

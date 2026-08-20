@@ -33,7 +33,7 @@ const migrationRequirements = [
   ['semantic wrappers', '[(id) content]'],
   ['structural escape', '\\# this is paragraph text, not a heading'],
   ['dollar code fence', '~~~$ [n] aeon'],
-  ['backtick code compatibility', 'Backtick code fences are v1 syntax and remain fully supported by v2 readers'],
+  ['v1 code compatibility', 'Backtick code fences and unnumbered `~~~$` fences are v1 syntax'],
   ['removed tilde-language fence', '`~~~language` and `~~~~language` forms should be'],
   ['plain tilde paragraph', 'Plain `~~~`'],
   ['downgrade limit', 'There is no automatic downgrade'],

@@ -102,8 +102,10 @@ interface NdCodeBlock {
 
 `text` is the raw payload after line-ending normalization and margin removal. It does not include
 opening or closing fences. `ordered` is `true` when the block was opened with a quadruple backtick
-and requests explicit line ordering in downstream projections. Backticks are the supported v1 code
-fences. The briefly introduced language-qualified triple/quadruple tilde alternatives reject with
+and requests explicit line ordering in downstream projections. V1 accepts triple/quadruple backtick
+fences plus unnumbered `~~~$` and `~~~$ language` fences. Dollar fences always produce
+`ordered: false`; `[n]` after `~~~$` is v2-only and invalid in v1. Canonical v1 output prefers
+backticks and uses `~~~$` when a plain-code payload contains an exact triple-backtick line. The removed `~~~language` / `~~~~language` alternatives reject with
 `deprecated_code_fence`; bare `~~~` remains paragraph text.
 
 ### Extension Block

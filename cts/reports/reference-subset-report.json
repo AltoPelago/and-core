@@ -3,17 +3,17 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 143,
-    "pending": 8,
+    "fixtures": 145,
+    "pending": 10,
     "pass": 135,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 53,
+    "expected": 54,
     "checked": 0,
     "matched": 0,
-    "skipped": 53,
+    "skipped": 54,
     "failed": 0
   },
   "spanChecks": {
@@ -24,9 +24,9 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 78,
+    "expected": 79,
     "matched": 72,
-    "missingActual": 6,
+    "missingActual": 7,
     "mismatched": 0
   },
   "results": [
@@ -2598,6 +2598,40 @@
       "notes": [
         "Evaluated by reference subset adapter.",
         "Source span expectation skipped; adapter does not declare spans capability."
+      ]
+    },
+    {
+      "id": "seed-dollar-code-fences",
+      "path": "strict/accept/seed-dollar-code-fences.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": true,
+      "documentExpected": true,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet.",
+        "Document AST expectation skipped; adapter does not declare document capability."
+      ]
+    },
+    {
+      "id": "seed-dollar-code-fence-numbered-v1",
+      "path": "strict/reject/seed-dollar-code-fence-numbered-v1.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_code_fence",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet."
       ]
     },
     {

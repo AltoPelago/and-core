@@ -91,6 +91,18 @@
             "2": { "name": "markup.fence.code.and" }
           },
           "name": "markup.raw.block.and"
+        },
+        {
+          "begin": "^((?:  )?(?:> ?)?)(~~~\\$)(?: ([A-Za-z][A-Za-z0-9_-]*))?$",
+          "beginCaptures": {
+            "2": { "name": "markup.fence.code.and" },
+            "3": { "name": "entity.name.section.code-language.and" }
+          },
+          "end": "^(\\1)(~~~\\$)$",
+          "endCaptures": {
+            "2": { "name": "markup.fence.code.and" }
+          },
+          "name": "markup.raw.block.and"
         }
       ]
     },

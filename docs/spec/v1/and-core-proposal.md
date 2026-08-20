@@ -3517,30 +3517,46 @@ margin.
 ## Code blocks
 
 ````ebnf
-CodeBlock       ::= PlainCodeBlock | OrderedCodeBlock ;
+CodeBlock       ::= PlainCodeBlock | OrderedCodeBlock | DollarCodeBlock ;
 PlainCodeBlock  ::= CodeOpen RawLines CodeClose ;
 OrderedCodeBlock ::= OrderedCodeOpen RawLines OrderedCodeClose ;
+DollarCodeBlock ::= DollarCodeOpen RawLines DollarCodeClose ;
 CodeOpen        ::= "```" CodeLang? LineEnd ;
 CodeClose       ::= "```" WS? LineEnd ;
 OrderedCodeOpen ::= "````" CodeLang? LineEnd ;
 OrderedCodeClose ::= "````" WS? LineEnd ;
+DollarCodeOpen  ::= "~~~$" ( " " CodeLang )? LineEnd ;
+DollarCodeClose ::= "~~~$" LineEnd ;
 CodeLang        ::= Ident ;
 ````
 
 `RawLines` is implementation-defined scanning: consume all text until the first line matching the
 corresponding closing fence at the same block margin. Triple backticks produce a plain code block.
 Quadruple backticks produce an ordered code block whose payload lines retain their raw text while
-explicitly requesting line ordering in downstream projections.
+explicitly requesting line ordering in downstream projections. `~~~$` optionally accepts one
+space and a language and produces a plain code block. Its closer is exactly bare `~~~$`. V1 does
+not accept `[n]` in a dollar opener; ordered code remains available through quadruple backticks.
+Canonical v1 output prefers backticks, falling back to `~~~$` when a plain-code payload contains an
+exact triple-backtick line.
 
 The briefly introduced language-qualified triple/quadruple tilde alternatives were removed before
 publication. `~~~language` and `~~~~language` reject with `deprecated_code_fence`; bare `~~~`
-remains ordinary paragraph text. V2 defines a separate `~~~$` code family without changing these v1
-backtick forms.
+remains ordinary paragraph text. V2 extends the shared `~~~$` family with `[n]` numbered-line intent
+without changing these v1 forms.
+
+### `seed-dollar-code-fences`
+
+* `~~~$` and `~~~$ language` parse as unnumbered code blocks
+* canonical v1 output uses triple backticks when safe and otherwise retains a dollar fence
+
+### `seed-dollar-code-fence-numbered-v1`
+
+* `~~~$ [n]` and `~~~$ [n] language` are v2-only and reject in v1
 
 ### `seed-tilde-code-fences`
 
 * language-qualified triple and quadruple tilde fences reject with `deprecated_code_fence`
-* backticks remain the supported v1 code-block spelling
+* backticks and the unnumbered dollar family remain supported v1 code-block spellings
 
 ### `seed-plain-tilde-paragraph`
 

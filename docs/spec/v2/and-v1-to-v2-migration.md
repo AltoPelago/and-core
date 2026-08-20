@@ -153,7 +153,7 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading auto-number intent |
 | `- [n] content` | First-class auto-number list |
-| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Code block with optional language and numbered-line intent |
+| `~~~$ [n]`, `~~~$ [n] language` | V2 extension of the v1 dollar code block with numbered-line intent |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -185,7 +185,8 @@ Core v1 does not gain this rule.
 
 ## Code Blocks
 
-Backtick code fences are v1 syntax and remain fully supported by v2 readers:
+Backtick code fences and unnumbered `~~~$` fences are v1 syntax and remain fully supported by v2
+readers:
 
 ````and
 ```aeon
@@ -193,7 +194,7 @@ title = "compatible"
 ```
 ````
 
-V2 additionally provides an explicit tilde-dollar family:
+V1 accepts the first two tilde-dollar forms below. V2 additionally accepts the `[n]` variants:
 
 ```and
 ~~~$
@@ -213,9 +214,10 @@ numbered typed code
 ~~~$
 ```
 
-`[n]` requests numbered lines and an optional language follows it. Every form closes with bare
-`~~~$`. Canonical v2 output uses this family even when the source used backticks; canonical v1 output
-continues to use backticks. The briefly introduced `~~~language` and `~~~~language` forms should be
+`[n]` requests numbered lines and an optional language follows it. It is not accepted by a v1
+parser. Every form closes with bare `~~~$`. Canonical v2 output prefers this family even when the source
+used backticks; canonical v1 output prefers backticks. Either version uses the alternate supported
+fence when its preferred closer occurs as an exact payload line. The briefly introduced `~~~language` and `~~~~language` forms should be
 replaced with either backticks or `~~~$ language`; they are rejected with `deprecated_code_fence`.
 
 ## Formatted Paragraphs

@@ -1221,7 +1221,7 @@ function parseCodeBlock(lines, start, options, context) {
   const line = lines[start];
   const fence = rawFence(line, context.documentVersion);
   const openerText = line.slice(fence.prefix.length);
-  const language = fence.kind === 'v2-dollar'
+  const language = fence.kind === 'dollar'
     ? fence.language
     : openerText.slice(fence.fence.length).trim() || null;
   const payload = [];
@@ -1232,7 +1232,7 @@ function parseCodeBlock(lines, start, options, context) {
       const node = {
         type: 'code_block',
         language,
-        ordered: fence.kind === 'v2-dollar' ? fence.ordered : fence.fence.length === 4,
+        ordered: fence.kind === 'dollar' ? fence.ordered : fence.fence.length === 4,
         text: payload.map((payloadLine) => rawPayloadLine(payloadLine, fence.prefix)).join('\n'),
       };
       return {

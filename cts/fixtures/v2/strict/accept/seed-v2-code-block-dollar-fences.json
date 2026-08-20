@@ -3,12 +3,13 @@
   "id": "seed-v2-code-block-dollar-fences",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\n~~~$\nplain\n~~~$\n\n~~~$ aeon\ntyped\n~~~$\n\n~~~$ [n]\nfirst\nsecond\n~~~$\n\n~~~$ [n] aeon\none\ntwo\n~~~$\n\n```json\nlegacy plain\n```\n\n````json\nlegacy numbered\n````\n",
+  "source": "&ND v2\n\n~~~$\nplain\n~~~$\n\n~~~$ aeon\ntyped\n~~~$\n\n~~~$ [n]\nfirst\nsecond\n~~~$\n\n~~~$ [n] aeon\none\ntwo\n~~~$\n\n```json\nlegacy plain\n```\n\n````json\nlegacy numbered\n````\n\n```txt\n~~~$\n```\n",
   "expected": {
     "ok": true,
     "assertions": [
       "v2 dollar code fences allow optional language and explicit numbering intent",
-      "inherited backtick fences remain accepted in declared-v2 documents"
+      "inherited backtick fences remain accepted in declared-v2 documents",
+      "canonical emission retains a safe inherited fence when the preferred dollar closer occurs in the payload"
     ],
     "document": {
       "type": "document",
@@ -18,7 +19,8 @@
         { "type": "code_block", "language": null, "ordered": true, "text": "first\nsecond" },
         { "type": "code_block", "language": "aeon", "ordered": true, "text": "one\ntwo" },
         { "type": "code_block", "language": "json", "ordered": false, "text": "legacy plain" },
-        { "type": "code_block", "language": "json", "ordered": true, "text": "legacy numbered" }
+        { "type": "code_block", "language": "json", "ordered": true, "text": "legacy numbered" },
+        { "type": "code_block", "language": "txt", "ordered": false, "text": "~~~$" }
       ]
     }
   }

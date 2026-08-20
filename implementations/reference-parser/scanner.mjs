@@ -89,7 +89,7 @@ export function tildeLanguageRawFence(line) {
   return null;
 }
 
-export function v2RawFence(line) {
+export function dollarRawFence(line) {
   const match = line.match(
     /^((?: {2})?|> ?|  > ?)(~~~\$)(?: (\[n\])(?: ([A-Za-z][A-Za-z0-9_-]*))?| ([A-Za-z][A-Za-z0-9_-]*))?$/
   );
@@ -99,16 +99,20 @@ export function v2RawFence(line) {
     fence: match[2],
     language: match[4] ?? match[5] ?? null,
     ordered: match[3] === '[n]',
-    kind: 'v2-dollar',
+    kind: 'dollar',
   };
 }
 
-export function isV2RawFenceCandidate(line) {
+export function isDollarRawFenceCandidate(line) {
   return /^((?: {2})?|> ?|  > ?)~~~\$/.test(line);
 }
 
 export function rawFence(line, version = 'v1') {
-  return backtickRawFence(line) ?? (version === 'v2' ? v2RawFence(line) : null);
+  const backtickFence = backtickRawFence(line);
+  if (backtickFence !== null) return backtickFence;
+  const dollarFence = dollarRawFence(line);
+  if (dollarFence === null) return null;
+  return version === 'v2' || dollarFence.ordered === false ? dollarFence : null;
 }
 
 export function extensionOpener(line) {
@@ -151,10 +155,8 @@ function scanRawIslands(lines, version) {
       return failAt('deprecated_code_fence', i, deprecatedTildeFence.prefix.length);
     }
 
-    if (version === 'v2') {
-      if (isV2RawFenceCandidate(lines[i])) {
-        return failAt('invalid_code_fence', i, lines[i].indexOf('~~~$'));
-      }
+    if (isDollarRawFenceCandidate(lines[i])) {
+      return failAt('invalid_code_fence', i, lines[i].indexOf('~~~$'));
     }
 
     const extension = extensionOpener(lines[i]);

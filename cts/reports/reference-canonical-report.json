@@ -1,9 +1,9 @@
 {
   "generatedBy": "scripts/check-canonical-emitter.mjs",
   "totals": {
-    "fixtures": 53,
+    "fixtures": 54,
     "profiles": 2,
-    "checked": 106,
+    "checked": 108,
     "skipped": 0,
     "failed": 0
   },
@@ -939,6 +939,24 @@
         "standalone": {
           "status": "pass",
           "canonical": "&ND v1\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n",
+          "notes": []
+        }
+      },
+      "notes": []
+    },
+    {
+      "id": "seed-dollar-code-fences",
+      "path": "strict/accept/seed-dollar-code-fences.json",
+      "status": "pass",
+      "profiles": {
+        "embedded": {
+          "status": "pass",
+          "canonical": "```\nplain code\n```\n\n```aeon\ntitle = \"v1 dollar\"\n```\n\n~~~$\n```\n~~~$\n",
+          "notes": []
+        },
+        "standalone": {
+          "status": "pass",
+          "canonical": "&ND v1\n\n```\nplain code\n```\n\n```aeon\ntitle = \"v1 dollar\"\n```\n\n~~~$\n```\n~~~$\n",
           "notes": []
         }
       },

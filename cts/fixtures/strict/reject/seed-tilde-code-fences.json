@@ -9,7 +9,7 @@
     "errorCode": "deprecated_code_fence",
     "assertions": [
       "language-qualified tilde code fences were removed before publication",
-      "backticks remain the supported v1 code-block spelling"
+      "backticks remain a supported v1 code-block spelling"
     ]
   }
 }

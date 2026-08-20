@@ -203,7 +203,7 @@ function addInlineCompletions(items) {
 }
 
 function isRawFenceLine(text) {
-  return /^```/.test(text.trim());
+  return /^(?:`{3,4}|~~~\$)/.test(text.trim());
 }
 
 function isExtensionFenceLine(text) {
@@ -221,14 +221,14 @@ function isBlockStarterLine(text) {
     /^- /.test(trimmed) ||
     /^\d+\. /.test(trimmed) ||
     /^> /.test(trimmed) ||
-    /^```/.test(trimmed) ||
-    /^````/.test(trimmed) ||
+    /^(?:`{3,4}|~~~\$)/.test(trimmed) ||
     /^\+\+\+/.test(trimmed)
   );
 }
 
 function scanDocumentContext(document, upToLineExclusive) {
   let rawMode = null;
+  let rawCodeCloser = null;
   let lastClosedBlockType = null;
   let blankAfterLastClosedBlock = false;
 
@@ -236,8 +236,9 @@ function scanDocumentContext(document, upToLineExclusive) {
     const trimmed = document.lineAt(index).text.trim();
 
     if (rawMode === 'code') {
-      if (trimmed === '```' || trimmed === '````') {
+      if (trimmed === rawCodeCloser) {
         rawMode = null;
+        rawCodeCloser = null;
         lastClosedBlockType = 'code';
         blankAfterLastClosedBlock = false;
       }
@@ -262,6 +263,7 @@ function scanDocumentContext(document, upToLineExclusive) {
 
     if (isRawFenceLine(trimmed)) {
       rawMode = 'code';
+      rawCodeCloser = trimmed.startsWith('~~~$') ? '~~~$' : trimmed.startsWith('````') ? '````' : '```';
       lastClosedBlockType = null;
       blankAfterLastClosedBlock = false;
       continue;
@@ -335,6 +337,7 @@ function registerCompletions(context) {
             snippetCompletion('1. Ordered item', 'Ordered list item', '1. ${1:item}'),
             snippetCompletion('> Blockquote', 'Blockquote paragraph', '> ${1:quoted text}'),
             snippetCompletion('``` code block', 'Code block', '```$1\n$2\n```'),
+            snippetCompletion('~~~$ code block', 'Dollar code block', '~~~\\$${1: language}\n$2\n~~~\\$'),
             snippetCompletion('```` ordered code block', 'Ordered code block with line numbers intent', '````$1\n$2\n````'),
             snippetCompletion('+++extension', 'Opaque extension block', '+++${1:extension/name}\n$2\n+++')
           );

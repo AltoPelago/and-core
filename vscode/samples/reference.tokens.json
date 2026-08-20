@@ -62,6 +62,11 @@
       "scopes": ["markup.fence.code.and", "entity.name.section.code-language.and"]
     },
     {
+      "label": "Dollar code fence",
+      "contains": "~~~$ aeon",
+      "scopes": ["markup.fence.code.and", "entity.name.section.code-language.and"]
+    },
+    {
       "label": "Extension fence",
       "contains": "+++chart/pie",
       "scopes": ["markup.fence.extension.and", "entity.name.type.extension.and"]

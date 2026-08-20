@@ -3,16 +3,16 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-parser/adapter.mjs",
   "totals": {
-    "fixtures": 143,
+    "fixtures": 145,
     "pending": 0,
-    "pass": 143,
+    "pass": 145,
     "fail": 0,
     "error": 0
   },
   "documentChecks": {
-    "expected": 53,
-    "checked": 53,
-    "matched": 53,
+    "expected": 54,
+    "checked": 54,
+    "matched": 54,
     "skipped": 0,
     "failed": 0
   },
@@ -24,8 +24,8 @@
     "skipped": 0
   },
   "errorCodeChecks": {
-    "expected": 78,
-    "matched": 78,
+    "expected": 79,
+    "matched": 79,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -2657,6 +2657,44 @@
       "notes": [
         "Evaluated by reference parser.",
         "Span expectations matched (2/2)."
+      ]
+    },
+    {
+      "id": "seed-dollar-code-fences",
+      "path": "strict/accept/seed-dollar-code-fences.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": true,
+      "actualOk": true,
+      "documentExpected": true,
+      "documentChecked": true,
+      "documentMatch": true,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser.",
+        "Document AST matched expected structure."
+      ]
+    },
+    {
+      "id": "seed-dollar-code-fence-numbered-v1",
+      "path": "strict/reject/seed-dollar-code-fence-numbered-v1.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_code_fence",
+      "actualOk": false,
+      "errorCode": "invalid_code_fence",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by reference parser."
       ]
     },
     {

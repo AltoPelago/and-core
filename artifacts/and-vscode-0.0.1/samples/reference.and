@@ -17,6 +17,10 @@ Paragraph with [* strong], [/ emphasis], [$ code], and [@ https://example.com/a\
 title = "Hello World"
 ```
 
+~~~$ aeon
+title = "Dollar"
+~~~$
+
 ````aeon
 title = "Ordered"
 ````
