@@ -119,9 +119,9 @@
     "strict/reject/seed-v2-block-underline-paragraph-unclosed.json",
     "strict/reject/seed-v2-block-underline-paragraph-empty.json",
     "strict/reject/seed-v2-block-header-text-unclosed.json",
-    "strict/reject/seed-v2-block-header-text-invalid-tag.json",
+    "strict/reject/seed-v2-block-header-text-legacy-fence.json",
     "strict/reject/seed-v2-block-disclaimer-unclosed.json",
-    "strict/reject/seed-v2-block-disclaimer-invalid-tag.json",
+    "strict/reject/seed-v2-block-disclaimer-legacy-fence.json",
     "strict/reject/seed-v2-inline-line-break-marker-malformed.json",
     "strict/reject/seed-v2-inline-line-break-marker-unclosed.json",
     "strict/reject/seed-v2-inline-line-break-marker-extra-dot.json",
@@ -137,6 +137,20 @@
     "strict/reject/seed-v2-block-admonition-paragraph-empty.json",
     "strict/accept/seed-v2-block-comment-enabled.json",
     "strict/reject/seed-v2-block-comment-empty.json",
-    "strict/reject/seed-v2-block-comment-unclosed.json"
+    "strict/reject/seed-v2-block-comment-unclosed.json",
+    "strict/reject/seed-v2-block-header-text-empty.json",
+    "strict/reject/seed-v2-block-disclaimer-empty.json",
+    "strict/accept/seed-v2-inline-disclaimer-tag-enabled.json",
+    "strict/reject/seed-v2-inline-disclaimer-tag-empty.json",
+    "strict/reject/seed-v2-inline-disclaimer-tag-missing-space-prefix.json",
+    "strict/accept/seed-v2-block-semantic-enabled.json",
+    "strict/accept/seed-v2-inline-semantic-tag-enabled.json",
+    "strict/reject/seed-v2-block-semantic-empty.json",
+    "strict/reject/seed-v2-block-semantic-invalid-id.json",
+    "strict/reject/seed-v2-block-semantic-unclosed.json",
+    "strict/reject/seed-v2-inline-semantic-tag-empty.json",
+    "strict/reject/seed-v2-inline-semantic-tag-invalid-id.json",
+    "strict/reject/seed-v2-inline-semantic-tag-missing-space.json",
+    "strict/reject/seed-v2-inline-semantic-tag-unclosed.json"
   ]
 }

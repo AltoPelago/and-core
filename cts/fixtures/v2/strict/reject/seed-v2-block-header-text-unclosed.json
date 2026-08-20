@@ -3,12 +3,12 @@
   "id": "seed-v2-block-header-text-unclosed",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\n===notice\nStill open\n",
+  "source": "&ND v2\n\n~~~#\nStill open\n",
   "expected": {
     "ok": false,
     "errorCode": "unclosed_header_text_block",
     "assertions": [
-      "v2 strict mode rejects unclosed ===tag blocks",
+      "v2 strict mode rejects unclosed ~~~# blocks",
       "header-text block delimiters must be balanced"
     ]
   }

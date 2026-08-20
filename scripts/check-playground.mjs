@@ -103,5 +103,10 @@ assert(v2Html.includes('class="and-advisory-list-item"'), 'playground v2 preview
 assert(v2Html.includes('and-question-paragraph'), 'playground v2 preview should render hint paragraph blocks');
 assert(v2Html.includes('and-admonition-paragraph'), 'playground v2 preview should render attention paragraph blocks');
 assert(v2Html.includes('class="and-comment-block" hidden'), 'playground v2 preview should preserve hidden block comments');
+assert(v2Html.includes('class="and-disclaimer-inline"'), 'playground v2 preview should render inline disclaimers');
+assert(v2Canonical.includes('[(consumer-term) like ordinary rich text]'), 'playground v2 canonical output should preserve inline semantic IDs');
+assert(v2Canonical.includes('~~~(consumer-tone)'), 'playground v2 canonical output should preserve semantic block IDs');
+assert(v2Html.includes('This semantic block appears like an ordinary paragraph'), 'playground v2 preview should retain semantic block content');
+assert(!v2Html.includes('consumer-term') && !v2Html.includes('consumer-tone'), 'playground v2 preview must not expose semantic IDs');
 
 console.log('Playground checks passed.');

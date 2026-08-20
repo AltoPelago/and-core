@@ -22,7 +22,7 @@ Current scope:
 * all promoted v2 scalar metadata tags, inline images, rich inline tags, compact directional and advisory list markers,
   footnote definitions/references, and first-class todo and auto-number lists
 * AEON-canonical type annotations and scalar literals for v2 typed values
-* v2 heading auto-number intent and paired blocks
+* v2 heading auto-number intent, semantic wrappers, and paired blocks
 * exact matching fences for highlight, strong, emphasis, and underline paragraph blocks
 
 Paragraph line breaks preserved in parser AST text nodes are treated as soft wraps during canonical

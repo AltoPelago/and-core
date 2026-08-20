@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-semantic-tag-missing-space",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nInvalid [(term)content].\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_semantic_tag",
+    "assertions": ["inline semantic tags require one space after the closing parenthesis"]
+  }
+}

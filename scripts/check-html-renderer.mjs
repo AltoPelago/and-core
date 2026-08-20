@@ -182,7 +182,7 @@ const v2Source = `&ND v2
 
 # [n] Proposal
 
-[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][:date = 2026-08-20][= marked][_ under][>][<][.]
+[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][^ fine print][(consumer-term) semantic inline][:date = 2026-08-20][= marked][_ under][>][<][.]
 
 Numbered:
 
@@ -214,13 +214,17 @@ Emphasis paragraph
 Underline paragraph
 ~~~_
 
-===hero
+~~~#
 Header text
-===
+~~~#
 
-***legal
+~~~^
 Disclaimer
-***
+~~~
+
+~~~(consumer-tone)
+Semantic paragraph
+~~~
 `;
 const parsedV2 = parseAnd(v2Source, { allowV2: true });
 assert(parsedV2.ok, `v2 renderer smoke source should parse: ${parsedV2.errorCode ?? 'unknown_error'}`);
@@ -234,6 +238,7 @@ assert(v2Fragment.includes('class="and-image and-image-full" src="/hero.jpg" alt
 assert(v2Fragment.includes('<s>old <strong>nested</strong></s>'), 'renderer should preserve nested content in rich v2 tags');
 assert(v2Fragment.includes('<q>quote</q>'), 'renderer should project v2 quoted tags');
 assert(v2Fragment.includes('<span class="and-comment" hidden>hidden</span>'), 'renderer should keep v2 comments inert');
+assert(v2Fragment.includes('<small class="and-disclaimer-inline">fine print</small>'), 'renderer should project inline disclaimers as secondary text');
 assert(v2Fragment.includes('<data class="and-typed-value" data-type="date" value="2026-08-20">2026-08-20</data>'), 'renderer should project AEON scalar typed values without interpreting them');
 assert(v2Fragment.includes('<mark>marked</mark>'), 'renderer should project v2 highlights');
 assert(v2Fragment.includes('<u>under</u>'), 'renderer should project v2 underlines');
@@ -249,8 +254,11 @@ assert(v2Fragment.includes('<p class="and-highlight-paragraph">Highlighted</p>')
 assert(v2Fragment.includes('<p class="and-strong-paragraph"><strong>Strong paragraph</strong></p>'), 'renderer should project v2 strong paragraph blocks');
 assert(v2Fragment.includes('<p class="and-emphasis-paragraph"><em>Emphasis paragraph</em></p>'), 'renderer should project v2 emphasis paragraph blocks');
 assert(v2Fragment.includes('<p class="and-underline-paragraph"><u>Underline paragraph</u></p>'), 'renderer should project v2 underline paragraph blocks');
-assert(v2Fragment.includes('<header class="and-header-text" data-tag="hero">Header text</header>'), 'renderer should project v2 header-text blocks');
-assert(v2Fragment.includes('<aside class="and-disclaimer" data-tag="legal">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');
+assert(v2Fragment.includes('<header class="and-header-text">Header text</header>'), 'renderer should project v2 header-text blocks');
+assert(v2Fragment.includes('<aside class="and-disclaimer">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');
+assert(v2Fragment.includes('semantic inline'), 'renderer should retain inline semantic content');
+assert(v2Fragment.includes('<p>Semantic paragraph</p>'), 'renderer should project semantic blocks as ordinary paragraphs');
+assert(!v2Fragment.includes('consumer-term') && !v2Fragment.includes('consumer-tone'), 'renderer must not expose semantic IDs');
 
 const resolvedV2Fragment = renderHtml(parsedV2.document, {
   imageBaseUrl: 'https://docs.example/guides/proposal.and',

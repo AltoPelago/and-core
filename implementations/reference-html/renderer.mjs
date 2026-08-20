@@ -5,6 +5,7 @@ import {
 } from '../shared/aeon-inline-scalar.mjs';
 
 const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
+const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 function fail(errorCode, detail) {
   const error = new Error(detail ?? errorCode);
@@ -28,6 +29,13 @@ function escapeAttribute(value) {
 function requireFootnoteId(value, nodeType) {
   if (typeof value !== 'string' || !FOOTNOTE_ID_PATTERN.test(value)) {
     throw fail('invalid_footnote_id', `${nodeType} requires an alphanumeric footnote identifier.`);
+  }
+  return value;
+}
+
+function requireSemanticId(value, nodeType) {
+  if (typeof value !== 'string' || !SEMANTIC_ID_PATTERN.test(value)) {
+    throw fail('invalid_semantic_id', `${nodeType} requires a portable semantic identifier.`);
   }
   return value;
 }
@@ -254,6 +262,11 @@ function renderInlineNode(node, options) {
       return `<q>${renderInlineNodes(node.children, options)}</q>`;
     case 'comment_tag':
       return `<span class="and-comment" hidden>${renderInlineNodes(node.children, options)}</span>`;
+    case 'disclaimer_tag':
+      return `<small class="and-disclaimer-inline">${renderInlineNodes(node.children, options)}</small>`;
+    case 'semantic_tag':
+      requireSemanticId(node.id, node.type);
+      return renderInlineNodes(node.children, options);
     case 'typed_value':
       try {
         return `<data class="and-typed-value" data-type="${escapeAttribute(formatAeonDatatype(node.datatype))}" value="${escapeAttribute(emitAeonScalar(node.value))}">${escapeHtml(displayAeonScalar(node.value))}</data>`;
@@ -451,13 +464,16 @@ function renderBlock(block, options) {
     case 'comment_block':
       return `<aside class="and-comment-block" hidden>${renderInlineNodes(block.children, options)}</aside>`;
     case 'header_text_block': {
-      const tag = block.tag ? ` data-tag="${escapeAttribute(block.tag)}"` : '';
-      return `<header class="and-header-text"${tag}>${renderInlineNodes(block.children, options)}</header>`;
+      if (block.tag !== undefined) throw fail('invalid_header_text_block', 'header_text_block no longer accepts a tag.');
+      return `<header class="and-header-text">${renderInlineNodes(block.children, options)}</header>`;
     }
     case 'disclaimer_block': {
-      const tag = block.tag ? ` data-tag="${escapeAttribute(block.tag)}"` : '';
-      return `<aside class="and-disclaimer"${tag}>${renderInlineNodes(block.children, options)}</aside>`;
+      if (block.tag !== undefined) throw fail('invalid_disclaimer_block', 'disclaimer_block no longer accepts a tag.');
+      return `<aside class="and-disclaimer">${renderInlineNodes(block.children, options)}</aside>`;
     }
+    case 'semantic_block':
+      requireSemanticId(block.id, block.type);
+      return `<p>${renderInlineNodes(block.children, options)}</p>`;
     default:
       throw fail('unsupported_block_node', `Unsupported block node type: ${block.type}`);
   }

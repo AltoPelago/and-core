@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-disclaimer-tag-missing-space-prefix",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nTerms [^disclaimer].\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": ["inline disclaimers require the exact [^ content] prefix"]
+  }
+}

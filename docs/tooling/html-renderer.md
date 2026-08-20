@@ -29,6 +29,7 @@ It supports:
   semantic ordered lists
 * inherited `#id` links projected as browser-native fragment links
 * proposal-v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
+* semantic inline and block wrappers projected as ordinary content without exposing their IDs
 * proposal-v2 strong, emphasis, and underline paragraph-wide formatting blocks
 * proposal-v2 footnotes projected as linked numeric superscripts and a trailing endnote section
 * leading directional markers in unordered items projected in place of those items' bullets

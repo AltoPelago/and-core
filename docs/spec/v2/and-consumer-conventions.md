@@ -29,9 +29,11 @@ parse error, rewrite Core canonical text, or infer the document grammar version.
 | `- [?] ...` / `- [!] ...` | Stable advisory kind plus leading-unordered-item bullet-replacement intent; item content stays visible | Marker glyphs, labels, colors, and list styling |
 | `~~~?` / `~~~!` | Visible rich hint/question or attention/admonition paragraph structure | Iconography, severity vocabulary, colors, layout, and accessibility phrasing |
 | `~~~'` | Preserved rich `comment_block` children | Visibility, reviewer identity, export/redaction policy, and collaboration workflow |
+| `[^ ...]` / `~~~^` | Rich inline or block disclaimer content | Exact size, placement, color, and accessibility presentation |
+| `~~~#` | Rich header-text content | Exact weight, size, placement, and relationship to a preceding heading |
+| `[(id) content]` / `~~~(id)` | Portable `id` plus rich children; the reference HTML exposes only content | ID vocabulary, semantic interpretation, alternate styling, and product behavior |
 | `[+ value]` | `plus_tag` with one preserved scalar `value` | Value registry, action mapping, analytics, workflow, and UI |
 | Custom `[:type = scalar]` | Structured datatype label/adornments and a validated inline scalar | Datatype registry, domain validation, units, display formatting, and business meaning |
-| `===tag` and `***tag` | Validated optional `tag` string on the paired-block AST | Tag vocabulary, templates, placement, styling, and product behavior |
 | heading `[n]` and `auto_number_list` | Stable contextual auto-number intent | Number sequence, scope, format, restart rules, localization, and displayed labels |
 | Footnote definitions and references | Rich definition content, optional authored ID, declaration order, and reference resolution | Superscript numbers or symbols, hover/callout/endnote presentation, placement, backlinks, and accessibility phrasing |
 | `[~ source | alt | mode]` | Preserved source and alt text plus `inline`/`half`/`full` display intent | Base resolution, fetching, caching, MIME validation, intrinsic dimensions, layout details, and failure UI |
@@ -57,8 +59,7 @@ Core does not assign special meaning to values such as:
 ```and
 [+ priority:high]
 [! security]
-===hero
-***legal
+[^ legal text]
 [:temperature = 21.5]
 ```
 
@@ -126,8 +127,12 @@ not authorize evaluation. A consumer that interprets or executes an extension mu
 registry and trust policy, isolate effects, validate payloads, and obtain any permissions required by
 its environment.
 
-Unknown extensions remain data. Unknown `[+]` values, custom datatypes, and paired-block tags must
-likewise remain preservable without triggering behavior.
+Unknown extensions remain data. Unknown `[+]` values and custom datatypes must likewise remain
+preservable without triggering behavior.
+
+Semantic wrapper IDs are also inert data until a consumer explicitly interprets them. The reference
+HTML projection intentionally emits no visible ID, DOM `id`, class, or `data-*` attribute for either
+semantic form; consumers that opt into a vocabulary may choose a different projection.
 
 ## Conformance Boundary
 

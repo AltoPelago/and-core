@@ -320,12 +320,13 @@ function runApiBoundaryChecks() {
     'content-bearing v2 tags must participate in the inherited inline-depth budget'
   ));
 
-  for (const [name, fence] of [
+  for (const [name, fence, closer = fence] of [
     ['highlight paragraph', '~~~='],
-    ['header text', '==='],
-    ['disclaimer', '***'],
+    ['header text', '~~~#'],
+    ['disclaimer', '~~~^', '~~~'],
+    ['semantic', '~~~(summary)', '~~~'],
   ]) {
-    const budgeted = parseAnd(`&ND v2\n\n${fence}\ntoo long\n${fence}\n`, {
+    const budgeted = parseAnd(`&ND v2\n\n${fence}\ntoo long\n${closer}\n`, {
       allowV2: true,
       budgets: { maxBlockSize: 1 },
     });
@@ -343,7 +344,7 @@ function runApiBoundaryChecks() {
     'v2 must preserve the v1 opaque-extension compatibility model'
   ));
 
-  const unknownInline = parseAnd('&ND v2\n\n[^ future]\n', { allowV2: true });
+  const unknownInline = parseAnd('&ND v2\n\n[& future]\n', { allowV2: true });
   checks.push(reportCheck(
     'v2 strict forward boundary',
     !unknownInline.ok && unknownInline.errorCode === 'unknown_inline_type',

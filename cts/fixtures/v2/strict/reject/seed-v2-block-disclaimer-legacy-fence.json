@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-disclaimer-legacy-fence",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n***legal\nlegacy disclaimer\n***\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_block_type",
+    "assertions": ["the removed *** disclaimer fence is rejected rather than reinterpreted"]
+  }
+}

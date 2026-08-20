@@ -123,6 +123,8 @@ type NdInlineNode =
   | NdCommentTag
   | NdTypedValue
   | NdHighlightTag
+  | NdDisclaimerTag
+  | NdSemanticTag
   | NdUnderlineTag
   | NdFootnoteDefinition
   | NdFootnoteReference
@@ -142,7 +144,8 @@ type NdBlockNode =
   | NdAdmonitionParagraphBlock
   | NdCommentBlock
   | NdHeaderTextBlock
-  | NdDisclaimerBlock;
+  | NdDisclaimerBlock
+  | NdSemanticBlock;
 
 interface NdHeading extends NdV1Heading {
   readonly autoNumber?: true;

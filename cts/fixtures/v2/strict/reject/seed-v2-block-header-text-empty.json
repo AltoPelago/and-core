@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-header-text-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~#\n~~~#\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_header_text_block",
+    "assertions": ["header-text blocks require non-empty rich content"]
+  }
+}

@@ -23,6 +23,14 @@ const inline = parseInline('Hello [* world]');
 assert(inline.ok, `public inline parse should succeed: ${inline.errorCode ?? 'unknown_error'}`);
 assert(inline.children.length === 2, 'public inline parse should expose inline children');
 
+const semanticInline = parseInline('[(term) visible]', { allowV2: true, version: 'v2' });
+assert(
+  semanticInline.ok
+    && semanticInline.children[0]?.type === 'semantic_tag'
+    && semanticInline.children[0]?.id === 'term',
+  'public inline parse should expose semantic IDs to consumers',
+);
+
 const v2Source = '&ND v2\n\n# [n] Public API\n\nStart[# api][.]End\n';
 const parsedV2 = parseAnd(v2Source, { allowV2: true, includeSpans: true });
 assert(parsedV2.ok && parsedV2.version === 'v2', 'public parse should expose opt-in v2 capability');

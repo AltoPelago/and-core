@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-semantic-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nThis is [(term) normal [/ inline]] text.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "inline semantic tags preserve a portable consumer-owned ID in the AST",
+      "inline semantic tags preserve rich inline children"
+    ],
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "paragraph",
+        "children": [
+          { "type": "text", "value": "This is " },
+          {
+            "type": "semantic_tag",
+            "id": "term",
+            "children": [
+              { "type": "text", "value": "normal " },
+              { "type": "emphasis", "children": [{ "type": "text", "value": "inline" }] }
+            ]
+          },
+          { "type": "text", "value": " text." }
+        ]
+      }]
+    }
+  }
+}

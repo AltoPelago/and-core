@@ -3,12 +3,12 @@
   "id": "seed-v2-block-header-text-multiline",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\n===\nLine one\nLine two\n===\n",
+  "source": "&ND v2\n\n~~~#\nLine one\nLine two\n~~~#\n",
   "expected": {
     "ok": true,
     "assertions": [
-      "header-text blocks support unnamed opener form",
-      "header-text blocks support multiline payload with plain === closer"
+      "header-text blocks use an untagged ~~~# opener",
+      "header-text blocks support multiline payload with matching ~~~# closer"
     ],
     "document": {
       "type": "document",

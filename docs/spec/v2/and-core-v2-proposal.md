@@ -82,8 +82,10 @@ assigns each promoted form an explicit ownership boundary:
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header, and disclaimer block structure. |
-| `[^ ...]` and other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
+| `[^ ...]` | Core | Rich inline disclaimer content. |
+| `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header-text, and disclaimer block structure. |
+| Other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” does not introduce a feature gate. These forms remain part of one fixed
 v2 strict grammar; Core standardizes parsing and canonical spelling without claiming ownership of
@@ -92,11 +94,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 134-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 148-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 51 accepted fixtures covering inline tags, rich nesting, footnotes, formatted/advisory/comment blocks, first-class todo and auto-number
+- 54 accepted fixtures covering inline tags, rich nesting, footnotes, semantic and formatted/advisory/comment blocks, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 83 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
+- 94 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -142,21 +144,25 @@ comment block
 	closer: ~~~'
 
 header text block
-	opener: === or ===<tag>
-	closer: ===
+	opener: ~~~#
+	closer: ~~~#
 
 disclaimer block
-	opener: *** or ***<tag>
-	closer: ***
+	opener: ~~~^
+	closer: ~~~
 
-<tag> ::= [A-Za-z][A-Za-z0-9_-]*
+semantic block
+	opener: ~~~(<id>)
+	closer: ~~~
+
+<id> ::= [A-Za-z][A-Za-z0-9_-]*
 ```
 
 Validation rules in the current proposal lane:
 
 - unclosed paired blocks fail with stable unclosed error codes
 - empty payload blocks fail with stable invalid error codes
-- tagged paired blocks reject invalid tags when present
+- legacy `===` and `***` paired blocks reject as unknown block types
 
 ## Initial Conformance Seeds (Proposal)
 
@@ -220,7 +226,7 @@ Intent:
 
 Expected direction:
 
-- strict mode rejects unpromoted forms such as `[^ ...]` with `unknown_inline_type`
+- strict mode rejects unpromoted reserved forms with `unknown_inline_type`
 - no v2 recovery or forward-compatibility mode is currently defined
 
 ### `seed-v2-accepts-v1-strict-core`
@@ -475,25 +481,51 @@ Expected direction:
 
 Intent:
 
-- promote v1-reserved `===` into a v2 paired block form using `===` or `===name` openers
-- keep closing deterministic with a plain `===` closer
+- define `~~~#` as an untagged rich header-text block
+- use the same exact `~~~#` fence to close the block
 
 Expected direction:
 
-- v2 strict parse success for balanced `===` / `===name` blocks with non-empty payload
-- strict rejection for unclosed blocks or invalid tags when present
+- v2 strict parse success for balanced `~~~#` blocks with non-empty payload
+- strict rejection for unclosed or empty blocks and for legacy `===` openers
 
 ### `seed-v2-block-disclaimer-enabled`
 
 Intent:
 
-- promote v1-reserved `***` into a v2 paired block form using `***` or `***name` openers
-- keep closing deterministic with a plain `***` closer
+- define `~~~^` as an untagged rich disclaimer block
+- use plain `~~~` as its deterministic closer
 
 Expected direction:
 
-- v2 strict parse success for balanced `***` / `***name` blocks with non-empty payload
-- strict rejection for unclosed blocks or invalid tags when present
+- v2 strict parse success for `~~~^` / `~~~` blocks with non-empty payload
+- strict rejection for unclosed or empty blocks and for legacy `***` openers
+
+### `seed-v2-inline-disclaimer-enabled`
+
+Intent:
+
+- define `[^ ...]` as rich inline disclaimer content
+- preserve nested rich inline children while leaving exact presentation to consumers
+
+Expected direction:
+
+- v2 strict parse success for non-empty `[^ ...]`
+- strict rejection for empty payloads or a missing required space
+
+### Semantic wrappers
+
+Intent:
+
+- define `~~~(id)` / `~~~` as a rich semantic block and `[(id) content]` as its inline equivalent
+- retain a portable consumer-owned ID in the AST without exposing it in the default HTML projection
+- otherwise project their rich children as ordinary block or inline content
+
+Expected direction:
+
+- v2 strict parse success for non-empty semantic wrappers with `[A-Za-z][A-Za-z0-9_-]*` IDs
+- exact canonical preservation of IDs and rich content
+- strict rejection for malformed IDs, missing inline spacing, empty payloads, or unclosed blocks
 
 ### `seed-v2-footnote-named-reuse`
 

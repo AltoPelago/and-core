@@ -74,6 +74,8 @@ Rich content nests: [= highlighted with [* emphasis]], [- retired [/ wording]],
 
 Hello world [? used to describe the most basic way to print text in a programming language].
 Review this carefully [! proposal syntax can still change].
+Inline disclaimer: [^ this text is typically shown smaller].
+Semantic inline content appears [(consumer-term) like ordinary rich text] by default.
 
 ~~~=
 This is a highlighted paragraph with [! proposal] status.
@@ -103,13 +105,17 @@ This paragraph calls for attention, with [/ rich content].
 This block comment is preserved but hidden from the preview.
 ~~~'
 
-===hero
-Header text can carry a validated tag.
-===
+~~~(consumer-tone)
+This semantic block appears like an ordinary paragraph unless the consumer interprets its ID.
+~~~
 
-***notice
+~~~#
+This is header text and appears slightly stronger than body text.
+~~~#
+
+~~~^
 v2 remains proposal-stage.
-***
+~~~
 `,
   },
 };

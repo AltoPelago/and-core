@@ -125,6 +125,7 @@ function isEscapable(char) {
 
 const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
 const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
+const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 function parseEscape(text, index) {
   const next = text[index + 1];
@@ -438,6 +439,51 @@ function parseCommentTag(text, index, options, context, baseOffset = 0, inlineDe
   );
 }
 
+function parseDisclaimerTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  return parseRichV2Tag(
+    text, index, options, context, baseOffset, '[^ ', 'disclaimer_tag', 'invalid_disclaimer_tag', inlineDepth
+  );
+}
+
+function parseSemanticTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  const idEnd = text.indexOf(')', index + 2);
+  if (idEnd === -1 || text.slice(index + 2, idEnd).includes('\n')) {
+    return { ok: false, errorCode: 'invalid_semantic_tag', nextIndex: index + 2 };
+  }
+
+  const id = text.slice(index + 2, idEnd);
+  if (!SEMANTIC_ID_PATTERN.test(id) || text[idEnd + 1] !== ' ') {
+    return { ok: false, errorCode: 'invalid_semantic_tag', nextIndex: idEnd + 1 };
+  }
+
+  const parsed = parseInlineSequence(
+    text,
+    idEnd + 2,
+    options,
+    { stopOnClose: true, inlineDepth },
+    context,
+    baseOffset
+  );
+  if (!parsed.ok) return parsed;
+  if (!parsed.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: parsed.nextIndex };
+
+  const children = trimRichInlineBoundaries(parsed.nodes, context);
+  if (!hasInlineContent(children)) {
+    return { ok: false, errorCode: 'invalid_semantic_tag', nextIndex: parsed.nextIndex - 1 };
+  }
+
+  return {
+    ok: true,
+    nextIndex: parsed.nextIndex,
+    node: withSpan(
+      { type: 'semantic_tag', id, children },
+      context,
+      baseOffset + index,
+      baseOffset + parsed.nextIndex
+    ),
+  };
+}
+
 function parseTypedValueTag(text, index, context, baseOffset = 0) {
   let i = index + 2;
   let quote = null;
@@ -575,14 +621,44 @@ const V2_FORMATTED_PARAGRAPH_FENCES = {
     invalidCode: 'invalid_comment_block',
     unclosedCode: 'unclosed_comment_block',
   },
+  '~~~#': {
+    nodeType: 'header_text_block',
+    invalidCode: 'invalid_header_text_block',
+    unclosedCode: 'unclosed_header_text_block',
+  },
+  '~~~^': {
+    nodeType: 'disclaimer_block',
+    closer: '~~~',
+    invalidCode: 'invalid_disclaimer_block',
+    unclosedCode: 'unclosed_disclaimer_block',
+  },
 };
 
 function formattedParagraphFence(line) {
   return V2_FORMATTED_PARAGRAPH_FENCES[line] ?? null;
 }
 
+function semanticBlockOpener(line) {
+  if (!line.startsWith('~~~(')) return null;
+  const match = line.match(/^~~~\(([A-Za-z][A-Za-z0-9_-]*)\)$/);
+  if (!match) return { ok: false, errorCode: 'invalid_semantic_block' };
+  return {
+    ok: true,
+    config: {
+      nodeType: 'semantic_block',
+      id: match[1],
+      closer: '~~~',
+      invalidCode: 'invalid_semantic_block',
+      unclosedCode: 'unclosed_semantic_block',
+    },
+  };
+}
+
 function isReservedV2BlockOpener(line) {
-  return formattedParagraphFence(line) !== null || line.startsWith('===') || line.startsWith('***');
+  return formattedParagraphFence(line) !== null
+    || line.startsWith('~~~(')
+    || line.startsWith('===')
+    || line.startsWith('***');
 }
 
 function parseSpan(text, index, opener, options, context, baseOffset = 0, inlineDepth = 0) {
@@ -913,6 +989,30 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       continue;
     }
 
+    if (isV2Document(context) && text.startsWith('[^ ', index)) {
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseDisclaimerTag(text, index, options, context, baseOffset, nextDepth);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
+    if (isV2Document(context) && text.startsWith('[(', index)) {
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseSemanticTag(text, index, options, context, baseOffset, nextDepth);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
     if (isV2Document(context) && text.startsWith('[:', index)) {
       const parsed = parseTypedValueTag(text, index, context, baseOffset);
       if (!parsed.ok) return parsed;
@@ -1126,11 +1226,12 @@ function parseCodeBlock(lines, start, options, context) {
 
 function parseFormattedParagraphBlock(lines, start, options, context, config) {
   const fence = lines[start];
+  const closer = config.closer ?? fence;
   const payload = [];
   let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === fence) {
+    if (lines[i] === closer) {
       const text = payload.join('\n');
       if (text.trim().length === 0) {
         return { ok: false, errorCode: config.invalidCode };
@@ -1144,6 +1245,7 @@ function parseFormattedParagraphBlock(lines, start, options, context, config) {
         node: withSpan(
           {
             type: config.nodeType,
+            ...(config.id === undefined ? {} : { id: config.id }),
             children: inline.nodes,
           },
           context,
@@ -1160,131 +1262,6 @@ function parseFormattedParagraphBlock(lines, start, options, context, config) {
   }
 
   return { ok: false, errorCode: config.unclosedCode };
-}
-
-function parseTaggedPairedBlock(lines, start, options, context, config) {
-  const opener = lines[start];
-  const tag = opener.slice(config.fence.length);
-
-  if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
-    return { ok: false, errorCode: config.invalidCode };
-  }
-
-  const payload = [];
-  for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === opener) {
-      const text = payload.join('\n');
-      if (text.trim().length === 0) {
-        return { ok: false, errorCode: config.invalidCode };
-      }
-      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
-      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
-
-      return {
-        ok: true,
-        nextIndex: i + 1,
-        node: withSpan(
-          {
-            type: config.nodeType,
-            tag,
-            children: inline.nodes,
-          },
-          context,
-          context.lineStartOffsets[start],
-          context.lineStartOffsets[i] + lines[i].length
-        ),
-      };
-    }
-    payload.push(lines[i]);
-  }
-
-  return { ok: false, errorCode: config.unclosedCode };
-}
-
-function parseHeaderTextBlock(lines, start, options, context) {
-  const opener = lines[start];
-  const tag = opener.slice(3);
-  if (tag.length > 0 && !/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
-    return { ok: false, errorCode: 'invalid_header_text_block' };
-  }
-
-  const payload = [];
-  let payloadSize = 0;
-  for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === '===') {
-      const text = payload.join('\n');
-      if (text.trim().length === 0) {
-        return { ok: false, errorCode: 'invalid_header_text_block' };
-      }
-      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
-      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
-
-      return {
-        ok: true,
-        nextIndex: i + 1,
-        node: withSpan(
-          {
-            type: 'header_text_block',
-            ...(tag.length > 0 ? { tag } : {}),
-            children: inline.nodes,
-          },
-          context,
-          context.lineStartOffsets[start],
-          context.lineStartOffsets[i] + lines[i].length
-        ),
-      };
-    }
-    payloadSize = addPayloadSize(payloadSize, lines[i]);
-    if (exceedsBlockBudget(payloadSize, options)) {
-      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
-    }
-    payload.push(lines[i]);
-  }
-
-  return { ok: false, errorCode: 'unclosed_header_text_block' };
-}
-
-function parseDisclaimerBlock(lines, start, options, context) {
-  const opener = lines[start];
-  const tag = opener.slice(3);
-  if (tag.length > 0 && !/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
-    return { ok: false, errorCode: 'invalid_disclaimer_block' };
-  }
-
-  const payload = [];
-  let payloadSize = 0;
-  for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === '***') {
-      const text = payload.join('\n');
-      if (text.trim().length === 0) {
-        return { ok: false, errorCode: 'invalid_disclaimer_block' };
-      }
-      const inline = parseInline(text, options, context.lineStartOffsets[start + 1], context);
-      if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start + 1]);
-
-      return {
-        ok: true,
-        nextIndex: i + 1,
-        node: withSpan(
-          {
-            type: 'disclaimer_block',
-            ...(tag.length > 0 ? { tag } : {}),
-            children: inline.nodes,
-          },
-          context,
-          context.lineStartOffsets[start],
-          context.lineStartOffsets[i] + lines[i].length
-        ),
-      };
-    }
-    payloadSize = addPayloadSize(payloadSize, lines[i]);
-    if (exceedsBlockBudget(payloadSize, options)) {
-      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
-    }
-    payload.push(lines[i]);
-  }
-
-  return { ok: false, errorCode: 'unclosed_disclaimer_block' };
 }
 
 function parseExtensionBlock(lines, start, options, context) {
@@ -1761,24 +1738,26 @@ function parseBlocks(lines, options, context) {
       continue;
     }
 
-    if (isV2Document(context) && line.startsWith('===')) {
-      const headerText = parseHeaderTextBlock(lines, index, options, context);
-      if (!headerText.ok) return withLine(headerText, context.lineOffset + index);
+    const semanticBlock = isV2Document(context) ? semanticBlockOpener(line) : null;
+    if (semanticBlock !== null) {
+      if (!semanticBlock.ok) return failAt(semanticBlock.errorCode, context.lineOffset + index, 0);
+      const parsedSemanticBlock = parseFormattedParagraphBlock(
+        lines,
+        index,
+        options,
+        context,
+        semanticBlock.config
+      );
+      if (!parsedSemanticBlock.ok) return withLine(parsedSemanticBlock, context.lineOffset + index);
       const blockBudget = recordBlock(options, context, index);
       if (!blockBudget.ok) return blockBudget;
-      children.push(headerText.node);
-      index = headerText.nextIndex;
+      children.push(parsedSemanticBlock.node);
+      index = parsedSemanticBlock.nextIndex;
       continue;
     }
 
-    if (isV2Document(context) && line.startsWith('***')) {
-      const disclaimer = parseDisclaimerBlock(lines, index, options, context);
-      if (!disclaimer.ok) return withLine(disclaimer, context.lineOffset + index);
-      const blockBudget = recordBlock(options, context, index);
-      if (!blockBudget.ok) return blockBudget;
-      children.push(disclaimer.node);
-      index = disclaimer.nextIndex;
-      continue;
+    if (isV2Document(context) && (line.startsWith('===') || line.startsWith('***'))) {
+      return failAt('unknown_block_type', context.lineOffset + index, 0);
     }
 
     const opener = extensionOpener(line);

@@ -152,10 +152,14 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
-| `===`, `***` paired blocks | Header text and disclaimer blocks |
+| `~~~#` … `~~~#` | Header-text block |
+| `~~~^` … `~~~` | Disclaimer block |
+| `[^ ...]` | Inline disclaimer |
+| `[(id) content]` | Inline semantic wrapper; ID is retained for consumers but hidden by default projection |
+| `~~~(id)` … `~~~` | Semantic block; content projects as an ordinary paragraph by default |
 
-The consumer-owned meaning of advisory tags, custom tags and datatypes, numbering, optional block
-tags, image behavior, and external navigation is defined in
+The consumer-owned meaning of advisory tags, semantic IDs, custom tags and datatypes, numbering,
+disclaimer presentation, image behavior, and external navigation is defined in
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
 
 ## Formatted Paragraphs

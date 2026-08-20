@@ -42,6 +42,10 @@ compatibility is already enforced by parsing and canonical emission. Image proje
 relative sources, carries mandatory alt text, and exposes the resolved display mode through stable
 classes and attributes.
 
+Semantic `[(id) content]` and `~~~(id)` wrappers project as ordinary inline content and paragraphs.
+Their IDs remain available to AST consumers but are intentionally absent from reference HTML text,
+IDs, classes, and attributes.
+
 For inherited unordered lists, a directional marker in the first inline position suppresses that
 item's ordinary bullet and becomes an arrow list marker. Later directional markers remain inline.
 The AST and canonical emitter preserve the same generic list and inline-marker structure.

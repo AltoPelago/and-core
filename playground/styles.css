@@ -405,6 +405,23 @@ textarea {
   color: var(--ink);
 }
 
+.preview .and-header-text {
+  display: block;
+  margin: 0 0 1rem;
+  font-size: 1.08em;
+  font-weight: 650;
+}
+
+.preview .and-disclaimer,
+.preview .and-disclaimer-inline {
+  font-size: 0.82em;
+  color: var(--muted);
+}
+
+.preview .and-disclaimer {
+  margin: 0 0 1rem;
+}
+
 .preview blockquote {
   border-left: 4px solid var(--accent);
   padding-left: 1rem;

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-semantic-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~(summary)\nA [* normal] semantic block\n~~~\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "semantic blocks preserve a portable consumer-owned ID in the AST",
+      "semantic blocks preserve rich inline children"
+    ],
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "semantic_block",
+        "id": "summary",
+        "children": [
+          { "type": "text", "value": "A " },
+          { "type": "strong", "children": [{ "type": "text", "value": "normal" }] },
+          { "type": "text", "value": " semantic block" }
+        ]
+      }]
+    }
+  }
+}

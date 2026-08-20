@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-disclaimer-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~^\n~~~\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_disclaimer_block",
+    "assertions": ["disclaimer blocks require non-empty rich content"]
+  }
+}

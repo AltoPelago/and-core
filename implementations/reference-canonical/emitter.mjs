@@ -12,10 +12,18 @@ function fail(errorCode, detail) {
 
 const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
 const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
+const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 function requireLocalAnchorId(value, errorCode, nodeType) {
   if (typeof value !== 'string' || !LOCAL_ANCHOR_ID_PATTERN.test(value)) {
     throw fail(errorCode, `${nodeType} requires a portable local anchor identifier.`);
+  }
+  return value;
+}
+
+function requireSemanticId(value, nodeType) {
+  if (typeof value !== 'string' || !SEMANTIC_ID_PATTERN.test(value)) {
+    throw fail('invalid_semantic_id', `${nodeType} requires a portable semantic identifier.`);
   }
   return value;
 }
@@ -216,6 +224,12 @@ function emitInlineNode(node, context) {
     case 'comment_tag':
       requireV2(context, node.type);
       return `[' ${emitInlineNodes(node.children, context)}]`;
+    case 'disclaimer_tag':
+      requireV2(context, node.type);
+      return `[^ ${emitInlineNodes(node.children, context)}]`;
+    case 'semantic_tag':
+      requireV2(context, node.type);
+      return `[(${requireSemanticId(node.id, node.type)}) ${emitInlineNodes(node.children, context)}]`;
     case 'typed_value':
       requireV2(context, node.type);
       try {
@@ -368,14 +382,6 @@ function emitPairedInlineBlock(opener, closer, children, context) {
   return `${opener}\n${payload}\n${closer}`;
 }
 
-function emitV2BlockTag(tag) {
-  if (tag === undefined) return '';
-  if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
-    throw fail('invalid_v2_block_tag', `Invalid v2 paired-block tag: ${tag}`);
-  }
-  return tag;
-}
-
 function emitBlock(node, context) {
   switch (node.type) {
     case 'paragraph':
@@ -435,14 +441,22 @@ function emitBlock(node, context) {
       return emitPairedInlineBlock("~~~'", "~~~'", node.children, context);
     case 'header_text_block': {
       requireV2(context, node.type);
-      const tag = emitV2BlockTag(node.tag);
-      return emitPairedInlineBlock(`===${tag}`, '===', node.children, context);
+      if (node.tag !== undefined) throw fail('invalid_header_text_block', 'header_text_block no longer accepts a tag.');
+      return emitPairedInlineBlock('~~~#', '~~~#', node.children, context);
     }
     case 'disclaimer_block': {
       requireV2(context, node.type);
-      const tag = emitV2BlockTag(node.tag);
-      return emitPairedInlineBlock(`***${tag}`, '***', node.children, context);
+      if (node.tag !== undefined) throw fail('invalid_disclaimer_block', 'disclaimer_block no longer accepts a tag.');
+      return emitPairedInlineBlock('~~~^', '~~~', node.children, context);
     }
+    case 'semantic_block':
+      requireV2(context, node.type);
+      return emitPairedInlineBlock(
+        `~~~(${requireSemanticId(node.id, node.type)})`,
+        '~~~',
+        node.children,
+        context
+      );
     default:
       throw fail('unsupported_block_node', `Unsupported block node type: ${node.type}`);
   }

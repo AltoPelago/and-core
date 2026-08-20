@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-semantic-tag-unclosed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nUnclosed [(term) content.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unclosed_inline",
+    "assertions": ["inline semantic tags require a closing bracket"]
+  }
+}

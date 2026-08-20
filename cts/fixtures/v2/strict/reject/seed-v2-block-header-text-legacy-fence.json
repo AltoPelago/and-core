@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-header-text-legacy-fence",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n===hero\nlegacy header\n===\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_block_type",
+    "assertions": ["the removed === header-text fence is rejected rather than reinterpreted"]
+  }
+}

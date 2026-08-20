@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-inline-disclaimer-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nTerms [^ this is a [* rich] disclaimer].\n",
+  "expected": {
+    "ok": true,
+    "assertions": ["inline disclaimers preserve rich inline children"],
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "paragraph",
+        "children": [
+          { "type": "text", "value": "Terms " },
+          { "type": "disclaimer_tag", "children": [
+            { "type": "text", "value": "this is a " },
+            { "type": "strong", "children": [{ "type": "text", "value": "rich" }] },
+            { "type": "text", "value": " disclaimer" }
+          ] },
+          { "type": "text", "value": "." }
+        ]
+      }]
+    }
+  }
+}
