@@ -330,8 +330,8 @@ Recommended order at a block-open-eligible position:
 
 That order follows the intent of the spec:
 
-Code-fence recognition includes backtick fences and language-qualified `~~~language` or
-`~~~~language` alternatives. Do not recognize bare `~~~` as a code opener.
+Code-fence recognition uses triple/quadruple backtick fences. The removed `~~~language` and
+`~~~~language` alternatives reject with `deprecated_code_fence`; bare `~~~` is not a code opener.
 
 - raw islands first
 - strongly delimited blocks before softer line-based blocks

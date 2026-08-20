@@ -112,8 +112,10 @@ Use:
 ```
 
 Source and alt text are mandatory. Mode is `inline`, `half`, or `full`; omission means `inline`, and
-canonical output spells the resolved mode. Core preserves the authored source and does not fetch the
-resource. Consumers own resolution, loading, MIME checks, intrinsic sizing, and failure UI.
+canonical output spells the resolved mode. Consequently, the first canonicalization expands an
+omitted mode to `| inline`; this is intentional formatter churn and subsequent canonicalization is
+byte-stable. An explicit empty mode is invalid. Core preserves the authored source and does not fetch
+the resource. Consumers own resolution, loading, MIME checks, intrinsic sizing, and failure UI.
 
 ## AEON Typed Scalars
 
@@ -146,10 +148,12 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich strike, quote, comment, highlight, and underline nodes |
 | `[:type = scalar]` | AEON typed scalar |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
-| `[>]`, `[<]`, `[.]` | Direction and explicit line break; leading list-item arrows replace bullets |
+| `[>]`, `[<]` | Direction markers; leading list-item arrows replace bullets |
+| `[.]` | Explicit inline line break, never a direction marker |
 | `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading auto-number intent |
 | `- [n] content` | First-class auto-number list |
+| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Code block with optional language and numbered-line intent |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -174,10 +178,45 @@ ordinary characters into global inline escapes:
 \~~~(note)
 ```
 
-The same rule covers list, blockquote, rule, extension, backtick-fence, tilde-code-fence, and other
-v2 fence openers. The escape is not valid mid-line and is not permitted when the following text is
+The same rule covers list, blockquote, rule, extension, inherited backtick fences, v2 dollar-code
+fences, removed tilde-language openers, and other v2 fence openers. The escape is not valid mid-line and is not permitted when the following text is
 already non-structural. Plain `~~~`, for example, remains ordinary text and must not be escaped.
 Core v1 does not gain this rule.
+
+## Code Blocks
+
+Backtick code fences are v1 syntax and remain fully supported by v2 readers:
+
+````and
+```aeon
+title = "compatible"
+```
+````
+
+V2 additionally provides an explicit tilde-dollar family:
+
+```and
+~~~$
+untyped code
+~~~$
+
+~~~$ aeon
+typed code
+~~~$
+
+~~~$ [n]
+numbered code
+~~~$
+
+~~~$ [n] aeon
+numbered typed code
+~~~$
+```
+
+`[n]` requests numbered lines and an optional language follows it. Every form closes with bare
+`~~~$`. Canonical v2 output uses this family even when the source used backticks; canonical v1 output
+continues to use backticks. The briefly introduced `~~~language` and `~~~~language` forms should be
+replaced with either backticks or `~~~$ language`; they are rejected with `deprecated_code_fence`.
 
 ## Formatted Paragraphs
 
@@ -251,7 +290,8 @@ hello [% (A1) reusable context], again [% (A1)]
 ```
 
 The first form is an anonymous definition at its reference position. The second declares the
-case-sensitive alphanumeric ID `A1`; later `[% (A1)]` forms reference it. A named reference must
+case-sensitive v2 ID `A1`; later `[% (A1)]` forms reference it. Named footnotes, anchors, and
+semantic wrappers all use `[A-Za-z0-9][A-Za-z0-9._:-]*`. A named reference must
 follow its single declaration. Empty definitions, malformed IDs, duplicates, unresolved or forward
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
@@ -283,13 +323,15 @@ their list content remains visible. Use rich `[? ...]` or `[! ...]` for inline c
 6. Validate anchors and local links at full-document scope.
 7. Convert inline experimental todo markers into homogeneous `- [state] content` blocks.
 8. Convert contextual numbering to exact heading or `- [n] content` prefixes.
-9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
+9. Convert footnotes to anonymous definitions or declare a valid shared v2 ID before every shorthand
    reference; remove forward references and nesting.
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
-11. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
+11. Keep inherited backtick code fences or migrate code to `~~~$`, adding optional `[n]` and language
+    metadata after the opener; replace removed `~~~language` / `~~~~language` forms.
+12. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
     do not treat plain `~~~` as a block delimiter.
-12. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
-13. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
+13. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
+14. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
    image modes and AEON scalar spellings.
 
 There is no automatic downgrade for v2-only syntax. To return a document to v1, remove every v2-only

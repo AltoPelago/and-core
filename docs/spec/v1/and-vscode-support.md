@@ -118,7 +118,7 @@ The grammar SHOULD recognize at least:
 - ordered list markers `1. `
 - blockquote markers `>`
 - horizontal rule `---`
-- backtick code fences and language-qualified `~~~language` / `~~~~language` alternatives
+- triple/quadruple backtick code fences
 - extension fences `+++`
 - table pipes `|`
 - table separator cells `---`

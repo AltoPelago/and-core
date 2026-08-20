@@ -73,16 +73,42 @@ function lineStartOffsets(lines) {
   return offsets;
 }
 
-export function rawFence(line) {
+export function backtickRawFence(line) {
   const match = line.match(/^((?: {2})?)(`{3,4})/);
-  if (match) return { prefix: match[1], fence: match[2] };
+  if (match) return { prefix: match[1], fence: match[2], kind: 'backtick' };
   const quoteMatch = line.match(/^(> ?)(`{3,4})/);
-  if (quoteMatch) return { prefix: quoteMatch[1], fence: quoteMatch[2] };
+  if (quoteMatch) return { prefix: quoteMatch[1], fence: quoteMatch[2], kind: 'backtick' };
   const nestedQuoteMatch = line.match(/^(  > ?)(`{3,4})/);
-  if (nestedQuoteMatch) return { prefix: nestedQuoteMatch[1], fence: nestedQuoteMatch[2] };
-  const tildeMatch = line.match(/^((?: {2})?|> ?|  > ?)(~{3,4})([A-Za-z][A-Za-z0-9_-]*)$/);
-  if (tildeMatch) return { prefix: tildeMatch[1], fence: tildeMatch[2] };
+  if (nestedQuoteMatch) return { prefix: nestedQuoteMatch[1], fence: nestedQuoteMatch[2], kind: 'backtick' };
   return null;
+}
+
+export function tildeLanguageRawFence(line) {
+  const tildeMatch = line.match(/^((?: {2})?|> ?|  > ?)(~{3,4})([A-Za-z][A-Za-z0-9_-]*)$/);
+  if (tildeMatch) return { prefix: tildeMatch[1], fence: tildeMatch[2], kind: 'tilde-language' };
+  return null;
+}
+
+export function v2RawFence(line) {
+  const match = line.match(
+    /^((?: {2})?|> ?|  > ?)(~~~\$)(?: (\[n\])(?: ([A-Za-z][A-Za-z0-9_-]*))?| ([A-Za-z][A-Za-z0-9_-]*))?$/
+  );
+  if (!match) return null;
+  return {
+    prefix: match[1],
+    fence: match[2],
+    language: match[4] ?? match[5] ?? null,
+    ordered: match[3] === '[n]',
+    kind: 'v2-dollar',
+  };
+}
+
+export function isV2RawFenceCandidate(line) {
+  return /^((?: {2})?|> ?|  > ?)~~~\$/.test(line);
+}
+
+export function rawFence(line, version = 'v1') {
+  return backtickRawFence(line) ?? (version === 'v2' ? v2RawFence(line) : null);
 }
 
 export function extensionOpener(line) {
@@ -94,10 +120,10 @@ export function extensionOpener(line) {
   };
 }
 
-function scanRawIslands(lines) {
+function scanRawIslands(lines, version) {
   const rawLines = new Set();
   for (let i = 0; i < lines.length; i += 1) {
-    const fence = rawFence(lines[i]);
+    const fence = rawFence(lines[i], version);
     if (fence !== null) {
       rawLines.add(i);
       let closed = false;
@@ -118,6 +144,17 @@ function scanRawIslands(lines) {
       }
       if (!closed) return failAt('unclosed_code_block', i, fence.prefix.length);
       continue;
+    }
+
+    const deprecatedTildeFence = tildeLanguageRawFence(lines[i]);
+    if (deprecatedTildeFence !== null) {
+      return failAt('deprecated_code_fence', i, deprecatedTildeFence.prefix.length);
+    }
+
+    if (version === 'v2') {
+      if (isV2RawFenceCandidate(lines[i])) {
+        return failAt('invalid_code_fence', i, lines[i].indexOf('~~~$'));
+      }
     }
 
     const extension = extensionOpener(lines[i]);
@@ -222,7 +259,7 @@ export function scanDocument(source, options = {}) {
     documentVersion: header.version,
   };
 
-  const raw = scanRawIslands(lines);
+  const raw = scanRawIslands(lines, header.version);
   if (!raw.ok) {
     return {
       ...raw,

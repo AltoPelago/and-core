@@ -6,7 +6,7 @@
   "source": "~~~aeon\ntitle = \"Unclosed\"\n",
   "expected": {
     "ok": false,
-    "errorCode": "unclosed_code_block",
-    "assertions": ["a language-qualified tilde code fence requires an exact bare closer"]
+    "errorCode": "deprecated_code_fence",
+    "assertions": ["language-qualified tilde code fences are no longer supported"]
   }
 }

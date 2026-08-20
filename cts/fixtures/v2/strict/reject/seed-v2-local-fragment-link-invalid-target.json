@@ -8,7 +8,7 @@
     "ok": false,
     "errorCode": "invalid_local_anchor_target",
     "assertions": [
-      "v2 fragment links use the portable local anchor identifier grammar",
+      "v2 fragment links use the shared v2 identifier grammar",
       "external URLs remain valid ordinary at-sign link targets instead"
     ]
   }

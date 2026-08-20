@@ -49,7 +49,12 @@
     "block.header_text",
     "block.disclaimer",
     "block.semantic",
+    "block.code",
+    "block.code.language",
+    "block.code.numbered",
+    "syntax.backtick_code_inherited",
     "syntax.structural_escape",
+    "syntax.shared_identifier",
     "composition.nested_rich",
     "composition.image_in_rich",
     "composition.typed_value_in_rich",
@@ -96,7 +101,9 @@
     "block.header_text",
     "block.disclaimer",
     "block.semantic",
+    "block.code",
     "syntax.structural_escape",
+    "syntax.shared_identifier",
     "composition.nested_rich",
     "composition.image_in_rich",
     "composition.typed_value_in_rich",
@@ -134,7 +141,9 @@
     "comment_block.with_rich_child",
     "inline.disclaimer.with_rich_child",
     "inline.semantic.with_rich_child",
-    "semantic_block.with_rich_child"
+    "semantic_block.with_rich_child",
+    "identifier.shared_across_constructs",
+    "code.numbered_with_language"
   ],
   "cases": [
     {
@@ -788,6 +797,51 @@
         },
         "html": {
           "fragment": "<p>A <strong>normal</strong> block</p>\n<p>This is normal <em>inline</em> text.</p>"
+        }
+      }
+    },
+    {
+      "id": "v2-code-fences",
+      "covers": [
+        "block.code",
+        "block.code.language",
+        "block.code.numbered",
+        "syntax.backtick_code_inherited"
+      ],
+      "combinationCovers": ["code.numbered_with_language"],
+      "spanAssertions": [{
+        "cover": "block.code",
+        "path": "$.children[0]",
+        "span": { "startOffset": 8, "endOffset": 23, "startLine": 3, "startColumn": 1, "endLine": 5, "endColumn": 5 }
+      }],
+      "source": "&ND v2\n\n~~~$\nplain\n~~~$\n\n~~~$ [n] aeon\none\ntwo\n~~~$\n\n```json\nlegacy\n```\n",
+      "expected": {
+        "canonical": {
+          "embedded": "~~~$\nplain\n~~~$\n\n~~~$ [n] aeon\none\ntwo\n~~~$\n\n~~~$ json\nlegacy\n~~~$\n",
+          "standalone": "&ND v2\n\n~~~$\nplain\n~~~$\n\n~~~$ [n] aeon\none\ntwo\n~~~$\n\n~~~$ json\nlegacy\n~~~$\n"
+        },
+        "html": {
+          "fragment": "<figure class=\"and-code-block\">\n\n<pre><code>plain</code></pre>\n</figure>\n<figure class=\"and-code-block and-code-block-ordered\" data-language=\"aeon\" data-ordered=\"true\">\n<figcaption>aeon</figcaption>\n<ol class=\"and-code-lines\">\n<li><code>one</code></li>\n<li><code>two</code></li>\n</ol>\n</figure>\n<figure class=\"and-code-block\" data-language=\"json\">\n<figcaption>json</figcaption>\n<pre><code class=\"language-json\">legacy</code></pre>\n</figure>"
+        }
+      }
+    },
+    {
+      "id": "shared-identifier-grammar",
+      "covers": ["syntax.shared_identifier"],
+      "combinationCovers": ["identifier.shared_across_constructs"],
+      "spanAssertions": [{
+        "cover": "syntax.shared_identifier",
+        "path": "$.children[0].children[0]",
+        "span": { "startOffset": 8, "endOffset": 36, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 29 }
+      }],
+      "source": "&ND v2\n\n[# 1.shared_id-part:section][@ #1.shared_id-part:section | anchor]\n\nFootnote [% (1.shared_id-part:section) note] reused [% (1.shared_id-part:section)]. Semantic [(1.shared_id-part:section) inline].\n\n~~~(1.shared_id-part:section)\nblock\n~~~\n",
+      "expected": {
+        "canonical": {
+          "embedded": "[# 1.shared_id-part:section][@ #1.shared_id-part:section | anchor]\n\nFootnote [% (1.shared_id-part:section) note] reused [% (1.shared_id-part:section)]. Semantic [(1.shared_id-part:section) inline].\n\n~~~(1.shared_id-part:section)\nblock\n~~~\n",
+          "standalone": "&ND v2\n\n[# 1.shared_id-part:section][@ #1.shared_id-part:section | anchor]\n\nFootnote [% (1.shared_id-part:section) note] reused [% (1.shared_id-part:section)]. Semantic [(1.shared_id-part:section) inline].\n\n~~~(1.shared_id-part:section)\nblock\n~~~\n"
+        },
+        "html": {
+          "fragment": "<p><span class=\"and-anchor\" id=\"1.shared_id-part:section\" aria-hidden=\"true\"></span><a href=\"#1.shared_id-part:section\">anchor</a></p>\n<p>Footnote <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-1-1\" data-footnote-id=\"1.shared_id-part:section\"><a href=\"#and-footnote-1\" aria-label=\"Footnote 1\">1</a></sup> reused <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-1-2\" data-footnote-id=\"1.shared_id-part:section\"><a href=\"#and-footnote-1\" aria-label=\"Footnote 1\">1</a></sup>. Semantic inline.</p>\n<p>block</p>\n<section class=\"and-footnotes\" aria-label=\"Footnotes\">\n<hr>\n<ol>\n<li id=\"and-footnote-1\" data-footnote-id=\"1.shared_id-part:section\"><span class=\"and-footnote-content\">note</span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-1-1\" aria-label=\"Back to footnote 1 reference 1\">↩ 1</a> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-1-2\" aria-label=\"Back to footnote 1 reference 2\">↩ 2</a></li>\n</ol>\n</section>"
         }
       }
     },

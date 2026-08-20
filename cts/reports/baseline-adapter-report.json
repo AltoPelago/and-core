@@ -10,10 +10,10 @@
     "error": 0
   },
   "documentChecks": {
-    "expected": 54,
+    "expected": 53,
     "checked": 0,
     "matched": 0,
-    "skipped": 54,
+    "skipped": 53,
     "failed": 0
   },
   "spanChecks": {
@@ -24,8 +24,8 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 77,
-    "matched": 77,
+    "expected": 78,
+    "matched": 78,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -2609,20 +2609,21 @@
     },
     {
       "id": "seed-tilde-code-fences",
-      "path": "strict/accept/seed-tilde-code-fences.json",
+      "path": "strict/reject/seed-tilde-code-fences.json",
       "status": "pass",
       "mode": "strict",
-      "expectedOk": true,
-      "actualOk": true,
-      "documentExpected": true,
+      "expectedOk": false,
+      "expectedErrorCode": "deprecated_code_fence",
+      "actualOk": false,
+      "errorCode": "deprecated_code_fence",
+      "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,
       "spansChecked": false,
       "spansMatched": 0,
       "spansFailed": 0,
       "notes": [
-        "Evaluated by the baseline adapter example.",
-        "Document AST expectation skipped; adapter does not declare document capability."
+        "Evaluated by the baseline adapter example."
       ]
     },
     {
@@ -2649,9 +2650,9 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
-      "expectedErrorCode": "unclosed_code_block",
+      "expectedErrorCode": "deprecated_code_fence",
       "actualOk": false,
-      "errorCode": "unclosed_code_block",
+      "errorCode": "deprecated_code_fence",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,
@@ -2668,9 +2669,9 @@
       "status": "pass",
       "mode": "strict",
       "expectedOk": false,
-      "expectedErrorCode": "unclosed_code_block",
+      "expectedErrorCode": "deprecated_code_fence",
       "actualOk": false,
-      "errorCode": "unclosed_code_block",
+      "errorCode": "deprecated_code_fence",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

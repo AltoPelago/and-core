@@ -10,10 +10,10 @@
     "error": 0
   },
   "documentChecks": {
-    "expected": 54,
+    "expected": 53,
     "checked": 0,
     "matched": 0,
-    "skipped": 54,
+    "skipped": 53,
     "failed": 0
   },
   "spanChecks": {
@@ -24,9 +24,9 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 77,
+    "expected": 78,
     "matched": 72,
-    "missingActual": 5,
+    "missingActual": 6,
     "mismatched": 0
   },
   "results": [
@@ -2602,19 +2602,19 @@
     },
     {
       "id": "seed-tilde-code-fences",
-      "path": "strict/accept/seed-tilde-code-fences.json",
+      "path": "strict/reject/seed-tilde-code-fences.json",
       "status": "pending",
       "mode": "strict",
-      "expectedOk": true,
-      "documentExpected": true,
+      "expectedOk": false,
+      "expectedErrorCode": "deprecated_code_fence",
+      "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,
       "spansChecked": false,
       "spansMatched": 0,
       "spansFailed": 0,
       "notes": [
-        "Fixture is not implemented by the reference subset adapter yet.",
-        "Document AST expectation skipped; adapter does not declare document capability."
+        "Fixture is not implemented by the reference subset adapter yet."
       ]
     },
     {
@@ -2640,7 +2640,7 @@
       "status": "pending",
       "mode": "strict",
       "expectedOk": false,
-      "expectedErrorCode": "unclosed_code_block",
+      "expectedErrorCode": "deprecated_code_fence",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,
@@ -2657,7 +2657,7 @@
       "status": "pending",
       "mode": "strict",
       "expectedOk": false,
-      "expectedErrorCode": "unclosed_code_block",
+      "expectedErrorCode": "deprecated_code_fence",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

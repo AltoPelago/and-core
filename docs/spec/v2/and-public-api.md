@@ -102,9 +102,12 @@ declare function parseInline(
 ```
 
 Standalone `parseInline` validates local-fragment syntax but cannot resolve fragment targets against
-a document namespace. Full anchor uniqueness and resolution occur in `parseAnd` and v2 canonical
-emission. It likewise returns the local shape of `footnote_reference`; named footnote declaration
-order, uniqueness, and resolution require `parseAnd` or v2 canonical emission.
+a document namespace. `parseAnd` first constructs the complete structural tree and then performs a
+second-pass document validation of anchor uniqueness and local-target resolution. Streaming or
+chunked callers therefore cannot claim successful document conformance before end-of-document.
+V2 canonical emission repeats the full-document integrity check. `parseInline` likewise returns the
+local shape of `footnote_reference`; named footnote declaration order, uniqueness, and resolution
+require `parseAnd` or v2 canonical emission.
 
 ## AST Version Delta
 
@@ -152,8 +155,15 @@ interface NdHeading extends NdV1Heading {
 }
 ```
 
-The exact promoted fields, AEON scalar union, containment rules, and local-anchor invariants are
-defined by [`and-ast-contract.md`](./and-ast-contract.md). No v1 node changes meaning under v2.
+All authored anchor, fragment-target, named-footnote, and semantic-wrapper ID fields use the same
+case-sensitive `[A-Za-z0-9][A-Za-z0-9._:-]*` lexical grammar. The exact promoted fields, AEON scalar
+union, containment rules, and local-anchor invariants are defined by
+[`and-ast-contract.md`](./and-ast-contract.md). No v1 node changes meaning under v2.
+
+Code blocks keep the inherited `NdCodeBlock` shape. V2 accepts v1 triple- and quadruple-backtick
+fences and adds `~~~$` with optional `[n]` and language metadata. V2 canonical emission spells every
+code block with `~~~$`; v1 canonical emission retains backticks. Removed `~~~language` and
+`~~~~language` inputs fail with `deprecated_code_fence`.
 
 ## Budgets And Spans
 
@@ -230,6 +240,8 @@ declare function emitCanonical(
 `profile` is mandatory. `version` defaults to v1 for backward compatibility, but v2 callers must
 forward the successful parse result's `version`. Standalone v2 output declares `&ND v2`; embedded
 output omits the declaration. Emitting any v2-only node with `version: "v1"` fails closed.
+For inherited `NdCodeBlock` nodes, the selected version also determines the fence family: backticks
+for v1 and `~~~$` for v2.
 
 ## HTML Projection
 

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-shared-identifier-grammar",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[# 1.shared_id-part:section][@ #1.shared_id-part:section | anchor]\n\nFootnote [% (1.shared_id-part:section) note] reused [% (1.shared_id-part:section)]. Semantic [(1.shared_id-part:section) inline].\n\n~~~(1.shared_id-part:section)\nblock\n~~~\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "anchors, footnotes, and semantic wrappers share one case-sensitive v2 identifier grammar",
+      "the shared grammar permits an initial digit plus dot, underscore, hyphen, and colon"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "anchor_tag", "id": "1.shared_id-part:section" },
+            {
+              "type": "link",
+              "href": "#1.shared_id-part:section",
+              "children": [{ "type": "text", "value": "anchor" }]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Footnote " },
+            {
+              "type": "footnote_definition",
+              "id": "1.shared_id-part:section",
+              "children": [{ "type": "text", "value": "note" }]
+            },
+            { "type": "text", "value": " reused " },
+            { "type": "footnote_reference", "id": "1.shared_id-part:section" },
+            { "type": "text", "value": ". Semantic " },
+            {
+              "type": "semantic_tag",
+              "id": "1.shared_id-part:section",
+              "children": [{ "type": "text", "value": "inline" }]
+            },
+            { "type": "text", "value": "." }
+          ]
+        },
+        {
+          "type": "semantic_block",
+          "id": "1.shared_id-part:section",
+          "children": [{ "type": "text", "value": "block" }]
+        }
+      ]
+    }
+  }
+}

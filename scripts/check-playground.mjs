@@ -81,6 +81,8 @@ const v2Canonical = emitCanonical(v2Result.document, { profile: 'standalone', ve
 const reparsedV2 = parseAnd(v2Canonical, { allowV2: true });
 assert(reparsedV2.ok && reparsedV2.version === 'v2', 'playground v2 canonical output should reparse as v2');
 assert(v2Canonical.includes('\\# This is literal heading text, not a heading'), 'playground v2 canonical output should preserve required structural escapes');
+assert(v2Canonical.includes('~~~$ aeon\ntitle = "v2 code"\nmode = "plain"\n~~~$'), 'playground v2 canonical output should preserve language-tagged dollar code blocks');
+assert(v2Canonical.includes('~~~$ [n] aeon\ntitle = "v2 code"\nmode = "numbered"\n~~~$'), 'playground v2 canonical output should preserve numbered dollar code blocks');
 const v2Html = renderHtml(v2Result.document);
 assert(v2Html.includes('<p># This is literal heading text, not a heading</p>'), 'playground v2 preview should decode an escaped heading opener as paragraph text');
 assert(v2Html.includes('data-auto-number="true"'), 'playground v2 preview should preserve auto-number intent');
@@ -95,6 +97,9 @@ assert(v2Html.includes('id="overview"'), 'playground v2 preview should render an
 assert(v2Html.includes('href="#overview"'), 'playground v2 preview should link local references');
 assert(v2Html.includes('class="and-image and-image-inline"'), 'playground v2 preview should render inline images');
 assert(v2Html.includes('alt="Ampersand ND sample"'), 'playground v2 preview should preserve image alt text');
+assert(v2Html.includes('class="and-code-block" data-language="aeon"'), 'playground v2 preview should render language-tagged code blocks');
+assert(v2Html.includes('class="and-code-block and-code-block-ordered"'), 'playground v2 preview should render numbered code blocks');
+assert(v2Html.includes('class="and-code-lines"'), 'playground v2 preview should number code lines');
 assert(v2Html.includes('class="and-highlight-paragraph"'), 'playground v2 preview should render paired blocks');
 assert(v2Html.includes('class="and-strong-paragraph"'), 'playground v2 preview should render strong paragraph blocks');
 assert(v2Html.includes('class="and-emphasis-paragraph"'), 'playground v2 preview should render emphasis paragraph blocks');

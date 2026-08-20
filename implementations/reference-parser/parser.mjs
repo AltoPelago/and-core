@@ -1,5 +1,6 @@
-import { extensionOpener, rawFence, scanDocument } from './scanner.mjs';
+import { extensionOpener, rawFence, scanDocument, tildeLanguageRawFence } from './scanner.mjs';
 import { parseAeonInlineTypedValue } from '../shared/aeon-inline-scalar.mjs';
+import { isNdV2Identifier } from '../shared/v2-identifier.mjs';
 
 function lineStartOffsets(lines) {
   const offsets = [];
@@ -123,13 +124,9 @@ function isEscapable(char) {
   return char === '[' || char === ']' || char === '|' || char === '\\';
 }
 
-const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
-const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
-const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
-
 function isStructuralBlockOpener(lines, context) {
   const line = lines[0] ?? '';
-  if (rawFence(line) !== null) return true;
+  if (rawFence(line, 'v2') !== null || tildeLanguageRawFence(line) !== null) return true;
   if (formattedParagraphFence(line) !== null) return true;
   if (semanticBlockOpener(line) !== null) return true;
   if (line.startsWith('===') || line.startsWith('***') || line.startsWith('+++')) return true;
@@ -238,7 +235,7 @@ function parseAnchorTag(text, index, context, baseOffset = 0) {
     }
     if (char === ']') {
       const id = value.trim();
-      if (!LOCAL_ANCHOR_ID_PATTERN.test(id)) {
+      if (!isNdV2Identifier(id)) {
         return { ok: false, errorCode: 'invalid_anchor_tag', nextIndex: i };
       }
       context?.semanticState?.anchors.push({ id, offset: baseOffset + index });
@@ -389,7 +386,7 @@ function parseFootnoteTag(text, index, options, context, baseOffset = 0, inlineD
     }
 
     id = text.slice(contentStart + 1, idEnd);
-    if (!FOOTNOTE_ID_PATTERN.test(id)) {
+    if (!isNdV2Identifier(id)) {
       return { ok: false, errorCode: 'invalid_footnote_id', nextIndex: contentStart + 1 };
     }
 
@@ -477,7 +474,7 @@ function parseSemanticTag(text, index, options, context, baseOffset = 0, inlineD
   }
 
   const id = text.slice(index + 2, idEnd);
-  if (!SEMANTIC_ID_PATTERN.test(id) || text[idEnd + 1] !== ' ') {
+  if (!isNdV2Identifier(id) || text[idEnd + 1] !== ' ') {
     return { ok: false, errorCode: 'invalid_semantic_tag', nextIndex: idEnd + 1 };
   }
 
@@ -665,8 +662,10 @@ function formattedParagraphFence(line) {
 
 function semanticBlockOpener(line) {
   if (!line.startsWith('~~~(')) return null;
-  const match = line.match(/^~~~\(([A-Za-z][A-Za-z0-9_-]*)\)$/);
-  if (!match) return { ok: false, errorCode: 'invalid_semantic_block' };
+  const match = line.match(/^~~~\(([^)]*)\)$/);
+  if (!match || !isNdV2Identifier(match[1])) {
+    return { ok: false, errorCode: 'invalid_semantic_block' };
+  }
   return {
     ok: true,
     config: {
@@ -682,6 +681,7 @@ function semanticBlockOpener(line) {
 function isReservedV2BlockOpener(line) {
   return formattedParagraphFence(line) !== null
     || line.startsWith('~~~(')
+    || line.startsWith('~~~$')
     || line.startsWith('===')
     || line.startsWith('***');
 }
@@ -745,7 +745,7 @@ function parseLink(text, index, options, context, baseOffset = 0, inlineDepth = 
   const href = target.trim();
   if (isV2Document(context) && href.startsWith('#') && href.length > 1) {
     const localTarget = href.slice(1);
-    if (!LOCAL_ANCHOR_ID_PATTERN.test(localTarget)) {
+    if (!isNdV2Identifier(localTarget)) {
       return { ok: false, errorCode: 'invalid_local_anchor_target', nextIndex: index };
     }
     context?.semanticState?.localLinks.push({ target: localTarget, offset: baseOffset + index });
@@ -1219,9 +1219,11 @@ function makeChildContext(context, fields = {}) {
 
 function parseCodeBlock(lines, start, options, context) {
   const line = lines[start];
-  const fence = rawFence(line);
+  const fence = rawFence(line, context.documentVersion);
   const openerText = line.slice(fence.prefix.length);
-  const language = openerText.slice(fence.fence.length).trim() || null;
+  const language = fence.kind === 'v2-dollar'
+    ? fence.language
+    : openerText.slice(fence.fence.length).trim() || null;
   const payload = [];
   let payloadSize = 0;
 
@@ -1230,7 +1232,7 @@ function parseCodeBlock(lines, start, options, context) {
       const node = {
         type: 'code_block',
         language,
-        ordered: fence.fence.length === 4,
+        ordered: fence.kind === 'v2-dollar' ? fence.ordered : fence.fence.length === 4,
         text: payload.map((payloadLine) => rawPayloadLine(payloadLine, fence.prefix)).join('\n'),
       };
       return {
@@ -1743,7 +1745,7 @@ function parseBlocks(lines, options, context) {
       continue;
     }
 
-    if (rawFence(line) !== null) {
+    if (rawFence(line, context.documentVersion) !== null) {
       const code = parseCodeBlock(lines, index, options, context);
       if (!code.ok) return withLine(code, context.lineOffset + index);
       const blockBudget = recordBlock(options, context, index);

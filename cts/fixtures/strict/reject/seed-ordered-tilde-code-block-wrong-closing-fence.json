@@ -6,7 +6,7 @@
   "source": "~~~~aeon\nnumbered code\n~~~\n",
   "expected": {
     "ok": false,
-    "errorCode": "unclosed_code_block",
-    "assertions": ["an ordered tilde code block requires a matching quadruple-tilde closer"]
+    "errorCode": "deprecated_code_fence",
+    "assertions": ["language-qualified quadruple-tilde code fences are no longer supported"]
   }
 }

@@ -3,10 +3,10 @@
   "id": "seed-v2-inline-semantic-tag-invalid-id",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\nInvalid [(1term) content].\n",
+  "source": "&ND v2\n\nInvalid [(bad/id) content].\n",
   "expected": {
     "ok": false,
     "errorCode": "invalid_semantic_tag",
-    "assertions": ["inline semantic IDs must start with an ASCII letter"]
+    "assertions": ["inline semantic IDs reject characters outside the shared v2 identifier grammar"]
   }
 }

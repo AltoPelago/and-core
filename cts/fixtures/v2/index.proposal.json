@@ -30,6 +30,8 @@
     "strict/accept/seed-v2-inline-rich-tags-nested.json",
     "strict/accept/seed-v2-footnote-anonymous.json",
     "strict/accept/seed-v2-footnote-named-reuse.json",
+    "strict/accept/seed-v2-shared-identifier-grammar.json",
+    "strict/accept/seed-v2-code-block-dollar-fences.json",
     "strict/accept/seed-v2-todo-list-states.json",
     "strict/accept/seed-v2-todo-list-nested.json",
     "strict/accept/seed-v2-inline-directional-markers-enabled.json",
@@ -155,6 +157,10 @@
     "strict/accept/seed-v2-structural-block-escapes.json",
     "strict/reject/seed-v2-structural-escape-midline.json",
     "strict/reject/seed-v2-structural-escape-non-command.json",
-    "strict/reject/seed-v2-structural-escape-plain-tilde.json"
+    "strict/reject/seed-v2-structural-escape-plain-tilde.json",
+    "strict/reject/seed-v2-code-block-dollar-malformed.json",
+    "strict/reject/seed-v2-code-block-dollar-unclosed.json",
+    "strict/reject/seed-v2-code-block-tilde-language-deprecated.json",
+    "strict/reject/seed-v2-code-block-tilde-numbered-deprecated.json"
   ]
 }

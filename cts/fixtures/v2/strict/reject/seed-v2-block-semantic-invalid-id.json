@@ -3,10 +3,10 @@
   "id": "seed-v2-block-semantic-invalid-id",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\n~~~(1summary)\nContent\n~~~\n",
+  "source": "&ND v2\n\n~~~(bad/id)\nContent\n~~~\n",
   "expected": {
     "ok": false,
     "errorCode": "invalid_semantic_block",
-    "assertions": ["semantic block IDs must start with an ASCII letter"]
+    "assertions": ["semantic block IDs reject characters outside the shared v2 identifier grammar"]
   }
 }

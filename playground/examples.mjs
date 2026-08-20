@@ -13,15 +13,15 @@ date = 2026-04-01
 
 This is [* deterministic] prose with [/ visible structure].
 
-~~~aeon
+\`\`\`aeon
 title = "Playground"
 mode = "strict"
-~~~
+\`\`\`
 
-~~~~aeon
+\`\`\`\`aeon
 title = "Playground"
 mode = "ordered"
-~~~~
+\`\`\`\`
 
 - Parse strict documents
 
@@ -78,6 +78,16 @@ Hello world [? used to describe the most basic way to print text in a programmin
 Review this carefully [! proposal syntax can still change].
 Inline disclaimer: [^ this text is typically shown smaller].
 Semantic inline content appears [(consumer-term) like ordinary rich text] by default.
+
+~~~$ aeon
+title = "v2 code"
+mode = "plain"
+~~~$
+
+~~~$ [n] aeon
+title = "v2 code"
+mode = "numbered"
+~~~$
 
 ~~~=
 This is a highlighted paragraph with [! proposal] status.

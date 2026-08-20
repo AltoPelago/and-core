@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-code-block-dollar-malformed",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~$[n]\ncode\n~~~$\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_code_fence",
+    "assertions": ["v2 dollar code-fence modifiers require exact separating spaces"]
+  }
+}

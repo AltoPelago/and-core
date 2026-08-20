@@ -3,9 +3,7 @@ import {
   emitAeonScalar,
   formatAeonDatatype,
 } from '../shared/aeon-inline-scalar.mjs';
-
-const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
-const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
+import { isNdV2Identifier } from '../shared/v2-identifier.mjs';
 
 function fail(errorCode, detail) {
   const error = new Error(detail ?? errorCode);
@@ -26,18 +24,19 @@ function escapeAttribute(value) {
   return escapeHtml(value).replaceAll('`', '&#96;');
 }
 
-function requireFootnoteId(value, nodeType) {
-  if (typeof value !== 'string' || !FOOTNOTE_ID_PATTERN.test(value)) {
-    throw fail('invalid_footnote_id', `${nodeType} requires an alphanumeric footnote identifier.`);
+function requireV2Identifier(value, errorCode, nodeType) {
+  if (!isNdV2Identifier(value)) {
+    throw fail(errorCode, `${nodeType} requires a valid v2 identifier.`);
   }
   return value;
 }
 
+function requireFootnoteId(value, nodeType) {
+  return requireV2Identifier(value, 'invalid_footnote_id', nodeType);
+}
+
 function requireSemanticId(value, nodeType) {
-  if (typeof value !== 'string' || !SEMANTIC_ID_PATTERN.test(value)) {
-    throw fail('invalid_semantic_id', `${nodeType} requires a portable semantic identifier.`);
-  }
-  return value;
+  return requireV2Identifier(value, 'invalid_semantic_id', nodeType);
 }
 
 function hasInlineAstContent(nodes) {

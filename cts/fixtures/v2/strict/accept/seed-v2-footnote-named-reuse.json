@@ -7,7 +7,7 @@
   "expected": {
     "ok": true,
     "assertions": [
-      "a named footnote declaration stores its alphanumeric author ID",
+      "a named footnote declaration stores its shared v2 author ID",
       "later shorthand references reuse the first declaration without duplicating content"
     ],
     "document": {

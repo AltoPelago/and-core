@@ -1,4 +1,5 @@
 import { emitAeonInlineTypedValue } from '../shared/aeon-inline-scalar.mjs';
+import { isNdV2Identifier } from '../shared/v2-identifier.mjs';
 
 function normalizeRawText(text) {
   return text.replaceAll('\r\n', '\n');
@@ -10,20 +11,9 @@ function fail(errorCode, detail) {
   return error;
 }
 
-const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
-const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
-const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
-
-function requireLocalAnchorId(value, errorCode, nodeType) {
-  if (typeof value !== 'string' || !LOCAL_ANCHOR_ID_PATTERN.test(value)) {
-    throw fail(errorCode, `${nodeType} requires a portable local anchor identifier.`);
-  }
-  return value;
-}
-
-function requireSemanticId(value, nodeType) {
-  if (typeof value !== 'string' || !SEMANTIC_ID_PATTERN.test(value)) {
-    throw fail('invalid_semantic_id', `${nodeType} requires a portable semantic identifier.`);
+function requireV2Identifier(value, errorCode, nodeType) {
+  if (!isNdV2Identifier(value)) {
+    throw fail(errorCode, `${nodeType} requires a valid v2 identifier.`);
   }
   return value;
 }
@@ -40,7 +30,7 @@ function validateLocalAnchorGraph(document) {
     if (!value || typeof value !== 'object') return;
 
     if (value.type === 'anchor_tag') {
-      const id = requireLocalAnchorId(value.id, 'invalid_anchor_tag', 'anchor_tag');
+      const id = requireV2Identifier(value.id, 'invalid_anchor_tag', 'anchor_tag');
       if (anchors.has(id)) {
         throw fail('duplicate_anchor', `Duplicate local anchor: ${id}`);
       }
@@ -51,7 +41,7 @@ function validateLocalAnchorGraph(document) {
       && value.href.startsWith('#')
       && value.href.length > 1
     ) {
-      localTargets.push(requireLocalAnchorId(value.href.slice(1), 'invalid_local_anchor_target', 'link'));
+      localTargets.push(requireV2Identifier(value.href.slice(1), 'invalid_local_anchor_target', 'link'));
     }
 
     for (const [key, child] of Object.entries(value)) {
@@ -68,10 +58,7 @@ function validateLocalAnchorGraph(document) {
 }
 
 function requireFootnoteId(value, nodeType) {
-  if (typeof value !== 'string' || !FOOTNOTE_ID_PATTERN.test(value)) {
-    throw fail('invalid_footnote_id', `${nodeType} requires an alphanumeric footnote identifier.`);
-  }
-  return value;
+  return requireV2Identifier(value, 'invalid_footnote_id', nodeType);
 }
 
 function hasInlineAstContent(nodes) {
@@ -142,8 +129,10 @@ function requiresV2StructuralEscape(text, context) {
   if (context.version !== 'v2') return false;
   if (/^`{3,4}/.test(text)) return true;
   if (/^~{3,4}[A-Za-z][A-Za-z0-9_-]*$/.test(text)) return true;
+  if (/^~~~\$(?: \[n\](?: [A-Za-z][A-Za-z0-9_-]*)?| [A-Za-z][A-Za-z0-9_-]*)?$/.test(text)) return true;
   if (['~~~=', '~~~*', '~~~/', '~~~_', '~~~?', '~~~!', "~~~'", '~~~#', '~~~^'].includes(text)) return true;
-  if (/^~~~\([A-Za-z][A-Za-z0-9_-]*\)$/.test(text)) return true;
+  const semanticMatch = text.match(/^~~~\(([^)]*)\)$/);
+  if (semanticMatch && isNdV2Identifier(semanticMatch[1])) return true;
   if (text.startsWith('===') || text.startsWith('***') || text.startsWith('+++')) return true;
   if (/^#{1,6} /.test(text)) return true;
   if (text === '---') return true;
@@ -222,7 +211,7 @@ function emitInlineNode(node, context) {
       return `[$ ${escapeInlineCode(node.text)}]`;
     case 'anchor_tag':
       requireV2(context, node.type);
-      return `[# ${requireLocalAnchorId(node.id, 'invalid_anchor_tag', node.type)}]`;
+      return `[# ${requireV2Identifier(node.id, 'invalid_anchor_tag', node.type)}]`;
     case 'admonition_tag':
       requireV2(context, node.type);
       return `[! ${emitInlineNodes(node.children, context)}]`;
@@ -257,7 +246,7 @@ function emitInlineNode(node, context) {
       return `[^ ${emitInlineNodes(node.children, context)}]`;
     case 'semantic_tag':
       requireV2(context, node.type);
-      return `[(${requireSemanticId(node.id, node.type)}) ${emitInlineNodes(node.children, context)}]`;
+      return `[(${requireV2Identifier(node.id, 'invalid_semantic_id', node.type)}) ${emitInlineNodes(node.children, context)}]`;
     case 'typed_value':
       requireV2(context, node.type);
       try {
@@ -429,6 +418,12 @@ function emitBlock(node, context) {
       return emitBlockquote(node, context);
     case 'code_block': {
       const language = node.language ? node.language.toLowerCase() : '';
+      if (context.version === 'v2') {
+        const fence = '~~~$';
+        const opener = `${fence}${node.ordered ? ' [n]' : ''}${language ? ` ${language}` : ''}`;
+        const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
+        return `${opener}\n${payload}\n${fence}`;
+      }
       const fence = node.ordered ? '````' : '```';
       const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
       return `${fence}${language}\n${payload}\n${fence}`;
@@ -480,7 +475,7 @@ function emitBlock(node, context) {
     case 'semantic_block':
       requireV2(context, node.type);
       return emitPairedInlineBlock(
-        `~~~(${requireSemanticId(node.id, node.type)})`,
+        `~~~(${requireV2Identifier(node.id, 'invalid_semantic_id', node.type)})`,
         '~~~',
         node.children,
         context

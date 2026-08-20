@@ -8,7 +8,7 @@
     "ok": false,
     "errorCode": "invalid_anchor_tag",
     "assertions": [
-      "v2 strict mode rejects anchor identifiers outside the portable local-id grammar",
+      "v2 strict mode rejects anchor identifiers outside the shared v2-id grammar",
       "escaping a delimiter does not make it valid identifier content"
     ]
   }

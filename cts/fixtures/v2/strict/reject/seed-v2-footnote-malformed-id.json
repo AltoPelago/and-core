@@ -3,13 +3,13 @@
   "id": "seed-v2-footnote-malformed-id",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\nhello [% (A-1) world]\n",
+  "source": "&ND v2\n\nhello [% (A/1) world]\n",
   "expected": {
     "ok": false,
     "errorCode": "invalid_footnote_id",
     "assertions": [
-      "footnote IDs are strictly alphanumeric",
-      "punctuation inside an authored ID fails closed"
+      "footnote IDs use the shared v2 identifier grammar",
+      "characters outside dot, underscore, hyphen, and colon fail closed"
     ]
   }
 }

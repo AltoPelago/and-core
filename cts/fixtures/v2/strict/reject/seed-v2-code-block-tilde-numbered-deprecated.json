@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-code-block-tilde-numbered-deprecated",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~~aeon\ncode\n~~~~\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "deprecated_code_fence",
+    "assertions": ["the recently introduced ~~~~language alternative is removed in favor of ~~~$ [n] language"]
+  }
+}

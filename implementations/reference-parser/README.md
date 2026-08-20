@@ -25,7 +25,7 @@ Current scope:
 * normative resource budget enforcement for document size, line length, block count, block payload size,
   list item count, nesting depth, inline depth, table columns, and link target length
 * raw code block margin checks
-* inherited backtick code fences plus language-qualified triple/quadruple tilde alternatives
+* inherited triple/quadruple backtick code fences and v2 `~~~$` code fences
 * the initial block-boundary and indentation rules covered by the CTS
 * explicit v2 capability and effective-version selection through `allowV2` and `version`
 * proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact directional and
@@ -61,7 +61,7 @@ For v2 input, `parseInline` validates the portable `#id` link-target grammar but
 without a document namespace. `parseAnd` accepts forward fragment links and rejects duplicate anchors
 or unresolved local targets across the entire document, including nested blocks. V2 image tags use
 `[~ source | alt | mode]`, default omitted modes to `inline`, and require `inline`, `half`, or `full`.
-Named v2 footnote references resolve case-sensitively against one earlier alphanumeric declaration;
+Named v2 footnote references resolve case-sensitively against one earlier shared v2-ID declaration;
 duplicate, forward, unresolved, and nested footnotes fail closed.
 
 Strict-mode failures currently return:

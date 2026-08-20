@@ -78,9 +78,11 @@ assigns each promoted form an explicit ownership boundary:
 | `[~ source | alt | mode]` | Core | Inline image with required alt text and `inline`, `half`, or `full` display intent. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo lists and item states; workflow and presentation are projections. |
-| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
+| `[>]`, `[<]` | Core | Directional author-intent markers; a leading marker replaces an unordered-list bullet in projection. |
+| `[.]` | Core | Explicit inline line break; never a directional marker. |
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
+| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Core | Code blocks with optional language and numbered-line intent; inherited backtick fences remain accepted. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
@@ -95,12 +97,12 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 152-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 158-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 55 accepted fixtures covering inline tags, rich nesting, footnotes, semantic and formatted/advisory/comment blocks, structural escapes, first-class todo and auto-number
+- 57 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 97 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
-  footnote graph integrity, local-fragment integrity, tags, and fences
+- 101 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
+  footnote graph integrity, local-fragment integrity, tags, and code/paired fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
 - embedded-version equivalence checks for every proposal fixture
@@ -110,6 +112,38 @@ executable 152-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
 The fixture index is the complete machine-readable inventory. This document records the proposal
 semantics and named design anchors rather than duplicating every variant filename.
+
+## Code Block Grammar Snapshot (Proposal)
+
+V2 retains all v1 triple- and quadruple-backtick code blocks and adds these exact spellings:
+
+```text
+~~~$
+code
+~~~$
+
+~~~$ language
+code
+~~~$
+
+~~~$ [n]
+code
+~~~$
+
+~~~$ [n] language
+code
+~~~$
+```
+
+The optional language matches `[A-Za-z][A-Za-z0-9_-]*`; canonical output lowercases it. `[n]`
+records numbered-line intent in the inherited `code_block.ordered` field. Every new form closes with
+bare `~~~$`, and its payload has inherited raw-code semantics and budgets.
+
+A v2 parser accepts inherited backtick fences, while a v1 parser rejects the v2-only `~~~$` family.
+Canonical v2 emission uses `~~~$` for every code block, including code parsed from backticks;
+canonical v1 emission continues to use backticks. The briefly introduced `~~~language` and
+`~~~~language` forms have been removed and reject with `deprecated_code_fence`. Plain `~~~` remains
+ordinary paragraph text.
 
 ## Paired Block Grammar Snapshot (Proposal)
 
@@ -156,8 +190,10 @@ semantic block
 	opener: ~~~(<id>)
 	closer: ~~~
 
-<id> ::= [A-Za-z][A-Za-z0-9_-]*
+<id> ::= [A-Za-z0-9][A-Za-z0-9._:-]*
 ```
+
+This is the same case-sensitive `v2-id` grammar used by anchors and named footnotes.
 
 Validation rules in the current proposal lane:
 
@@ -451,6 +487,21 @@ Expected direction:
 - strict rejection for marker-only headings, missing separator space, and non-contextual usage
 - reference HTML projection visibly numbers participating headings hierarchically by heading level
 
+### `seed-v2-code-block-dollar-fences`
+
+Intent:
+
+- add an explicit `~~~$` v2 code-block family consistent with inline `[$ code]`
+- retain inherited backtick code fences for v1 compatibility
+- carry optional language and `[n]` numbered-line intent in the inherited `code_block` AST
+
+Expected direction:
+
+- v2 strict parse success for the four exact `~~~$` openers and inherited backtick fences
+- canonical v2 output normalizes every code-block AST to the applicable `~~~$` form
+- v1 strict rejection for `~~~$`; both versions reject removed `~~~language` / `~~~~language`
+- malformed, mismatched, and unclosed dollar fences fail with stable diagnostics
+
 ### `seed-v2-block-highlight-paragraph-enabled`
 
 Intent:
@@ -524,7 +575,7 @@ Intent:
 
 Expected direction:
 
-- v2 strict parse success for non-empty semantic wrappers with `[A-Za-z][A-Za-z0-9_-]*` IDs
+- v2 strict parse success for non-empty semantic wrappers with shared `v2-id` IDs
 - exact canonical preservation of IDs and rich content
 - strict rejection for malformed IDs, missing inline spacing, empty payloads, or unclosed blocks
 
@@ -534,11 +585,12 @@ Intent:
 
 - allow a v2 author to prefix a block command with `\` when its source spelling should remain text
 - decode the escape into an ordinary paragraph without weakening the inline escape rules
-- cover headings, lists, blockquotes, horizontal rules, extensions, raw fences, and v2 fence forms
+- cover headings, lists, blockquotes, horizontal rules, extensions, inherited backtick fences, v2
+  dollar-code fences, removed tilde-language openers, and v2 paired fence forms
 
 Expected direction:
 
-- `\# heading`, `\~~~aeon`, and other real escaped openers parse as paragraph text
+- `\# heading`, `\~~~$ aeon`, `\~~~aeon`, and other real escaped openers parse as paragraph text
 - canonical v2 emission restores the escape whenever omitting it would change the block type
 - v1 keeps its closed four-character inline escape set
 - mid-line and unnecessary structural escapes reject with `invalid_escape`
@@ -554,7 +606,7 @@ Intent:
 Expected direction:
 
 - v2 strict parse success for anonymous definitions, named definitions, and repeated named references
-- alphanumeric case-sensitive IDs, one declaration per ID, and no nested footnotes
+- shared case-sensitive `v2-id` IDs, one declaration per ID, and no nested footnotes
 - strict rejection for empty definitions, malformed IDs, duplicate definitions, unresolved references,
   and forward references
 - v1 strict behavior remains reject for the same source

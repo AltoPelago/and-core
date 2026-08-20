@@ -31,6 +31,32 @@ assert(
   'public inline parse should expose semantic IDs to consumers',
 );
 
+const sharedV2Id = '1.shared_id-part:section';
+const sharedAnchorInline = parseInline(`[# ${sharedV2Id}]`, { allowV2: true, version: 'v2' });
+const sharedFootnoteInline = parseInline(`[% (${sharedV2Id})]`, { allowV2: true, version: 'v2' });
+const sharedSemanticInline = parseInline(`[(${sharedV2Id}) visible]`, { allowV2: true, version: 'v2' });
+assert(
+  sharedAnchorInline.ok
+    && sharedFootnoteInline.ok
+    && sharedSemanticInline.ok
+    && sharedAnchorInline.children[0]?.id === sharedV2Id
+    && sharedFootnoteInline.children[0]?.id === sharedV2Id
+    && sharedSemanticInline.children[0]?.id === sharedV2Id,
+  'public inline parsing should apply one shared v2 identifier grammar across constructs',
+);
+const invalidSharedAnchor = parseInline('[# bad/id]', { allowV2: true, version: 'v2' });
+const invalidSharedFootnote = parseInline('[% (bad/id)]', { allowV2: true, version: 'v2' });
+const invalidSharedSemantic = parseInline('[(bad/id) visible]', { allowV2: true, version: 'v2' });
+assert(
+  !invalidSharedAnchor.ok
+    && invalidSharedAnchor.errorCode === 'invalid_anchor_tag'
+    && !invalidSharedFootnote.ok
+    && invalidSharedFootnote.errorCode === 'invalid_footnote_id'
+    && !invalidSharedSemantic.ok
+    && invalidSharedSemantic.errorCode === 'invalid_semantic_tag',
+  'shared lexical rejection should retain construct-specific diagnostics',
+);
+
 const v2Source = '&ND v2\n\n# [n] Public API\n\nStart[# api][.]End\n';
 const parsedV2 = parseAnd(v2Source, { allowV2: true, includeSpans: true });
 assert(parsedV2.ok && parsedV2.version === 'v2', 'public parse should expose opt-in v2 capability');
@@ -87,6 +113,21 @@ assert(
     && autoNumberListV2.document.children[0].items[0]?.type === 'list_item',
   'public parse should expose first-class v2 auto-number lists',
 );
+const dollarCodeV2 = parseAnd('&ND v2\n\n~~~$ [n] aeon\none\ntwo\n~~~$\n', { allowV2: true });
+assert(
+  dollarCodeV2.ok
+    && dollarCodeV2.document.children[0]?.type === 'code_block'
+    && dollarCodeV2.document.children[0]?.ordered === true
+    && dollarCodeV2.document.children[0]?.language === 'aeon',
+  'public parse should expose v2 dollar code-block language and numbered-line intent',
+);
+const inheritedBacktickV2 = parseAnd('&ND v2\n\n```json\nlegacy\n```\n', { allowV2: true });
+assert(inheritedBacktickV2.ok, 'v2 readers should retain inherited backtick code fences');
+const removedTildeLanguageV2 = parseAnd('&ND v2\n\n~~~aeon\nremoved\n~~~\n', { allowV2: true });
+assert(
+  !removedTildeLanguageV2.ok && removedTildeLanguageV2.errorCode === 'deprecated_code_fence',
+  'removed tilde-language code fences should fail with a stable diagnostic',
+);
 const directionalListV2 = parseAnd('&ND v2\n\n- [>] advance while [<] remains inline\n', { allowV2: true });
 assert(
   directionalListV2.ok
@@ -126,6 +167,14 @@ const canonical = emitCanonical(parsed.document, { profile: 'standalone' });
 assert(canonical.startsWith('&ND v1\n\n# Public API\n\n'), 'public canonical emission should succeed');
 const canonicalV2 = emitCanonical(parsedV2.document, { profile: 'standalone', version: parsedV2.version });
 assert(canonicalV2 === v2Source, 'public canonical emission should preserve v2 syntax and declaration');
+const inheritedCodeCanonicalV2 = emitCanonical(inheritedBacktickV2.document, {
+  profile: 'standalone',
+  version: inheritedBacktickV2.version,
+});
+assert(
+  inheritedCodeCanonicalV2.includes('~~~$ json\nlegacy\n~~~$'),
+  'v2 canonical emission should normalize inherited backtick code blocks to dollar fences',
+);
 
 const html = renderHtml(parsed.document);
 assert(html.includes('<h1>Public API</h1>'), 'public HTML projection should succeed');
