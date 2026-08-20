@@ -51,7 +51,8 @@ grammar expands.
 The emitted document shape follows the CTS AST contracts in
 [`docs/spec/v1/and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md) and
 [`docs/spec/v2/and-ast-contract.md`](../../docs/spec/v2/and-ast-contract.md). Table output uses
-structured header/body cells with inline children, matching the current CTS contract.
+structured header/body cells with inline children; v2 adds optional logical-column alignments and
+horizontal cell `colSpan`.
 
 The default remains v1-only. Standalone v2 input requires `&ND v2` plus `{ allowV2: true }`.
 Headerless v2 input and standalone inline parsing require

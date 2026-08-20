@@ -83,6 +83,7 @@ assigns each promoted form an explicit ownership boundary:
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
+| table separators `<--`, `-=-`, `-->` and adjacent `|>` span markers | Core | Column alignment and horizontal cell spanning; row spanning is unsupported. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
@@ -97,12 +98,12 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 158-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 163-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 57 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, first-class todo and auto-number
+- 58 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 101 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
-  footnote graph integrity, local-fragment integrity, tags, and code/paired fences
+- 105 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
+  footnote graph integrity, local-fragment integrity, table spans, tags, and code/paired fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
 - embedded-version equivalence checks for every proposal fixture
@@ -147,6 +148,26 @@ payload contains an exact `~~~$` line. Canonical v1 emission prefers backticks, 
 when needed to preserve an exact triple-backtick payload line. The briefly introduced `~~~language` and
 `~~~~language` forms have been removed and reject with `deprecated_code_fence`. Plain `~~~` remains
 ordinary paragraph text.
+
+## Table Grammar Snapshot (Proposal)
+
+V2 retains inherited `---` table separators and adds exact column-alignment tokens:
+
+```text
+table-separator-cell ::= "---" | "<--" | "-=-" | "-->"
+spanning-cell ::= ">"+ " " inline-content
+colSpan ::= 1 + count(">")
+```
+
+`<--`, `-=-`, and `-->` mean left, center, and right alignment. The separator row defines the
+logical column count. Every header and body row must have a total width equal to that count, where an
+ordinary cell contributes one and a spanning cell contributes its `colSpan`.
+
+The marker must be adjacent to its preceding delimiter: `|> A+B | C |` spans the first two columns,
+while `| > literal |` remains ordinary text. Markers require one space and non-empty content. Header
+and body cells may span; separator cells and rows may not. The alignment of a spanning cell is the
+alignment of its first covered logical column. Canonical output preserves alignment intent and emits
+compact adjacent markers. V1 rejects aligned separators and span markers.
 
 ## Paired Block Grammar Snapshot (Proposal)
 
@@ -506,6 +527,22 @@ Expected direction:
 - v1 acceptance for unnumbered dollar fences and strict rejection for their `[n]` variants; both
   versions reject removed `~~~language` / `~~~~language`
 - malformed, mismatched, and unclosed dollar fences fail with stable diagnostics
+
+### `seed-v2-table-alignment-and-spans`
+
+Intent:
+
+- extend inherited tables with exact left/center/right separator tokens
+- model adjacent `>` cell markers as horizontal `colSpan`
+- retain the inherited AST exactly for ordinary v1-shaped tables
+
+Expected direction:
+
+- `<--`, `-=-`, and `-->` populate an optional logical-column alignment array
+- each adjacent `>` increases a content cell's span by one; a padded `| > literal |` is ordinary text
+- header and body row span sums must equal the separator-defined logical width
+- missing content/spacing and underflow/overflow reject with `invalid_table_span`
+- v1 rejects alignment and span extensions while v2 accepts every inherited v1 table unchanged
 
 ### `seed-v2-block-highlight-paragraph-enabled`
 

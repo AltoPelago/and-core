@@ -42,7 +42,8 @@ The complete v1 block and inline node unions remain valid in v2. A v2-capable re
 the same fields and containment relationships for inherited syntax.
 
 `NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`, and the
-paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
+paired-block nodes below; `NdHeading` gains the optional `autoNumber` field; inherited table and
+table-cell nodes gain the optional v2 fields defined below.
 
 ## Capability Disposition
 
@@ -61,6 +62,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[.]` | Core | Explicit inline line break; never a directional marker. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared dollar code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
+| table separators `<--`, `-=-`, `-->` and adjacent `|>` span markers | Core | Column alignment and horizontal `colSpan`; row spanning remains unsupported. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only their content. |
@@ -271,6 +273,60 @@ protocol-relative sources. It preserves alt text while omitting unsafe source at
 authored relative source is resolved, the emitted `src` or `srcset` is absolute and the original value
 is retained in `data-and-source`. The renderer does not emit a `<base>` element, fetch the resource, or
 mutate the AST.
+
+## Table Alignment and Horizontal Spans
+
+V2 extends the inherited table nodes additively:
+
+```ts
+interface NdV2Table extends NdTable {
+  readonly alignments?: readonly ("left" | "center" | "right" | null)[];
+}
+
+interface NdV2TableCell extends NdTableCell {
+  readonly colSpan?: number;
+}
+```
+
+An ordinary table using only `---` separators and unspanned cells retains the exact inherited v1
+AST. `alignments` is present only when at least one column has explicit alignment. When present, its
+length equals the logical column count; `null` represents an inherited default-alignment column.
+`colSpan` is present only when greater than one.
+
+The separator row defines logical columns and accepts four exact tokens:
+
+| Token | Alignment |
+| :---- | :-------- |
+| `---` | Default (`null`) |
+| `<--` | Left |
+| `-=-` | Center |
+| `-->` | Right |
+
+A content cell may begin immediately after its preceding pipe with one or more `>` characters,
+followed by one ASCII space and non-empty inline content. Each `>` consumes one additional logical
+column: `|> content` has `colSpan: 2`, `|>> content` has `colSpan: 3`, and so on. Padding before the
+greater-than sign prevents marker recognition, so `| > literal |` remains ordinary cell text.
+
+```and
+| left | center | right |
+| <-- | -=- | --> |
+|> A+B | C |
+| A |> B+C |
+|>> A+B+C |
+```
+
+Spans are valid in header and body rows but never in the separator row. For every content row,
+`sum(cell.colSpan ?? 1)` MUST equal the separator's logical column count. A span marker without its
+required space or content, or a row whose sum underflows or overflows that count, fails with
+`invalid_table_span`. Invalid alignment tokens or alignment metadata fail with
+`invalid_table_alignment`. The inherited `maxTableColumns` budget applies to logical columns.
+Vertical/row spanning is not part of this proposal.
+
+Alignment remains column metadata. A spanning cell uses the alignment of the first logical column
+it covers. Canonical output emits the exact separator tokens and compact adjacent span marker. The
+reference HTML projection emits `text-align` intent and native `colspan`. V1 recognizes these v2
+positions but rejects aligned separators and span markers with the diagnostics above. Inline spans
+inside a spanning cell begin at its trimmed content and exclude the adjacent marker.
 
 ## Todo Lists
 
@@ -576,9 +632,9 @@ every formatted paragraph family.
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 44 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 45 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
-clarifiers, footnotes, code blocks, nested rich resources, lists, and blockquotes.
+clarifiers, footnotes, code blocks, aligned/spanning tables, nested rich resources, lists, and blockquotes.
 
 ## Stability
 

@@ -143,7 +143,7 @@ function requiresV2StructuralEscape(text, context) {
 function looksLikeTableParagraph(text) {
   const lines = text.split('\n');
   if (lines.length < 2 || !/^\s*\|.*\|\s*$/.test(lines[0])) return false;
-  return /^\s*\|(?:\s*---\s*\|)+\s*$/.test(lines[1]);
+  return /^\s*\|(?:\s*(?:---|<--|-=-|-->)\s*\|)+\s*$/.test(lines[1]);
 }
 
 function emitParagraph(node, context) {
@@ -304,8 +304,59 @@ function emitExtensionPayload(text) {
   return normalized;
 }
 
+const TABLE_SEPARATOR_BY_ALIGNMENT = Object.freeze({
+  left: '<--',
+  center: '-=-',
+  right: '-->',
+});
+
+function tableCellColSpan(cell, context) {
+  if (cell.colSpan === undefined) return 1;
+  if (context.version !== 'v2') requireV2(context, 'table cell colSpan');
+  if (!Number.isInteger(cell.colSpan) || cell.colSpan < 2) {
+    throw fail('invalid_table_span', 'table cell colSpan must be an integer greater than one.');
+  }
+  return cell.colSpan;
+}
+
+function tableRowLogicalWidth(cells, context) {
+  if (!Array.isArray(cells) || cells.length === 0) {
+    throw fail('invalid_table_shape', 'table rows must contain at least one cell.');
+  }
+  return cells.reduce((width, cell) => width + tableCellColSpan(cell, context), 0);
+}
+
+function tableAlignments(table, logicalWidth, context) {
+  if (table.alignments === undefined) return Array(logicalWidth).fill(null);
+  if (context.version !== 'v2') requireV2(context, 'table alignments');
+  if (!Array.isArray(table.alignments) || table.alignments.length !== logicalWidth) {
+    throw fail('invalid_table_alignment', 'table alignments must match the logical column count.');
+  }
+  const alignments = table.alignments.map((alignment) => {
+    if (alignment === null || Object.hasOwn(TABLE_SEPARATOR_BY_ALIGNMENT, alignment)) return alignment;
+    throw fail('invalid_table_alignment', `Unsupported table alignment: ${alignment}`);
+  });
+  if (alignments.every((alignment) => alignment === null)) {
+    throw fail('invalid_table_alignment', 'all-default table alignments must be omitted from the AST.');
+  }
+  return alignments;
+}
+
 function emitTableRow(cells, context) {
-  return `| ${cells.map((cell) => emitInlineNodes(cell.children, { ...context, tableCell: true })).join(' | ')} |`;
+  const rendered = cells.map((cell) => {
+    const colSpan = tableCellColSpan(cell, context);
+    const content = emitInlineNodes(cell.children, { ...context, tableCell: true });
+    if (colSpan > 1 && content.trim().length === 0) {
+      throw fail('invalid_table_span', 'spanning table cells require non-empty content.');
+    }
+    return colSpan > 1 ? `${'>'.repeat(colSpan - 1)} ${content}` : ` ${content}`;
+  });
+  return `|${rendered.join(' |')} |`;
+}
+
+function emitTableSeparator(alignments) {
+  const cells = alignments.map((alignment) => alignment === null ? '---' : TABLE_SEPARATOR_BY_ALIGNMENT[alignment]);
+  return `| ${cells.join(' | ')} |`;
 }
 
 function emitList(node, context) {
@@ -442,12 +493,20 @@ function emitBlock(node, context) {
       }
       return `+++${node.name}\n${payload}\n+++`;
     }
-    case 'table':
+    case 'table': {
+      const logicalWidth = tableRowLogicalWidth(node.header, context);
+      for (const row of node.rows) {
+        if (tableRowLogicalWidth(row, context) !== logicalWidth) {
+          throw fail('invalid_table_span', 'every table row must match the logical column count.');
+        }
+      }
+      const alignments = tableAlignments(node, logicalWidth, context);
       return [
         emitTableRow(node.header, context),
-        emitTableRow(node.header.map(() => ({ children: [{ type: 'text', value: '---' }] })), context),
+        emitTableSeparator(alignments),
         ...node.rows.map((row) => emitTableRow(row, context)),
       ].join('\n');
+    }
     case 'highlight_paragraph_block':
       requireV2(context, node.type);
       return emitPairedInlineBlock('~~~=', '~~~=', node.children, context);

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-v2-span-rejected",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| A | B | C |\n| --- | --- | --- |\n|> A+B | C |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_span",
+    "assertions": [
+      "v1 rejects v2 table span markers",
+      "an adjacent greater-than marker is not ordinary cell text in v1"
+    ]
+  }
+}

@@ -3,8 +3,8 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 145,
-    "pending": 10,
+    "fixtures": 147,
+    "pending": 12,
     "pass": 135,
     "fail": 0,
     "error": 0
@@ -24,9 +24,9 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 79,
+    "expected": 81,
     "matched": 72,
-    "missingActual": 7,
+    "missingActual": 9,
     "mismatched": 0
   },
   "results": [
@@ -2624,6 +2624,40 @@
       "mode": "strict",
       "expectedOk": false,
       "expectedErrorCode": "invalid_code_fence",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet."
+      ]
+    },
+    {
+      "id": "seed-table-v2-alignment-rejected",
+      "path": "strict/reject/seed-table-v2-alignment-rejected.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_alignment",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet."
+      ]
+    },
+    {
+      "id": "seed-table-v2-span-rejected",
+      "path": "strict/reject/seed-table-v2-span-rejected.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_span",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

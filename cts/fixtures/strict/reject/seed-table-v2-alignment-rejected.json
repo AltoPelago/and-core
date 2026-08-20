@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-v2-alignment-rejected",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "| left | right |\n| <-- | --> |\n| a | b |\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_alignment",
+    "assertions": [
+      "v1 rejects v2 alignment separator tokens",
+      "an aligned separator is recognized as reserved table syntax rather than paragraph text"
+    ]
+  }
+}

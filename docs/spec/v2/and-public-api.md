@@ -153,6 +153,14 @@ type NdBlockNode =
 interface NdHeading extends NdV1Heading {
   readonly autoNumber?: true;
 }
+
+interface NdV2Table extends NdV1Table {
+  readonly alignments?: readonly ("left" | "center" | "right" | null)[];
+}
+
+interface NdV2TableCell extends NdV1TableCell {
+  readonly colSpan?: number;
+}
 ```
 
 All authored anchor, fragment-target, named-footnote, and semantic-wrapper ID fields use the same
@@ -165,6 +173,11 @@ unnumbered `~~~$` with optional language; v2 adds `[n]` numbered-line intent to 
 V2 canonical emission prefers `~~~$`; v1 canonical emission prefers backticks. Each falls back to
 the alternate supported fence on an exact payload-closer collision. Removed `~~~language` and
 `~~~~language` inputs fail with `deprecated_code_fence`.
+
+V2 table alignment arrays are present only when at least one separator cell uses `<--`, `-=-`, or
+`-->`. Spanning cells carry `colSpan > 1`; ordinary cells omit it. V1-shaped tables therefore retain
+their exact inherited AST. Invalid aligned separators and spans report `invalid_table_alignment` or
+`invalid_table_span`.
 
 ## Budgets And Spans
 

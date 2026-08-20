@@ -3611,6 +3611,19 @@ Semantic table rule:
 header column count == separator column count == every body row column count
 ```
 
+V1 reserves the v2 aligned separator tokens `<--`, `-=-`, and `-->` and rejects them with
+`invalid_table_alignment`. A cell whose content begins immediately after its delimiter with `>` is
+reserved for v2 horizontal spanning and rejects with `invalid_table_span`. Ordinary literal content
+may still begin with `>` when separated from the delimiter by padding, as in `| > literal |`.
+
+### `seed-table-v2-alignment-rejected`
+
+* v1 rejects v2 alignment separator tokens rather than treating the source as paragraph text
+
+### `seed-table-v2-span-rejected`
+
+* v1 rejects the adjacent `|>` v2 horizontal-span marker
+
 ## Inline content
 
 ```ebnf

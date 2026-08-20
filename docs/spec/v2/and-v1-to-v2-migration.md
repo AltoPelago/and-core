@@ -154,6 +154,8 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | heading `[n]` | Heading auto-number intent |
 | `- [n] content` | First-class auto-number list |
 | `~~~$ [n]`, `~~~$ [n] language` | V2 extension of the v1 dollar code block with numbered-line intent |
+| `<--`, `-=-`, `-->` separator cells | Left, center, and right table-column alignment |
+| adjacent `|>`, `|>>`, … cells | Horizontal table-cell spans |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -219,6 +221,33 @@ parser. Every form closes with bare `~~~$`. Canonical v2 output prefers this fam
 used backticks; canonical v1 output prefers backticks. Either version uses the alternate supported
 fence when its preferred closer occurs as an exact payload line. The briefly introduced `~~~language` and `~~~~language` forms should be
 replaced with either backticks or `~~~$ language`; they are rejected with `deprecated_code_fence`.
+
+## Tables
+
+Inherited v1 tables remain valid and retain the same AST. V2 adds alignment tokens to the separator
+row:
+
+```and
+| left | center | right |
+| <-- | -=- | --> |
+| left | center | right |
+```
+
+V2 also permits a cell marker immediately after its preceding pipe. Each `>` adds one logical column
+to the cell's width:
+
+```and
+| A | B | C |
+| --- | --- | --- |
+|> A+B | C |
+| A |> B+C |
+|>> A+B+C |
+```
+
+The separator determines the logical width, and every header/body row must sum to it. The marker
+requires a following space and non-empty content. Adjacency is significant: `|> merged |` spans,
+whereas `| > literal |` does not. Spanning uses the first covered column's alignment. V1 rejects
+these alignment and span positions. Row spanning is not supported.
 
 ## Formatted Paragraphs
 
@@ -330,10 +359,12 @@ their list content remains visible. Use rich `[? ...]` or `[! ...]` for inline c
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
 11. Keep inherited backtick code fences or migrate code to `~~~$`, adding optional `[n]` and language
     metadata after the opener; replace removed `~~~language` / `~~~~language` forms.
-12. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
+12. Convert table alignment to exact `<--`, `-=-`, or `-->` separator cells and verify every row's
+    logical width after applying adjacent `>` span markers.
+13. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
     do not treat plain `~~~` as a block delimiter.
-13. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
-14. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
+14. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
+15. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
    image modes and AEON scalar spellings.
 
 There is no automatic downgrade for v2-only syntax. To return a document to v1, remove every v2-only

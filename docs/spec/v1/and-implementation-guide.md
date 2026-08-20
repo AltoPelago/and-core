@@ -339,6 +339,11 @@ Code-fence recognition uses triple/quadruple backtick fences plus exact `~~~$` a
 - strongly delimited blocks before softer line-based blocks
 - paragraph as the fallback
 
+Table recognition should also reserve separator rows beginning with `<--`, `-=-`, or `-->` so v1
+reports `invalid_table_alignment` instead of accepting a v2-aligned table as paragraph text. Once a
+v1 table has started, a cell whose raw source begins immediately with `>` reports
+`invalid_table_span`; padded `| > literal |` remains ordinary content.
+
 ### 8.3 Paragraph Handling
 
 Paragraphs should be built as runs of paragraph lines until:

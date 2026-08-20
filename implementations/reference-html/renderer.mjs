@@ -512,18 +512,74 @@ function renderUnsupportedExtensionDiagnostic(block) {
   ].join('\n');
 }
 
+const TABLE_ALIGNMENTS = new Set(['left', 'center', 'right']);
+
+function htmlTableCellColSpan(cell) {
+  if (cell.colSpan === undefined) return 1;
+  if (!Number.isInteger(cell.colSpan) || cell.colSpan < 2) {
+    throw fail('invalid_table_span', 'table cell colSpan must be an integer greater than one.');
+  }
+  return cell.colSpan;
+}
+
+function htmlTableRowWidth(row) {
+  if (!Array.isArray(row) || row.length === 0) {
+    throw fail('invalid_table_shape', 'table rows must contain at least one cell.');
+  }
+  return row.reduce((width, cell) => width + htmlTableCellColSpan(cell), 0);
+}
+
+function htmlTableAlignments(block, logicalWidth) {
+  if (block.alignments === undefined) return Array(logicalWidth).fill(null);
+  if (!Array.isArray(block.alignments) || block.alignments.length !== logicalWidth) {
+    throw fail('invalid_table_alignment', 'table alignments must match the logical column count.');
+  }
+  const alignments = block.alignments.map((alignment) => {
+    if (alignment === null || TABLE_ALIGNMENTS.has(alignment)) return alignment;
+    throw fail('invalid_table_alignment', `Unsupported table alignment: ${alignment}`);
+  });
+  if (alignments.every((alignment) => alignment === null)) {
+    throw fail('invalid_table_alignment', 'all-default table alignments must be omitted from the AST.');
+  }
+  return alignments;
+}
+
+function renderTableRow(row, tag, alignments, options) {
+  let logicalColumn = 0;
+  const cells = row.map((cell) => {
+    const colSpan = htmlTableCellColSpan(cell);
+    const alignment = alignments[logicalColumn];
+    const content = renderInlineNodes(cell.children, options);
+    if (colSpan > 1 && content.trim().length === 0) {
+      throw fail('invalid_table_span', 'spanning table cells require non-empty content.');
+    }
+    const attributes = [
+      ...(colSpan > 1 ? [`colspan="${colSpan}"`] : []),
+      ...(alignment === null ? [] : [`style="text-align:${alignment}"`]),
+    ];
+    logicalColumn += colSpan;
+    return `<${tag}${attributes.length > 0 ? ` ${attributes.join(' ')}` : ''}>${content}</${tag}>`;
+  }).join('');
+  return `<tr>${cells}</tr>`;
+}
+
 function renderTable(block, options) {
-  const header = block.header
-    .map((cell) => `<th>${renderInlineNodes(cell.children, options)}</th>`)
-    .join('');
+  const logicalWidth = htmlTableRowWidth(block.header);
+  for (const row of block.rows) {
+    if (htmlTableRowWidth(row) !== logicalWidth) {
+      throw fail('invalid_table_span', 'every table row must match the logical column count.');
+    }
+  }
+  const alignments = htmlTableAlignments(block, logicalWidth);
+  const header = renderTableRow(block.header, 'th', alignments, options);
   const rows = block.rows
-    .map((row) => `<tr>${row.map((cell) => `<td>${renderInlineNodes(cell.children, options)}</td>`).join('')}</tr>`)
+    .map((row) => renderTableRow(row, 'td', alignments, options))
     .join('\n');
 
   return [
     '<table>',
     '<thead>',
-    `<tr>${header}</tr>`,
+    header,
     '</thead>',
     '<tbody>',
     rows,

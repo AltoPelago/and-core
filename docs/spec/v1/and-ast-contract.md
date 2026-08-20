@@ -149,6 +149,10 @@ interface NdTableCell {
 syntax and MUST NOT appear in the AST. Cell content is represented as inline children after normal
 inline parsing and escape handling.
 
+Core v1 table cells do not carry alignment or span metadata. The v2-only separator tokens `<--`,
+`-=-`, and `-->` reject with `invalid_table_alignment`; an adjacent cell opener such as `|>` rejects
+with `invalid_table_span`.
+
 When source spans are exposed, inline spans inside table cells SHOULD point at the trimmed cell
 content, excluding table delimiter pipes and surrounding cell padding. The table block span SHOULD
 still cover the full table source range.

@@ -134,7 +134,7 @@ function isStructuralBlockOpener(lines, context) {
   if (line === '---') return true;
   if (/^- /.test(line) || /^\d+\. /.test(line)) return true;
   if (line.startsWith('>') || line.startsWith('  >')) return true;
-  return isTableStart(lines, 0);
+  return isTableStart(lines, 0, context?.documentVersion ?? 'v2');
 }
 
 function structuralEscapeValue(text, index, context) {
@@ -1374,8 +1374,18 @@ function stripExtensionPrefix(lines, prefix) {
   return lines.map((line) => (line.startsWith(prefix) ? line.slice(prefix.length) : line));
 }
 
+const TABLE_ALIGNMENT_BY_SEPARATOR = Object.freeze({
+  '---': null,
+  '<--': 'left',
+  '-=-': 'center',
+  '-->': 'right',
+});
+
 function isTableStart(lines, index) {
-  return lines[index]?.trim().startsWith('|') && /^\s*\|\s*---/.test(lines[index + 1] ?? '');
+  if (!lines[index]?.trim().startsWith('|')) return false;
+  const separatorCells = splitTableRow(lines[index + 1] ?? '');
+  return separatorCells !== null
+    && Object.hasOwn(TABLE_ALIGNMENT_BY_SEPARATOR, separatorCells[0]?.text);
 }
 
 function splitTableRow(line) {
@@ -1412,56 +1422,110 @@ function tableCell(line, start, end) {
   while (trimmedStart < trimmedEnd && line[trimmedStart] === ' ') trimmedStart += 1;
   while (trimmedEnd > trimmedStart && line[trimmedEnd - 1] === ' ') trimmedEnd -= 1;
   return {
+    rawText: line.slice(start, end),
+    rawStart: start,
+    rawEnd: end,
     text: line.slice(trimmedStart, trimmedEnd),
     start: trimmedStart,
     end: trimmedEnd,
   };
 }
 
-function isSeparatorCells(cells) {
-  return cells.length > 0 && cells.every((cell) => cell.text === '---');
+function parseSeparatorCells(cells, version) {
+  if (cells.length === 0 || !cells.every((cell) => Object.hasOwn(TABLE_ALIGNMENT_BY_SEPARATOR, cell.text))) {
+    return { ok: false, errorCode: 'invalid_table_shape' };
+  }
+  const alignments = cells.map((cell) => TABLE_ALIGNMENT_BY_SEPARATOR[cell.text]);
+  if (version !== 'v2' && alignments.some((alignment) => alignment !== null)) {
+    return { ok: false, errorCode: 'invalid_table_alignment' };
+  }
+  return { ok: true, alignments };
+}
+
+function spanCellContent(cell) {
+  if (!cell.rawText.startsWith('>')) {
+    return { ok: true, cell, colSpan: 1, hasSpan: false };
+  }
+  const match = cell.rawText.match(/^(>+) (.*)$/);
+  if (!match) return { ok: false, errorCode: 'invalid_table_span', column: cell.rawStart };
+  const markerLength = match[1].length;
+  const contentRaw = match[2];
+  let leading = 0;
+  let trailing = contentRaw.length;
+  while (leading < trailing && contentRaw[leading] === ' ') leading += 1;
+  while (trailing > leading && contentRaw[trailing - 1] === ' ') trailing -= 1;
+  if (leading === trailing) {
+    return { ok: false, errorCode: 'invalid_table_span', column: cell.rawStart };
+  }
+  return {
+    ok: true,
+    colSpan: markerLength + 1,
+    hasSpan: true,
+    cell: {
+      ...cell,
+      text: contentRaw.slice(leading, trailing),
+      start: cell.rawStart + markerLength + 1 + leading,
+      end: cell.rawStart + markerLength + 1 + trailing,
+    },
+  };
 }
 
 function parseTableCells(cells, options, lineOffset = 0, context = null) {
   const parsedCells = [];
-  for (const cell of cells) {
-    const cellOffset = lineOffset + cell.start;
-    const inline = parseInline(cell.text, options, cellOffset, context);
+  let logicalWidth = 0;
+  let hasSpan = false;
+  for (const sourceCell of cells) {
+    const spanCell = spanCellContent(sourceCell);
+    if (!spanCell.ok) return spanCell;
+    if (spanCell.hasSpan && context?.documentVersion !== 'v2') {
+      return { ok: false, errorCode: 'invalid_table_span', column: sourceCell.rawStart };
+    }
+    const cellOffset = lineOffset + spanCell.cell.start;
+    const inline = parseInline(spanCell.cell.text, options, cellOffset, context);
     if (!inline.ok) return withOffset(inline, cellOffset);
-    parsedCells.push({ children: inline.nodes });
+    parsedCells.push({
+      children: inline.nodes,
+      ...(spanCell.colSpan > 1 ? { colSpan: spanCell.colSpan } : {}),
+    });
+    logicalWidth += spanCell.colSpan;
+    hasSpan ||= spanCell.hasSpan;
   }
-  return { ok: true, cells: parsedCells };
+  return { ok: true, cells: parsedCells, logicalWidth, hasSpan };
 }
 
 function parseTable(lines, start, options, context) {
   const headerCells = splitTableRow(lines[start]);
   const separatorCells = splitTableRow(lines[start + 1]);
-  if (
-    headerCells === null ||
-    separatorCells === null ||
-    !isSeparatorCells(separatorCells) ||
-    headerCells.length !== separatorCells.length
-  ) {
+  if (headerCells === null || separatorCells === null) {
     return failAt('invalid_table_shape', context.lineOffset + start, 0);
   }
+  const separator = parseSeparatorCells(separatorCells, context.documentVersion);
+  if (!separator.ok) return failAt(separator.errorCode, context.lineOffset + start + 1, 0);
+  const logicalColumnCount = separatorCells.length;
 
   const maxTableColumns = options?.budgets?.maxTableColumns;
-  if (typeof maxTableColumns === 'number' && headerCells.length > maxTableColumns) {
+  if (typeof maxTableColumns === 'number' && logicalColumnCount > maxTableColumns) {
     return failAt('nd_budget_exceeded', context.lineOffset + start, 0);
   }
 
   const header = parseTableCells(headerCells, options, context.lineStartOffsets[start], context);
-  if (!header.ok) return header;
+  if (!header.ok) return withLine(header, context.lineOffset + start, header.column ?? 0);
+  if (header.logicalWidth !== logicalColumnCount) {
+    return failAt(header.hasSpan ? 'invalid_table_span' : 'invalid_table_shape', context.lineOffset + start, 0);
+  }
 
   const rows = [];
   let index = start + 2;
   while (index < lines.length && lines[index].trim().startsWith('|')) {
     const cells = splitTableRow(lines[index]);
-    if (cells === null || cells.length !== headerCells.length) {
+    if (cells === null) {
       return failAt('invalid_table_shape', context.lineOffset + index, 0);
     }
     const row = parseTableCells(cells, options, context.lineStartOffsets[index], context);
-    if (!row.ok) return row;
+    if (!row.ok) return withLine(row, context.lineOffset + index, row.column ?? 0);
+    if (row.logicalWidth !== logicalColumnCount) {
+      return failAt(row.hasSpan ? 'invalid_table_span' : 'invalid_table_shape', context.lineOffset + index, 0);
+    }
     rows.push(row.cells);
     index += 1;
   }
@@ -1474,7 +1538,14 @@ function parseTable(lines, start, options, context) {
     ok: true,
     nextIndex: index,
     node: withSpan(
-      { type: 'table', header: header.cells, rows },
+      {
+        type: 'table',
+        header: header.cells,
+        rows,
+        ...(separator.alignments.some((alignment) => alignment !== null)
+          ? { alignments: separator.alignments }
+          : {}),
+      },
       context,
       context.lineStartOffsets[start],
       context.lineStartOffsets[index - 1] + lines[index - 1].length
@@ -1888,7 +1959,7 @@ function parseBlocks(lines, options, context) {
       continue;
     }
 
-    if (isTableStart(lines, index)) {
+    if (isTableStart(lines, index, context.documentVersion)) {
       const table = parseTable(lines, index, options, context);
       if (!table.ok) return table;
       const blockBudget = recordBlock(options, context, index);

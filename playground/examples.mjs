@@ -89,6 +89,14 @@ title = "v2 code"
 mode = "numbered"
 ~~~$
 
+Aligned and spanning table cells:
+
+| left | center | right |
+| <-- | -=- | --> |
+|> A+B | C |
+| A |> B+C |
+|>> A+B+C |
+
 ~~~=
 This is a highlighted paragraph with [! proposal] status.
 ~~~=

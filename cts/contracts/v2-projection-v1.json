@@ -52,6 +52,8 @@
     "block.code",
     "block.code.language",
     "block.code.numbered",
+    "block.table.alignment",
+    "block.table.colspan",
     "syntax.backtick_code_inherited",
     "syntax.structural_escape",
     "syntax.shared_identifier",
@@ -102,6 +104,7 @@
     "block.disclaimer",
     "block.semantic",
     "block.code",
+    "block.table",
     "syntax.structural_escape",
     "syntax.shared_identifier",
     "composition.nested_rich",
@@ -143,7 +146,8 @@
     "inline.semantic.with_rich_child",
     "semantic_block.with_rich_child",
     "identifier.shared_across_constructs",
-    "code.numbered_with_language"
+    "code.numbered_with_language",
+    "table.span_with_alignment"
   ],
   "cases": [
     {
@@ -822,6 +826,29 @@
         },
         "html": {
           "fragment": "<figure class=\"and-code-block\">\n\n<pre><code>plain</code></pre>\n</figure>\n<figure class=\"and-code-block and-code-block-ordered\" data-language=\"aeon\" data-ordered=\"true\">\n<figcaption>aeon</figcaption>\n<ol class=\"and-code-lines\">\n<li><code>one</code></li>\n<li><code>two</code></li>\n</ol>\n</figure>\n<figure class=\"and-code-block\" data-language=\"json\">\n<figcaption>json</figcaption>\n<pre><code class=\"language-json\">legacy</code></pre>\n</figure>"
+        }
+      }
+    },
+    {
+      "id": "v2-table-alignment-and-spans",
+      "covers": [
+        "block.table.alignment",
+        "block.table.colspan"
+      ],
+      "combinationCovers": ["table.span_with_alignment"],
+      "spanAssertions": [{
+        "cover": "block.table",
+        "path": "$.children[0]",
+        "span": { "startOffset": 8, "endOffset": 91, "startLine": 3, "startColumn": 1, "endLine": 7, "endColumn": 12 }
+      }],
+      "source": "&ND v2\n\n| left | center | right |\n| <-- | -=- | --> |\n|> A+B | C |\n| A |> B+C |\n|>> A+B+C |\n",
+      "expected": {
+        "canonical": {
+          "embedded": "| left | center | right |\n| <-- | -=- | --> |\n|> A+B | C |\n| A |> B+C |\n|>> A+B+C |\n",
+          "standalone": "&ND v2\n\n| left | center | right |\n| <-- | -=- | --> |\n|> A+B | C |\n| A |> B+C |\n|>> A+B+C |\n"
+        },
+        "html": {
+          "fragment": "<table>\n<thead>\n<tr><th style=\"text-align:left\">left</th><th style=\"text-align:center\">center</th><th style=\"text-align:right\">right</th></tr>\n</thead>\n<tbody>\n<tr><td colspan=\"2\" style=\"text-align:left\">A+B</td><td style=\"text-align:right\">C</td></tr>\n<tr><td style=\"text-align:left\">A</td><td colspan=\"2\" style=\"text-align:center\">B+C</td></tr>\n<tr><td colspan=\"3\" style=\"text-align:left\">A+B+C</td></tr>\n</tbody>\n</table>"
         }
       }
     },

@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./cts/examples/baseline-adapter.mjs",
   "totals": {
-    "fixtures": 145,
+    "fixtures": 147,
     "pending": 0,
-    "pass": 145,
+    "pass": 147,
     "fail": 0,
     "error": 0
   },
@@ -24,8 +24,8 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 79,
-    "matched": 79,
+    "expected": 81,
+    "matched": 81,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -2634,6 +2634,44 @@
       "expectedErrorCode": "invalid_code_fence",
       "actualOk": false,
       "errorCode": "invalid_code_fence",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-table-v2-alignment-rejected",
+      "path": "strict/reject/seed-table-v2-alignment-rejected.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_alignment",
+      "actualOk": false,
+      "errorCode": "invalid_table_alignment",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-table-v2-span-rejected",
+      "path": "strict/reject/seed-table-v2-span-rejected.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "invalid_table_span",
+      "actualOk": false,
+      "errorCode": "invalid_table_span",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-table-alignment-and-spans",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n| align left | align center | align right |\n| <-- | -=- | --> |\n| left | center | right |\n\n| row A | row B | row C |\n| --- | --- | --- |\n|> a+b | c |\n| a |> b+c |\n|>> a+b+c |\n\n|>> grouped header |\n| --- | -=- | --> |\n| a | b | c |\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 separator tokens record logical-column alignment",
+      "adjacent greater-than markers create horizontal spans",
+      "header and body row span widths equal the separator-defined logical width"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "table",
+          "header": [
+            { "children": [{ "type": "text", "value": "align left" }] },
+            { "children": [{ "type": "text", "value": "align center" }] },
+            { "children": [{ "type": "text", "value": "align right" }] }
+          ],
+          "rows": [[
+            { "children": [{ "type": "text", "value": "left" }] },
+            { "children": [{ "type": "text", "value": "center" }] },
+            { "children": [{ "type": "text", "value": "right" }] }
+          ]],
+          "alignments": ["left", "center", "right"]
+        },
+        {
+          "type": "table",
+          "header": [
+            { "children": [{ "type": "text", "value": "row A" }] },
+            { "children": [{ "type": "text", "value": "row B" }] },
+            { "children": [{ "type": "text", "value": "row C" }] }
+          ],
+          "rows": [
+            [
+              { "children": [{ "type": "text", "value": "a+b" }], "colSpan": 2 },
+              { "children": [{ "type": "text", "value": "c" }] }
+            ],
+            [
+              { "children": [{ "type": "text", "value": "a" }] },
+              { "children": [{ "type": "text", "value": "b+c" }], "colSpan": 2 }
+            ],
+            [
+              { "children": [{ "type": "text", "value": "a+b+c" }], "colSpan": 3 }
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "header": [
+            { "children": [{ "type": "text", "value": "grouped header" }], "colSpan": 3 }
+          ],
+          "rows": [[
+            { "children": [{ "type": "text", "value": "a" }] },
+            { "children": [{ "type": "text", "value": "b" }] },
+            { "children": [{ "type": "text", "value": "c" }] }
+          ]],
+          "alignments": [null, "center", "right"]
+        }
+      ]
+    }
+  }
+}

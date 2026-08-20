@@ -141,6 +141,27 @@ assert(
   !removedTildeLanguageV2.ok && removedTildeLanguageV2.errorCode === 'deprecated_code_fence',
   'removed tilde-language code fences should fail with a stable diagnostic',
 );
+const tableV2 = parseAnd(
+  '&ND v2\n\n| left | center | right |\n| <-- | -=- | --> |\n|> A+B | C |\n',
+  { allowV2: true },
+);
+assert(
+  tableV2.ok
+    && tableV2.document.children[0]?.type === 'table'
+    && tableV2.document.children[0]?.alignments?.join(',') === 'left,center,right'
+    && tableV2.document.children[0]?.rows?.[0]?.[0]?.colSpan === 2,
+  'public parse should expose v2 table alignments and horizontal spans',
+);
+const escapedAlignedTableV2 = parseAnd(
+  '&ND v2\n\n\\| A | B |\n| <-- | --> |\n| a | b |\n',
+  { allowV2: true },
+);
+assert(escapedAlignedTableV2.ok, 'public parse should preserve structurally escaped aligned-table text');
+assert(
+  emitCanonical(escapedAlignedTableV2.document, { profile: 'standalone', version: 'v2' })
+    .includes('\\| A | B |\n| <-- | --> |'),
+  'v2 canonical emission should restore the escape before aligned-table-shaped paragraph text',
+);
 const directionalListV2 = parseAnd('&ND v2\n\n- [>] advance while [<] remains inline\n', { allowV2: true });
 assert(
   directionalListV2.ok
@@ -195,6 +216,9 @@ const htmlV2 = renderHtml(parsedV2.document);
 assert(htmlV2.includes('data-auto-number="true"'), 'public HTML projection should render v2 intent');
 assert(renderHtml(todoV2.document).includes('class="and-todo-list"'), 'public HTML projection should expose first-class todo lists');
 assert(renderHtml(autoNumberListV2.document).includes('class="and-auto-number-list"'), 'public HTML projection should expose first-class auto-number lists');
+const tableV2Html = renderHtml(tableV2.document);
+assert(tableV2Html.includes('style="text-align:left"'), 'public HTML projection should expose table alignment');
+assert(tableV2Html.includes('colspan="2"'), 'public HTML projection should expose native table colspans');
 const directionalListHtml = renderHtml(directionalListV2.document);
 assert(directionalListHtml.includes('class="and-directional-list-marker"'), 'public HTML projection should replace a leading directional-list bullet');
 assert(directionalListHtml.includes('class="and-directional-marker"'), 'public HTML projection should keep later directional markers inline');
