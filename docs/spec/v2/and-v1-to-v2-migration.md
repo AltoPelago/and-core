@@ -146,7 +146,7 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich strike, quote, comment, highlight, and underline nodes |
 | `[:type = scalar]` | AEON typed scalar |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
-| `[>]`, `[<]`, `[.]` | Direction and explicit line break |
+| `[>]`, `[<]`, `[.]` | Direction and explicit line break; leading list-item arrows replace bullets |
 | heading `[n]` | Heading auto-number intent |
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
@@ -188,6 +188,10 @@ The heading receives `autoNumber: true`; the list parses as `auto_number_list` c
 block must be the same kind. Bare `[n]`, `# [n]Title`, `- [n]item`, explicit `1. [n] item`, and mixed
 ordinary/todo/auto-number blocks are rejected.
 
+Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-space margin without a
+blank separator. This applies consistently to ordinary, todo, and auto-number lists. Canonical output
+may insert the inherited blank separator while preserving the same AST.
+
 ## Footnotes
 
 V2 promotes `[% ...]` as footnote syntax:
@@ -203,9 +207,19 @@ follow its single declaration. Empty definitions, malformed IDs, duplicates, unr
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
 
-Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-space margin without a
-blank separator. This applies consistently to ordinary, todo, and auto-number lists. Canonical output
-may insert the inherited blank separator while preserving the same AST.
+## Directional List Markers
+
+`[>]` and `[<]` remain inline direction markers. When one is the first inline child after an
+unordered-list prefix, its arrow replaces that item's bullet in projection:
+
+```and
+- [>] advance while [<] remains inline
+- ordinary item with [>] inline
+```
+
+The list remains an ordinary unordered list and the leading marker remains in its paragraph AST.
+This permits ordinary and directional items to coexist. Only the leading position is contextual;
+later markers and markers in paragraphs or ordered lists retain their inline behavior.
 
 ## Tooling Checklist
 
@@ -219,8 +233,9 @@ may insert the inherited blank separator while preserving the same AST.
 8. Convert contextual numbering to exact heading or `- [n] content` prefixes.
 9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
    reference; remove forward references and nesting.
-10. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
-11. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
+10. Place a direction marker first after `- ` only when it should replace that item's bullet.
+11. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
+12. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
    image modes and AEON scalar spellings.
 
 There is no automatic downgrade for v2-only syntax. To return a document to v1, remove every v2-only

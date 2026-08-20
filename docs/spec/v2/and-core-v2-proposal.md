@@ -78,7 +78,7 @@ assigns each promoted form an explicit ownership boundary:
 | `[~ source | alt | mode]` | Core | Inline image with required alt text and `inline`, `half`, or `full` display intent. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo lists and item states; workflow and presentation are projections. |
-| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; display is a projection. |
+| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
@@ -91,9 +91,9 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 111-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 112-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 43 accepted fixtures covering inline tags, rich nesting, footnotes, first-class todo and auto-number
+- 44 accepted fixtures covering inline tags, rich nesting, footnotes, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
 - 68 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, tags, and fences
@@ -390,6 +390,8 @@ Intent:
 Expected direction:
 
 - v2 strict parse success for both directional markers
+- a leading marker in an unordered list item replaces its visual bullet while remaining an inline
+  AST node; later markers in the same item remain inline
 - strict rejection for malformed or unknown directional marker forms
 
 ### `seed-v2-auto-number-list-enabled`

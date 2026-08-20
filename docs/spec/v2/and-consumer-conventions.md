@@ -35,7 +35,7 @@ parse error, rewrite Core canonical text, or infer the document grammar version.
 | External `[@ target | label]` | Preserved target and rich label under inherited link syntax | Allowed schemes, navigation, new-window behavior, redirects, previews, tracking, and trust prompts |
 | `+++name` extension blocks | Opaque inherited extension name and payload | Extension registry, interpretation, sandboxing, permissions, and any execution |
 | `todo_list` / `todo_item` | First-class list structure and stable item-state enum | Controls, mutation workflow, progress calculation, icons, labels, and persistence |
-| Directional markers | Stable direction enum | Navigation or workflow meaning, icons, labels, and interaction |
+| Directional markers | Stable direction enum and leading-unordered-item bullet-replacement intent | Navigation or workflow meaning, arrow styling, labels, and interaction |
 | Inline comments | Preserved rich `comment_tag` children | Visibility, reviewer identity, export policy, redaction, and collaboration workflow |
 
 Local anchors are different: Core owns their identifier grammar, uniqueness, case-sensitive matching,

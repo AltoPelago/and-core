@@ -57,7 +57,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[~ source | alt | mode]` | Core | Inline image with required source and alt text; mode is `inline`, `half`, or `full`. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo list and item states; workflow and presentation are projections. |
-| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; display is a projection. |
+| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
@@ -283,7 +283,19 @@ interface NdLineBreak {
 }
 ```
 
-Inline markers record author intent.
+Inline markers record author intent. In an unordered list item, a `directional_marker` that is the
+first inline child of the paragraph head replaces that item's ordinary bullet in projection:
+
+```and
+- [>] advance while [<] remains inline
+- [<] revisit
+```
+
+The leading marker remains in the inline AST; the list remains an inherited unordered `list`. This
+permits directional and ordinary items to coexist and keeps nesting unchanged. Only the first inline
+child has bullet-replacement intent. Later markers and every marker outside that position remain
+inline. Ordered-list markers do not receive this behavior. Canonical output preserves the source
+shape as `- [direction] content`.
 
 ## Footnotes
 
@@ -383,7 +395,8 @@ image mode, nested composition boundary, and unsafe-resource case. Its mandatory
 missing coverage identifiers and any byte-level snapshot drift. The same contract indexes the
 required cross-form combinations: each paired block in lists and blockquotes, representative rich
 children in each paired block, local links crossing container boundaries, rich resource nesting, and
-contextual list-item content, heading-number hierarchy, and rich/reused footnotes.
+contextual list-item content, leading directional bullet replacement, heading-number hierarchy, and
+rich/reused footnotes.
 
 ## Source Spans
 

@@ -42,6 +42,10 @@ compatibility is already enforced by parsing and canonical emission. Image proje
 relative sources, carries mandatory alt text, and exposes the resolved display mode through stable
 classes and attributes.
 
+For inherited unordered lists, a directional marker in the first inline position suppresses that
+item's ordinary bullet and becomes an arrow list marker. Later directional markers remain inline.
+The AST and canonical emitter preserve the same generic list and inline-marker structure.
+
 Relative image sources are preserved by default. Consumers can pass
 `{ imageBaseUrl: "https://example.test/path/document.and" }` to resolve them deterministically with
 the WHATWG URL algorithm. The base must be an absolute credential-free HTTP(S) URL. Resolved output

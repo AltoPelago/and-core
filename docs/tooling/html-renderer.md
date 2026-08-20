@@ -30,6 +30,7 @@ It supports:
 * inherited `#id` links projected as browser-native fragment links
 * proposal-v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
 * proposal-v2 footnotes projected as linked numeric superscripts and a trailing endnote section
+* leading directional markers in unordered items projected in place of those items' bullets
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default
@@ -85,6 +86,10 @@ The reference projection displays opted-in headings with hierarchical numbers de
 level: `1`, `1.1`, `1.2`, `2`, and so on. Moving to a shallower level resets deeper counters; missing
 ancestor levels begin at one. This calculation is renderer behavior rather than parsed Core data.
 Nested `auto_number_list` nodes use semantic nested `<ol>` elements and browser-native list counters.
+
+An unordered item whose paragraph begins with `[>]` or `[<]` remains part of the inherited `<ul>`,
+but the reference renderer suppresses that item's ordinary bullet and renders the arrow as its list
+marker. Directional markers later in the same paragraph keep the ordinary inline projection.
 
 Footnotes are numbered in definition order. Each inline occurrence links to one trailing ordered
 endnote, and the endnote links back to every occurrence. Named definitions reuse the same displayed

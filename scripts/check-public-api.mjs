@@ -79,6 +79,14 @@ assert(
     && autoNumberListV2.document.children[0].items[0]?.type === 'list_item',
   'public parse should expose first-class v2 auto-number lists',
 );
+const directionalListV2 = parseAnd('&ND v2\n\n- [>] advance while [<] remains inline\n', { allowV2: true });
+assert(
+  directionalListV2.ok
+    && directionalListV2.document.children[0]?.type === 'list'
+    && directionalListV2.document.children[0].items[0]?.children?.[0]?.children?.[0]?.type === 'directional_marker'
+    && directionalListV2.document.children[0].items[0].children[0].children[2]?.type === 'directional_marker',
+  'public parse should retain leading and later directional markers in inherited list ASTs',
+);
 const footnoteV2 = parseAnd('&ND v2\n\nhello [% (A1) world] again [% (A1)]\n', { allowV2: true });
 assert(
   footnoteV2.ok
@@ -106,6 +114,9 @@ const htmlV2 = renderHtml(parsedV2.document);
 assert(htmlV2.includes('data-auto-number="true"'), 'public HTML projection should render v2 intent');
 assert(renderHtml(todoV2.document).includes('class="and-todo-list"'), 'public HTML projection should expose first-class todo lists');
 assert(renderHtml(autoNumberListV2.document).includes('class="and-auto-number-list"'), 'public HTML projection should expose first-class auto-number lists');
+const directionalListHtml = renderHtml(directionalListV2.document);
+assert(directionalListHtml.includes('class="and-directional-list-marker"'), 'public HTML projection should replace a leading directional-list bullet');
+assert(directionalListHtml.includes('class="and-directional-marker"'), 'public HTML projection should keep later directional markers inline');
 assert(renderHtml(footnoteV2.document).includes('class="and-footnotes"'), 'public HTML projection should expose linked endnotes');
 const imageDocument = {
   type: 'document',

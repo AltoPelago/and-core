@@ -24,6 +24,7 @@ const migrationRequirements = [
   ['auto-number list', 'list parses as `auto_number_list` containing inherited'],
   ['footnote named reuse', 'hello [% (A1) reusable context], again [% (A1)]'],
   ['footnote forward rejection', 'unresolved or forward'],
+  ['directional list marker', '- [>] advance while [<] remains inline'],
   ['downgrade limit', 'There is no automatic downgrade'],
   ['consumer companion link', './and-consumer-conventions.md'],
 ];
@@ -37,6 +38,7 @@ const consumerRequirements = [
   ['paired-block tag ownership', '| `===tag` and `***tag` |'],
   ['numbering ownership', '| heading `[n]` and `auto_number_list` |'],
   ['footnote ownership', '| Footnote definitions and references |'],
+  ['directional-list ownership', 'leading-unordered-item bullet-replacement intent'],
   ['image ownership', '| `[~ source | alt | mode]` |'],
   ['external navigation ownership', '| External `[@ target | label]` |'],
   ['extension ownership', '| `+++name` extension blocks |'],

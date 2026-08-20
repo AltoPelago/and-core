@@ -17,15 +17,15 @@ clean-baseline and lifecycle review described below.
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
 | v1 compatibility | All 139 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
-| v2 grammar | 111 indexed strict fixtures: 43 accept and 68 reject. | Ready |
-| v2 executable checks | 727 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
-| AST snapshots | 42 of 43 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
+| v2 grammar | 112 indexed strict fixtures: 44 accept and 68 reject. | Ready |
+| v2 executable checks | 734 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| AST snapshots | 43 of 44 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 34 exact canonical snapshots across promoted families and interactions. | Ready |
-| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 18 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 36 exact canonical snapshots across promoted families and interactions. | Ready |
+| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 19 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
 | Source spans | The projection contract pins 31 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
-| Cross-form interactions | A 20-entry executable matrix covers paired blocks in lists/quotes, rich children, cross-container links, rich resources, contextual list-item content, heading-number hierarchy, and rich/reused footnotes. | Ready |
+| Cross-form interactions | A 21-entry executable matrix covers paired blocks in lists/quotes, rich children, cross-container links, rich resources, contextual list-item content, directional bullet replacement, heading-number hierarchy, and rich/reused footnotes. | Ready |
 | Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |
 | Consumer conventions | The companion boundary maps every consumer-owned surface to its fixed Core fields and non-Core behavior. | Ready |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
@@ -101,10 +101,11 @@ The projection contract indexes and pins focused cases for:
 - anchors and fragment links crossing nested container boundaries;
 - images and typed values nested inside rich v2 tags;
 - rich inline and explicit line-break content inside first-class todo and auto-number items;
+- leading directional markers replacing unordered-item bullets while later markers remain inline;
 - heading-number hierarchy plus rich footnote content and repeated named references.
 
-Closure evidence: all 20 required combination identifiers appear exactly once and participate in the
-same 34 canonical and 18 HTML snapshots as the promoted-surface contract.
+Closure evidence: all 21 required combination identifiers appear exactly once and participate in the
+same 36 canonical and 19 HTML snapshots as the promoted-surface contract.
 
 ### B7. v1-to-v2 migration guide
 

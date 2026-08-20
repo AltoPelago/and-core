@@ -51,6 +51,11 @@ mode = "ordered"
 - [,] documentation
 - [;] abandoned
 
+Directional steps:
+
+- [>] advance, while [<] still works inline
+- [<] revisit, while [>] still works inline
+
 Jump to [@ #overview | overview].
 
 Footnotes can be anonymous [% supporting context] or named [% (A1) reusable context], then reused [% (A1)].
