@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-card-block-malformed-title",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~|Missing space\nCard content.\n~~~|\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_card_block",
+    "assertions": ["named card titles require one ASCII space after the fence"]
+  }
+}

@@ -129,6 +129,7 @@ function isStructuralBlockOpener(lines, context) {
   if (rawFence(line, 'v2') !== null || tildeLanguageRawFence(line) !== null) return true;
   if (formattedParagraphFence(line) !== null) return true;
   if (semanticBlockOpener(line) !== null) return true;
+  if (cardBlockOpener(line) !== null) return true;
   if (line.startsWith('===') || line.startsWith('***') || line.startsWith('+++')) return true;
   if (/^#{1,6} /.test(line)) return true;
   if (line === '---') return true;
@@ -678,9 +679,20 @@ function semanticBlockOpener(line) {
   };
 }
 
+function cardBlockOpener(line) {
+  if (!line.startsWith('~~~|')) return null;
+  if (line === '~~~|') return { ok: true, title: null };
+  const match = line.match(/^~~~\| (\S(?:.*\S)?)$/);
+  if (!match) {
+    return { ok: false, errorCode: 'invalid_card_block' };
+  }
+  return { ok: true, title: match[1] };
+}
+
 function isReservedV2BlockOpener(line) {
   return formattedParagraphFence(line) !== null
     || line.startsWith('~~~(')
+    || line.startsWith('~~~|')
     || line.startsWith('~~~$')
     || line.startsWith('===')
     || line.startsWith('***');
@@ -1291,6 +1303,57 @@ function parseFormattedParagraphBlock(lines, start, options, context, config) {
   return { ok: false, errorCode: config.unclosedCode };
 }
 
+function parseCardBlock(lines, start, options, context, opener) {
+  const payload = [];
+  let payloadSize = 0;
+
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i] === '~~~|') {
+      const bodyContext = makeChildContext(context, {
+        lineOffset: context.lineOffset + start + 1,
+        lineStartOffsets: context.lineStartOffsets.slice(start + 1, i),
+        sourceLineStartOffsets: context.sourceLineStartOffsets,
+        includeSpans: context.includeSpans,
+      });
+      const body = parseBlocks(payload, options, bodyContext);
+      if (!body.ok) return body;
+      if (body.children.length === 0) {
+        return { ok: false, errorCode: 'invalid_card_block' };
+      }
+
+      let title;
+      if (opener.title !== null) {
+        const titleOffset = context.lineStartOffsets[start] + '~~~| '.length;
+        const parsedTitle = parseInline(opener.title, options, titleOffset, context);
+        if (!parsedTitle.ok) return withOffset(parsedTitle, titleOffset);
+        title = parsedTitle.nodes;
+      }
+
+      return {
+        ok: true,
+        nextIndex: i + 1,
+        node: withSpan(
+          {
+            type: 'card_block',
+            ...(title === undefined ? {} : { title }),
+            children: body.children,
+          },
+          context,
+          context.lineStartOffsets[start],
+          context.lineStartOffsets[i] + lines[i].length
+        ),
+      };
+    }
+    payloadSize = addPayloadSize(payloadSize, lines[i]);
+    if (exceedsBlockBudget(payloadSize, options)) {
+      return failAt('nd_budget_exceeded', context.lineOffset + i, 0);
+    }
+    payload.push(lines[i]);
+  }
+
+  return { ok: false, errorCode: 'unclosed_card_block' };
+}
+
 function parseExtensionBlock(lines, start, options, context) {
   const extension = extensionOpener(lines[start]);
   if (extension === null) return { ok: false, errorCode: 'invalid_extension_name' };
@@ -1856,6 +1919,18 @@ function parseBlocks(lines, options, context) {
       if (!blockBudget.ok) return blockBudget;
       children.push(parsedSemanticBlock.node);
       index = parsedSemanticBlock.nextIndex;
+      continue;
+    }
+
+    const cardBlock = isV2Document(context) ? cardBlockOpener(line) : null;
+    if (cardBlock !== null) {
+      if (!cardBlock.ok) return failAt(cardBlock.errorCode, context.lineOffset + index, 0);
+      const parsedCardBlock = parseCardBlock(lines, index, options, context, cardBlock);
+      if (!parsedCardBlock.ok) return withLine(parsedCardBlock, context.lineOffset + index);
+      const blockBudget = recordBlock(options, context, index);
+      if (!blockBudget.ok) return blockBudget;
+      children.push(parsedCardBlock.node);
+      index = parsedCardBlock.nextIndex;
       continue;
     }
 

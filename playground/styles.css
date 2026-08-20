@@ -422,6 +422,28 @@ textarea {
   margin: 0 0 1rem;
 }
 
+.preview .and-card {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--accent) 7%, #fffaf0);
+}
+
+.preview .and-card > :last-child {
+  margin-bottom: 0;
+}
+
+.preview .and-card-collapsible > summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.preview .and-card-collapsible[open] > summary {
+  margin-bottom: 0.8rem;
+}
+
 .preview blockquote {
   border-left: 4px solid var(--accent);
   padding-left: 1rem;

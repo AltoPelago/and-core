@@ -145,6 +145,7 @@
     "strict/reject/seed-dollar-code-fence-numbered-v1.json",
     "strict/reject/seed-table-v2-alignment-rejected.json",
     "strict/reject/seed-table-v2-span-rejected.json",
+    "strict/reject/seed-card-block-v2-rejected.json",
     "strict/reject/seed-tilde-code-fences.json",
     "strict/accept/seed-plain-tilde-paragraph.json",
     "strict/reject/seed-tilde-code-block-unclosed.json",

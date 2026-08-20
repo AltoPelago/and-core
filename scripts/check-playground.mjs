@@ -37,6 +37,7 @@ assert(styles.includes('.preview .and-code-block figcaption'), 'playground shoul
 assert(styles.includes('.preview .and-highlight-paragraph'), 'playground should visibly style highlighted paragraph blocks');
 assert(styles.includes('.preview .and-callout-content'), 'playground should style inline advisory callouts');
 assert(styles.includes('.preview .and-advisory-paragraph'), 'playground should style advisory paragraph blocks');
+assert(styles.includes('.preview .and-card'), 'playground should visibly style card blocks');
 
 const source = `&ND v1
 
@@ -89,6 +90,7 @@ assert(v2Canonical.includes('\\# This is literal heading text, not a heading'), 
 assert(v2Canonical.includes('~~~$ aeon\ntitle = "v2 code"\nmode = "plain"\n~~~$'), 'playground v2 canonical output should preserve language-tagged dollar code blocks');
 assert(v2Canonical.includes('~~~$ [n] aeon\ntitle = "v2 code"\nmode = "numbered"\n~~~$'), 'playground v2 canonical output should preserve numbered dollar code blocks');
 assert(v2Canonical.includes('| <-- | -=- | --> |\n|> A+B | C |\n| A |> B+C |\n|>> A+B+C |'), 'playground v2 canonical output should preserve table alignment and spans');
+assert(v2Canonical.includes('~~~| [* Collapsible] card'), 'playground v2 canonical output should preserve rich named-card titles');
 const v2Html = renderHtml(v2Result.document);
 assert(v2Html.includes('<p># This is literal heading text, not a heading</p>'), 'playground v2 preview should decode an escaped heading opener as paragraph text');
 assert(v2Html.includes('data-auto-number="true"'), 'playground v2 preview should preserve auto-number intent');
@@ -108,6 +110,9 @@ assert(v2Html.includes('class="and-code-block and-code-block-ordered"'), 'playgr
 assert(v2Html.includes('class="and-code-lines"'), 'playground v2 preview should number code lines');
 assert(v2Html.includes('<th style="text-align:left">left</th>'), 'playground v2 preview should align table columns');
 assert(v2Html.includes('<td colspan="2" style="text-align:left">A+B</td>'), 'playground v2 preview should render table colspans');
+assert(v2Html.includes('<aside class="and-card">'), 'playground v2 preview should render unnamed cards as visible containers');
+assert(v2Html.includes('<details class="and-card and-card-collapsible">'), 'playground v2 preview should render named cards as collapsible containers');
+assert(v2Html.includes('<summary><strong>Collapsible</strong> card</summary>'), 'playground v2 preview should preserve rich card titles');
 assert(v2Html.includes('class="and-highlight-paragraph"'), 'playground v2 preview should render paired blocks');
 assert(v2Html.includes('class="and-strong-paragraph"'), 'playground v2 preview should render strong paragraph blocks');
 assert(v2Html.includes('class="and-emphasis-paragraph"'), 'playground v2 preview should render emphasis paragraph blocks');

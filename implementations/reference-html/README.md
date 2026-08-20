@@ -54,6 +54,8 @@ Leading `- [?]` and `- [!]` markers use the same per-item bullet replacement whi
 stays visible. Inline rich question/admonition tags project as focusable icon callouts, while
 `~~~?` and `~~~!` project as always-visible advisory paragraphs.
 Rich `~~~'` block comments are preserved in inert HTML with the `hidden` attribute.
+Unnamed cards project as visible `<aside>` containers; rich-titled cards project through native
+`<details>/<summary>` elements so consumers can style and operate their collapsible intent.
 
 Formatted paragraph blocks project `~~~=` to `<mark>` semantics, `~~~*` to `<strong>`, `~~~/` to
 `<em>`, and `~~~_` to `<u>` across the entire rich inline payload. Plain `~~~` remains ordinary

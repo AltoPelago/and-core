@@ -153,6 +153,8 @@ Core v1 table cells do not carry alignment or span metadata. The v2-only separat
 `-=-`, and `-->` reject with `invalid_table_alignment`; an adjacent cell opener such as `|>` rejects
 with `invalid_table_span`.
 
+The v2-only `~~~|` card-block opener is also reserved in v1 and rejects with `unknown_block_type`.
+
 When source spans are exposed, inline spans inside table cells SHOULD point at the trimmed cell
 content, excluding table delimiter pipes and surrounding cell padding. The table block span SHOULD
 still cover the full table source range.

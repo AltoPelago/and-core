@@ -325,6 +325,7 @@ function runApiBoundaryChecks() {
     ['header text', '~~~#'],
     ['disclaimer', '~~~^', '~~~'],
     ['semantic', '~~~(summary)', '~~~'],
+    ['card', '~~~| Summary', '~~~|'],
   ]) {
     const budgeted = parseAnd(`&ND v2\n\n${fence}\ntoo long\n${closer}\n`, {
       allowV2: true,

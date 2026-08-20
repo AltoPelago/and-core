@@ -84,6 +84,7 @@ assigns each promoted form an explicit ownership boundary:
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
 | table separators `<--`, `-=-`, `-->` and adjacent `|>` span markers | Core | Column alignment and horizontal cell spanning; row spanning is unsupported. |
+| `~~~|` / `~~~| title` … `~~~|` | Core structure + consumer projection | Visible card container; a rich inline title makes the card collapsible. Styling and interaction details are consumer-defined. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
@@ -98,11 +99,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 163-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 167-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 58 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
+- 59 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, card containers, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 105 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
+- 108 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, table spans, tags, and code/paired fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -213,6 +214,14 @@ disclaimer block
 semantic block
 	opener: ~~~(<id>)
 	closer: ~~~
+
+standard card block
+	opener: ~~~|
+	closer: ~~~|
+
+collapsible card block
+	opener: ~~~| <rich-inline-title>
+	closer: ~~~|
 
 <id> ::= [A-Za-z0-9][A-Za-z0-9._:-]*
 ```
@@ -543,6 +552,21 @@ Expected direction:
 - header and body row span sums must equal the separator-defined logical width
 - missing content/spacing and underflow/overflow reject with `invalid_table_span`
 - v1 rejects alignment and span extensions while v2 accepts every inherited v1 table unchanged
+
+### `seed-v2-card-blocks`
+
+Intent:
+
+- define `~~~|` / `~~~|` as a visible card containing ordinary block children
+- allow a non-empty rich inline title after one ASCII space on the opener
+- make title presence carry collapsible intent without introducing a semantic ID
+
+Expected direction:
+
+- unnamed cards produce `card_block` without `title`; named cards preserve rich `title` children
+- card bodies accept non-empty ordinary block content and project without losing structure
+- empty, malformed-title, and unclosed cards reject with stable card-family diagnostics
+- v1 reserves and rejects the v2 card opener
 
 ### `seed-v2-block-highlight-paragraph-enabled`
 

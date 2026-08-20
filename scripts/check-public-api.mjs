@@ -162,6 +162,35 @@ assert(
     .includes('\\| A | B |\n| <-- | --> |'),
   'v2 canonical emission should restore the escape before aligned-table-shaped paragraph text',
 );
+const cardsV2 = parseAnd(
+  '&ND v2\n\n~~~|\nStandard.\n~~~|\n\n~~~| [* Details]\n# Inside\n~~~|\n',
+  { allowV2: true },
+);
+assert(
+  cardsV2.ok
+    && cardsV2.document.children[0]?.type === 'card_block'
+    && cardsV2.document.children[0]?.title === undefined
+    && cardsV2.document.children[1]?.type === 'card_block'
+    && cardsV2.document.children[1]?.title?.[0]?.type === 'strong'
+    && cardsV2.document.children[1]?.children?.[0]?.type === 'heading',
+  'public parse should expose unnamed and rich-titled card block containers',
+);
+const cardsV2Canonical = emitCanonical(cardsV2.document, { profile: 'standalone', version: 'v2' });
+assert(
+  cardsV2Canonical.includes('~~~| [* Details]\n# Inside\n~~~|'),
+  'public canonical emission should preserve named card syntax and nested blocks',
+);
+const escapedCardV2 = parseAnd('&ND v2\n\n\\~~~|\n', { allowV2: true });
+assert(
+  escapedCardV2.ok
+    && escapedCardV2.document.children[0]?.type === 'paragraph'
+    && escapedCardV2.document.children[0]?.children?.[0]?.value === '~~~|',
+  'public parse should decode a structurally escaped card opener as paragraph text',
+);
+assert(
+  emitCanonical(escapedCardV2.document, { profile: 'standalone', version: 'v2' }).includes('\\~~~|'),
+  'public canonical emission should restore a structural escape before card-shaped paragraph text',
+);
 const directionalListV2 = parseAnd('&ND v2\n\n- [>] advance while [<] remains inline\n', { allowV2: true });
 assert(
   directionalListV2.ok
@@ -219,6 +248,10 @@ assert(renderHtml(autoNumberListV2.document).includes('class="and-auto-number-li
 const tableV2Html = renderHtml(tableV2.document);
 assert(tableV2Html.includes('style="text-align:left"'), 'public HTML projection should expose table alignment');
 assert(tableV2Html.includes('colspan="2"'), 'public HTML projection should expose native table colspans');
+const cardsV2Html = renderHtml(cardsV2.document);
+assert(cardsV2Html.includes('<aside class="and-card">'), 'public HTML projection should expose unnamed cards');
+assert(cardsV2Html.includes('<details class="and-card and-card-collapsible">'), 'public HTML projection should expose named cards as collapsible');
+assert(cardsV2Html.includes('<summary><strong>Details</strong></summary>'), 'public HTML projection should preserve rich card titles');
 const directionalListHtml = renderHtml(directionalListV2.document);
 assert(directionalListHtml.includes('class="and-directional-list-marker"'), 'public HTML projection should replace a leading directional-list bullet');
 assert(directionalListHtml.includes('class="and-directional-marker"'), 'public HTML projection should keep later directional markers inline');

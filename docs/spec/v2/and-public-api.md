@@ -148,7 +148,8 @@ type NdBlockNode =
   | NdCommentBlock
   | NdHeaderTextBlock
   | NdDisclaimerBlock
-  | NdSemanticBlock;
+  | NdSemanticBlock
+  | NdCardBlock;
 
 interface NdHeading extends NdV1Heading {
   readonly autoNumber?: true;
@@ -160,6 +161,12 @@ interface NdV2Table extends NdV1Table {
 
 interface NdV2TableCell extends NdV1TableCell {
   readonly colSpan?: number;
+}
+
+interface NdCardBlock {
+  readonly type: "card_block";
+  readonly title?: readonly NdInlineNode[];
+  readonly children: readonly NdBlockNode[];
 }
 ```
 
@@ -178,6 +185,11 @@ V2 table alignment arrays are present only when at least one separator cell uses
 `-->`. Spanning cells carry `colSpan > 1`; ordinary cells omit it. V1-shaped tables therefore retain
 their exact inherited AST. Invalid aligned separators and spans report `invalid_table_alignment` or
 `invalid_table_span`.
+
+Card blocks are v2-only block containers. An unnamed card omits `title`; a named card exposes its
+rich inline title and therefore carries collapsible intent. `children` must contain at least one
+ordinary block. Invalid/empty cards report `invalid_card_block`, and missing closers report
+`unclosed_card_block`.
 
 ## Budgets And Spans
 

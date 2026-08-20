@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-card-blocks",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~|\nThis is a standard card.\n~~~|\n\n~~~| [* Collapsible] card\n# Inside\n\n- first\n- second\n~~~|\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "unnamed cards preserve a block-content container without a title",
+      "named cards preserve a rich inline title and become collapsible at projection time",
+      "card bodies accept ordinary nested block content"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "card_block",
+          "children": [{
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "This is a standard card." }]
+          }]
+        },
+        {
+          "type": "card_block",
+          "title": [
+            { "type": "strong", "children": [{ "type": "text", "value": "Collapsible" }] },
+            { "type": "text", "value": " card" }
+          ],
+          "children": [
+            {
+              "type": "heading",
+              "level": 1,
+              "children": [{ "type": "text", "value": "Inside" }]
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "items": [
+                {
+                  "type": "list_item",
+                  "children": [{
+                    "type": "paragraph",
+                    "children": [{ "type": "text", "value": "first" }]
+                  }]
+                },
+                {
+                  "type": "list_item",
+                  "children": [{
+                    "type": "paragraph",
+                    "children": [{ "type": "text", "value": "second" }]
+                  }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

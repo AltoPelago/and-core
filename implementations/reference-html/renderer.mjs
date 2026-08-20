@@ -473,6 +473,19 @@ function renderBlock(block, options) {
     case 'semantic_block':
       requireSemanticId(block.id, block.type);
       return `<p>${renderInlineNodes(block.children, options)}</p>`;
+    case 'card_block': {
+      if (!Array.isArray(block.children) || block.children.length === 0) {
+        throw fail('invalid_card_block', 'card_block requires at least one child block.');
+      }
+      const body = renderBlocks(block.children, options);
+      if (block.title === undefined) {
+        return `<aside class="and-card">\n${body}\n</aside>`;
+      }
+      if (!hasInlineAstContent(block.title)) {
+        throw fail('invalid_card_block', 'card_block title must not be empty.');
+      }
+      return `<details class="and-card and-card-collapsible">\n<summary>${renderInlineNodes(block.title, options)}</summary>\n${body}\n</details>`;
+    }
     default:
       throw fail('unsupported_block_node', `Unsupported block node type: ${block.type}`);
   }

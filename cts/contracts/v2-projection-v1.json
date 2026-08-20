@@ -49,6 +49,8 @@
     "block.header_text",
     "block.disclaimer",
     "block.semantic",
+    "block.card",
+    "block.card.named",
     "block.code",
     "block.code.language",
     "block.code.numbered",
@@ -103,6 +105,7 @@
     "block.header_text",
     "block.disclaimer",
     "block.semantic",
+    "block.card",
     "block.code",
     "block.table",
     "syntax.structural_escape",
@@ -145,6 +148,8 @@
     "inline.disclaimer.with_rich_child",
     "inline.semantic.with_rich_child",
     "semantic_block.with_rich_child",
+    "card.named_with_rich_title",
+    "card.with_block_children",
     "identifier.shared_across_constructs",
     "code.numbered_with_language",
     "table.span_with_alignment"
@@ -888,6 +893,28 @@
         },
         "html": {
           "fragment": "<p># literal heading</p>\n<p>~~~#</p>\n<blockquote>\n<p># quoted literal heading</p>\n</blockquote>\n<ul>\n<li><p>parent</p>\n<p>- nested literal list</p></li>\n</ul>"
+        }
+      }
+    },
+    {
+      "id": "card-blocks",
+      "covers": ["block.card", "block.card.named"],
+      "combinationCovers": ["card.named_with_rich_title", "card.with_block_children"],
+      "spanAssertions": [
+        {
+          "cover": "block.card",
+          "path": "$.children[1]",
+          "span": { "startOffset": 38, "endOffset": 75, "startLine": 7, "startColumn": 1, "endLine": 11, "endColumn": 5 }
+        }
+      ],
+      "source": "&ND v2\n\n~~~|\nStandard [* card].\n~~~|\n\n~~~| [* Details]\n# Inside\n\n- one\n~~~|\n",
+      "expected": {
+        "canonical": {
+          "embedded": "~~~|\nStandard [* card].\n~~~|\n\n~~~| [* Details]\n# Inside\n\n- one\n~~~|\n",
+          "standalone": "&ND v2\n\n~~~|\nStandard [* card].\n~~~|\n\n~~~| [* Details]\n# Inside\n\n- one\n~~~|\n"
+        },
+        "html": {
+          "fragment": "<aside class=\"and-card\">\n<p>Standard <strong>card</strong>.</p>\n</aside>\n<details class=\"and-card and-card-collapsible\">\n<summary><strong>Details</strong></summary>\n<h1>Inside</h1>\n<ul>\n<li><p>one</p></li>\n</ul>\n</details>"
         }
       }
     },

@@ -343,6 +343,7 @@ Table recognition should also reserve separator rows beginning with `<--`, `-=-`
 reports `invalid_table_alignment` instead of accepting a v2-aligned table as paragraph text. Once a
 v1 table has started, a cell whose raw source begins immediately with `>` reports
 `invalid_table_span`; padded `| > literal |` remains ordinary content.
+The v2-only `~~~|` card-block opener is likewise reserved and reports `unknown_block_type` in v1.
 
 ### 8.3 Paragraph Handling
 

@@ -156,6 +156,7 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `~~~$ [n]`, `~~~$ [n] language` | V2 extension of the v1 dollar code block with numbered-line intent |
 | `<--`, `-=-`, `-->` separator cells | Left, center, and right table-column alignment |
 | adjacent `|>`, `|>>`, … cells | Horizontal table-cell spans |
+| `~~~|` / `~~~| title` … `~~~|` | Visible card; adding a rich title makes it collapsible |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -248,6 +249,27 @@ The separator determines the logical width, and every header/body row must sum t
 requires a following space and non-empty content. Adjacency is significant: `|> merged |` spans,
 whereas `| > literal |` does not. Spanning uses the first covered column's alignment. V1 rejects
 these alignment and span positions. Row spanning is not supported.
+
+## Cards
+
+V2 adds card containers whose bodies contain ordinary blocks:
+
+```and
+~~~|
+This is a standard card.
+~~~|
+
+~~~| [* Collapsible] card
+# Card heading
+
+- Card list item
+~~~|
+```
+
+The unnamed form is always visible. In the named form, the non-empty text after one ASCII space is
+a rich inline title and carries collapsible intent. It is visible content, not an ID. Empty cards,
+malformed title spacing, and unclosed cards reject. Direct same-level nesting is unavailable because
+the exact unnamed fence is also the closer. V1 reserves and rejects `~~~|` openers.
 
 ## Formatted Paragraphs
 
@@ -361,10 +383,12 @@ their list content remains visible. Use rich `[? ...]` or `[! ...]` for inline c
     metadata after the opener; replace removed `~~~language` / `~~~~language` forms.
 12. Convert table alignment to exact `<--`, `-=-`, or `-->` separator cells and verify every row's
     logical width after applying adjacent `>` span markers.
-13. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
+13. Convert card-like extensions to `~~~|` containers; add a rich opener title only when collapsible
+    behavior is intended.
+14. Convert paragraph-wide formatting, advisory content, or block comments to the exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fence;
     do not treat plain `~~~` as a block delimiter.
-14. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
-15. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
+15. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
+16. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
    image modes and AEON scalar spellings.
 
 There is no automatic downgrade for v2-only syntax. To return a document to v1, remove every v2-only

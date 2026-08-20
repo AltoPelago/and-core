@@ -41,9 +41,9 @@ are outside this first-draft Core boundary.
 The complete v1 block and inline node unions remain valid in v2. A v2-capable reader MUST preserve
 the same fields and containment relationships for inherited syntax.
 
-`NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`, and the
-paired-block nodes below; `NdHeading` gains the optional `autoNumber` field; inherited table and
-table-cell nodes gain the optional v2 fields defined below.
+`NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`,
+`NdCardBlock`, and the paired-block nodes below; `NdHeading` gains the optional `autoNumber` field;
+inherited table and table-cell nodes gain the optional v2 fields defined below.
 
 ## Capability Disposition
 
@@ -63,6 +63,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared dollar code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
 | table separators `<--`, `-=-`, `-->` and adjacent `|>` span markers | Core | Column alignment and horizontal `colSpan`; row spanning remains unsupported. |
+| `~~~|` / `~~~| title` … `~~~|` | Core structure + consumer projection | Visible card container; a rich inline title makes it collapsible. Styling and interaction details are consumer-defined. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only their content. |
@@ -328,6 +329,48 @@ reference HTML projection emits `text-align` intent and native `colspan`. V1 rec
 positions but rejects aligned separators and span markers with the diagnostics above. Inline spans
 inside a spanning cell begin at its trimmed content and exclude the adjacent marker.
 
+## Card Blocks
+
+V2 introduces a non-empty block-content container with an optional rich inline title:
+
+```ts
+interface NdCardBlock {
+  readonly type: "card_block";
+  readonly title?: NdInlineNode[];
+  readonly children: NdBlockNode[];
+}
+```
+
+An unnamed card uses the exact `~~~|` line as both opener and closer:
+
+```and
+~~~|
+This is a standard card.
+~~~|
+```
+
+A named card places one ASCII space and a non-empty rich inline title after the opening fence:
+
+```and
+~~~| [* Collapsible] card
+# Nested heading
+
+- Nested list item
+~~~|
+```
+
+`title` is absent for an unnamed card and present for a named card. Its presence carries portable
+collapsible intent; it is not a consumer-owned ID. The body is parsed as ordinary block content and
+must contain at least one block. Empty cards and malformed titles fail with `invalid_card_block`;
+missing exact closers fail with `unclosed_card_block`. Because the unnamed opener and closer are
+identical, direct same-level card nesting is not expressible.
+
+Canonical output preserves the unnamed/named distinction and emits the exact `~~~|` closer. The
+reference HTML projection uses `<aside class="and-card">` for unnamed cards and native
+`<details>/<summary>` for named cards. Other consumers may choose borders, backgrounds, and
+collapsible controls; non-interactive projections must retain both title and body content. V1
+reserves `~~~|` openers and rejects them with `unknown_block_type`.
+
 ## Todo Lists
 
 ```ts
@@ -568,7 +611,8 @@ The seven formatted, advisory, and comment fences are exact and self-closing by 
 | `~~~(id)` … `~~~` | `semantic_block` | Ordinary paragraph unless a consumer interprets the semantic ID |
 
 Their payloads are non-empty rich inline content, not nested block documents. Empty and unclosed
-forms reject with family-specific diagnostics. Plain `~~~` has no opening-block meaning: it remains
+forms reject with family-specific diagnostics. Card blocks are separate block-content containers,
+not formatted paragraphs. Plain `~~~` has no opening-block meaning: it remains
 ordinary paragraph text under both v1 and v2 and follows inherited soft-wrap canonicalization. It is
 also the exact closer for `~~~^` disclaimer and `~~~(id)` semantic blocks. Header-text and disclaimer
 blocks are untagged. Semantic IDs use the shared `v2-id` grammar; they remain available in the AST
@@ -581,7 +625,7 @@ At a block-open position in v2, one leading backslash suppresses recognition of 
 that immediately follows it. The backslash is lexical and absent from the AST; the decoded command
 text becomes an ordinary paragraph. Covered commands include headings, unordered and ordered lists,
 blockquotes, horizontal rules, extension blocks, inherited backtick code fences, v2 `~~~$` code
-fences, v2 tilde paired/semantic blocks, and removed tilde-language openers. A table header continues to use
+fences, v2 tilde paired/semantic/card blocks, and removed tilde-language openers. A table header continues to use
 the inherited `\|` escape on its first pipe.
 
 ````and
@@ -632,9 +676,9 @@ every formatted paragraph family.
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 45 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 46 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
-clarifiers, footnotes, code blocks, aligned/spanning tables, nested rich resources, lists, and blockquotes.
+clarifiers, footnotes, code blocks, cards, aligned/spanning tables, nested rich resources, lists, and blockquotes.
 
 ## Stability
 

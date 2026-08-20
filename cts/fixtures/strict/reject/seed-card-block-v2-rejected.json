@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-card-block-v2-rejected",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "~~~|\nCard content.\n~~~|\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_block_type",
+    "assertions": [
+      "v1 rejects the v2 card-block fence",
+      "v2-only card syntax is reserved rather than interpreted as paragraph text"
+    ]
+  }
+}

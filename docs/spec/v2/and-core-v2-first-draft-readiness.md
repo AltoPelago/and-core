@@ -16,16 +16,16 @@ clean-baseline and lifecycle review described below.
 | Area | Current evidence | Assessment |
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
-| v1 compatibility | All 147 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
-| v2 grammar | 163 indexed strict fixtures: 58 accept and 105 reject. | Ready |
-| v2 executable checks | 987 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
-| AST snapshots | 57 of 58 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
+| v1 compatibility | All 148 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
+| v2 grammar | 167 indexed strict fixtures: 59 accept and 108 reject. | Ready |
+| v2 executable checks | 1007 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| AST snapshots | 58 of 59 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 52 exact canonical snapshots across promoted families and interactions. | Ready |
-| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 27 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
-| Source spans | The projection contract pins 45 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
-| Cross-form interactions | A 34-entry executable matrix covers aligned/spanning tables, code-block language/numbering, paired blocks in lists/quotes, formatted/advisory/comment/semantic blocks with rich children, cross-container links, shared identifiers, rich resources, contextual list-item content, directional/advisory bullet replacement, heading-number hierarchy, semantic and disclaimer inline content, and rich/reused footnotes. | Ready |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 54 exact canonical snapshots across promoted families and interactions. | Ready |
+| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 28 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
+| Source spans | The projection contract pins 46 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
+| Cross-form interactions | A 36-entry executable matrix covers cards with rich titles and block children, aligned/spanning tables, code-block language/numbering, paired blocks in lists/quotes, formatted/advisory/comment/semantic blocks with rich children, cross-container links, shared identifiers, rich resources, contextual list-item content, directional/advisory bullet replacement, heading-number hierarchy, semantic and disclaimer inline content, and rich/reused footnotes. | Ready |
 | Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |
 | Consumer conventions | The companion boundary maps every consumer-owned surface to its fixed Core fields and non-Core behavior. | Ready |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
@@ -82,9 +82,9 @@ projection rather than Core parsing semantics.
 
 Status: **closed**.
 
-Contract `and-v2-projection-v1` contains an explicit 45-entry span matrix covering every new scalar
+Contract `and-v2-projection-v1` contains an explicit 46-entry span matrix covering every new scalar
 and rich inline family, first-class todo lists/items, heading and list `[n]`, all seven paired blocks,
-code blocks, aligned/spanning tables, escaped image fields, AEON datatype generics and clarifiers, nested rich/image/typed-value
+code blocks, cards, aligned/spanning tables, escaped image fields, AEON datatype generics and clarifiers, nested rich/image/typed-value
 content, ordinary lists, and blockquotes.
 
 Closure evidence: the mandatory checker reparses each source with spans enabled and byte-compares the
@@ -111,10 +111,11 @@ The projection contract indexes and pins focused cases for:
 - the shared identifier grammar across anchors, named footnotes, and semantic wrappers;
 - code blocks carrying numbered-line intent and a language, plus inherited backtick compatibility;
 - table alignment combined with horizontal cell spans;
+- named cards with rich titles and ordinary nested block children;
 - heading-number hierarchy plus rich footnote content and repeated named references.
 
-Closure evidence: all 34 required combination identifiers appear exactly once and participate in the
-same 52 canonical and 27 HTML snapshots as the promoted-surface contract.
+Closure evidence: all 36 required combination identifiers appear exactly once and participate in the
+same 54 canonical and 28 HTML snapshots as the promoted-surface contract.
 
 ### B7. v1-to-v2 migration guide
 
@@ -133,7 +134,7 @@ mechanical migration checklist.
 Status: **closed**.
 
 [`and-consumer-conventions.md`](./and-consumer-conventions.md) maps `[!]`, `[?]`, `[+]`, `[^]`,
-semantic wrappers, custom typed datatypes, header-text and disclaimer blocks, numbering, footnotes,
+semantic wrappers, cards, custom typed datatypes, header-text and disclaimer blocks, numbering, footnotes,
 images, external navigation, extensions, todo and direction markers, and comments to their
 Core-guaranteed fields and consumer-owned interpretation.
 

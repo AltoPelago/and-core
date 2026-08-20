@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./cts/examples/baseline-adapter.mjs",
   "totals": {
-    "fixtures": 147,
+    "fixtures": 148,
     "pending": 0,
-    "pass": 147,
+    "pass": 148,
     "fail": 0,
     "error": 0
   },
@@ -24,8 +24,8 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 81,
-    "matched": 81,
+    "expected": 82,
+    "matched": 82,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -2672,6 +2672,25 @@
       "expectedErrorCode": "invalid_table_span",
       "actualOk": false,
       "errorCode": "invalid_table_span",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-card-block-v2-rejected",
+      "path": "strict/reject/seed-card-block-v2-rejected.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "unknown_block_type",
+      "actualOk": false,
+      "errorCode": "unknown_block_type",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

@@ -131,6 +131,7 @@ function requiresV2StructuralEscape(text, context) {
   if (/^~{3,4}[A-Za-z][A-Za-z0-9_-]*$/.test(text)) return true;
   if (/^~~~\$(?: \[n\](?: [A-Za-z][A-Za-z0-9_-]*)?| [A-Za-z][A-Za-z0-9_-]*)?$/.test(text)) return true;
   if (['~~~=', '~~~*', '~~~/', '~~~_', '~~~?', '~~~!', "~~~'", '~~~#', '~~~^'].includes(text)) return true;
+  if (text.startsWith('~~~|')) return true;
   const semanticMatch = text.match(/^~~~\(([^)]*)\)$/);
   if (semanticMatch && isNdV2Identifier(semanticMatch[1])) return true;
   if (text.startsWith('===') || text.startsWith('***') || text.startsWith('+++')) return true;
@@ -450,6 +451,24 @@ function emitPairedInlineBlock(opener, closer, children, context) {
   return `${opener}\n${payload}\n${closer}`;
 }
 
+function emitCardBlock(node, context) {
+  requireV2(context, node.type);
+  if (!Array.isArray(node.children) || node.children.length === 0) {
+    throw fail('invalid_card_block', 'card_block requires at least one child block.');
+  }
+  if (node.title !== undefined && !hasInlineAstContent(node.title)) {
+    throw fail('invalid_card_block', 'card_block title must not be empty.');
+  }
+  const title = node.title === undefined
+    ? ''
+    : ` ${emitInlineNodes(node.title, context)}`;
+  const payload = emitBlocks(node.children, context);
+  if (payload.split('\n').some((line) => line === '~~~|')) {
+    throw fail('unsupported_v2_fence_payload', 'Card payload contains a closing fence line: ~~~|');
+  }
+  return `~~~|${title}\n${payload}\n~~~|`;
+}
+
 function emitBlock(node, context) {
   switch (node.type) {
     case 'paragraph':
@@ -546,6 +565,8 @@ function emitBlock(node, context) {
         node.children,
         context
       );
+    case 'card_block':
+      return emitCardBlock(node, context);
     default:
       throw fail('unsupported_block_node', `Unsupported block node type: ${node.type}`);
   }

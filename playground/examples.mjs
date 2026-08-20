@@ -97,6 +97,17 @@ Aligned and spanning table cells:
 | A |> B+C |
 |>> A+B+C |
 
+~~~|
+This is a standard card containing ordinary block content.
+~~~|
+
+~~~| [* Collapsible] card
+## Details
+
+- Cards can contain lists
+- Named cards can be expanded or collapsed
+~~~|
+
 ~~~=
 This is a highlighted paragraph with [! proposal] status.
 ~~~=

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-card-block-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~|\n~~~|\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_card_block",
+    "assertions": ["card blocks require at least one child block"]
+  }
+}
