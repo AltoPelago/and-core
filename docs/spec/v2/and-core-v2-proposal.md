@@ -84,6 +84,7 @@ assigns each promoted form an explicit ownership boundary:
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
+| `\` before a block opener | Core | V2-only structural escape for literal command text at a block-open position. |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header-text, and disclaimer block structure. |
 | Other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
@@ -94,11 +95,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 148-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 152-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 54 accepted fixtures covering inline tags, rich nesting, footnotes, semantic and formatted/advisory/comment blocks, first-class todo and auto-number
+- 55 accepted fixtures covering inline tags, rich nesting, footnotes, semantic and formatted/advisory/comment blocks, structural escapes, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 94 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid markers, mixed list kinds,
+- 97 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -526,6 +527,21 @@ Expected direction:
 - v2 strict parse success for non-empty semantic wrappers with `[A-Za-z][A-Za-z0-9_-]*` IDs
 - exact canonical preservation of IDs and rich content
 - strict rejection for malformed IDs, missing inline spacing, empty payloads, or unclosed blocks
+
+### Structural block escapes
+
+Intent:
+
+- allow a v2 author to prefix a block command with `\` when its source spelling should remain text
+- decode the escape into an ordinary paragraph without weakening the inline escape rules
+- cover headings, lists, blockquotes, horizontal rules, extensions, raw fences, and v2 fence forms
+
+Expected direction:
+
+- `\# heading`, `\~~~aeon`, and other real escaped openers parse as paragraph text
+- canonical v2 emission restores the escape whenever omitting it would change the block type
+- v1 keeps its closed four-character inline escape set
+- mid-line and unnecessary structural escapes reject with `invalid_escape`
 
 ### `seed-v2-footnote-named-reuse`
 

@@ -44,6 +44,8 @@ mode = "ordered"
 
 ## [n] Numbered subsection
 
+\\# This is literal heading text, not a heading
+
 [# overview]Tasks:
 
 - [ ] draft

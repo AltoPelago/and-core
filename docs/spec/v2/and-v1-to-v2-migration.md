@@ -157,10 +157,27 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[^ ...]` | Inline disclaimer |
 | `[(id) content]` | Inline semantic wrapper; ID is retained for consumers but hidden by default projection |
 | `~~~(id)` … `~~~` | Semantic block; content projects as an ordinary paragraph by default |
+| `\` before a block opener | Literal block-command text, decoded into an ordinary paragraph |
 
 The consumer-owned meaning of advisory tags, semantic IDs, custom tags and datatypes, numbering,
 disclaimer presentation, image behavior, and external navigation is defined in
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
+
+## Structural Escaping
+
+V2 can quote a block command at a block-open position without turning `#`, `~`, digits, or other
+ordinary characters into global inline escapes:
+
+```and
+\# this is paragraph text, not a heading
+
+\~~~(note)
+```
+
+The same rule covers list, blockquote, rule, extension, backtick-fence, tilde-code-fence, and other
+v2 fence openers. The escape is not valid mid-line and is not permitted when the following text is
+already non-structural. Plain `~~~`, for example, remains ordinary text and must not be escaped.
+Core v1 does not gain this rule.
 
 ## Formatted Paragraphs
 

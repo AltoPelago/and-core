@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-structural-escape-plain-tilde",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n\\~~~\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_escape",
+    "assertions": ["plain ~~~ is already ordinary paragraph text and must not be over-escaped"]
+  }
+}

@@ -151,6 +151,10 @@
     "strict/reject/seed-v2-inline-semantic-tag-empty.json",
     "strict/reject/seed-v2-inline-semantic-tag-invalid-id.json",
     "strict/reject/seed-v2-inline-semantic-tag-missing-space.json",
-    "strict/reject/seed-v2-inline-semantic-tag-unclosed.json"
+    "strict/reject/seed-v2-inline-semantic-tag-unclosed.json",
+    "strict/accept/seed-v2-structural-block-escapes.json",
+    "strict/reject/seed-v2-structural-escape-midline.json",
+    "strict/reject/seed-v2-structural-escape-non-command.json",
+    "strict/reject/seed-v2-structural-escape-plain-tilde.json"
   ]
 }

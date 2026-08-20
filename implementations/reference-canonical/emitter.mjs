@@ -138,6 +138,34 @@ function escapeText(value, context = {}) {
   return output;
 }
 
+function requiresV2StructuralEscape(text, context) {
+  if (context.version !== 'v2') return false;
+  if (/^`{3,4}/.test(text)) return true;
+  if (/^~{3,4}[A-Za-z][A-Za-z0-9_-]*$/.test(text)) return true;
+  if (['~~~=', '~~~*', '~~~/', '~~~_', '~~~?', '~~~!', "~~~'", '~~~#', '~~~^'].includes(text)) return true;
+  if (/^~~~\([A-Za-z][A-Za-z0-9_-]*\)$/.test(text)) return true;
+  if (text.startsWith('===') || text.startsWith('***') || text.startsWith('+++')) return true;
+  if (/^#{1,6} /.test(text)) return true;
+  if (text === '---') return true;
+  if (/^- /.test(text) || /^\d+\. /.test(text)) return true;
+  return text.startsWith('>');
+}
+
+function looksLikeTableParagraph(text) {
+  const lines = text.split('\n');
+  if (lines.length < 2 || !/^\s*\|.*\|\s*$/.test(lines[0])) return false;
+  return /^\s*\|(?:\s*---\s*\|)+\s*$/.test(lines[1]);
+}
+
+function emitParagraph(node, context) {
+  const preserved = emitInlineNodes(node.children, { ...context, preserveNewlines: true });
+  if (context.version === 'v2' && looksLikeTableParagraph(preserved)) {
+    return `\\${preserved}`;
+  }
+  const text = emitInlineNodes(node.children, context);
+  return requiresV2StructuralEscape(text, context) ? `\\${text}` : text;
+}
+
 function escapeInlineCode(value) {
   if (value.includes('\n')) {
     throw fail('invalid_inline_code_text', 'Inline code cannot contain a line break.');
@@ -385,7 +413,7 @@ function emitPairedInlineBlock(opener, closer, children, context) {
 function emitBlock(node, context) {
   switch (node.type) {
     case 'paragraph':
-      return emitInlineNodes(node.children, context);
+      return emitParagraph(node, context);
     case 'heading':
       if (node.autoNumber) requireV2(context, 'heading.autoNumber');
       return `${'#'.repeat(node.level)} ${node.autoNumber ? '[n] ' : ''}${emitInlineNodes(node.children, context)}`;

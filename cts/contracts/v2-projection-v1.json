@@ -49,6 +49,7 @@
     "block.header_text",
     "block.disclaimer",
     "block.semantic",
+    "syntax.structural_escape",
     "composition.nested_rich",
     "composition.image_in_rich",
     "composition.typed_value_in_rich",
@@ -95,6 +96,7 @@
     "block.header_text",
     "block.disclaimer",
     "block.semantic",
+    "syntax.structural_escape",
     "composition.nested_rich",
     "composition.image_in_rich",
     "composition.typed_value_in_rich",
@@ -786,6 +788,25 @@
         },
         "html": {
           "fragment": "<p>A <strong>normal</strong> block</p>\n<p>This is normal <em>inline</em> text.</p>"
+        }
+      }
+    },
+    {
+      "id": "structural-escapes",
+      "covers": ["syntax.structural_escape"],
+      "spanAssertions": [{
+        "cover": "syntax.structural_escape",
+        "path": "$.children[0].children[0]",
+        "span": { "startOffset": 8, "endOffset": 26, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 19 }
+      }],
+      "source": "&ND v2\n\n\\# literal heading\n\n\\~~~#\n\n> \\# quoted literal heading\n\n- parent\n\n  \\- nested literal list\n",
+      "expected": {
+        "canonical": {
+          "embedded": "\\# literal heading\n\n\\~~~#\n\n> \\# quoted literal heading\n\n- parent\n\n  \\- nested literal list\n",
+          "standalone": "&ND v2\n\n\\# literal heading\n\n\\~~~#\n\n> \\# quoted literal heading\n\n- parent\n\n  \\- nested literal list\n"
+        },
+        "html": {
+          "fragment": "<p># literal heading</p>\n<p>~~~#</p>\n<blockquote>\n<p># quoted literal heading</p>\n</blockquote>\n<ul>\n<li><p>parent</p>\n<p>- nested literal list</p></li>\n</ul>"
         }
       }
     },

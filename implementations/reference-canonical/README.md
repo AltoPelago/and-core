@@ -24,6 +24,7 @@ Current scope:
 * AEON-canonical type annotations and scalar literals for v2 typed values
 * v2 heading auto-number intent, semantic wrappers, and paired blocks
 * exact matching fences for highlight, strong, emphasis, and underline paragraph blocks
+* minimal v2 structural escapes when paragraph text would otherwise reparse as a block
 
 Paragraph line breaks preserved in parser AST text nodes are treated as soft wraps during canonical
 emission and serialized as a single space. The canonical-emitter check therefore verifies canonical

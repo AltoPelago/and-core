@@ -80,7 +80,9 @@ assert(v2Result.ok && v2Result.version === 'v2', 'playground v2 selection should
 const v2Canonical = emitCanonical(v2Result.document, { profile: 'standalone', version: v2Result.version });
 const reparsedV2 = parseAnd(v2Canonical, { allowV2: true });
 assert(reparsedV2.ok && reparsedV2.version === 'v2', 'playground v2 canonical output should reparse as v2');
+assert(v2Canonical.includes('\\# This is literal heading text, not a heading'), 'playground v2 canonical output should preserve required structural escapes');
 const v2Html = renderHtml(v2Result.document);
+assert(v2Html.includes('<p># This is literal heading text, not a heading</p>'), 'playground v2 preview should decode an escaped heading opener as paragraph text');
 assert(v2Html.includes('data-auto-number="true"'), 'playground v2 preview should preserve auto-number intent');
 assert(v2Html.includes('<span class="and-heading-number">1.</span>'), 'playground v2 preview should display heading numbers');
 assert(v2Html.includes('<span class="and-heading-number">1.1.</span>'), 'playground v2 preview should display hierarchical heading numbers');

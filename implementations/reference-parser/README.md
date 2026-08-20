@@ -35,6 +35,7 @@ Current scope:
   literal-family compatibility, structured datatype adornments, and custom labels
 * proposal-v2 document-local anchor uniqueness and case-sensitive `[@ #id | label]` resolution
 * effective-version metadata on successful document parse results
+* v2-only structural escapes for literal block-command text at block-open positions
 
 Run it against the CTS with:
 

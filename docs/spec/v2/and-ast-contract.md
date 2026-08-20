@@ -62,6 +62,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only their content. |
+| `\` before a block opener | Core | V2-only structural escape that produces ordinary paragraph text and is emitted only when required. |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header-text, and disclaimer block structure. |
 | All other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
@@ -448,6 +449,34 @@ blocks are untagged. Semantic IDs match `[A-Za-z][A-Za-z0-9_-]*`; they remain av
 but the reference HTML projection emits neither visible labels nor attributes for them. Inline
 `[(id) content]` follows the same ID rule and projects as ordinary inline content by default.
 
+## Structural Escapes
+
+At a block-open position in v2, one leading backslash suppresses recognition of the block command
+that immediately follows it. The backslash is lexical and absent from the AST; the decoded command
+text becomes an ordinary paragraph. Covered commands include headings, unordered and ordered lists,
+blockquotes, horizontal rules, extension blocks, backtick and language-qualified tilde code fences,
+v2 tilde paired/semantic blocks, and reserved legacy block openers. A table header continues to use
+the inherited `\|` escape on its first pipe.
+
+````and
+\# literal heading
+\- literal list item
+\1. literal ordered item
+\> literal quote
+\---
+\+++chart/pie
+\```aeon
+\~~~aeon
+\~~~#
+\~~~(note)
+````
+
+The escape is valid only when removing it would expose a structural opener at that position. It is
+therefore invalid mid-paragraph and invalid before ordinary text such as `#hashtag` or plain `~~~`.
+Core v1 retains its existing escape set and rejects these new structural escapes. Canonical v2
+output reinserts the leading backslash whenever decoded paragraph text would otherwise reparse as a
+block; table-shaped escaped paragraphs retain the line breaks required for the same fixed point.
+
 ## Canonical Contract
 
 Canonical emission requires both a profile and an effective version:
@@ -475,7 +504,7 @@ rich/reused footnotes, including rich children across every formatted paragraph 
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 41 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 42 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
 clarifiers, footnotes, nested rich resources, lists, and blockquotes.
 

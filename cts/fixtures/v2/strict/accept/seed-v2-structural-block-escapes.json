@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-structural-block-escapes",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n\\# literal heading\n\n\\- literal unordered item\n\n\\1. literal ordered item\n\n\\> literal quote\n\n\\---\n\n\\+++chart/pie\n\n\\```aeon\n\n\\~~~aeon\n\n\\~~~#\n\n\\~~~(note)\n\n\\===legacy\n\n\\***legacy\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "a leading backslash suppresses a block command only at a v2 block-open position",
+      "structural escapes decode to ordinary paragraph text"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        { "type": "paragraph", "children": [{ "type": "text", "value": "# literal heading" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "- literal unordered item" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "1. literal ordered item" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "> literal quote" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "---" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "+++chart/pie" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "```aeon" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "~~~aeon" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "~~~#" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "~~~(note)" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "===legacy" }] },
+        { "type": "paragraph", "children": [{ "type": "text", "value": "***legacy" }] }
+      ]
+    }
+  }
+}

@@ -127,10 +127,35 @@ const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
 const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
 const SEMANTIC_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
-function parseEscape(text, index) {
+function isStructuralBlockOpener(lines, context) {
+  const line = lines[0] ?? '';
+  if (rawFence(line) !== null) return true;
+  if (formattedParagraphFence(line) !== null) return true;
+  if (semanticBlockOpener(line) !== null) return true;
+  if (line.startsWith('===') || line.startsWith('***') || line.startsWith('+++')) return true;
+  if (/^#{1,6} /.test(line)) return true;
+  if (line === '---') return true;
+  if (/^- /.test(line) || /^\d+\. /.test(line)) return true;
+  if (line.startsWith('>') || line.startsWith('  >')) return true;
+  return isTableStart(lines, 0);
+}
+
+function structuralEscapeValue(text, index, context) {
+  if (context?.documentVersion !== 'v2' || context.allowStructuralEscape !== true || index !== 0) {
+    return null;
+  }
+  const unescaped = `${text.slice(0, index)}${text.slice(index + 1)}`;
+  return isStructuralBlockOpener(unescaped.split('\n'), context) ? text[index + 1] : null;
+}
+
+function parseEscape(text, index, context = null) {
   const next = text[index + 1];
   if (isEscapable(next)) {
     return { ok: true, nextIndex: index + 2, value: next };
+  }
+  const structural = structuralEscapeValue(text, index, context);
+  if (structural !== null) {
+    return { ok: true, nextIndex: index + 2, value: structural };
   }
   return { ok: false, errorCode: 'invalid_escape', nextIndex: index + 1 };
 }
@@ -831,7 +856,7 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (char === '\\') {
-      const escaped = parseEscape(text, index);
+      const escaped = parseEscape(text, index, context);
       if (!escaped.ok) return escaped;
       if (escaped.value === '[') {
         const literal = parseEscapedBracketLiteral(text, index);
@@ -1683,7 +1708,12 @@ function parseParagraph(lines, start, options, context) {
     paragraphLines.push(lines[index]);
     index += 1;
   }
-  const inline = parseInline(paragraphLines.join('\n'), options, context.lineStartOffsets[start], context);
+  const inline = parseInline(
+    paragraphLines.join('\n'),
+    options,
+    context.lineStartOffsets[start],
+    { ...context, allowStructuralEscape: true }
+  );
   if (!inline.ok) return withOffset(inline, context.lineStartOffsets[start]);
   return {
     ok: true,

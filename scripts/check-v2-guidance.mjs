@@ -30,6 +30,7 @@ const migrationRequirements = [
   ['advisory paragraph', '~~~?'],
   ['block comment', "~~~'"],
   ['semantic wrappers', '[(id) content]'],
+  ['structural escape', '\\# this is paragraph text, not a heading'],
   ['plain tilde paragraph', 'Plain `~~~`'],
   ['downgrade limit', 'There is no automatic downgrade'],
   ['consumer companion link', './and-consumer-conventions.md'],

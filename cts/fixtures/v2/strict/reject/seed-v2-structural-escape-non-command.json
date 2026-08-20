@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-structural-escape-non-command",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n\\#hashtag is ordinary text.\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_escape",
+    "assertions": ["ordinary non-command characters must not be over-escaped"]
+  }
+}
