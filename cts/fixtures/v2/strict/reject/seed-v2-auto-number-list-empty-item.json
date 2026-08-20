@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-auto-number-list-empty-item",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [n]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_auto_number_item",
+    "assertions": [
+      "auto-number items require non-empty content after the contextual marker",
+      "a marker alone is not a complete auto-number item"
+    ]
+  }
+}

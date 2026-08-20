@@ -4,6 +4,8 @@ import {
   formatAeonDatatype,
 } from '../shared/aeon-inline-scalar.mjs';
 
+const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
+
 function fail(errorCode, detail) {
   const error = new Error(detail ?? errorCode);
   error.code = errorCode;
@@ -21,6 +23,62 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
   return escapeHtml(value).replaceAll('`', '&#96;');
+}
+
+function requireFootnoteId(value, nodeType) {
+  if (typeof value !== 'string' || !FOOTNOTE_ID_PATTERN.test(value)) {
+    throw fail('invalid_footnote_id', `${nodeType} requires an alphanumeric footnote identifier.`);
+  }
+  return value;
+}
+
+function hasInlineAstContent(nodes) {
+  return Array.isArray(nodes) && nodes.some((node) => {
+    if (node?.type === 'text') return typeof node.value === 'string' && node.value.trim().length > 0;
+    if (Array.isArray(node?.children)) return hasInlineAstContent(node.children);
+    return Boolean(node && typeof node === 'object');
+  });
+}
+
+function validateFootnoteGraph(document) {
+  const definitions = new Set();
+
+  function visit(value, insideFootnote = false) {
+    if (Array.isArray(value)) {
+      value.forEach((child) => visit(child, insideFootnote));
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+
+    if (value.type === 'footnote_definition') {
+      if (insideFootnote) throw fail('nested_footnote', 'Footnote content cannot contain another footnote.');
+      if (!hasInlineAstContent(value.children)) {
+        throw fail('invalid_footnote', 'footnote_definition requires non-empty inline content.');
+      }
+      if (value.id !== undefined) {
+        const id = requireFootnoteId(value.id, value.type);
+        if (definitions.has(id)) throw fail('duplicate_footnote', `Duplicate footnote definition: ${id}`);
+        definitions.add(id);
+      }
+      visit(value.children, true);
+      return;
+    }
+
+    if (value.type === 'footnote_reference') {
+      if (insideFootnote) throw fail('nested_footnote', 'Footnote content cannot contain another footnote.');
+      const id = requireFootnoteId(value.id, value.type);
+      if (!definitions.has(id)) {
+        throw fail('unresolved_footnote_reference', `Unresolved footnote reference: ${id}`);
+      }
+      return;
+    }
+
+    for (const [key, child] of Object.entries(value)) {
+      if (key !== 'span') visit(child, insideFootnote);
+    }
+  }
+
+  visit(document);
 }
 
 function normalizeText(value) {
@@ -130,6 +188,26 @@ function renderInlineNode(node, options) {
       return `<span class="and-admonition">${renderInlineNodes(node.children, options)}</span>`;
     case 'question_tag':
       return `<span class="and-question">${renderInlineNodes(node.children, options)}</span>`;
+    case 'footnote_definition': {
+      const number = options.footnoteState.definitions.length + 1;
+      const definition = {
+        number,
+        id: node.id,
+        children: node.children,
+        referenceIds: [],
+      };
+      options.footnoteState.definitions.push(definition);
+      if (node.id !== undefined) {
+        options.footnoteState.named.set(requireFootnoteId(node.id, node.type), definition);
+      }
+      return renderFootnoteReference(definition);
+    }
+    case 'footnote_reference': {
+      const id = requireFootnoteId(node.id, node.type);
+      const definition = options.footnoteState.named.get(id);
+      if (!definition) throw fail('unresolved_footnote_reference', `Unresolved footnote reference: ${id}`);
+      return renderFootnoteReference(definition);
+    }
     case 'plus_tag':
       return `<span class="and-consumer-tag" data-value="${escapeAttribute(node.value)}">${escapeHtml(node.value)}</span>`;
     case 'image_tag': {
@@ -176,30 +254,10 @@ function renderInlineNode(node, options) {
       return `<mark>${renderInlineNodes(node.children, options)}</mark>`;
     case 'underline_tag':
       return `<u>${renderInlineNodes(node.children, options)}</u>`;
-    case 'todo_marker': {
-      const states = {
-        unchecked: { glyph: '☐', label: 'Unchecked' },
-        checked: { glyph: '☑', label: 'Checked' },
-        in_progress: { glyph: '◐', label: 'In progress' },
-        cancelled: { glyph: '☒', label: 'Cancelled' },
-      };
-      const state = states[node.state];
-      if (!state) throw fail('invalid_todo_marker_state', `Unsupported todo state: ${node.state}`);
-      return `<span class="and-todo-marker" data-state="${node.state}" role="img" aria-label="${state.label}">${state.glyph}</span>`;
-    }
     case 'directional_marker': {
-      const directions = {
-        forward: { glyph: '→', label: 'Forward' },
-        backward: { glyph: '←', label: 'Backward' },
-      };
-      const direction = directions[node.direction];
-      if (!direction) {
-        throw fail('invalid_directional_marker_direction', `Unsupported direction: ${node.direction}`);
-      }
+      const direction = requireDirection(node.direction);
       return `<span class="and-directional-marker" data-direction="${node.direction}" role="img" aria-label="${direction.label}">${direction.glyph}</span>`;
     }
-    case 'auto_number_marker':
-      return '<span class="and-auto-number-marker" data-auto-number="true" aria-hidden="true"></span>';
     case 'line_break':
       return '<br>';
     default:
@@ -207,8 +265,75 @@ function renderInlineNode(node, options) {
   }
 }
 
+function requireDirection(direction) {
+  const directions = {
+    forward: { glyph: '→', label: 'Forward' },
+    backward: { glyph: '←', label: 'Backward' },
+  };
+  const resolved = directions[direction];
+  if (!resolved) {
+    throw fail('invalid_directional_marker_direction', `Unsupported direction: ${direction}`);
+  }
+  return resolved;
+}
+
+function renderListItem(item, ordered, options) {
+  const [firstChild, ...nestedChildren] = item.children;
+  const leadingMarker = !ordered
+    && firstChild?.type === 'paragraph'
+    && firstChild.children?.[0]?.type === 'directional_marker'
+    ? firstChild.children[0]
+    : null;
+
+  if (!leadingMarker) return `<li>${renderBlocks(item.children, options)}</li>`;
+
+  const direction = requireDirection(leadingMarker.direction);
+  const content = renderInlineNodes(firstChild.children.slice(1), options);
+  const marker = `<span class="and-directional-list-marker" data-direction="${leadingMarker.direction}" role="img" aria-label="${direction.label}">${direction.glyph}</span>`;
+  const paragraph = `<p>${marker}${content}</p>`;
+  const nested = nestedChildren.length > 0 ? `\n${renderBlocks(nestedChildren, options)}` : '';
+  return `<li class="and-directional-list-item" data-direction="${leadingMarker.direction}" style="list-style:none">${paragraph}${nested}</li>`;
+}
+
+function renderFootnoteReference(definition) {
+  const occurrence = definition.referenceIds.length + 1;
+  const referenceId = `and-footnote-ref-${definition.number}-${occurrence}`;
+  definition.referenceIds.push(referenceId);
+  const authoredId = definition.id === undefined
+    ? ''
+    : ` data-footnote-id="${escapeAttribute(definition.id)}"`;
+  return `<sup class="and-footnote-reference" id="${referenceId}"${authoredId}><a href="#and-footnote-${definition.number}" aria-label="Footnote ${definition.number}">${definition.number}</a></sup>`;
+}
+
+function renderFootnoteSection(options) {
+  if (options.footnoteState.definitions.length === 0) return '';
+
+  const items = options.footnoteState.definitions.map((definition) => {
+    const authoredId = definition.id === undefined
+      ? ''
+      : ` data-footnote-id="${escapeAttribute(definition.id)}"`;
+    const backlinks = definition.referenceIds.map((referenceId, index) => {
+      const suffix = definition.referenceIds.length > 1 ? ` ${index + 1}` : '';
+      return `<a class="and-footnote-backref" href="#${referenceId}" aria-label="Back to footnote ${definition.number} reference ${index + 1}">↩${suffix}</a>`;
+    }).join(' ');
+    return `<li id="and-footnote-${definition.number}"${authoredId}><span class="and-footnote-content">${renderInlineNodes(definition.children, options)}</span> ${backlinks}</li>`;
+  }).join('\n');
+
+  return `<section class="and-footnotes" aria-label="Footnotes">\n<hr>\n<ol>\n${items}\n</ol>\n</section>`;
+}
+
 function renderBlocks(blocks, options) {
   return blocks.map((block) => renderBlock(block, options)).join('\n');
+}
+
+function nextHeadingNumber(level, options) {
+  const counters = options.headingCounters;
+  for (let index = 0; index < level - 1; index += 1) {
+    if (counters[index] === 0) counters[index] = 1;
+  }
+  counters[level - 1] += 1;
+  counters.fill(0, level);
+  return counters.slice(0, level).join('.');
 }
 
 function renderBlock(block, options) {
@@ -217,8 +342,11 @@ function renderBlock(block, options) {
       return `<p>${renderInlineNodes(block.children, options)}</p>`;
     case 'heading': {
       const level = Math.min(Math.max(Number(block.level), 1), 6);
-      const autoNumber = block.autoNumber ? ' class="and-auto-numbered" data-auto-number="true"' : '';
-      return `<h${level}${autoNumber}>${renderInlineNodes(block.children, options)}</h${level}>`;
+      if (!block.autoNumber) {
+        return `<h${level}>${renderInlineNodes(block.children, options)}</h${level}>`;
+      }
+      const number = nextHeadingNumber(level, options);
+      return `<h${level} class="and-auto-numbered" data-auto-number="true" data-number="${number}"><span class="and-heading-number">${number}.</span> ${renderInlineNodes(block.children, options)}</h${level}>`;
     }
     case 'horizontal_rule':
       return '<hr>';
@@ -226,8 +354,41 @@ function renderBlock(block, options) {
       return `<blockquote>\n${renderBlocks(block.children, options)}\n</blockquote>`;
     case 'list': {
       const tag = block.ordered ? 'ol' : 'ul';
-      const items = block.items.map((item) => `<li>${renderBlocks(item.children, options)}</li>`).join('\n');
+      const items = block.items.map((item) => renderListItem(item, block.ordered, options)).join('\n');
       return `<${tag}>\n${items}\n</${tag}>`;
+    }
+    case 'todo_list': {
+      const states = {
+        unchecked: { glyph: '☐', label: 'Unchecked' },
+        checked: { glyph: '☑', label: 'Checked' },
+        in_progress: { glyph: '◐', label: 'In progress' },
+        cancelled: { glyph: '☒', label: 'Cancelled' },
+      };
+      const items = block.items.map((item) => {
+        if (item.type !== 'todo_item') {
+          throw fail('invalid_todo_list_item', 'todo_list items must have type todo_item.');
+        }
+        const state = states[item.state];
+        if (!state) throw fail('invalid_todo_item_state', `Unsupported todo state: ${item.state}`);
+        const [firstChild, ...nestedChildren] = item.children;
+        if (!firstChild || firstChild.type !== 'paragraph') {
+          throw fail('unsupported_todo_item_shape', 'HTML todo items require a paragraph head.');
+        }
+        const marker = `<span class="and-todo-state" role="img" aria-label="${state.label}">${state.glyph}</span>`;
+        const content = `<span class="and-todo-content">${renderInlineNodes(firstChild.children, options)}</span>`;
+        const nested = nestedChildren.length > 0 ? `\n${renderBlocks(nestedChildren, options)}` : '';
+        return `<li class="and-todo-item" data-state="${item.state}">${marker} ${content}${nested}</li>`;
+      }).join('\n');
+      return `<ul class="and-todo-list" style="list-style:none;padding-inline-start:0">\n${items}\n</ul>`;
+    }
+    case 'auto_number_list': {
+      const items = block.items.map((item) => {
+        if (item.type !== 'list_item') {
+          throw fail('invalid_auto_number_list_item', 'auto_number_list items must have type list_item.');
+        }
+        return `<li>${renderBlocks(item.children, options)}</li>`;
+      }).join('\n');
+      return `<ol class="and-auto-number-list" data-auto-number="true">\n${items}\n</ol>`;
     }
     case 'code_block': {
       return renderCodeBlock(block);
@@ -331,7 +492,14 @@ export function renderHtml(document, options = {}) {
     throw fail('invalid_document', 'HTML rendering requires a document node.');
   }
 
-  const normalizedOptions = normalizeRenderOptions(options);
-  const body = renderBlocks(document.children, normalizedOptions);
+  validateFootnoteGraph(document);
+  const normalizedOptions = {
+    ...normalizeRenderOptions(options),
+    headingCounters: Array(6).fill(0),
+    footnoteState: { definitions: [], named: new Map() },
+  };
+  const blocks = renderBlocks(document.children, normalizedOptions);
+  const footnotes = renderFootnoteSection(normalizedOptions);
+  const body = [blocks, footnotes].filter((part) => part.length > 0).join('\n');
   return normalizedOptions.fragment === false ? renderFullDocument(body) : body;
 }

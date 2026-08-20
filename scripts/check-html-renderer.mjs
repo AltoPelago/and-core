@@ -182,7 +182,21 @@ const v2Source = `&ND v2
 
 # [n] Proposal
 
-[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][:date = 2026-08-20][= marked][_ under][ ][x][,][;][>][<][%][.]
+[# anchor][@ #anchor | anchor][! caution][? why][+ custom][~ image.jpg | Sample image][~ diagram.png | Diagram | half][~ /hero.jpg | Hero | full][- old [* nested]][" quote][' hidden][:date = 2026-08-20][= marked][_ under][>][<][.]
+
+Numbered:
+
+- [n] first
+- [n] second
+
+Tasks:
+
+- [ ] draft
+- [x] parser
+- [,] documentation
+- [;] discarded
+
+Footnote [% (A1) supporting [* detail]] and reuse [% (A1)].
 
 ~~~=
 Highlighted
@@ -199,7 +213,7 @@ Disclaimer
 const parsedV2 = parseAnd(v2Source, { allowV2: true });
 assert(parsedV2.ok, `v2 renderer smoke source should parse: ${parsedV2.errorCode ?? 'unknown_error'}`);
 const v2Fragment = renderHtml(parsedV2.document);
-assert(v2Fragment.includes('<h1 class="and-auto-numbered" data-auto-number="true">Proposal</h1>'), 'renderer should project v2 heading auto-number intent');
+assert(v2Fragment.includes('<h1 class="and-auto-numbered" data-auto-number="true" data-number="1"><span class="and-heading-number">1.</span> Proposal</h1>'), 'renderer should display v2 heading auto numbers');
 assert(v2Fragment.includes('<span class="and-anchor" id="anchor" aria-hidden="true"></span>'), 'renderer should project v2 anchors');
 assert(v2Fragment.includes('<a href="#anchor">anchor</a>'), 'renderer should project inherited links to v2 local anchors');
 assert(v2Fragment.includes('class="and-image and-image-inline" src="image.jpg" alt="Sample image"'), 'renderer should project inline images with alt text');
@@ -211,10 +225,14 @@ assert(v2Fragment.includes('<span class="and-comment" hidden>hidden</span>'), 'r
 assert(v2Fragment.includes('<data class="and-typed-value" data-type="date" value="2026-08-20">2026-08-20</data>'), 'renderer should project AEON scalar typed values without interpreting them');
 assert(v2Fragment.includes('<mark>marked</mark>'), 'renderer should project v2 highlights');
 assert(v2Fragment.includes('<u>under</u>'), 'renderer should project v2 underlines');
-assert(v2Fragment.includes('data-state="in_progress"'), 'renderer should project v2 todo states');
+assert(v2Fragment.includes('<ul class="and-todo-list" style="list-style:none;padding-inline-start:0">'), 'renderer should project first-class todo lists without bullets');
+assert(v2Fragment.includes('class="and-todo-item" data-state="in_progress"'), 'renderer should project todo state on first-class items');
 assert(v2Fragment.includes('data-direction="forward"'), 'renderer should project v2 directions');
-assert(v2Fragment.includes('class="and-auto-number-marker"'), 'renderer should project v2 inline auto-number intent');
+assert(v2Fragment.includes('<ol class="and-auto-number-list" data-auto-number="true">'), 'renderer should project first-class auto-number lists');
 assert(v2Fragment.includes('<br>'), 'renderer should project v2 explicit line breaks');
+assert(v2Fragment.includes('<sup class="and-footnote-reference" id="and-footnote-ref-1-1" data-footnote-id="A1"><a href="#and-footnote-1" aria-label="Footnote 1">1</a></sup>'), 'renderer should project linked footnote references');
+assert(v2Fragment.includes('<section class="and-footnotes" aria-label="Footnotes">'), 'renderer should append a footnote section');
+assert(v2Fragment.includes('<strong>detail</strong>'), 'renderer should preserve rich footnote content');
 assert(v2Fragment.includes('<p class="and-highlight-paragraph">Highlighted</p>'), 'renderer should project v2 highlighted blocks');
 assert(v2Fragment.includes('<header class="and-header-text" data-tag="hero">Header text</header>'), 'renderer should project v2 header-text blocks');
 assert(v2Fragment.includes('<aside class="and-disclaimer" data-tag="legal">Disclaimer</aside>'), 'renderer should project v2 disclaimer blocks');

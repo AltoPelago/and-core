@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-directional-list-markers",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [>] forward item but [<] inline\n- ordinary item with [>] inline\n- [<] backward item but [>] inline\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "a leading directional marker remains an inline AST node in an unordered list item",
+      "the HTML projection replaces only that item's bullet with the leading arrow",
+      "later directional markers remain inline"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "directional_marker", "direction": "forward" },
+                    { "type": "text", "value": " forward item but " },
+                    { "type": "directional_marker", "direction": "backward" },
+                    { "type": "text", "value": " inline" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "ordinary item with " },
+                    { "type": "directional_marker", "direction": "forward" },
+                    { "type": "text", "value": " inline" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "directional_marker", "direction": "backward" },
+                    { "type": "text", "value": " backward item but " },
+                    { "type": "directional_marker", "direction": "forward" },
+                    { "type": "text", "value": " inline" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

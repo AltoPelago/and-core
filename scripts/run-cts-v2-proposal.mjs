@@ -178,6 +178,48 @@ function runApiBoundaryChecks() {
     'parseInline must preserve the AEON datatype annotation and scalar literal family'
   ));
 
+  const todoList = parseAnd('&ND v2\n\n- [x] parser\n', { allowV2: true });
+  checks.push(reportCheck(
+    'first-class v2 todo-list shape',
+    todoList.ok
+      && todoList.document.children[0]?.type === 'todo_list'
+      && todoList.document.children[0]?.items?.[0]?.type === 'todo_item'
+      && todoList.document.children[0]?.items?.[0]?.state === 'checked',
+    'todo state belongs to a first-class todo item rather than an inline marker'
+  ));
+
+  const inlineTodo = parseInline('[x] parser', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'todo marker requires unordered item prefix',
+    !inlineTodo.ok && inlineTodo.errorCode === 'unknown_inline_type',
+    'todo markers must not parse as generic inline nodes'
+  ));
+
+  const autoNumberList = parseAnd('&ND v2\n\n- [n] first\n- [n] second\n', { allowV2: true });
+  checks.push(reportCheck(
+    'first-class v2 auto-number-list shape',
+    autoNumberList.ok
+      && autoNumberList.document.children[0]?.type === 'auto_number_list'
+      && autoNumberList.document.children[0]?.items?.[0]?.type === 'list_item',
+    '[n] belongs to a first-class auto-number list rather than an inline marker'
+  ));
+
+  const namedFootnote = parseAnd('&ND v2\n\nhello [% (A1) world] again [% (A1)]\n', { allowV2: true });
+  checks.push(reportCheck(
+    'named v2 footnote declaration and reuse',
+    namedFootnote.ok
+      && namedFootnote.document.children[0]?.children?.[1]?.type === 'footnote_definition'
+      && namedFootnote.document.children[0]?.children?.[3]?.type === 'footnote_reference',
+    'named footnotes must separate the first definition from later shorthand references'
+  ));
+
+  const inlineFootnoteReference = parseInline('[% (A1)]', { allowV2: true, version: 'v2' });
+  checks.push(reportCheck(
+    'inline footnote reference shape',
+    inlineFootnoteReference.ok && inlineFootnoteReference.nodes?.[0]?.type === 'footnote_reference',
+    'parseInline exposes footnote reference shape while parseAnd performs document resolution'
+  ));
+
   const typedCanonicalSource = '&ND v2\n\n[:number = 1_000.50] [:hex = #FF_00] [:string = \'hello\']\n';
   const typedCanonicalParsed = parseAnd(typedCanonicalSource, { allowV2: true });
   const typedCanonical = typedCanonicalParsed.ok

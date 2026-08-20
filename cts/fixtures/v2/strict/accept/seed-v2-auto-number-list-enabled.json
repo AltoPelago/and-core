@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-auto-number-list-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [n] first\n- [n] second\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "an unordered item prefix plus [n] creates a first-class auto-number list",
+      "the contextual marker is consumed rather than retained as inline content"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "auto_number_list",
+          "items": [
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [{ "type": "text", "value": "first" }]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [{ "type": "text", "value": "second" }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

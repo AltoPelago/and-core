@@ -23,15 +23,19 @@
     "inline.typed_value",
     "inline.highlight",
     "inline.underline",
-    "inline.todo.unchecked",
-    "inline.todo.checked",
-    "inline.todo.in_progress",
-    "inline.todo.cancelled",
+    "inline.footnote_definition.anonymous",
+    "inline.footnote_definition.named",
+    "inline.footnote_reference",
+    "block.todo_list",
+    "block.todo_item.unchecked",
+    "block.todo_item.checked",
+    "block.todo_item.in_progress",
+    "block.todo_item.cancelled",
     "inline.direction.forward",
     "inline.direction.backward",
-    "inline.auto_number",
     "inline.line_break",
     "heading.auto_number",
+    "block.auto_number_list",
     "block.highlight_paragraph",
     "block.header_text",
     "block.disclaimer",
@@ -60,11 +64,14 @@
     "inline.typed_value.clarifier",
     "inline.highlight",
     "inline.underline",
-    "inline.todo",
+    "inline.footnote_definition",
+    "inline.footnote_reference",
+    "block.todo_list",
+    "block.todo_item",
     "inline.direction",
-    "inline.auto_number",
     "inline.line_break",
     "heading.auto_number",
+    "block.auto_number_list",
     "block.highlight_paragraph",
     "block.header_text",
     "block.disclaimer",
@@ -88,8 +95,14 @@
     "navigation.root_anchor_to_blockquote_link",
     "rich.image_nested",
     "rich.typed_value_nested",
-    "adjacency.marker_to_rich",
-    "adjacency.line_break_to_rich"
+    "todo_item.rich_content",
+    "todo_item.line_break_content",
+    "auto_number_item.rich_content",
+    "auto_number_item.line_break_content",
+    "heading.auto_number.hierarchy",
+    "footnote.rich_content",
+    "footnote.reused_reference",
+    "directional_marker.list_bullet_replacement"
   ],
   "cases": [
     {
@@ -155,13 +168,8 @@
         "inline.comment",
         "inline.highlight",
         "inline.underline",
-        "inline.todo.unchecked",
-        "inline.todo.checked",
-        "inline.todo.in_progress",
-        "inline.todo.cancelled",
         "inline.direction.forward",
         "inline.direction.backward",
-        "inline.auto_number",
         "inline.line_break"
       ],
       "spanAssertions": [
@@ -191,34 +199,24 @@
           "span": { "startOffset": 66, "endOffset": 75, "startLine": 3, "startColumn": 59, "endLine": 3, "endColumn": 68 }
         },
         {
-          "cover": "inline.todo",
+          "cover": "inline.direction",
           "path": "$.children[0].children[10]",
           "span": { "startOffset": 76, "endOffset": 79, "startLine": 3, "startColumn": 69, "endLine": 3, "endColumn": 72 }
         },
         {
-          "cover": "inline.direction",
-          "path": "$.children[0].children[18]",
-          "span": { "startOffset": 92, "endOffset": 95, "startLine": 3, "startColumn": 85, "endLine": 3, "endColumn": 88 }
-        },
-        {
-          "cover": "inline.auto_number",
-          "path": "$.children[0].children[22]",
-          "span": { "startOffset": 100, "endOffset": 103, "startLine": 3, "startColumn": 93, "endLine": 3, "endColumn": 96 }
-        },
-        {
           "cover": "inline.line_break",
-          "path": "$.children[0].children[23]",
-          "span": { "startOffset": 103, "endOffset": 106, "startLine": 3, "startColumn": 96, "endLine": 3, "endColumn": 99 }
+          "path": "$.children[0].children[14]",
+          "span": { "startOffset": 84, "endOffset": 87, "startLine": 3, "startColumn": 77, "endLine": 3, "endColumn": 80 }
         }
       ],
-      "source": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n",
+      "source": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [>] [<] [.]\n",
       "expected": {
         "canonical": {
-          "embedded": "[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n",
-          "standalone": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [ ] [x] [,] [;] [>] [<] [%][.]\n"
+          "embedded": "[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [>] [<] [.]\n",
+          "standalone": "&ND v2\n\n[- old [* bold]] [\" quote [/ soft]] [' hidden] [= marked] [_ under] [>] [<] [.]\n"
         },
         "html": {
-          "fragment": "<p><s>old <strong>bold</strong></s> <q>quote <em>soft</em></q> <span class=\"and-comment\" hidden>hidden</span> <mark>marked</mark> <u>under</u> <span class=\"and-todo-marker\" data-state=\"unchecked\" role=\"img\" aria-label=\"Unchecked\">☐</span> <span class=\"and-todo-marker\" data-state=\"checked\" role=\"img\" aria-label=\"Checked\">☑</span> <span class=\"and-todo-marker\" data-state=\"in_progress\" role=\"img\" aria-label=\"In progress\">◐</span> <span class=\"and-todo-marker\" data-state=\"cancelled\" role=\"img\" aria-label=\"Cancelled\">☒</span> <span class=\"and-directional-marker\" data-direction=\"forward\" role=\"img\" aria-label=\"Forward\">→</span> <span class=\"and-directional-marker\" data-direction=\"backward\" role=\"img\" aria-label=\"Backward\">←</span> <span class=\"and-auto-number-marker\" data-auto-number=\"true\" aria-hidden=\"true\"></span><br></p>"
+          "fragment": "<p><s>old <strong>bold</strong></s> <q>quote <em>soft</em></q> <span class=\"and-comment\" hidden>hidden</span> <mark>marked</mark> <u>under</u> <span class=\"and-directional-marker\" data-direction=\"forward\" role=\"img\" aria-label=\"Forward\">→</span> <span class=\"and-directional-marker\" data-direction=\"backward\" role=\"img\" aria-label=\"Backward\">←</span> <br></p>"
         }
       }
     },
@@ -333,7 +331,51 @@
           "standalone": "&ND v2\n\n# [n] Numbered\n\n~~~=\nHighlight [= nested].\n~~~=\n\n===hero\nHeader [! note].\n===\n\n***legal\nTerms [? why].\n***\n"
         },
         "html": {
-          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\">Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-admonition\">note</span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-question\">why</span>.</aside>"
+          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1\"><span class=\"and-heading-number\">1.</span> Numbered</h1>\n<p class=\"and-highlight-paragraph\">Highlight <mark>nested</mark>.</p>\n<header class=\"and-header-text\" data-tag=\"hero\">Header <span class=\"and-admonition\">note</span>.</header>\n<aside class=\"and-disclaimer\" data-tag=\"legal\">Terms <span class=\"and-question\">why</span>.</aside>"
+        }
+      }
+    },
+    {
+      "id": "heading-auto-number-hierarchy",
+      "covers": ["heading.auto_number"],
+      "combinationCovers": ["heading.auto_number.hierarchy"],
+      "source": "&ND v2\n\n# [n] One\n\n## [n] Child\n\n## [n] Sibling\n\n# [n] Two\n",
+      "expected": {
+        "canonical": {
+          "embedded": "# [n] One\n\n## [n] Child\n\n## [n] Sibling\n\n# [n] Two\n",
+          "standalone": "&ND v2\n\n# [n] One\n\n## [n] Child\n\n## [n] Sibling\n\n# [n] Two\n"
+        },
+        "html": {
+          "fragment": "<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1\"><span class=\"and-heading-number\">1.</span> One</h1>\n<h2 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1.1\"><span class=\"and-heading-number\">1.1.</span> Child</h2>\n<h2 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"1.2\"><span class=\"and-heading-number\">1.2.</span> Sibling</h2>\n<h1 class=\"and-auto-numbered\" data-auto-number=\"true\" data-number=\"2\"><span class=\"and-heading-number\">2.</span> Two</h1>"
+        }
+      }
+    },
+    {
+      "id": "auto-number-list",
+      "covers": [
+        "block.auto_number_list",
+        "inline.admonition",
+        "inline.line_break"
+      ],
+      "combinationCovers": [
+        "auto_number_item.rich_content",
+        "auto_number_item.line_break_content"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "block.auto_number_list",
+          "path": "$.children[0]",
+          "span": { "startOffset": 8, "endOffset": 39, "startLine": 3, "startColumn": 1, "endLine": 4, "endColumn": 16 }
+        }
+      ],
+      "source": "&ND v2\n\n- [n] [! first]\n- [n] second[.]\n",
+      "expected": {
+        "canonical": {
+          "embedded": "- [n] [! first]\n- [n] second[.]\n",
+          "standalone": "&ND v2\n\n- [n] [! first]\n- [n] second[.]\n"
+        },
+        "html": {
+          "fragment": "<ol class=\"and-auto-number-list\" data-auto-number=\"true\">\n<li><p><span class=\"and-admonition\">first</span></p></li>\n<li><p>second<br></p></li>\n</ol>"
         }
       }
     },
@@ -485,26 +527,106 @@
       }
     },
     {
-      "id": "adjacent-markers-and-rich-tags",
+      "id": "directional-list-markers",
+      "covers": ["inline.direction.forward", "inline.direction.backward"],
+      "combinationCovers": ["directional_marker.list_bullet_replacement"],
+      "source": "&ND v2\n\n- [>] forward item but [<] inline\n- ordinary item with [>] inline\n- [<] backward item but [>] inline\n",
+      "expected": {
+        "canonical": {
+          "embedded": "- [>] forward item but [<] inline\n- ordinary item with [>] inline\n- [<] backward item but [>] inline\n",
+          "standalone": "&ND v2\n\n- [>] forward item but [<] inline\n- ordinary item with [>] inline\n- [<] backward item but [>] inline\n"
+        },
+        "html": {
+          "fragment": "<ul>\n<li class=\"and-directional-list-item\" data-direction=\"forward\" style=\"list-style:none\"><p><span class=\"and-directional-list-marker\" data-direction=\"forward\" role=\"img\" aria-label=\"Forward\">→</span> forward item but <span class=\"and-directional-marker\" data-direction=\"backward\" role=\"img\" aria-label=\"Backward\">←</span> inline</p></li>\n<li><p>ordinary item with <span class=\"and-directional-marker\" data-direction=\"forward\" role=\"img\" aria-label=\"Forward\">→</span> inline</p></li>\n<li class=\"and-directional-list-item\" data-direction=\"backward\" style=\"list-style:none\"><p><span class=\"and-directional-list-marker\" data-direction=\"backward\" role=\"img\" aria-label=\"Backward\">←</span> backward item but <span class=\"and-directional-marker\" data-direction=\"forward\" role=\"img\" aria-label=\"Forward\">→</span> inline</p></li>\n</ul>"
+        }
+      }
+    },
+    {
+      "id": "todo-list-states",
+      "covers": [
+        "block.todo_list",
+        "block.todo_item.unchecked",
+        "block.todo_item.checked",
+        "block.todo_item.in_progress",
+        "block.todo_item.cancelled"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "block.todo_list",
+          "path": "$.children[0]",
+          "span": { "startOffset": 8, "endOffset": 68, "startLine": 3, "startColumn": 1, "endLine": 6, "endColumn": 16 }
+        },
+        {
+          "cover": "block.todo_item",
+          "path": "$.children[0].items[0]",
+          "span": { "startOffset": 8, "endOffset": 19, "startLine": 3, "startColumn": 1, "endLine": 3, "endColumn": 12 }
+        }
+      ],
+      "source": "&ND v2\n\n- [ ] draft\n- [x] parser\n- [,] documentation\n- [;] discarded\n",
+      "expected": {
+        "canonical": {
+          "embedded": "- [ ] draft\n- [x] parser\n- [,] documentation\n- [;] discarded\n",
+          "standalone": "&ND v2\n\n- [ ] draft\n- [x] parser\n- [,] documentation\n- [;] discarded\n"
+        },
+        "html": {
+          "fragment": "<ul class=\"and-todo-list\" style=\"list-style:none;padding-inline-start:0\">\n<li class=\"and-todo-item\" data-state=\"unchecked\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"Unchecked\">☐</span> <span class=\"and-todo-content\">draft</span></li>\n<li class=\"and-todo-item\" data-state=\"checked\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"Checked\">☑</span> <span class=\"and-todo-content\">parser</span></li>\n<li class=\"and-todo-item\" data-state=\"in_progress\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"In progress\">◐</span> <span class=\"and-todo-content\">documentation</span></li>\n<li class=\"and-todo-item\" data-state=\"cancelled\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"Cancelled\">☒</span> <span class=\"and-todo-content\">discarded</span></li>\n</ul>"
+        }
+      }
+    },
+    {
+      "id": "todo-item-rich-content",
       "covers": [
         "inline.admonition",
         "inline.question",
-        "inline.todo.checked",
-        "inline.auto_number",
+        "block.todo_item.checked",
         "inline.line_break"
       ],
       "combinationCovers": [
-        "adjacency.marker_to_rich",
-        "adjacency.line_break_to_rich"
+        "todo_item.rich_content",
+        "todo_item.line_break_content"
       ],
-      "source": "&ND v2\n\n[! alert][x][.][? next][%]\n",
+      "source": "&ND v2\n\n- [x] [! alert][.][? next]\n",
       "expected": {
         "canonical": {
-          "embedded": "[! alert][x][.][? next][%]\n",
-          "standalone": "&ND v2\n\n[! alert][x][.][? next][%]\n"
+          "embedded": "- [x] [! alert][.][? next]\n",
+          "standalone": "&ND v2\n\n- [x] [! alert][.][? next]\n"
         },
         "html": {
-          "fragment": "<p><span class=\"and-admonition\">alert</span><span class=\"and-todo-marker\" data-state=\"checked\" role=\"img\" aria-label=\"Checked\">☑</span><br><span class=\"and-question\">next</span><span class=\"and-auto-number-marker\" data-auto-number=\"true\" aria-hidden=\"true\"></span></p>"
+          "fragment": "<ul class=\"and-todo-list\" style=\"list-style:none;padding-inline-start:0\">\n<li class=\"and-todo-item\" data-state=\"checked\"><span class=\"and-todo-state\" role=\"img\" aria-label=\"Checked\">☑</span> <span class=\"and-todo-content\"><span class=\"and-admonition\">alert</span><br><span class=\"and-question\">next</span></span></li>\n</ul>"
+        }
+      }
+    },
+    {
+      "id": "footnotes",
+      "covers": [
+        "inline.footnote_definition.anonymous",
+        "inline.footnote_definition.named",
+        "inline.footnote_reference"
+      ],
+      "combinationCovers": [
+        "footnote.rich_content",
+        "footnote.reused_reference"
+      ],
+      "spanAssertions": [
+        {
+          "cover": "inline.footnote_definition",
+          "path": "$.children[0].children[1]",
+          "span": { "startOffset": 14, "endOffset": 36, "startLine": 3, "startColumn": 7, "endLine": 3, "endColumn": 29 }
+        },
+        {
+          "cover": "inline.footnote_reference",
+          "path": "$.children[0].children[5]",
+          "span": { "startOffset": 75, "endOffset": 83, "startLine": 3, "startColumn": 68, "endLine": 3, "endColumn": 76 }
+        }
+      ],
+      "source": "&ND v2\n\nHello [% anonymous [* note]]. Named [% (A1) rich [? detail]] again [% (A1)].\n",
+      "expected": {
+        "canonical": {
+          "embedded": "Hello [% anonymous [* note]]. Named [% (A1) rich [? detail]] again [% (A1)].\n",
+          "standalone": "&ND v2\n\nHello [% anonymous [* note]]. Named [% (A1) rich [? detail]] again [% (A1)].\n"
+        },
+        "html": {
+          "fragment": "<p>Hello <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-1-1\"><a href=\"#and-footnote-1\" aria-label=\"Footnote 1\">1</a></sup>. Named <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-2-1\" data-footnote-id=\"A1\"><a href=\"#and-footnote-2\" aria-label=\"Footnote 2\">2</a></sup> again <sup class=\"and-footnote-reference\" id=\"and-footnote-ref-2-2\" data-footnote-id=\"A1\"><a href=\"#and-footnote-2\" aria-label=\"Footnote 2\">2</a></sup>.</p>\n<section class=\"and-footnotes\" aria-label=\"Footnotes\">\n<hr>\n<ol>\n<li id=\"and-footnote-1\"><span class=\"and-footnote-content\">anonymous <strong>note</strong></span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-1-1\" aria-label=\"Back to footnote 1 reference 1\">↩</a></li>\n<li id=\"and-footnote-2\" data-footnote-id=\"A1\"><span class=\"and-footnote-content\">rich <span class=\"and-question\">detail</span></span> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-2-1\" aria-label=\"Back to footnote 2 reference 1\">↩ 1</a> <a class=\"and-footnote-backref\" href=\"#and-footnote-ref-2-2\" aria-label=\"Back to footnote 2 reference 2\">↩ 2</a></li>\n</ol>\n</section>"
         }
       }
     },

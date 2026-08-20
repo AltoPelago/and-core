@@ -77,8 +77,10 @@ assigns each promoted form an explicit ownership boundary:
 | `[+ ...]` | Core syntax + convention | Scalar consumer tag; vocabulary and behavior remain consumer-defined. |
 | `[~ source | alt | mode]` | Core | Inline image with required alt text and `inline`, `half`, or `full` display intent. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
-| `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
-| heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
+| `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo lists and item states; workflow and presentation are projections. |
+| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; display is a projection. |
+| heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
+| `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
 | `[^ ...]` and other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
@@ -89,12 +91,12 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 94-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 111-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 41 accepted fixtures covering inline tags, rich nesting, compact markers, heading auto-numbering,
-  and paired blocks
-- 53 rejected fixtures covering empty payloads, malformed spacing, invalid markers, local-fragment
-  integrity, tags, and fences
+- 43 accepted fixtures covering inline tags, rich nesting, footnotes, first-class todo and auto-number
+  lists, compact markers, heading auto-numbering, and paired blocks
+- 68 rejected fixtures covering empty payloads, malformed spacing, invalid markers, mixed list kinds,
+  footnote graph integrity, local-fragment integrity, tags, and fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
 - embedded-version equivalence checks for every proposal fixture
@@ -364,17 +366,19 @@ Expected direction:
 - v2 strict parse success for valid underline-tag form
 - strict rejection for malformed content with stable error code
 
-### `seed-v2-inline-todo-markers-enabled`
+### `seed-v2-todo-list-states`
 
 Intent:
 
-- promote v1-reserved todo markers `[ ]`, `[x]`, `[,]`, `[;]` into explicit v2 inline states
-- ensure each marker maps to one stable semantic state and malformed forms fail closed
+- promote `- [ ] content`, `- [x] content`, `- [,] content`, and `- [;] content` into a first-class
+  todo-list block with state stored on each todo item
+- keep todo states out of the generic inline union and enforce homogeneous list blocks
 
 Expected direction:
 
-- v2 strict parse success for the four valid todo markers
-- strict rejection for malformed or unknown todo marker forms
+- v2 strict parse success for all four states and inherited nested-list structure
+- bare inline states, empty items, ordered todo markers, malformed spacing, unknown states, and mixed
+  ordinary/todo list blocks fail closed
 
 ### `seed-v2-inline-directional-markers-enabled`
 
@@ -388,29 +392,30 @@ Expected direction:
 - v2 strict parse success for both directional markers
 - strict rejection for malformed or unknown directional marker forms
 
-### `seed-v2-inline-auto-number-marker-enabled`
+### `seed-v2-auto-number-list-enabled`
 
 Intent:
 
-- promote v1-reserved `[%]` into an explicit v2 inline auto-number marker
-- keep recognition exact and fail-closed for malformed near-miss forms
+- promote `- [n] content` into a first-class auto-number list
+- consume `[n]` as structural list intent rather than generic inline content
 
 Expected direction:
 
-- v2 strict parse success for valid `[%]` marker usage
-- strict rejection for malformed or unknown auto-number marker forms
+- v2 strict parse success for homogeneous `- [n] content` blocks and inherited nesting
+- strict rejection for empty, malformed, ordered-marker, and mixed-kind forms
 
 ### `seed-v2-heading-auto-number-marker-enabled`
 
 Intent:
 
-- promote v1-reserved `[n]` into a header-only v2 auto-number marker
-- keep scope explicit: valid in heading prefix position, rejected elsewhere
+- promote v1-reserved `[n]` into a contextual heading auto-number marker
+- keep scope exact: valid as the `# [n] content` prefix and rejected as generic inline content
 
 Expected direction:
 
 - v2 strict parse success for heading forms like `# [n] Title`
-- strict rejection for marker-only headings and non-heading usage
+- strict rejection for marker-only headings, missing separator space, and non-contextual usage
+- reference HTML projection visibly numbers participating headings hierarchically by heading level
 
 ### `seed-v2-block-highlight-paragraph-enabled`
 
@@ -448,18 +453,20 @@ Expected direction:
 - v2 strict parse success for balanced `***` / `***name` blocks with non-empty payload
 - strict rejection for unclosed blocks or invalid tags when present
 
-### `seed-v2-inline-footnote-tag-enabled`
+### `seed-v2-footnote-named-reuse`
 
 Intent:
 
-- promote v1-reserved `[^ ...]` into a v2 footnote-capable inline form
-- keep footnote handling local and deterministic in core parsing
-
-Current status: deferred for now.
+- promote reserved `[% ...]` into anonymous and named footnote definitions
+- permit `[% (id)]` only as a backward shorthand reference to an already-declared named footnote
+- retain rich footnote content while leaving displayed labels and placement to processors
 
 Expected direction:
 
-- v2 strict parse success for valid footnote-tag form
+- v2 strict parse success for anonymous definitions, named definitions, and repeated named references
+- alphanumeric case-sensitive IDs, one declaration per ID, and no nested footnotes
+- strict rejection for empty definitions, malformed IDs, duplicate definitions, unresolved references,
+  and forward references
 - v1 strict behavior remains reject for the same source
 
 ### `seed-v2-inline-line-break-marker-enabled`

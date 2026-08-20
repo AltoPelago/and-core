@@ -124,6 +124,7 @@ function isEscapable(char) {
 }
 
 const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
+const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
 
 function parseEscape(text, index) {
   const next = text[index + 1];
@@ -337,6 +338,88 @@ function parseQuestionTag(text, index, options, context, baseOffset = 0, inlineD
   );
 }
 
+function containsFootnote(nodes) {
+  return nodes.some((node) => (
+    node.type === 'footnote_definition'
+    || node.type === 'footnote_reference'
+    || (Array.isArray(node.children) && containsFootnote(node.children))
+  ));
+}
+
+function parseFootnoteTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
+  let contentStart = index + 3;
+  let id = null;
+
+  if (text[contentStart] === '(') {
+    const idEnd = text.indexOf(')', contentStart + 1);
+    const closingBracket = text.indexOf(']', contentStart + 1);
+    const lineBreak = text.indexOf('\n', contentStart + 1);
+    if (
+      idEnd === -1
+      || (closingBracket !== -1 && closingBracket < idEnd)
+      || (lineBreak !== -1 && lineBreak < idEnd)
+    ) {
+      return { ok: false, errorCode: 'invalid_footnote_id', nextIndex: contentStart };
+    }
+
+    id = text.slice(contentStart + 1, idEnd);
+    if (!FOOTNOTE_ID_PATTERN.test(id)) {
+      return { ok: false, errorCode: 'invalid_footnote_id', nextIndex: contentStart + 1 };
+    }
+
+    if (text[idEnd + 1] === ']') {
+      context?.semanticState?.footnotes.push({ type: 'reference', id, offset: baseOffset + index });
+      return {
+        ok: true,
+        nextIndex: idEnd + 2,
+        node: withSpan(
+          { type: 'footnote_reference', id },
+          context,
+          baseOffset + index,
+          baseOffset + idEnd + 2
+        ),
+      };
+    }
+    if (text[idEnd + 1] !== ' ') {
+      return { ok: false, errorCode: 'invalid_footnote', nextIndex: idEnd + 1 };
+    }
+    contentStart = idEnd + 2;
+  }
+
+  const parsed = parseInlineSequence(
+    text,
+    contentStart,
+    options,
+    { stopOnClose: true, inlineDepth },
+    context,
+    baseOffset
+  );
+  if (!parsed.ok) return parsed;
+  if (!parsed.closed) return { ok: false, errorCode: 'unclosed_inline', nextIndex: parsed.nextIndex };
+
+  const children = trimRichInlineBoundaries(parsed.nodes, context);
+  if (!hasInlineContent(children)) {
+    return { ok: false, errorCode: 'invalid_footnote', nextIndex: parsed.nextIndex - 1 };
+  }
+  if (containsFootnote(children)) {
+    return { ok: false, errorCode: 'nested_footnote', nextIndex: contentStart };
+  }
+
+  if (id !== null) {
+    context?.semanticState?.footnotes.push({ type: 'definition', id, offset: baseOffset + index });
+  }
+  return {
+    ok: true,
+    nextIndex: parsed.nextIndex,
+    node: withSpan(
+      { type: 'footnote_definition', ...(id === null ? {} : { id }), children },
+      context,
+      baseOffset + index,
+      baseOffset + parsed.nextIndex
+    ),
+  };
+}
+
 function parseStrikeTag(text, index, options, context, baseOffset = 0, inlineDepth = 0) {
   return parseRichV2Tag(
     text, index, options, context, baseOffset, '[- ', 'strike_tag', 'invalid_strike_tag', inlineDepth
@@ -424,25 +507,6 @@ function parseUnderlineTag(text, index, options, context, baseOffset = 0, inline
   );
 }
 
-function parseTodoMarker(text, index, context, baseOffset = 0) {
-  const markers = {
-    '[ ]': 'unchecked',
-    '[x]': 'checked',
-    '[,]': 'in_progress',
-    '[;]': 'cancelled',
-  };
-  const token = text.slice(index, index + 3);
-  const state = markers[token];
-  if (!state) {
-    return { ok: false, errorCode: 'invalid_todo_marker', nextIndex: index };
-  }
-  return {
-    ok: true,
-    nextIndex: index + 3,
-    node: withSpan({ type: 'todo_marker', state }, context, baseOffset + index, baseOffset + index + 3),
-  };
-}
-
 function parseDirectionalMarker(text, index, context, baseOffset = 0) {
   const markers = {
     '[>]': 'forward',
@@ -457,17 +521,6 @@ function parseDirectionalMarker(text, index, context, baseOffset = 0) {
     ok: true,
     nextIndex: index + 3,
     node: withSpan({ type: 'directional_marker', direction }, context, baseOffset + index, baseOffset + index + 3),
-  };
-}
-
-function parseAutoNumberMarker(text, index, context, baseOffset = 0) {
-  if (!text.startsWith('[%]', index)) {
-    return { ok: false, errorCode: 'invalid_auto_number_marker', nextIndex: index };
-  }
-  return {
-    ok: true,
-    nextIndex: index + 3,
-    node: withSpan({ type: 'auto_number_marker' }, context, baseOffset + index, baseOffset + index + 3),
   };
 }
 
@@ -750,6 +803,22 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
       continue;
     }
 
+    if (isV2Document(context) && text.startsWith('[% ', index)) {
+      const nextDepth = inlineDepth + 1;
+      if (typeof options?.budgets?.maxInlineDepth === 'number' && nextDepth > options.budgets.maxInlineDepth) {
+        return { ok: false, errorCode: 'nd_budget_exceeded', nextIndex: index };
+      }
+      const parsed = parseFootnoteTag(text, index, options, context, baseOffset, nextDepth);
+      if (!parsed.ok) return parsed;
+      nodes.push(parsed.node);
+      index = parsed.nextIndex;
+      continue;
+    }
+
+    if (isV2Document(context) && text.startsWith('[%', index)) {
+      return { ok: false, errorCode: 'invalid_footnote', nextIndex: index };
+    }
+
     if (isV2Document(context) && text.startsWith('[+ ', index)) {
       const parsed = parsePlusTag(text, index, context, baseOffset);
       if (!parsed.ok) return parsed;
@@ -835,13 +904,6 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
     }
 
     if (isV2Document(context) && char === '[') {
-      const parsed = parseTodoMarker(text, index, context, baseOffset);
-      if (parsed.ok) {
-        nodes.push(parsed.node);
-        index = parsed.nextIndex;
-        continue;
-      }
-
       const directional = parseDirectionalMarker(text, index, context, baseOffset);
       if (directional.ok) {
         nodes.push(directional.node);
@@ -849,12 +911,6 @@ function parseInlineSequence(text, startIndex, options, state = {}, context, bas
         continue;
       }
 
-      const autoNumber = parseAutoNumberMarker(text, index, context, baseOffset);
-      if (autoNumber.ok) {
-        nodes.push(autoNumber.node);
-        index = autoNumber.nextIndex;
-        continue;
-      }
     }
 
     if (isV2Document(context) && text.startsWith('[.', index)) {
@@ -1384,6 +1440,38 @@ function parseList(lines, start, options, context) {
   const items = [];
   let index = start;
   let expectedNumber = null;
+  let listKind = null;
+
+  const todoStates = {
+    '[ ]': 'unchecked',
+    '[x]': 'checked',
+    '[,]': 'in_progress',
+    '[;]': 'cancelled',
+  };
+
+  function todoPrefix(text) {
+    const token = text.slice(0, 3);
+    const state = todoStates[token];
+    if (!state) return null;
+    if (text.length < 5 || text[3] !== ' ' || text.slice(4).trim().length === 0) {
+      return { ok: false, errorCode: 'invalid_todo_item' };
+    }
+    return { ok: true, state, text: text.slice(4), prefixLength: 4 };
+  }
+
+  function autoNumberPrefix(text) {
+    if (!text.startsWith('[n]')) return null;
+    if (text.length < 5 || text[3] !== ' ' || text.slice(4).trim().length === 0) {
+      return { ok: false, errorCode: 'invalid_auto_number_item' };
+    }
+    return { ok: true, text: text.slice(4), prefixLength: 4 };
+  }
+
+  function isImmediateNestedList(line) {
+    if (!isV2Document(context) || typeof line !== 'string' || !line.startsWith('  ')) return false;
+    const nestedLine = line.slice(2);
+    return /^- /.test(nestedLine) || /^\d+\. /.test(nestedLine);
+  }
 
   while (index < lines.length) {
     const itemStart = index;
@@ -1394,6 +1482,30 @@ function parseList(lines, start, options, context) {
     if (!itemBudget.ok) return itemBudget;
 
     const itemText = ordered ? markerMatch[2] : markerMatch[1];
+    const parsedTodoPrefix = isV2Document(context) ? todoPrefix(itemText) : null;
+    const parsedAutoNumberPrefix = isV2Document(context) ? autoNumberPrefix(itemText) : null;
+    if (parsedTodoPrefix && !parsedTodoPrefix.ok) {
+      return failAt(parsedTodoPrefix.errorCode, context.lineOffset + index, lines[index].length - itemText.length);
+    }
+    if (parsedAutoNumberPrefix && !parsedAutoNumberPrefix.ok) {
+      return failAt(parsedAutoNumberPrefix.errorCode, context.lineOffset + index, lines[index].length - itemText.length);
+    }
+    if (ordered && parsedTodoPrefix?.ok) {
+      return failAt('todo_list_requires_unordered_marker', context.lineOffset + index, 0);
+    }
+    if (ordered && parsedAutoNumberPrefix?.ok) {
+      return failAt('auto_number_list_requires_unordered_marker', context.lineOffset + index, 0);
+    }
+    const itemKind = parsedTodoPrefix?.ok
+      ? 'todo'
+      : parsedAutoNumberPrefix?.ok
+        ? 'auto_number'
+        : 'ordinary';
+    if (listKind !== null && itemKind !== listKind) {
+      return failAt('mixed_list_item_kinds', context.lineOffset + index, 0);
+    }
+    listKind = itemKind;
+
     if (ordered) {
       const actualNumber = Number(markerMatch[1]);
       if (expectedNumber !== null && actualNumber !== expectedNumber) {
@@ -1402,15 +1514,20 @@ function parseList(lines, start, options, context) {
       expectedNumber = actualNumber + 1;
     }
 
-    const item = { type: 'list_item', children: [] };
-    const markerLength = lines[index].length - itemText.length;
+    const item = parsedTodoPrefix?.ok
+      ? { type: 'todo_item', state: parsedTodoPrefix.state, children: [] }
+      : { type: 'list_item', children: [] };
+    const structuralPrefix = parsedTodoPrefix?.ok ? parsedTodoPrefix : parsedAutoNumberPrefix?.ok ? parsedAutoNumberPrefix : null;
+    const headText = structuralPrefix ? structuralPrefix.text : itemText;
+    const markerLength = lines[index].length - itemText.length + (structuralPrefix?.prefixLength ?? 0);
     const headBaseOffset = context.lineStartOffsets[index] + markerLength;
-    const headLines = [itemText];
+    const headLines = [headText];
     index += 1;
     while (
       index < lines.length &&
       lines[index].startsWith('  ') &&
-      lines[index] !== ''
+      lines[index] !== '' &&
+      !isImmediateNestedList(lines[index])
     ) {
       headLines.push(lines[index]);
       index += 1;
@@ -1430,8 +1547,8 @@ function parseList(lines, start, options, context) {
     item.children.push(head.node);
 
     const nested = [];
-    if (lines[index] === '') {
-      index += 1;
+    if (lines[index] === '' || isImmediateNestedList(lines[index])) {
+      if (lines[index] === '') index += 1;
       while (index < lines.length) {
         if (lines[index] === '') {
           nested.push(lines[index]);
@@ -1465,7 +1582,11 @@ function parseList(lines, start, options, context) {
     ok: true,
     nextIndex: index,
     node: withSpan(
-      { type: 'list', ordered, items },
+      listKind === 'todo'
+        ? { type: 'todo_list', items }
+        : listKind === 'auto_number'
+          ? { type: 'auto_number_list', items }
+          : { type: 'list', ordered, items },
       context,
       context.lineStartOffsets[start],
       context.lineStartOffsets[index - 1] + lines[index - 1].length
@@ -1614,16 +1735,12 @@ function parseBlocks(lines, options, context) {
       let autoNumber = false;
       let markerConsumed = 0;
       if (isV2Document(context) && headingText.startsWith('[n]')) {
-        autoNumber = true;
-        headingText = headingText.slice(3);
-        markerConsumed = 3;
-        if (headingText.startsWith(' ')) {
-          headingText = headingText.slice(1);
-          markerConsumed += 1;
-        }
-        if (headingText.length === 0) {
+        if (!headingText.startsWith('[n] ') || headingText.slice(4).trim().length === 0) {
           return failAt('invalid_heading_auto_number_marker', context.lineOffset + index, match[1].length + 1);
         }
+        autoNumber = true;
+        headingText = headingText.slice(4);
+        markerConsumed = 4;
       }
       const heading = parseInlineBlock(
         'heading',
@@ -1730,6 +1847,34 @@ function validateLocalAnchors(semanticState) {
   return { ok: true };
 }
 
+function validateFootnotes(semanticState) {
+  const definitions = new Set();
+  const events = [...semanticState.footnotes].sort((left, right) => left.offset - right.offset);
+
+  for (const event of events) {
+    if (event.type === 'definition') {
+      if (definitions.has(event.id)) {
+        return {
+          ok: false,
+          errorCode: 'duplicate_footnote',
+          diagnostic: { code: 'duplicate_footnote', offset: event.offset },
+        };
+      }
+      definitions.add(event.id);
+      continue;
+    }
+    if (!definitions.has(event.id)) {
+      return {
+        ok: false,
+        errorCode: 'unresolved_footnote_reference',
+        diagnostic: { code: 'unresolved_footnote_reference', offset: event.offset },
+      };
+    }
+  }
+
+  return { ok: true };
+}
+
 export function parseAnd(source, options = {}) {
   const scanned = scanDocument(source, options);
   if (!scanned.ok) {
@@ -1737,7 +1882,7 @@ export function parseAnd(source, options = {}) {
     return publicFailure(finalizeDiagnostic(shiftDiagnosticLines(scanned, lineOffset), scanned.normalized));
   }
 
-  const semanticState = { anchors: [], localLinks: [] };
+  const semanticState = { anchors: [], localLinks: [], footnotes: [] };
   const parsed = parseBlocks(scanned.lines, options, {
     ...scanned.context,
     budgetState: { blockCount: 0, listItemCount: 0 },
@@ -1749,6 +1894,8 @@ export function parseAnd(source, options = {}) {
   if (scanned.context.documentVersion === 'v2') {
     const anchors = validateLocalAnchors(semanticState);
     if (!anchors.ok) return publicFailure(finalizeDiagnostic(anchors, scanned.normalized));
+    const footnotes = validateFootnotes(semanticState);
+    if (!footnotes.ok) return publicFailure(finalizeDiagnostic(footnotes, scanned.normalized));
   }
 
   const document = {

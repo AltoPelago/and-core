@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-named-reuse",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% (1) world] everyone, and a big hello [% (1)] to our guest speaker.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "a named footnote declaration stores its alphanumeric author ID",
+      "later shorthand references reuse the first declaration without duplicating content"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "hello " },
+            {
+              "type": "footnote_definition",
+              "id": "1",
+              "children": [{ "type": "text", "value": "world" }]
+            },
+            { "type": "text", "value": " everyone, and a big hello " },
+            { "type": "footnote_reference", "id": "1" },
+            { "type": "text", "value": " to our guest speaker." }
+          ]
+        }
+      ]
+    }
+  }
+}

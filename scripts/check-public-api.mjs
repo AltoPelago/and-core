@@ -59,6 +59,35 @@ const inlineImageV2 = parseInline('[~ image.jpg | Sample image]', { allowV2: tru
 assert(inlineImageV2.ok && inlineImageV2.children[0].type === 'image_tag', 'public inline parse should expose v2 images');
 const inlineTypedV2 = parseInline('[:date = 2026-08-20]', { allowV2: true, version: 'v2' });
 assert(inlineTypedV2.ok && inlineTypedV2.children[0].value.type === 'DateLiteral', 'public inline parse should expose AEON scalar families');
+const todoV2 = parseAnd('&ND v2\n\n- [x] parser\n', { allowV2: true });
+assert(
+  todoV2.ok
+    && todoV2.document.children[0]?.type === 'todo_list'
+    && todoV2.document.children[0].items[0]?.type === 'todo_item'
+    && todoV2.document.children[0].items[0].state === 'checked',
+  'public parse should expose first-class v2 todo lists',
+);
+const inlineTodoV2 = parseInline('[x] parser', { allowV2: true, version: 'v2' });
+assert(
+  !inlineTodoV2.ok && inlineTodoV2.errorCode === 'unknown_inline_type',
+  'todo state markers should not remain generic inline nodes',
+);
+const autoNumberListV2 = parseAnd('&ND v2\n\n- [n] first\n- [n] second\n', { allowV2: true });
+assert(
+  autoNumberListV2.ok
+    && autoNumberListV2.document.children[0]?.type === 'auto_number_list'
+    && autoNumberListV2.document.children[0].items[0]?.type === 'list_item',
+  'public parse should expose first-class v2 auto-number lists',
+);
+const footnoteV2 = parseAnd('&ND v2\n\nhello [% (A1) world] again [% (A1)]\n', { allowV2: true });
+assert(
+  footnoteV2.ok
+    && footnoteV2.document.children[0]?.children?.[1]?.type === 'footnote_definition'
+    && footnoteV2.document.children[0]?.children?.[3]?.type === 'footnote_reference',
+  'public parse should expose v2 footnote definitions and shorthand references',
+);
+const inlineFootnoteV2 = parseInline('[% (A1)]', { allowV2: true, version: 'v2' });
+assert(inlineFootnoteV2.ok && inlineFootnoteV2.children[0]?.type === 'footnote_reference', 'public inline parse should expose unresolved footnote-reference shape');
 
 const diagnostics = collectDiagnostics('&ND v2\n');
 assert(!diagnostics.ok, 'public diagnostics should surface invalid input');
@@ -75,6 +104,9 @@ const html = renderHtml(parsed.document);
 assert(html.includes('<h1>Public API</h1>'), 'public HTML projection should succeed');
 const htmlV2 = renderHtml(parsedV2.document);
 assert(htmlV2.includes('data-auto-number="true"'), 'public HTML projection should render v2 intent');
+assert(renderHtml(todoV2.document).includes('class="and-todo-list"'), 'public HTML projection should expose first-class todo lists');
+assert(renderHtml(autoNumberListV2.document).includes('class="and-auto-number-list"'), 'public HTML projection should expose first-class auto-number lists');
+assert(renderHtml(footnoteV2.document).includes('class="and-footnotes"'), 'public HTML projection should expose linked endnotes');
 const imageDocument = {
   type: 'document',
   children: [{ type: 'paragraph', children: [inlineImageV2.children[0]] }],

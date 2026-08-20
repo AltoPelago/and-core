@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-list-mixed-kinds",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- ordinary\n- [x] todo\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "mixed_list_item_kinds",
+    "assertions": [
+      "one list block cannot mix ordinary and todo items",
+      "todo lists are first-class rather than decorated ordinary lists"
+    ]
+  }
+}

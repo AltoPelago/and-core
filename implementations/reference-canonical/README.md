@@ -19,7 +19,8 @@ Current scope:
 * tables
 * horizontal rules
 * inline text, strong, emphasis, links, and inline code
-* all promoted v2 scalar metadata tags, inline images, rich inline tags, and compact markers
+* all promoted v2 scalar metadata tags, inline images, rich inline tags, compact directional markers,
+  footnote definitions/references, and first-class todo and auto-number lists
 * AEON-canonical type annotations and scalar literals for v2 typed values
 * v2 heading auto-number intent and paired blocks
 
@@ -38,5 +39,5 @@ emitCanonical(v2Document, { profile: "standalone", version: "v2" });
 The `embedded` profile omits the version header for typed embedding contexts such as annotation
 payloads. The `standalone` profile emits the selected version header followed by one blank line.
 The version defaults to v1 for compatibility. Emitting a v2-only node under v1 fails closed.
-V2 emission also validates portable anchor IDs, document-wide anchor uniqueness, and complete local
-fragment-link resolution before writing output.
+V2 emission also validates portable anchor IDs, document-wide anchor uniqueness, complete local
+fragment-link resolution, and named footnote declaration order/uniqueness before writing output.

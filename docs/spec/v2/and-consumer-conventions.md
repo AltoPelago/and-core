@@ -29,11 +29,13 @@ parse error, rewrite Core canonical text, or infer the document grammar version.
 | `[+ value]` | `plus_tag` with one preserved scalar `value` | Value registry, action mapping, analytics, workflow, and UI |
 | Custom `[:type = scalar]` | Structured datatype label/adornments and a validated inline scalar | Datatype registry, domain validation, units, display formatting, and business meaning |
 | `===tag` and `***tag` | Validated optional `tag` string on the paired-block AST | Tag vocabulary, templates, placement, styling, and product behavior |
-| `[%]` and heading `[n]` | Stable auto-number intent fields | Number sequence, scope, format, restart rules, localization, and displayed labels |
+| heading `[n]` and `auto_number_list` | Stable contextual auto-number intent | Number sequence, scope, format, restart rules, localization, and displayed labels |
+| Footnote definitions and references | Rich definition content, optional authored ID, declaration order, and reference resolution | Superscript numbers or symbols, hover/callout/endnote presentation, placement, backlinks, and accessibility phrasing |
 | `[~ source | alt | mode]` | Preserved source and alt text plus `inline`/`half`/`full` display intent | Base resolution, fetching, caching, MIME validation, intrinsic dimensions, layout details, and failure UI |
 | External `[@ target | label]` | Preserved target and rich label under inherited link syntax | Allowed schemes, navigation, new-window behavior, redirects, previews, tracking, and trust prompts |
 | `+++name` extension blocks | Opaque inherited extension name and payload | Extension registry, interpretation, sandboxing, permissions, and any execution |
-| Todo/directional markers | Stable state or direction enum | Controls, mutation workflow, progress calculation, icons, labels, and persistence |
+| `todo_list` / `todo_item` | First-class list structure and stable item-state enum | Controls, mutation workflow, progress calculation, icons, labels, and persistence |
+| Directional markers | Stable direction enum | Navigation or workflow meaning, icons, labels, and interaction |
 | Inline comments | Preserved rich `comment_tag` children | Visibility, reviewer identity, export policy, redaction, and collaboration workflow |
 
 Local anchors are different: Core owns their identifier grammar, uniqueness, case-sensitive matching,
@@ -62,8 +64,8 @@ the underlying Core grammar.
 
 ## Numbering
 
-`[%]` and heading `[n]` record author intent only. Core does not calculate a number. Consumers should
-define, at minimum:
+Heading `[n]` and `auto_number_list` record author intent only. Core does not calculate a number.
+Consumers should define, at minimum:
 
 - the nodes participating in one sequence;
 - document-wide versus container-local scope;
@@ -73,6 +75,15 @@ define, at minimum:
 
 Calculated numbers belong to a projection or derived model and must not be written into the Core AST
 as though they were parsed source.
+
+## Footnotes
+
+Core distinguishes anonymous definitions, named definitions, and references to already-declared
+named definitions. The authored ID is an identity key, not a requested display label. A consumer may
+render footnotes as numeric or symbolic superscripts, hover details, callouts, document-end notes, or
+another accessible projection. It owns sequence scope, label choice, placement, backlinks, and the
+behavior of repeated references. Those choices must not change reference resolution or rewrite the
+Core AST as though calculated labels appeared in source.
 
 ## Images
 

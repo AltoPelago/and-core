@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-named-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% (A1) ]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_footnote",
+    "assertions": [
+      "a named declaration requires content after its ID",
+      "a spaced empty declaration is not a shorthand reference"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-forward-reference",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% (A1)] then [% (A1) world]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unresolved_footnote_reference",
+    "assertions": [
+      "named footnotes use declaration-before-reference order",
+      "forward shorthand references fail even when a later definition exists"
+    ]
+  }
+}

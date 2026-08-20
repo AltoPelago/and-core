@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-list-invalid-symbol",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [y] nope\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "todo state markers remain a closed set",
+      "unknown bracket forms do not become todo items"
+    ]
+  }
+}

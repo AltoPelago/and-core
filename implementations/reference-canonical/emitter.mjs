@@ -11,6 +11,7 @@ function fail(errorCode, detail) {
 }
 
 const LOCAL_ANCHOR_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._:-]*$/;
+const FOOTNOTE_ID_PATTERN = /^[A-Za-z0-9]+$/;
 
 function requireLocalAnchorId(value, errorCode, nodeType) {
   if (typeof value !== 'string' || !LOCAL_ANCHOR_ID_PATTERN.test(value)) {
@@ -56,6 +57,62 @@ function validateLocalAnchorGraph(document) {
       throw fail('unresolved_local_anchor', `Unresolved local anchor: ${target}`);
     }
   }
+}
+
+function requireFootnoteId(value, nodeType) {
+  if (typeof value !== 'string' || !FOOTNOTE_ID_PATTERN.test(value)) {
+    throw fail('invalid_footnote_id', `${nodeType} requires an alphanumeric footnote identifier.`);
+  }
+  return value;
+}
+
+function hasInlineAstContent(nodes) {
+  return Array.isArray(nodes) && nodes.some((node) => {
+    if (node?.type === 'text') return typeof node.value === 'string' && node.value.trim().length > 0;
+    if (Array.isArray(node?.children)) return hasInlineAstContent(node.children);
+    return Boolean(node && typeof node === 'object');
+  });
+}
+
+function validateFootnoteGraph(document) {
+  const definitions = new Set();
+
+  function visit(value, insideFootnote = false) {
+    if (Array.isArray(value)) {
+      value.forEach((child) => visit(child, insideFootnote));
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+
+    if (value.type === 'footnote_definition') {
+      if (insideFootnote) throw fail('nested_footnote', 'Footnote content cannot contain another footnote.');
+      if (!hasInlineAstContent(value.children)) {
+        throw fail('invalid_footnote', 'footnote_definition requires non-empty inline content.');
+      }
+      if (value.id !== undefined) {
+        const id = requireFootnoteId(value.id, value.type);
+        if (definitions.has(id)) throw fail('duplicate_footnote', `Duplicate footnote definition: ${id}`);
+        definitions.add(id);
+      }
+      visit(value.children, true);
+      return;
+    }
+
+    if (value.type === 'footnote_reference') {
+      if (insideFootnote) throw fail('nested_footnote', 'Footnote content cannot contain another footnote.');
+      const id = requireFootnoteId(value.id, value.type);
+      if (!definitions.has(id)) {
+        throw fail('unresolved_footnote_reference', `Unresolved footnote reference: ${id}`);
+      }
+      return;
+    }
+
+    for (const [key, child] of Object.entries(value)) {
+      if (key !== 'span') visit(child, insideFootnote);
+    }
+  }
+
+  visit(document);
 }
 
 function escapeText(value, context = {}) {
@@ -136,6 +193,14 @@ function emitInlineNode(node, context) {
     case 'question_tag':
       requireV2(context, node.type);
       return `[? ${emitInlineNodes(node.children, context)}]`;
+    case 'footnote_definition': {
+      requireV2(context, node.type);
+      const id = node.id === undefined ? '' : `(${requireFootnoteId(node.id, node.type)}) `;
+      return `[% ${id}${emitInlineNodes(node.children, context)}]`;
+    }
+    case 'footnote_reference':
+      requireV2(context, node.type);
+      return `[% (${requireFootnoteId(node.id, node.type)})]`;
     case 'plus_tag':
       requireV2(context, node.type);
       return `[+ ${emitV2Value(node.value, context)}]`;
@@ -164,12 +229,6 @@ function emitInlineNode(node, context) {
     case 'underline_tag':
       requireV2(context, node.type);
       return `[_ ${emitInlineNodes(node.children, context)}]`;
-    case 'todo_marker': {
-      requireV2(context, node.type);
-      const markers = { unchecked: '[ ]', checked: '[x]', in_progress: '[,]', cancelled: '[;]' };
-      if (!markers[node.state]) throw fail('invalid_todo_marker_state', `Unsupported todo state: ${node.state}`);
-      return markers[node.state];
-    }
     case 'directional_marker': {
       requireV2(context, node.type);
       const markers = { forward: '[>]', backward: '[<]' };
@@ -178,9 +237,6 @@ function emitInlineNode(node, context) {
       }
       return markers[node.direction];
     }
-    case 'auto_number_marker':
-      requireV2(context, node.type);
-      return '[%]';
     case 'line_break':
       requireV2(context, node.type);
       return '[.]';
@@ -237,6 +293,51 @@ function emitList(node, context) {
     .join('\n');
 }
 
+function emitTodoList(node, context) {
+  requireV2(context, node.type);
+  const markers = { unchecked: '[ ]', checked: '[x]', in_progress: '[,]', cancelled: '[;]' };
+  return node.items
+    .map((item) => {
+      if (item.type !== 'todo_item') {
+        throw fail('invalid_todo_list_item', 'todo_list items must have type todo_item.');
+      }
+      const marker = markers[item.state];
+      if (!marker) throw fail('invalid_todo_item_state', `Unsupported todo state: ${item.state}`);
+      const [firstChild, ...nestedChildren] = item.children;
+      if (!firstChild || firstChild.type !== 'paragraph') {
+        throw fail('unsupported_todo_item_shape', 'Canonical todo items require a paragraph head.');
+      }
+
+      const head = `- ${marker} ${emitInlineNodes(firstChild.children, context)}`;
+      if (nestedChildren.length === 0) return head;
+
+      const nested = emitBlocks(nestedChildren, context);
+      return `${head}\n\n${indentLines(nested, '  ')}`;
+    })
+    .join('\n');
+}
+
+function emitAutoNumberList(node, context) {
+  requireV2(context, node.type);
+  return node.items
+    .map((item) => {
+      if (item.type !== 'list_item') {
+        throw fail('invalid_auto_number_list_item', 'auto_number_list items must have type list_item.');
+      }
+      const [firstChild, ...nestedChildren] = item.children;
+      if (!firstChild || firstChild.type !== 'paragraph') {
+        throw fail('unsupported_auto_number_item_shape', 'Canonical auto-number items require a paragraph head.');
+      }
+
+      const head = `- [n] ${emitInlineNodes(firstChild.children, context)}`;
+      if (nestedChildren.length === 0) return head;
+
+      const nested = emitBlocks(nestedChildren, context);
+      return `${head}\n\n${indentLines(nested, '  ')}`;
+    })
+    .join('\n');
+}
+
 function emitBlockquote(node, context) {
   const inner = emitBlocks(node.children, context);
   return inner
@@ -272,6 +373,10 @@ function emitBlock(node, context) {
       return '---';
     case 'list':
       return emitList(node, context);
+    case 'todo_list':
+      return emitTodoList(node, context);
+    case 'auto_number_list':
+      return emitAutoNumberList(node, context);
     case 'blockquote':
       return emitBlockquote(node, context);
     case 'code_block': {
@@ -338,7 +443,10 @@ export function emitCanonical(document, options = {}) {
 
   const profile = resolveProfile(options);
   const version = resolveVersion(options);
-  if (version === 'v2') validateLocalAnchorGraph(document);
+  if (version === 'v2') {
+    validateLocalAnchorGraph(document);
+    validateFootnoteGraph(document);
+  }
   const body = emitBlocks(document.children, { version });
   const prefix = profile === 'standalone' ? `&ND ${version}\n\n` : '';
   return `${prefix}${body}\n`;

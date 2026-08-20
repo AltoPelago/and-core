@@ -17,15 +17,15 @@ clean-baseline and lifecycle review described below.
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
 | v1 compatibility | All 139 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
-| v2 grammar | 94 indexed strict fixtures: 41 accept and 53 reject. | Ready |
-| v2 executable checks | 648 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
-| AST snapshots | 40 of 41 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
+| v2 grammar | 111 indexed strict fixtures: 43 accept and 68 reject. | Ready |
+| v2 executable checks | 727 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| AST snapshots | 42 of 43 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 26 exact canonical snapshots across promoted families and interactions. | Ready |
-| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 14 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
-| Source spans | The projection contract pins 28 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
-| Cross-form interactions | A 15-entry executable matrix covers paired blocks in lists/quotes, rich children, cross-container links, rich resources, and marker adjacency. | Ready |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 34 exact canonical snapshots across promoted families and interactions. | Ready |
+| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 18 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
+| Source spans | The projection contract pins 31 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
+| Cross-form interactions | A 20-entry executable matrix covers paired blocks in lists/quotes, rich children, cross-container links, rich resources, contextual list-item content, heading-number hierarchy, and rich/reused footnotes. | Ready |
 | Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |
 | Consumer conventions | The companion boundary maps every consumer-owned surface to its fixed Core fields and non-Core behavior. | Ready |
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
@@ -82,9 +82,10 @@ projection rather than Core parsing semantics.
 
 Status: **closed**.
 
-Contract `and-v2-projection-v1` contains an explicit 28-entry span matrix covering every new scalar
-and rich inline family, heading `[n]`, all three paired blocks, escaped image fields, AEON datatype
-generics and clarifiers, nested rich/image/typed-value content, lists, and blockquotes.
+Contract `and-v2-projection-v1` contains an explicit 31-entry span matrix covering every new scalar
+and rich inline family, first-class todo lists/items, heading and list `[n]`, all three paired blocks,
+escaped image fields, AEON datatype generics and clarifiers, nested rich/image/typed-value content,
+ordinary lists, and blockquotes.
 
 Closure evidence: the mandatory checker reparses each source with spans enabled and byte-compares the
 exact offset and line/column tuple at every indexed AST path.
@@ -99,10 +100,11 @@ The projection contract indexes and pins focused cases for:
 - representative v2 inline children inside every paired-block family;
 - anchors and fragment links crossing nested container boundaries;
 - images and typed values nested inside rich v2 tags;
-- compact markers adjacent to rich tags and explicit line breaks.
+- rich inline and explicit line-break content inside first-class todo and auto-number items;
+- heading-number hierarchy plus rich footnote content and repeated named references.
 
-Closure evidence: all 15 required combination identifiers appear exactly once and participate in the
-same 26 canonical and 14 HTML snapshots as the promoted-surface contract.
+Closure evidence: all 20 required combination identifiers appear exactly once and participate in the
+same 34 canonical and 18 HTML snapshots as the promoted-surface contract.
 
 ### B7. v1-to-v2 migration guide
 
@@ -121,15 +123,16 @@ mechanical migration checklist.
 Status: **closed**.
 
 [`and-consumer-conventions.md`](./and-consumer-conventions.md) maps `[!]`, `[?]`, `[+]`, custom typed
-datatypes, optional paired-block tags, numbering, images, external navigation, extensions, todo and
-direction markers, and comments to their Core-guaranteed fields and consumer-owned interpretation.
+datatypes, optional paired-block tags, numbering, footnotes, images, external navigation, extensions,
+todo and direction markers, and comments to their Core-guaranteed fields and consumer-owned
+interpretation.
 
 Closure evidence: the note defines processing order, registry constraints, non-execution, resource
 and trust policy, independent versioning, and the separate conformance boundary.
 
 ## Explicitly Deferred, Non-Blocking Work
 
-- footnotes and `[^ ...]`;
+- `[^ ...]` and other unpromoted reserved forms;
 - recovery or forward-compatibility parsing modes;
 - v2-specific VS Code highlighting, completions, and diagnostics UX;
 - Core-defined vocabularies for consumer tags or paired-block tags;
@@ -150,7 +153,8 @@ After B1–B8 close:
 2. Record a clean baseline with no failures and no unreviewed snapshot changes.
 3. Move the formal documents and CTS metadata from proposal to draft lifecycle status in one reviewed
    change; do not imply publication merely by renaming a snapshot.
-4. Keep footnotes, recovery, editor expansion, and consumer semantics explicitly deferred.
+4. Keep unpromoted reserved forms, recovery, editor expansion, and consumer semantics explicitly
+   deferred.
 
 Candidate baseline recorded 2026-08-20: v1 reference CTS, v2 proposal lane, AEON scalar contract and
 live drift, canonical and HTML checks, projection and guidance contracts, public API, CLI, playground,

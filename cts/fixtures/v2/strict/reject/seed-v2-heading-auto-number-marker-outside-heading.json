@@ -8,7 +8,7 @@
     "ok": false,
     "errorCode": "unknown_inline_type",
     "assertions": [
-      "[n] is header-only and not accepted in paragraph inline content",
+      "[n] is contextual to headings and auto-number list items, not paragraph inline content",
       "marker scope is explicit and deterministic"
     ]
   }

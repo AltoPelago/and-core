@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-unresolved-reference",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% (A1)]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unresolved_footnote_reference",
+    "assertions": [
+      "shorthand references require an earlier named declaration",
+      "parseInline may expose the shape but full-document parsing resolves it"
+    ]
+  }
+}

@@ -27,8 +27,9 @@ Current scope:
 * raw code block margin checks
 * the initial block-boundary and indentation rules covered by the CTS
 * explicit v2 capability and effective-version selection through `allowV2` and `version`
-* proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact markers,
-  heading auto-numbering, and paired blocks
+* proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact directional
+  markers, footnote definitions/references, first-class todo and auto-number lists, heading
+  auto-numbering, and paired blocks
 * exact AEON `:type = scalar` syntax for the closed v2 inline typed-value subset, including
   literal-family compatibility, structured datatype adornments, and custom labels
 * proposal-v2 document-local anchor uniqueness and case-sensitive `[@ #id | label]` resolution
@@ -58,6 +59,8 @@ For v2 input, `parseInline` validates the portable `#id` link-target grammar but
 without a document namespace. `parseAnd` accepts forward fragment links and rejects duplicate anchors
 or unresolved local targets across the entire document, including nested blocks. V2 image tags use
 `[~ source | alt | mode]`, default omitted modes to `inline`, and require `inline`, `half`, or `full`.
+Named v2 footnote references resolve case-sensitively against one earlier alphanumeric declaration;
+duplicate, forward, unresolved, and nested footnotes fail closed.
 
 Strict-mode failures currently return:
 

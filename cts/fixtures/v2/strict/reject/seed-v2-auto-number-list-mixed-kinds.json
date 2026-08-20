@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-auto-number-list-mixed-kinds",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- ordinary\n- [n] numbered\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "mixed_list_item_kinds",
+    "assertions": [
+      "one list block cannot mix ordinary and auto-number items",
+      "auto-number lists are first-class rather than decorated ordinary lists"
+    ]
+  }
+}

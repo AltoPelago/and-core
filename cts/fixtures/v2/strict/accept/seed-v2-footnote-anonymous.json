@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-anonymous",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% world [* note]]\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "[% content] declares an anonymous footnote at the reference position",
+      "footnote definitions preserve rich inline content"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "hello " },
+            {
+              "type": "footnote_definition",
+              "children": [
+                { "type": "text", "value": "world " },
+                {
+                  "type": "strong",
+                  "children": [{ "type": "text", "value": "note" }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

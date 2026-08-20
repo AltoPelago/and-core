@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-list-empty-item",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [x]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_todo_item",
+    "assertions": [
+      "todo items require non-empty content after the state marker",
+      "a marker alone is not a complete todo item"
+    ]
+  }
+}

@@ -38,7 +38,22 @@ mode = "ordered"
 
 # [n] v2 capabilities
 
-[# overview]Tasks: [ ] draft, [x] parser, [,] documentation, [;] abandoned. Jump to [@ #overview | overview].
+- [n] first numbered item
+- [n] second numbered item
+  - [n] nested numbered item
+
+## [n] Numbered subsection
+
+[# overview]Tasks:
+
+- [ ] draft
+- [x] parser
+- [,] documentation
+- [;] abandoned
+
+Jump to [@ #overview | overview].
+
+Footnotes can be anonymous [% supporting context] or named [% (A1) reusable context], then reused [% (A1)].
 
 Flow [>] publish and [<] revise.[.]Typed value: [:date = 2026-08-20].
 

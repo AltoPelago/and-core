@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-list-ordered-marker",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n1. [x] parser\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "todo_list_requires_unordered_marker",
+    "assertions": [
+      "todo lists use the exact unordered item prefix",
+      "ordered-list markers cannot carry todo state"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-list-states",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [ ] draft\n- [x] parser\n- [,] documentation\n- [;] discarded\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "an unordered item prefix plus todo marker creates a first-class todo list",
+      "all four todo item states map to stable item metadata"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "todo_list",
+          "items": [
+            {
+              "type": "todo_item",
+              "state": "unchecked",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [{ "type": "text", "value": "draft" }]
+                }
+              ]
+            },
+            {
+              "type": "todo_item",
+              "state": "checked",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [{ "type": "text", "value": "parser" }]
+                }
+              ]
+            },
+            {
+              "type": "todo_item",
+              "state": "in_progress",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [{ "type": "text", "value": "documentation" }]
+                }
+              ]
+            },
+            {
+              "type": "todo_item",
+              "state": "cancelled",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [{ "type": "text", "value": "discarded" }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -23,9 +23,13 @@ It supports:
 
 * paragraphs, headings, horizontal rules, blockquotes, lists, code blocks, ordered code blocks, extension blocks, and tables
 * text, strong, emphasis, inline code, and links
-* proposal-v2 scalar metadata tags, inline images, rich inline tags, compact markers, explicit line breaks, and typed values
+* proposal-v2 scalar metadata tags, inline images, rich inline tags, compact directional markers,
+  explicit line breaks, and typed values
+* first-class proposal-v2 todo lists without visual bullets and auto-number lists projected as
+  semantic ordered lists
 * inherited `#id` links projected as browser-native fragment links
 * proposal-v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
+* proposal-v2 footnotes projected as linked numeric superscripts and a trailing endnote section
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default
@@ -76,6 +80,18 @@ Typed values emit `<data>` with the canonical AEON datatype annotation in `data-
 scalar literal in `value`. Visible string and custom-null-reason content is decoded for readers;
 other scalar families retain their canonical AEON spelling. The renderer does not assign meaning to
 custom datatype labels.
+
+The reference projection displays opted-in headings with hierarchical numbers derived from heading
+level: `1`, `1.1`, `1.2`, `2`, and so on. Moving to a shallower level resets deeper counters; missing
+ancestor levels begin at one. This calculation is renderer behavior rather than parsed Core data.
+Nested `auto_number_list` nodes use semantic nested `<ol>` elements and browser-native list counters.
+
+Footnotes are numbered in definition order. Each inline occurrence links to one trailing ordered
+endnote, and the endnote links back to every occurrence. Named definitions reuse the same displayed
+number; their authored alphanumeric ID is preserved in `data-footnote-id` but does not dictate that
+number. Numeric labels and end-of-document placement are reference-renderer choices. Consumers may
+instead use symbols, hover details, callouts, or another accessible projection while preserving the
+same Core definition/reference graph.
 
 For `http:` and `https:` links, the reference renderer also emits conservative browser-facing
 attributes:

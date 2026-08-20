@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-heading-auto-number-marker-no-space",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n## [n]Section\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_heading_auto_number_marker",
+    "assertions": [
+      "heading [n] requires a structural separator space",
+      "near-miss heading markers fail closed"
+    ]
+  }
+}

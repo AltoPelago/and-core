@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-list-malformed-spacing",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n- [x]parser\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_todo_item",
+    "assertions": [
+      "todo state and content require one structural separator space",
+      "near-miss todo item prefixes fail closed"
+    ]
+  }
+}

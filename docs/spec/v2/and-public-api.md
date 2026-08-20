@@ -103,7 +103,8 @@ declare function parseInline(
 
 Standalone `parseInline` validates local-fragment syntax but cannot resolve fragment targets against
 a document namespace. Full anchor uniqueness and resolution occur in `parseAnd` and v2 canonical
-emission.
+emission. It likewise returns the local shape of `footnote_reference`; named footnote declaration
+order, uniqueness, and resolution require `parseAnd` or v2 canonical emission.
 
 ## AST Version Delta
 
@@ -123,13 +124,15 @@ type NdInlineNode =
   | NdTypedValue
   | NdHighlightTag
   | NdUnderlineTag
-  | NdTodoMarker
+  | NdFootnoteDefinition
+  | NdFootnoteReference
   | NdDirectionalMarker
-  | NdAutoNumberMarker
   | NdLineBreak;
 
 type NdBlockNode =
   | NdV1BlockNode
+  | NdTodoList
+  | NdAutoNumberList
   | NdHighlightParagraphBlock
   | NdHeaderTextBlock
   | NdDisclaimerBlock;

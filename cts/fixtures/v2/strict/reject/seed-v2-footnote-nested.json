@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-nested",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% outer [% inner]]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "nested_footnote",
+    "assertions": [
+      "footnote content cannot contain another footnote",
+      "the nesting prohibition applies to declarations and shorthand references"
+    ]
+  }
+}

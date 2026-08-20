@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-todo-marker-outside-list",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[x] parser\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "unknown_inline_type",
+    "assertions": [
+      "todo markers are not generic inline nodes",
+      "a todo marker requires the unordered item prefix"
+    ]
+  }
+}

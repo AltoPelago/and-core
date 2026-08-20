@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-empty",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [% ]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_footnote",
+    "assertions": [
+      "anonymous footnotes require non-empty content",
+      "empty footnote declarations fail closed"
+    ]
+  }
+}

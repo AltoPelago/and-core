@@ -145,14 +145,67 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[~ source | alt | mode]` | Inline image |
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich strike, quote, comment, highlight, and underline nodes |
 | `[:type = scalar]` | AEON typed scalar |
-| `[ ]`, `[x]`, `[,]`, `[;]` | Todo-state markers |
-| `[>]`, `[<]`, `[%]`, `[.]` | Direction, auto-number intent, and line break |
+| `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
+| `[>]`, `[<]`, `[.]` | Direction and explicit line break |
 | heading `[n]` | Heading auto-number intent |
+| `- [n] content` | First-class auto-number list |
+| `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `===`, `***` paired blocks | Highlight paragraph, header text, and disclaimer blocks |
 
 The consumer-owned meaning of advisory tags, custom tags and datatypes, numbering, optional block
 tags, image behavior, and external navigation is defined in
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
+
+## Todo Lists
+
+Todo state is structural in v2:
+
+```and
+- [ ] draft
+- [x] parser
+- [,] documentation
+- [;] discarded
+```
+
+This parses as `todo_list` containing `todo_item` nodes, not as an unordered list containing inline
+markers. The `- ` prefix is mandatory, each item requires content, and all items in one list block
+must be todo items. Bare `[x] parser`, ordered `1. [x] parser`, and mixed ordinary/todo list blocks are
+rejected. `[.]` remains an explicit inline line break and is not a todo-item terminator.
+
+## Auto-Numbering
+
+`[n]` is contextual structural metadata in v2:
+
+```and
+# [n] Numbered title
+
+- [n] first item
+- [n] second item
+```
+
+The heading receives `autoNumber: true`; the list parses as `auto_number_list` containing inherited
+`list_item` nodes. Both forms require a separator space and non-empty content. Every item in one list
+block must be the same kind. Bare `[n]`, `# [n]Title`, `- [n]item`, explicit `1. [n] item`, and mixed
+ordinary/todo/auto-number blocks are rejected.
+
+## Footnotes
+
+V2 promotes `[% ...]` as footnote syntax:
+
+```and
+hello [% supporting context]
+hello [% (A1) reusable context], again [% (A1)]
+```
+
+The first form is an anonymous definition at its reference position. The second declares the
+case-sensitive alphanumeric ID `A1`; later `[% (A1)]` forms reference it. A named reference must
+follow its single declaration. Empty definitions, malformed IDs, duplicates, unresolved or forward
+references, and nested footnotes are rejected. The authored ID is not a forced display number;
+processors choose numbers, symbols, hover cards, callouts, or endnotes.
+
+Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-space margin without a
+blank separator. This applies consistently to ordinary, todo, and auto-number lists. Canonical output
+may insert the inherited blank separator while preserving the same AST.
 
 ## Tooling Checklist
 
@@ -162,8 +215,12 @@ tags, image behavior, and external navigation is defined in
 4. Forward the effective version into canonical emission.
 5. Replace experimental anchor, link, and typed-value spellings.
 6. Validate anchors and local links at full-document scope.
-7. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
-8. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
+7. Convert inline experimental todo markers into homogeneous `- [state] content` blocks.
+8. Convert contextual numbering to exact heading or `- [n] content` prefixes.
+9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
+   reference; remove forward references and nesting.
+10. Treat consumer conventions after Core parsing; do not use them to alter grammar acceptance.
+11. Run `npm run and -- check document.and --version v2` and canonicalize once to expose normalized
    image modes and AEON scalar spellings.
 
 There is no automatic downgrade for v2-only syntax. To return a document to v1, remove every v2-only

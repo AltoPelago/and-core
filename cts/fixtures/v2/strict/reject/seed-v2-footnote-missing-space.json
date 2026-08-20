@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-footnote-missing-space",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nhello [%world]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_footnote",
+    "assertions": [
+      "footnotes require the exact [% space prefix",
+      "near-miss footnote syntax fails closed"
+    ]
+  }
+}

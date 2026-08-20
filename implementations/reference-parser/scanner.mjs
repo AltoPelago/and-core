@@ -157,7 +157,7 @@ function structuralTabLocation(lines) {
   return null;
 }
 
-function validateBlocks(lines, rawLines) {
+function validateBlocks(lines, rawLines, version) {
   const tab = structuralTabLocation(lines);
   if (tab) return failAt('invalid_indentation', tab.lineIndex, tab.columnIndex);
 
@@ -172,7 +172,7 @@ function validateBlocks(lines, rawLines) {
     if (line.startsWith(' - ')) {
       return failAt('invalid_indentation', i, 0);
     }
-    if (line.startsWith('  - ') && previous !== '' && !previous.startsWith('  - ')) {
+    if (version !== 'v2' && line.startsWith('  - ') && previous !== '' && !previous.startsWith('  - ')) {
       return failAt('missing_blank_line_before_nested_block', i, 2);
     }
     if (line === '---' && previous !== '') {
@@ -228,7 +228,7 @@ export function scanDocument(source, options = {}) {
     };
   }
 
-  const blockValidation = validateBlocks(lines, raw.rawLines);
+  const blockValidation = validateBlocks(lines, raw.rawLines, header.version);
   if (!blockValidation.ok) {
     return {
       ...blockValidation,
