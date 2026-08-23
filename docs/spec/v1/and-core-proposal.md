@@ -3615,6 +3615,8 @@ V1 reserves the v2 aligned separator tokens `<--`, `-=-`, and `-->` and rejects 
 `invalid_table_alignment`. A cell whose content begins immediately after its delimiter with `>` is
 reserved for v2 horizontal spanning and rejects with `invalid_table_span`. Ordinary literal content
 may still begin with `>` when separated from the delimiter by padding, as in `| > literal |`.
+An immediate v2 `|~ caption` line is likewise reserved and rejects with
+`block_caption_requires_v2`.
 
 ### `seed-table-v2-alignment-rejected`
 
@@ -3623,6 +3625,10 @@ may still begin with `>` when separated from the delimiter by padding, as in `| 
 ### `seed-table-v2-span-rejected`
 
 * v1 rejects the adjacent `|>` v2 horizontal-span marker
+
+### `seed-table-caption-v2-rejected`
+
+* v1 rejects the v2 table-caption marker rather than treating it as a row or paragraph
 
 ### `seed-card-block-v2-rejected`
 

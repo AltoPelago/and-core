@@ -16,15 +16,15 @@ clean-baseline and lifecycle review described below.
 | Area | Current evidence | Assessment |
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
-| v1 compatibility | All 148 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
-| v2 grammar | 169 indexed strict fixtures: 60 accept and 109 reject. | Ready |
-| v2 executable checks | 1031 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
-| AST snapshots | 59 of 60 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
+| v1 compatibility | All 149 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
+| v2 grammar | 174 indexed strict fixtures: 61 accept and 113 reject. | Ready |
+| v2 executable checks | 1054 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| AST snapshots | 60 of 61 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
 | AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
 | Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 56 exact canonical snapshots across promoted families and interactions. | Ready |
 | HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 29 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
-| Source spans | The projection contract pins 47 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
+| Source spans | The projection contract pins 48 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
 | Cross-form interactions | A 39-entry executable matrix covers captions on language code, extension fallback, and titled cards; aligned/spanning tables; paired blocks in lists/quotes; formatted/advisory/comment/semantic blocks with rich children; cross-container links; shared identifiers; rich resources; contextual list-item content; directional/advisory bullet replacement; heading-number hierarchy; semantic and disclaimer inline content; and rich/reused footnotes. | Ready |
 | Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |
 | Consumer conventions | The companion boundary maps every consumer-owned surface to its fixed Core fields and non-Core behavior. | Ready |

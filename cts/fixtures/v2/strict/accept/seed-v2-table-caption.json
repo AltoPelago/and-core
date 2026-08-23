@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-table-caption",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n| Ambiguity | Expected diagnostic |\n| <-- | --> |\n| duplicate top-level key | [$ DUPLICATE_KEY] |\n|~ Table 1: [* Ambiguity] diagnostics\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "a table caption immediately follows the final body row",
+      "table captions preserve rich inline content",
+      "the table caption is distinct from table rows and cells"
+    ],
+    "document": {
+      "type": "document",
+      "children": [{
+        "type": "table",
+        "header": [
+          { "children": [{ "type": "text", "value": "Ambiguity" }] },
+          { "children": [{ "type": "text", "value": "Expected diagnostic" }] }
+        ],
+        "rows": [[
+          { "children": [{ "type": "text", "value": "duplicate top-level key" }] },
+          { "children": [{ "type": "code", "text": "DUPLICATE_KEY" }] }
+        ]],
+        "alignments": ["left", "right"],
+        "caption": [
+          { "type": "text", "value": "Table 1: " },
+          { "type": "strong", "children": [{ "type": "text", "value": "Ambiguity" }] },
+          { "type": "text", "value": " diagnostics" }
+        ]
+      }]
+    }
+  }
+}

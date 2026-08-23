@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-table-caption-v2-rejected",
+  "specVersion": "&ND Core v1",
+  "mode": "strict",
+  "source": "&ND v1\n\n| Name | Value |\n| --- | --- |\n| alpha | one |\n|~ Caption\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "block_caption_requires_v2",
+    "assertions": ["v1 readers reject the v2-only table-caption marker"]
+  }
+}

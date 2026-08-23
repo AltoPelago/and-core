@@ -135,6 +135,7 @@ function isStructuralBlockOpener(lines, context) {
   if (line === '---') return true;
   if (/^- /.test(line) || /^\d+\. /.test(line)) return true;
   if (line.startsWith('>') || line.startsWith('  >')) return true;
+  if (tableCaptionLine(line) !== null) return true;
   return isTableStart(lines, 0, context?.documentVersion ?? 'v2');
 }
 
@@ -1484,6 +1485,23 @@ function isTableStart(lines, index) {
     && Object.hasOwn(TABLE_ALIGNMENT_BY_SEPARATOR, separatorCells[0]?.text);
 }
 
+function tableCaptionLine(line) {
+  const trimmed = line.trimStart();
+  if (!trimmed.startsWith('|~')) return null;
+  const offset = line.length - trimmed.length;
+  if (trimmed === '|~') {
+    return { ok: true, caption: '', captionOffset: offset + 2 };
+  }
+  if (!trimmed.startsWith('|~ ')) {
+    return { ok: false };
+  }
+  const caption = trimmed.slice(3).trimEnd();
+  if (caption.startsWith(' ')) {
+    return { ok: false };
+  }
+  return { ok: true, caption, captionOffset: offset + 3 };
+}
+
 function splitTableRow(line) {
   const trimmedStart = line.length - line.trimStart().length;
   const trimmedEnd = line.trimEnd().length;
@@ -1613,6 +1631,7 @@ function parseTable(lines, start, options, context) {
   const rows = [];
   let index = start + 2;
   while (index < lines.length && lines[index].trim().startsWith('|')) {
+    if (tableCaptionLine(lines[index]) !== null) break;
     const cells = splitTableRow(lines[index]);
     if (cells === null) {
       return failAt('invalid_table_shape', context.lineOffset + index, 0);
@@ -1630,6 +1649,24 @@ function parseTable(lines, start, options, context) {
     return failAt('invalid_table_shape', context.lineOffset + start + 1, 0);
   }
 
+  let caption;
+  const captionLine = tableCaptionLine(lines[index] ?? '');
+  if (captionLine !== null) {
+    if (context.documentVersion !== 'v2') {
+      return failAt('block_caption_requires_v2', context.lineOffset + index, 0);
+    }
+    if (!captionLine.ok) {
+      return failAt('invalid_table_caption', context.lineOffset + index, 0);
+    }
+    const parsedCaption = parseBlockCaption(captionLine, index, options, context);
+    if (!parsedCaption.ok) return withLine(parsedCaption, context.lineOffset + index, 0);
+    caption = parsedCaption.caption;
+    index += 1;
+    if (tableCaptionLine(lines[index] ?? '') !== null) {
+      return failAt('invalid_table_caption', context.lineOffset + index, 0);
+    }
+  }
+
   return {
     ok: true,
     nextIndex: index,
@@ -1641,6 +1678,7 @@ function parseTable(lines, start, options, context) {
         ...(separator.alignments.some((alignment) => alignment !== null)
           ? { alignments: separator.alignments }
           : {}),
+        ...(caption === undefined ? {} : { caption }),
       },
       context,
       context.lineStartOffsets[start],
@@ -2075,6 +2113,15 @@ function parseBlocks(lines, options, context) {
       children.push(table.node);
       index = table.nextIndex;
       continue;
+    }
+
+    const orphanTableCaption = tableCaptionLine(line);
+    if (orphanTableCaption !== null) {
+      return failAt(
+        context.documentVersion === 'v2' ? 'invalid_table_caption' : 'block_caption_requires_v2',
+        context.lineOffset + index,
+        0,
+      );
     }
 
     const paragraph = parseParagraph(lines, index, options, context);

@@ -83,7 +83,7 @@ assigns each promoted form an explicit ownership boundary:
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading intent and first-class auto-number lists; number calculation is outside Core. |
 | inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
-| table separators `<--`, `-=-`, `-->` and adjacent `|>` span markers | Core | Column alignment and horizontal cell spanning; row spanning is unsupported. |
+| table separators `<--`, `-=-`, `-->`, adjacent `|>` span markers, and `|~ caption` | Core | Column alignment, horizontal cell spanning, and an optional rich caption; row spanning is unsupported. |
 | `~~~|` / `~~~| title` … `~~~|` | Core structure + consumer projection | Visible card container; a rich inline title makes the card collapsible. Styling and interaction details are consumer-defined. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; labels and presentation are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
@@ -100,11 +100,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 169-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 174-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 60 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, card containers, block captions, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
+- 61 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, card containers, block and table captions, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 109 rejected fixtures covering empty payloads and captions, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
+- 113 rejected fixtures covering empty payloads and captions, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, table spans, tags, and code/paired fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -180,6 +180,7 @@ V2 retains inherited `---` table separators and adds exact column-alignment toke
 table-separator-cell ::= "---" | "<--" | "-=-" | "-->"
 spanning-cell ::= ">"+ " " inline-content
 colSpan ::= 1 + count(">")
+table-caption ::= "|~ " caption-inline
 ```
 
 `<--`, `-=-`, and `-->` mean left, center, and right alignment. The separator row defines the
@@ -191,6 +192,13 @@ while `| > literal |` remains ordinary text. Markers require one space and non-e
 and body cells may span; separator cells and rows may not. The alignment of a spanning cell is the
 alignment of its first covered logical column. Canonical output preserves alignment intent and emits
 compact adjacent markers. V1 rejects aligned separators and span markers.
+
+One caption may follow the final table row. It uses rich inline content on one physical line and is
+stored separately from the header and body rows. The `|~` marker is followed by exactly one ASCII
+space and has no trailing pipe. Empty captions fail with `invalid_block_caption`; malformed, orphan,
+or duplicate markers fail with `invalid_table_caption`. Canonical v2 preserves the caption after the
+table, while HTML emits native `caption` content. Its label or numbering is authored rather than
+calculated by Core. V1 rejects the caption marker with `block_caption_requires_v2`.
 
 ## Paired Block Grammar Snapshot (Proposal)
 

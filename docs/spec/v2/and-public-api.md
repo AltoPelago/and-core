@@ -157,6 +157,7 @@ interface NdHeading extends NdV1Heading {
 
 interface NdV2Table extends NdV1Table {
   readonly alignments?: readonly ("left" | "center" | "right" | null)[];
+  readonly caption?: readonly NdInlineNode[];
 }
 
 interface NdV2TableCell extends NdV1TableCell {

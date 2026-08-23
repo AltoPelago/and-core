@@ -283,6 +283,7 @@ V2 extends the inherited table nodes additively:
 ```ts
 interface NdV2Table extends NdTable {
   readonly alignments?: readonly ("left" | "center" | "right" | null)[];
+  readonly caption?: readonly NdInlineNode[];
 }
 
 interface NdV2TableCell extends NdTableCell {
@@ -315,6 +316,7 @@ greater-than sign prevents marker recognition, so `| > literal |` remains ordina
 |> A+B | C |
 | A |> B+C |
 |>> A+B+C |
+|~ Table 1: [* Combined] values
 ```
 
 Spans are valid in header and body rows but never in the separator row. For every content row,
@@ -330,9 +332,25 @@ reference HTML projection emits `text-align` intent and native `colspan`. V1 rec
 positions but rejects aligned separators and span markers with the diagnostics above. Inline spans
 inside a spanning cell begin at its trimmed content and exclude the adjacent marker.
 
+A v2 table may carry one optional rich inline caption immediately after its final row:
+
+```text
+table-caption ::= "|~ " caption-inline
+caption-inline ::= non-empty rich inline content on one physical line
+```
+
+The caption marker has no trailing pipe and is not a table row. `|~ caption` is recognized only in
+that immediate position; an orphan or duplicate marker fails with `invalid_table_caption`. Spacing
+other than exactly one ASCII space after `|~` also fails with `invalid_table_caption`, while an empty
+or inline-empty caption fails with `invalid_block_caption`. Caption labels and numbering are authored
+text. Canonical v2 output places the marker after the final row. The HTML projection emits a native
+`caption` element, and Markdown projection may place an equivalent visible caption after the table.
+V1 rejects this position with `block_caption_requires_v2`.
+
 ## Block Captions
 
-Every fenced block node in v2 may carry an optional rich inline caption on its closing fence:
+Every fenced block node in v2 may carry an optional rich inline caption on its closing fence. Tables
+use the parallel `|~ caption` form defined above because they have no closing fence:
 
 ```text
 captioned-close ::= block-close [ " " "(" caption-inline ")" ]

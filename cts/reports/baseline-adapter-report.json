@@ -3,9 +3,9 @@
   "mode": "adapter",
   "adapter": "./cts/examples/baseline-adapter.mjs",
   "totals": {
-    "fixtures": 148,
+    "fixtures": 149,
     "pending": 0,
-    "pass": 148,
+    "pass": 149,
     "fail": 0,
     "error": 0
   },
@@ -24,8 +24,8 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 82,
-    "matched": 82,
+    "expected": 83,
+    "matched": 83,
     "missingActual": 0,
     "mismatched": 0
   },
@@ -2653,6 +2653,25 @@
       "expectedErrorCode": "invalid_table_alignment",
       "actualOk": false,
       "errorCode": "invalid_table_alignment",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Evaluated by the baseline adapter example."
+      ]
+    },
+    {
+      "id": "seed-table-caption-v2-rejected",
+      "path": "strict/reject/seed-table-caption-v2-rejected.json",
+      "status": "pass",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "block_caption_requires_v2",
+      "actualOk": false,
+      "errorCode": "block_caption_requires_v2",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

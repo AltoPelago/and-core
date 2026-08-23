@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-table-caption-orphan",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n|~ Orphan caption\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_caption",
+    "assertions": ["a table caption must immediately follow a complete table"]
+  }
+}

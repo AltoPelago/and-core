@@ -142,15 +142,16 @@ assert(
   'removed tilde-language code fences should fail with a stable diagnostic',
 );
 const tableV2 = parseAnd(
-  '&ND v2\n\n| left | center | right |\n| <-- | -=- | --> |\n|> A+B | C |\n',
+  '&ND v2\n\n| left | center | right |\n| <-- | -=- | --> |\n|> A+B | C |\n|~ Table 1: [* aligned] values\n',
   { allowV2: true },
 );
 assert(
   tableV2.ok
     && tableV2.document.children[0]?.type === 'table'
     && tableV2.document.children[0]?.alignments?.join(',') === 'left,center,right'
-    && tableV2.document.children[0]?.rows?.[0]?.[0]?.colSpan === 2,
-  'public parse should expose v2 table alignments and horizontal spans',
+    && tableV2.document.children[0]?.rows?.[0]?.[0]?.colSpan === 2
+    && tableV2.document.children[0]?.caption?.[1]?.type === 'strong',
+  'public parse should expose v2 table alignments, horizontal spans, and rich captions',
 );
 const escapedAlignedTableV2 = parseAnd(
   '&ND v2\n\n\\| A | B |\n| <-- | --> |\n| a | b |\n',
@@ -248,6 +249,10 @@ assert(renderHtml(autoNumberListV2.document).includes('class="and-auto-number-li
 const tableV2Html = renderHtml(tableV2.document);
 assert(tableV2Html.includes('style="text-align:left"'), 'public HTML projection should expose table alignment');
 assert(tableV2Html.includes('colspan="2"'), 'public HTML projection should expose native table colspans');
+assert(
+  tableV2Html.includes('<caption class="and-block-caption">Table 1: <strong>aligned</strong> values</caption>'),
+  'public HTML projection should expose a native rich table caption',
+);
 const cardsV2Html = renderHtml(cardsV2.document);
 assert(cardsV2Html.includes('<aside class="and-card">'), 'public HTML projection should expose unnamed cards');
 assert(cardsV2Html.includes('<details class="and-card and-card-collapsible">'), 'public HTML projection should expose named cards as collapsible');

@@ -135,6 +135,7 @@ function requiresV2StructuralEscape(text, context) {
   const semanticMatch = text.match(/^~~~\(([^)]*)\)$/);
   if (semanticMatch && isNdV2Identifier(semanticMatch[1])) return true;
   if (text.startsWith('===') || text.startsWith('***') || text.startsWith('+++')) return true;
+  if (text.startsWith('|~')) return true;
   if (/^#{1,6} /.test(text)) return true;
   if (text === '---') return true;
   if (/^- /.test(text) || /^\d+\. /.test(text)) return true;
@@ -191,6 +192,19 @@ function emitBlockCaption(node, context) {
     throw fail('invalid_block_caption', `${node.type} caption must occupy one physical line.`);
   }
   return ` (${emitInlineNodes(node.caption, context)})`;
+}
+
+function emitTableCaption(node, context) {
+  if (node.caption === undefined) return '';
+  requireV2(context, `${node.type}.caption`);
+  if (!hasInlineAstContent(node.caption)) {
+    throw fail('invalid_block_caption', `${node.type} caption must not be empty.`);
+  }
+  const preserved = emitInlineNodes(node.caption, { ...context, preserveNewlines: true });
+  if (preserved.includes('\n') || preserved.includes('\r')) {
+    throw fail('invalid_block_caption', `${node.type} caption must occupy one physical line.`);
+  }
+  return `|~ ${emitInlineNodes(node.caption, context)}`;
 }
 
 function emitV2Value(value, context = {}) {
@@ -544,6 +558,7 @@ function emitBlock(node, context) {
         emitTableRow(node.header, context),
         emitTableSeparator(alignments),
         ...node.rows.map((row) => emitTableRow(row, context)),
+        ...(node.caption === undefined ? [] : [emitTableCaption(node, context)]),
       ].join('\n');
     }
     case 'highlight_paragraph_block':

@@ -619,9 +619,17 @@ function renderTable(block, options) {
   const rows = block.rows
     .map((row) => renderTableRow(row, 'td', alignments, options))
     .join('\n');
+  let caption = '';
+  if (block.caption !== undefined) {
+    if (!hasInlineAstContent(block.caption)) {
+      throw fail('invalid_block_caption', 'table caption must not be empty.');
+    }
+    caption = `<caption class="and-block-caption">${renderInlineNodes(block.caption, options)}</caption>`;
+  }
 
   return [
     '<table>',
+    ...(caption === '' ? [] : [caption]),
     '<thead>',
     header,
     '</thead>',

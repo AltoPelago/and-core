@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-table-caption-duplicate",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n| Name | Value |\n| --- | --- |\n| alpha | one |\n|~ First caption\n|~ Second caption\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_table_caption",
+    "assertions": ["a table may carry at most one caption"]
+  }
+}

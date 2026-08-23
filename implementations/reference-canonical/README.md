@@ -17,7 +17,7 @@ Current scope:
   language metadata, with deterministic safe-fence fallback on payload collisions
 * extension blocks
 * extension block fallback regions
-* tables, including v2 logical-column alignment and horizontal `colSpan`
+* tables, including v2 logical-column alignment, horizontal `colSpan`, and `|~ caption` emission
 * horizontal rules
 * inline text, strong, emphasis, links, and inline code
 * all promoted v2 scalar metadata tags, inline images, rich inline tags, compact directional and advisory list markers,

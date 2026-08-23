@@ -266,12 +266,28 @@ to the cell's width:
 |> A+B | C |
 | A |> B+C |
 |>> A+B+C |
+|~ Table 1: Combined values
 ```
 
 The separator determines the logical width, and every header/body row must sum to it. The marker
 requires a following space and non-empty content. Adjacency is significant: `|> merged |` spans,
 whereas `| > literal |` does not. Spanning uses the first covered column's alignment. V1 rejects
 these alignment and span positions. Row spanning is not supported.
+
+A v2 table may also carry one rich inline caption on the line immediately after its last row:
+
+```and
+| Term | Meaning |
+| <-- | <-- |
+| hello | greeting |
+|~ Table 1: Greeting terms
+```
+
+The exact opener is `|~ `, with one ASCII space and no trailing pipe. The caption remains separate
+from table cells in the AST and its numbering, if any, is authored. V1 rejects this marker, so move
+the caption into ordinary prose when producing a v1-compatible document.
+
+Executable version-gating coverage: `seed-table-caption-v2-rejected`.
 
 ## Cards
 

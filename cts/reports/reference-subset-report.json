@@ -3,8 +3,8 @@
   "mode": "adapter",
   "adapter": "./implementations/reference-subset/adapter.mjs",
   "totals": {
-    "fixtures": 148,
-    "pending": 13,
+    "fixtures": 149,
+    "pending": 14,
     "pass": 135,
     "fail": 0,
     "error": 0
@@ -24,9 +24,9 @@
     "skipped": 12
   },
   "errorCodeChecks": {
-    "expected": 82,
+    "expected": 83,
     "matched": 72,
-    "missingActual": 10,
+    "missingActual": 11,
     "mismatched": 0
   },
   "results": [
@@ -2641,6 +2641,23 @@
       "mode": "strict",
       "expectedOk": false,
       "expectedErrorCode": "invalid_table_alignment",
+      "documentExpected": false,
+      "documentChecked": false,
+      "spansExpected": false,
+      "spansChecked": false,
+      "spansMatched": 0,
+      "spansFailed": 0,
+      "notes": [
+        "Fixture is not implemented by the reference subset adapter yet."
+      ]
+    },
+    {
+      "id": "seed-table-caption-v2-rejected",
+      "path": "strict/reject/seed-table-caption-v2-rejected.json",
+      "status": "pending",
+      "mode": "strict",
+      "expectedOk": false,
+      "expectedErrorCode": "block_caption_requires_v2",
       "documentExpected": false,
       "documentChecked": false,
       "spansExpected": false,

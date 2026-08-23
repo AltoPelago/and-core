@@ -33,6 +33,7 @@
     "strict/accept/seed-v2-shared-identifier-grammar.json",
     "strict/accept/seed-v2-code-block-dollar-fences.json",
     "strict/accept/seed-v2-block-captions.json",
+    "strict/accept/seed-v2-table-caption.json",
     "strict/accept/seed-v2-table-alignment-and-spans.json",
     "strict/accept/seed-v2-todo-list-states.json",
     "strict/accept/seed-v2-todo-list-nested.json",
@@ -172,6 +173,10 @@
     "strict/reject/seed-v2-table-span-missing-content.json",
     "strict/reject/seed-v2-table-span-overflow-with-cell.json",
     "strict/reject/seed-v2-table-span-overflow-marker.json",
-    "strict/reject/seed-v2-table-span-missing-space.json"
+    "strict/reject/seed-v2-table-span-missing-space.json",
+    "strict/reject/seed-v2-table-caption-empty.json",
+    "strict/reject/seed-v2-table-caption-spacing.json",
+    "strict/reject/seed-v2-table-caption-orphan.json",
+    "strict/reject/seed-v2-table-caption-duplicate.json"
   ]
 }
