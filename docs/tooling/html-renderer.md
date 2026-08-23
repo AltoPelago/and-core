@@ -36,6 +36,7 @@ It supports:
 * leading hint/attention markers projected in place of unordered-item bullets
 * focusable inline hint/attention callouts and visible advisory paragraph blocks
 * preserved but hidden rich block comments
+* proposal-v2 rich captions projected as `figcaption` content on fenced blocks
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default
@@ -121,6 +122,12 @@ executing or guessing extension semantics.
 Ordered code blocks are projected distinctly from plain code blocks. The reference renderer emits an
 ordered list of escaped code lines so preview surfaces can show explicit line numbers without
 guessing from styling alone.
+
+Captioned fenced blocks use native `<figure>` and `<figcaption>` structure where a block does not
+already provide it. Code blocks retain their language label alongside the authored caption in one
+`figcaption`. Extension captions remain visible whether the renderer uses parsed fallback content or
+an unsupported-extension diagnostic. Hidden comment blocks keep their captions hidden as part of
+the same comment projection.
 
 This does not make arbitrary downstream HTML usage safe by itself. Consumers that combine rendered
 HTML with additional user content, scripts, templates, or framework-specific hydration still need

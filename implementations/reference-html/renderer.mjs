@@ -373,6 +373,20 @@ function renderBlocks(blocks, options) {
   return blocks.map((block) => renderBlock(block, options)).join('\n');
 }
 
+function renderCaptionedBlock(block, body, options, extraAttributes = '') {
+  if (block.caption === undefined) return body;
+  if (!hasInlineAstContent(block.caption)) {
+    throw fail('invalid_block_caption', `${block.type} caption must not be empty.`);
+  }
+  const typeClass = block.type.replaceAll('_', '-');
+  return [
+    `<figure class="and-captioned-block and-captioned-${typeClass}"${extraAttributes}>`,
+    body,
+    `<figcaption class="and-block-caption">${renderInlineNodes(block.caption, options)}</figcaption>`,
+    '</figure>',
+  ].join('\n');
+}
+
 function nextHeadingNumber(level, options) {
   const counters = options.headingCounters;
   for (let index = 0; index < level - 1; index += 1) {
@@ -438,60 +452,65 @@ function renderBlock(block, options) {
       return `<ol class="and-auto-number-list" data-auto-number="true">\n${items}\n</ol>`;
     }
     case 'code_block': {
-      return renderCodeBlock(block);
+      return renderCodeBlock(block, options);
     }
     case 'extension_block': {
-      if (block.fallback) {
-        return renderBlocks(block.fallback.children, options);
-      }
-      return renderUnsupportedExtensionDiagnostic(block);
+      const body = block.fallback
+        ? renderBlocks(block.fallback.children, options)
+        : renderUnsupportedExtensionDiagnostic(block);
+      return renderCaptionedBlock(block, body, options);
     }
     case 'table':
       return renderTable(block, options);
     case 'highlight_paragraph_block':
-      return `<p class="and-highlight-paragraph">${renderInlineNodes(block.children, options)}</p>`;
+      return renderCaptionedBlock(block, `<p class="and-highlight-paragraph">${renderInlineNodes(block.children, options)}</p>`, options);
     case 'strong_paragraph_block':
-      return `<p class="and-strong-paragraph"><strong>${renderInlineNodes(block.children, options)}</strong></p>`;
+      return renderCaptionedBlock(block, `<p class="and-strong-paragraph"><strong>${renderInlineNodes(block.children, options)}</strong></p>`, options);
     case 'emphasis_paragraph_block':
-      return `<p class="and-emphasis-paragraph"><em>${renderInlineNodes(block.children, options)}</em></p>`;
+      return renderCaptionedBlock(block, `<p class="and-emphasis-paragraph"><em>${renderInlineNodes(block.children, options)}</em></p>`, options);
     case 'underline_paragraph_block':
-      return `<p class="and-underline-paragraph"><u>${renderInlineNodes(block.children, options)}</u></p>`;
+      return renderCaptionedBlock(block, `<p class="and-underline-paragraph"><u>${renderInlineNodes(block.children, options)}</u></p>`, options);
     case 'question_paragraph_block':
-      return renderAdvisoryParagraph('question', block.children, options);
+      return renderCaptionedBlock(block, renderAdvisoryParagraph('question', block.children, options), options);
     case 'admonition_paragraph_block':
-      return renderAdvisoryParagraph('admonition', block.children, options);
+      return renderCaptionedBlock(block, renderAdvisoryParagraph('admonition', block.children, options), options);
     case 'comment_block':
-      return `<aside class="and-comment-block" hidden>${renderInlineNodes(block.children, options)}</aside>`;
+      return renderCaptionedBlock(
+        block,
+        `<aside class="and-comment-block" hidden>${renderInlineNodes(block.children, options)}</aside>`,
+        options,
+        ' hidden'
+      );
     case 'header_text_block': {
       if (block.tag !== undefined) throw fail('invalid_header_text_block', 'header_text_block no longer accepts a tag.');
-      return `<header class="and-header-text">${renderInlineNodes(block.children, options)}</header>`;
+      return renderCaptionedBlock(block, `<header class="and-header-text">${renderInlineNodes(block.children, options)}</header>`, options);
     }
     case 'disclaimer_block': {
       if (block.tag !== undefined) throw fail('invalid_disclaimer_block', 'disclaimer_block no longer accepts a tag.');
-      return `<aside class="and-disclaimer">${renderInlineNodes(block.children, options)}</aside>`;
+      return renderCaptionedBlock(block, `<aside class="and-disclaimer">${renderInlineNodes(block.children, options)}</aside>`, options);
     }
     case 'semantic_block':
       requireSemanticId(block.id, block.type);
-      return `<p>${renderInlineNodes(block.children, options)}</p>`;
+      return renderCaptionedBlock(block, `<p>${renderInlineNodes(block.children, options)}</p>`, options);
     case 'card_block': {
       if (!Array.isArray(block.children) || block.children.length === 0) {
         throw fail('invalid_card_block', 'card_block requires at least one child block.');
       }
       const body = renderBlocks(block.children, options);
       if (block.title === undefined) {
-        return `<aside class="and-card">\n${body}\n</aside>`;
+        return renderCaptionedBlock(block, `<aside class="and-card">\n${body}\n</aside>`, options);
       }
       if (!hasInlineAstContent(block.title)) {
         throw fail('invalid_card_block', 'card_block title must not be empty.');
       }
-      return `<details class="and-card and-card-collapsible">\n<summary>${renderInlineNodes(block.title, options)}</summary>\n${body}\n</details>`;
+      return renderCaptionedBlock(block, `<details class="and-card and-card-collapsible">\n<summary>${renderInlineNodes(block.title, options)}</summary>\n${body}\n</details>`, options);
     }
     default:
       throw fail('unsupported_block_node', `Unsupported block node type: ${block.type}`);
   }
 }
 
-function renderCodeBlock(block) {
+function renderCodeBlock(block, options) {
   const language = block.language ? block.language.toLowerCase() : null;
   const className = language ? ` class="language-${escapeAttribute(language)}"` : '';
   const orderedAttribute = block.ordered ? ' data-ordered="true"' : '';
@@ -499,9 +518,21 @@ function renderCodeBlock(block) {
   const body = block.ordered
     ? renderOrderedCodeLines(block.text)
     : `<pre><code${className}>${escapeHtml(normalizeText(block.text))}</code></pre>`;
+  if (block.caption !== undefined && !hasInlineAstContent(block.caption)) {
+    throw fail('invalid_block_caption', 'code_block caption must not be empty.');
+  }
+  const caption = block.caption === undefined ? null : renderInlineNodes(block.caption, options);
+  let figureCaption = '';
+  if (language && caption !== null) {
+    figureCaption = `<figcaption><span class="and-code-language">${escapeHtml(language)}</span> <span class="and-block-caption">${caption}</span></figcaption>`;
+  } else if (caption !== null) {
+    figureCaption = `<figcaption class="and-block-caption">${caption}</figcaption>`;
+  } else if (language) {
+    figureCaption = `<figcaption>${escapeHtml(language)}</figcaption>`;
+  }
   return [
     `<figure class="${figureClass}"${language ? ` data-language="${escapeAttribute(language)}"` : ''}${orderedAttribute}>`,
-    language ? `<figcaption>${escapeHtml(language)}</figcaption>` : '',
+    figureCaption,
     body,
     '</figure>',
   ].join('\n');

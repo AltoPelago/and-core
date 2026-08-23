@@ -4,8 +4,8 @@ This folder is reserved for `&ND Core v2` CTS fixtures while v2 remains in propo
 
 Current status:
 
-- 121 accept/reject proposal fixtures (47 accept, 74 reject) cover promoted inline image, AEON
-  scalar, tag, marker, footnote, heading, formatted-paragraph, first-class todo/auto-number-list, and paired-block forms,
+- 169 accept/reject proposal fixtures (60 accept, 109 reject) cover promoted inline image, AEON
+  scalar, tag, marker, footnote, heading, block-caption, formatted-paragraph, first-class todo/auto-number-list, and paired-block forms,
   including nested rich content and document-wide reference integrity
 - `../../contracts/aeon-inline-scalar-v1.json` pins the complete typed-value datatype/alias list,
   per-family AST, canonical, and HTML projections, annotation cases, and explicit exclusions

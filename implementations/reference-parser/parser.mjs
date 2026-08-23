@@ -1,4 +1,4 @@
-import { extensionOpener, rawFence, scanDocument, tildeLanguageRawFence } from './scanner.mjs';
+import { blockCloser, extensionOpener, rawFence, scanDocument, tildeLanguageRawFence } from './scanner.mjs';
 import { parseAeonInlineTypedValue } from '../shared/aeon-inline-scalar.mjs';
 import { isNdV2Identifier } from '../shared/v2-identifier.mjs';
 
@@ -1142,6 +1142,20 @@ function parseInlineBlock(type, text, options, baseOffset = 0, context = null) {
   return { ok: true, node: { type, children: inline.nodes } };
 }
 
+function parseBlockCaption(closer, lineIndex, options, context) {
+  if (closer.caption === null) return { ok: true, caption: undefined };
+  if (closer.caption.trim().length === 0) {
+    return { ok: false, errorCode: 'invalid_block_caption' };
+  }
+  const captionOffset = context.lineStartOffsets[lineIndex] + closer.captionOffset;
+  const inline = parseInline(closer.caption, options, captionOffset, context);
+  if (!inline.ok) return withOffset(inline, captionOffset);
+  if (!hasInlineContent(inline.nodes)) {
+    return { ok: false, errorCode: 'invalid_block_caption' };
+  }
+  return { ok: true, caption: inline.nodes };
+}
+
 function stripListContinuationIndent(nodes) {
   let pendingIndentSpaces = 0;
 
@@ -1240,12 +1254,17 @@ function parseCodeBlock(lines, start, options, context) {
   let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === `${fence.prefix}${fence.fence}`) {
+    const closer = blockCloser(lines[i], `${fence.prefix}${fence.fence}`, context.documentVersion);
+    if (closer?.ok === false) return { ok: false, errorCode: closer.errorCode };
+    if (closer?.ok === true) {
+      const parsedCaption = parseBlockCaption(closer, i, options, context);
+      if (!parsedCaption.ok) return parsedCaption;
       const node = {
         type: 'code_block',
         language,
         ordered: fence.kind === 'dollar' ? fence.ordered : fence.fence.length === 4,
         text: payload.map((payloadLine) => rawPayloadLine(payloadLine, fence.prefix)).join('\n'),
+        ...(parsedCaption.caption === undefined ? {} : { caption: parsedCaption.caption }),
       };
       return {
         ok: true,
@@ -1270,7 +1289,10 @@ function parseFormattedParagraphBlock(lines, start, options, context, config) {
   let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === closer) {
+    const matchedCloser = blockCloser(lines[i], closer, context.documentVersion);
+    if (matchedCloser?.ok === true) {
+      const parsedCaption = parseBlockCaption(matchedCloser, i, options, context);
+      if (!parsedCaption.ok) return parsedCaption;
       const text = payload.join('\n');
       if (text.trim().length === 0) {
         return { ok: false, errorCode: config.invalidCode };
@@ -1286,6 +1308,7 @@ function parseFormattedParagraphBlock(lines, start, options, context, config) {
             type: config.nodeType,
             ...(config.id === undefined ? {} : { id: config.id }),
             children: inline.nodes,
+            ...(parsedCaption.caption === undefined ? {} : { caption: parsedCaption.caption }),
           },
           context,
           context.lineStartOffsets[start],
@@ -1308,7 +1331,10 @@ function parseCardBlock(lines, start, options, context, opener) {
   let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === '~~~|') {
+    const closer = blockCloser(lines[i], '~~~|', context.documentVersion);
+    if (closer?.ok === true) {
+      const parsedCaption = parseBlockCaption(closer, i, options, context);
+      if (!parsedCaption.ok) return parsedCaption;
       const bodyContext = makeChildContext(context, {
         lineOffset: context.lineOffset + start + 1,
         lineStartOffsets: context.lineStartOffsets.slice(start + 1, i),
@@ -1337,6 +1363,7 @@ function parseCardBlock(lines, start, options, context, opener) {
             type: 'card_block',
             ...(title === undefined ? {} : { title }),
             children: body.children,
+            ...(parsedCaption.caption === undefined ? {} : { caption: parsedCaption.caption }),
           },
           context,
           context.lineStartOffsets[start],
@@ -1361,11 +1388,16 @@ function parseExtensionBlock(lines, start, options, context) {
   let payloadSize = 0;
 
   for (let i = start + 1; i < lines.length; i += 1) {
-    if (lines[i] === `${extension.prefix}+++`) {
+    const closer = blockCloser(lines[i], `${extension.prefix}+++`, context.documentVersion);
+    if (closer?.ok === false) return { ok: false, errorCode: closer.errorCode };
+    if (closer?.ok === true) {
+      const parsedCaption = parseBlockCaption(closer, i, options, context);
+      if (!parsedCaption.ok) return parsedCaption;
       const node = {
         type: 'extension_block',
         name: extension.name,
         text: payload.map((payloadLine) => rawPayloadLine(payloadLine, extension.prefix)).join('\n'),
+        ...(parsedCaption.caption === undefined ? {} : { caption: parsedCaption.caption }),
       };
       return {
         ok: true,
@@ -1395,7 +1427,8 @@ function parseFallbackBlock(lines, start, options, context) {
       let foundNestedClose = false;
       for (i += 1; i < lines.length; i += 1) {
         payload.push(lines[i]);
-        if (lines[i] === `${nestedExtension.prefix}+++`) {
+        const nestedCloser = blockCloser(lines[i], `${nestedExtension.prefix}+++`, context.documentVersion);
+        if (nestedCloser?.ok === true) {
           foundNestedClose = true;
           break;
         }

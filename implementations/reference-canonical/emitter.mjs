@@ -180,6 +180,19 @@ function requireV2(context, nodeType) {
   }
 }
 
+function emitBlockCaption(node, context) {
+  if (node.caption === undefined) return '';
+  requireV2(context, `${node.type}.caption`);
+  if (!hasInlineAstContent(node.caption)) {
+    throw fail('invalid_block_caption', `${node.type} caption must not be empty.`);
+  }
+  const preserved = emitInlineNodes(node.caption, { ...context, preserveNewlines: true });
+  if (preserved.includes('\n') || preserved.includes('\r')) {
+    throw fail('invalid_block_caption', `${node.type} caption must occupy one physical line.`);
+  }
+  return ` (${emitInlineNodes(node.caption, context)})`;
+}
+
 function emitV2Value(value, context = {}) {
   return escapeText(String(value), context);
 }
@@ -286,17 +299,22 @@ function indentLines(text, prefix) {
     .join('\n');
 }
 
-function emitRawBlockFencePayload(text, fence, errorCode) {
+function isClosingFenceLine(line, fence, captionClosers) {
+  return line === fence
+    || (captionClosers && line.startsWith(`${fence} (`) && line.endsWith(')'));
+}
+
+function emitRawBlockFencePayload(text, fence, errorCode, captionClosers = false) {
   const normalized = normalizeRawText(text);
-  if (normalized.split('\n').some((line) => line === fence)) {
+  if (normalized.split('\n').some((line) => isClosingFenceLine(line, fence, captionClosers))) {
     throw fail(errorCode, `Raw payload contains an unescaped closing fence line: ${fence}`);
   }
   return normalized;
 }
 
-function emitExtensionPayload(text) {
+function emitExtensionPayload(text, captionClosers = false) {
   const normalized = normalizeRawText(text);
-  if (normalized.split('\n').some((line) => line === '+++')) {
+  if (normalized.split('\n').some((line) => isClosingFenceLine(line, '+++', captionClosers))) {
     throw fail(
       'unsupported_extension_fence_payload',
       'Extension payload contains an unescaped extension closing fence line.'
@@ -443,12 +461,12 @@ function emitBlockquote(node, context) {
     .join('\n');
 }
 
-function emitPairedInlineBlock(opener, closer, children, context) {
-  const payload = emitInlineNodes(children, { ...context, preserveNewlines: true });
-  if (payload.split('\n').some((line) => line === closer)) {
+function emitPairedInlineBlock(opener, closer, node, context) {
+  const payload = emitInlineNodes(node.children, { ...context, preserveNewlines: true });
+  if (payload.split('\n').some((line) => isClosingFenceLine(line, closer, true))) {
     throw fail('unsupported_v2_fence_payload', `Paired-block payload contains a closing fence line: ${closer}`);
   }
-  return `${opener}\n${payload}\n${closer}`;
+  return `${opener}\n${payload}\n${closer}${emitBlockCaption(node, context)}`;
 }
 
 function emitCardBlock(node, context) {
@@ -463,10 +481,10 @@ function emitCardBlock(node, context) {
     ? ''
     : ` ${emitInlineNodes(node.title, context)}`;
   const payload = emitBlocks(node.children, context);
-  if (payload.split('\n').some((line) => line === '~~~|')) {
+  if (payload.split('\n').some((line) => isClosingFenceLine(line, '~~~|', true))) {
     throw fail('unsupported_v2_fence_payload', 'Card payload contains a closing fence line: ~~~|');
   }
-  return `~~~|${title}\n${payload}\n~~~|`;
+  return `~~~|${title}\n${payload}\n~~~|${emitBlockCaption(node, context)}`;
 }
 
 function emitBlock(node, context) {
@@ -489,28 +507,30 @@ function emitBlock(node, context) {
     case 'code_block': {
       const language = node.language ? node.language.toLowerCase() : '';
       const payloadLines = normalizeRawText(node.text).split('\n');
+      const caption = emitBlockCaption(node, context);
       if (context.version === 'v2') {
-        if (!payloadLines.includes('~~~$')) {
+        if (!payloadLines.some((line) => isClosingFenceLine(line, '~~~$', true))) {
           const fence = '~~~$';
           const opener = `${fence}${node.ordered ? ' [n]' : ''}${language ? ` ${language}` : ''}`;
-          const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
-          return `${opener}\n${payload}\n${fence}`;
+          const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload', true);
+          return `${opener}\n${payload}\n${fence}${caption}`;
         }
         const fallbackFence = node.ordered ? '````' : '```';
-        const fallbackPayload = emitRawBlockFencePayload(node.text, fallbackFence, 'unsupported_code_fence_payload');
-        return `${fallbackFence}${language}\n${fallbackPayload}\n${fallbackFence}`;
+        const fallbackPayload = emitRawBlockFencePayload(node.text, fallbackFence, 'unsupported_code_fence_payload', true);
+        return `${fallbackFence}${language}\n${fallbackPayload}\n${fallbackFence}${caption}`;
       }
       const fence = node.ordered ? '````' : payloadLines.includes('```') ? '~~~$' : '```';
       const payload = emitRawBlockFencePayload(node.text, fence, 'unsupported_code_fence_payload');
       const opener = fence === '~~~$' && language ? `${fence} ${language}` : `${fence}${language}`;
-      return `${opener}\n${payload}\n${fence}`;
+      return `${opener}\n${payload}\n${fence}${caption}`;
     }
     case 'extension_block': {
-      const payload = emitExtensionPayload(node.text);
+      const caption = emitBlockCaption(node, context);
+      const payload = emitExtensionPayload(node.text, context.version === 'v2');
       if (node.fallback) {
-        return `+++${node.name}\n${payload}\n+++\n+++fallback\n${emitBlocks(node.fallback.children, context)}\n+++`;
+        return `+++${node.name}\n${payload}\n+++${caption}\n+++fallback\n${emitBlocks(node.fallback.children, context)}\n+++`;
       }
-      return `+++${node.name}\n${payload}\n+++`;
+      return `+++${node.name}\n${payload}\n+++${caption}`;
     }
     case 'table': {
       const logicalWidth = tableRowLogicalWidth(node.header, context);
@@ -528,41 +548,41 @@ function emitBlock(node, context) {
     }
     case 'highlight_paragraph_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock('~~~=', '~~~=', node.children, context);
+      return emitPairedInlineBlock('~~~=', '~~~=', node, context);
     case 'strong_paragraph_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock('~~~*', '~~~*', node.children, context);
+      return emitPairedInlineBlock('~~~*', '~~~*', node, context);
     case 'emphasis_paragraph_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock('~~~/', '~~~/', node.children, context);
+      return emitPairedInlineBlock('~~~/', '~~~/', node, context);
     case 'underline_paragraph_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock('~~~_', '~~~_', node.children, context);
+      return emitPairedInlineBlock('~~~_', '~~~_', node, context);
     case 'question_paragraph_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock('~~~?', '~~~?', node.children, context);
+      return emitPairedInlineBlock('~~~?', '~~~?', node, context);
     case 'admonition_paragraph_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock('~~~!', '~~~!', node.children, context);
+      return emitPairedInlineBlock('~~~!', '~~~!', node, context);
     case 'comment_block':
       requireV2(context, node.type);
-      return emitPairedInlineBlock("~~~'", "~~~'", node.children, context);
+      return emitPairedInlineBlock("~~~'", "~~~'", node, context);
     case 'header_text_block': {
       requireV2(context, node.type);
       if (node.tag !== undefined) throw fail('invalid_header_text_block', 'header_text_block no longer accepts a tag.');
-      return emitPairedInlineBlock('~~~#', '~~~#', node.children, context);
+      return emitPairedInlineBlock('~~~#', '~~~#', node, context);
     }
     case 'disclaimer_block': {
       requireV2(context, node.type);
       if (node.tag !== undefined) throw fail('invalid_disclaimer_block', 'disclaimer_block no longer accepts a tag.');
-      return emitPairedInlineBlock('~~~^', '~~~', node.children, context);
+      return emitPairedInlineBlock('~~~^', '~~~', node, context);
     }
     case 'semantic_block':
       requireV2(context, node.type);
       return emitPairedInlineBlock(
         `~~~(${requireV2Identifier(node.id, 'invalid_semantic_id', node.type)})`,
         '~~~',
-        node.children,
+        node,
         context
       );
     case 'card_block':

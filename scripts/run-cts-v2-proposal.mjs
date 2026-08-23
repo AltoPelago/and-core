@@ -338,6 +338,47 @@ function runApiBoundaryChecks() {
     ));
   }
 
+  for (const [name, opener, closer] of [
+    ['highlight paragraph', '~~~=', '~~~='],
+    ['strong paragraph', '~~~*', '~~~*'],
+    ['emphasis paragraph', '~~~/', '~~~/'],
+    ['underline paragraph', '~~~_', '~~~_'],
+    ['question paragraph', '~~~?', '~~~?'],
+    ['admonition paragraph', '~~~!', '~~~!'],
+    ['comment', "~~~'", "~~~'"],
+    ['header text', '~~~#', '~~~#'],
+    ['disclaimer', '~~~^', '~~~'],
+    ['semantic', '~~~(summary)', '~~~'],
+    ['card', '~~~| Summary', '~~~|'],
+  ]) {
+    const captioned = parseAnd(
+      `&ND v2\n\n${opener}\ncontent\n${closer} (${name} caption)\n`,
+      { allowV2: true }
+    );
+    const block = captioned.document?.children?.[0];
+    checks.push(reportCheck(
+      `${name} block caption`,
+      captioned.ok
+        && block?.caption?.[0]?.type === 'text'
+        && block.caption[0].value === `${name} caption`,
+      'every v2 tilde-fenced block family must retain closing-fence caption content'
+    ));
+  }
+
+  const v1CaptionedCode = parseAnd('&ND v1\n\n~~~$\ncode\n~~~$ (v2 caption)\n~~~$\n', { allowV2: true });
+  checks.push(reportCheck(
+    'v1 rejects captioned code closer',
+    !v1CaptionedCode.ok && v1CaptionedCode.errorCode === 'block_caption_requires_v2',
+    'a caption-looking code closer must not be accepted as opaque v1 payload before a later bare closer'
+  ));
+
+  const v1CaptionedExtension = parseAnd('&ND v1\n\n+++graph\npayload\n+++ (v2 caption)\n+++\n', { allowV2: true });
+  checks.push(reportCheck(
+    'v1 rejects captioned extension closer',
+    !v1CaptionedExtension.ok && v1CaptionedExtension.errorCode === 'block_caption_requires_v2',
+    'a caption-looking extension closer must not be accepted as opaque v1 payload before a later bare closer'
+  ));
+
   const unknownExtension = parseAnd('&ND v2\n\n+++future/widget\nopaque\n+++\n', { allowV2: true });
   checks.push(reportCheck(
     'v2 opaque extension inheritance',

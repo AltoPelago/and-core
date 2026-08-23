@@ -69,6 +69,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only their content. |
 | `\` before a block opener | Core | V2-only structural escape that produces ordinary paragraph text and is emitted only when required. |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header-text, and disclaimer block structure. |
+| `closing-fence (caption)` | Core | Optional rich inline caption on every fenced block node; captions are authored labels, not automatic numbering instructions. |
 | All other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
@@ -329,12 +330,70 @@ reference HTML projection emits `text-align` intent and native `colspan`. V1 rec
 positions but rejects aligned separators and span markers with the diagnostics above. Inline spans
 inside a spanning cell begin at its trimmed content and exclude the adjacent marker.
 
+## Block Captions
+
+Every fenced block node in v2 may carry an optional rich inline caption on its closing fence:
+
+```text
+captioned-close ::= block-close [ " " "(" caption-inline ")" ]
+caption-inline ::= non-empty rich inline content on one physical line
+```
+
+```and
++++graph
+["hello", "Hello", 50, 50]
++++ (Figure 1.1: Graph of [* hello world])
+
+~~~$ aeon
+hello = "world"
+~~~$ (Example A: Hello world)
+```
+
+Exactly one ASCII space separates the ordinary closer from the opening parenthesis. The first `(`
+after that separator and the final `)` on the same line delimit the caption, so ordinary balanced
+parentheses may occur inside its inline text. An empty or inline-empty caption fails with
+`invalid_block_caption`. Caption text such as `Figure 1.1` and `Example A` is entirely authored;
+Core neither interprets nor automatically numbers it.
+
+```ts
+interface NdBlockCaptionFields {
+  readonly caption?: NdInlineNode[];
+}
+
+interface NdV2CodeBlock extends NdCodeBlock, NdBlockCaptionFields {}
+interface NdV2ExtensionBlock extends NdExtensionBlock, NdBlockCaptionFields {}
+```
+
+`NdBlockCaptionFields` also applies to every paired-block node and `NdCardBlock`. This includes code
+opened with inherited backtick fences, inherited dollar code, opaque extension blocks, formatted
+paragraph blocks, semantic blocks, and cards. The reserved `+++fallback` region is not an
+independent block node and cannot carry its own caption. A caption on the primary extension closer
+does not interrupt immediate fallback attachment:
+
+```and
++++graph
+opaque payload
++++ (Figure 1: Processing graph)
++++fallback
+Fallback prose.
++++
+```
+
+The caption is retained separately from the raw payload, formatted-block content, semantic ID, and
+card title. Canonical v2 output emits it on the closing fence. The reference HTML projection uses a
+visible `figcaption`; a comment block and its caption remain hidden. Non-visual projections MUST
+retain the caption content. A visible caption supplements rather than replaces accessibility text
+such as an SVG `title`.
+
+Captioned closers are v2-only. A v1 parser rejects them with `block_caption_requires_v2`, including
+on inherited code and extension blocks, while a v2 parser continues to accept every bare v1 closer.
+
 ## Card Blocks
 
 V2 introduces a non-empty block-content container with an optional rich inline title:
 
 ```ts
-interface NdCardBlock {
+interface NdCardBlock extends NdBlockCaptionFields {
   readonly type: "card_block";
   readonly title?: NdInlineNode[];
   readonly children: NdBlockNode[];
@@ -362,10 +421,10 @@ A named card places one ASCII space and a non-empty rich inline title after the 
 `title` is absent for an unnamed card and present for a named card. Its presence carries portable
 collapsible intent; it is not a consumer-owned ID. The body is parsed as ordinary block content and
 must contain at least one block. Empty cards and malformed titles fail with `invalid_card_block`;
-missing exact closers fail with `unclosed_card_block`. Because the unnamed opener and closer are
+missing valid closers fail with `unclosed_card_block`. Because the unnamed opener and bare closer are
 identical, direct same-level card nesting is not expressible.
 
-Canonical output preserves the unnamed/named distinction and emits the exact `~~~|` closer. The
+Canonical output preserves the unnamed/named distinction and emits bare `~~~|` or `~~~| (caption)`. The
 reference HTML projection uses `<aside class="and-card">` for unnamed cards and native
 `<details>/<summary>` for named cards. Other consumers may choose borders, backgrounds, and
 collapsible controls; non-interactive projections must retain both title and body content. V1
@@ -502,7 +561,7 @@ tilde-dollar forms. It extends the dollar opener with optional `[n]` numbered-li
 
 ```text
 code-open ::= "~~~$" [ " " ( code-language | "[n]" [ " " code-language ] ) ]
-code-close ::= "~~~$"
+code-close ::= "~~~$" [ " " "(" caption-inline ")" ]
 code-language ::= [A-Za-z][A-Za-z0-9_-]*
 ```
 
@@ -526,7 +585,8 @@ title = "numbered"
 ```
 
 The opener spacing is exact, the language is optional, and `[n]` maps to the inherited
-`NdCodeBlock.ordered: true` field as numbered-line intent. The closer is always bare `~~~$`.
+`NdCodeBlock.ordered: true` field as numbered-line intent. The closer is bare `~~~$` unless it
+carries the optional v2 block caption defined above.
 Payload text remains raw and uses the inherited code-block resource budgets. Canonical language
 spelling is lowercase.
 
@@ -534,7 +594,8 @@ A v1 parser accepts `~~~$` and `~~~$ language`, but rejects either `[n]` opener 
 `invalid_code_fence`; v1 ordered code remains spelled with quadruple backticks. A v2 parser accepts
 all inherited backtick and unnumbered dollar forms without changing their AST meaning. V2 canonical
 emission prefers the `~~~$` family, including for code parsed from backticks, and falls back to the
-matching inherited backtick fence when the payload contains an exact `~~~$` line. V1 canonical
+matching inherited backtick fence when the payload contains a bare or caption-shaped `~~~$` closer
+line. V1 canonical
 emission prefers backticks and uses an unnumbered dollar fence only to avoid an exact triple-backtick
 payload line. The briefly proposed
 `~~~language` and `~~~~language` forms are not supported; parsers reject them with
@@ -543,52 +604,52 @@ payload line. The briefly proposed
 ## Paired Blocks
 
 ```ts
-interface NdHighlightParagraphBlock {
+interface NdHighlightParagraphBlock extends NdBlockCaptionFields {
   readonly type: "highlight_paragraph_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdStrongParagraphBlock {
+interface NdStrongParagraphBlock extends NdBlockCaptionFields {
   readonly type: "strong_paragraph_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdEmphasisParagraphBlock {
+interface NdEmphasisParagraphBlock extends NdBlockCaptionFields {
   readonly type: "emphasis_paragraph_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdUnderlineParagraphBlock {
+interface NdUnderlineParagraphBlock extends NdBlockCaptionFields {
   readonly type: "underline_paragraph_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdQuestionParagraphBlock {
+interface NdQuestionParagraphBlock extends NdBlockCaptionFields {
   readonly type: "question_paragraph_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdAdmonitionParagraphBlock {
+interface NdAdmonitionParagraphBlock extends NdBlockCaptionFields {
   readonly type: "admonition_paragraph_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdCommentBlock {
+interface NdCommentBlock extends NdBlockCaptionFields {
   readonly type: "comment_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdHeaderTextBlock {
+interface NdHeaderTextBlock extends NdBlockCaptionFields {
   readonly type: "header_text_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdDisclaimerBlock {
+interface NdDisclaimerBlock extends NdBlockCaptionFields {
   readonly type: "disclaimer_block";
   readonly children: NdInlineNode[];
 }
 
-interface NdSemanticBlock {
+interface NdSemanticBlock extends NdBlockCaptionFields {
   readonly type: "semantic_block";
   readonly id: string;
   readonly children: NdInlineNode[];
@@ -670,15 +731,17 @@ required cross-form combinations: each paired block in lists and blockquotes, re
 children in each paired block, local links crossing container boundaries, rich resource nesting, and
 contextual list-item content, leading directional bullet replacement, heading-number hierarchy, and
 rich/reused footnotes, code-block language and numbered-line intent, including rich children across
-every formatted paragraph family.
+every formatted paragraph family, plus captions combined with language code, extension fallback,
+and titled cards.
 
 ## Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 46 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 47 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
-clarifiers, footnotes, code blocks, cards, aligned/spanning tables, nested rich resources, lists, and blockquotes.
+clarifiers, footnotes, code blocks and block captions, cards, aligned/spanning tables, nested rich
+resources, lists, and blockquotes.
 
 ## Stability
 

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1",
+  "id": "seed-v2-block-captions",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n~~~$ aeon\nvalue = \\\"hello\\\"\n~~~$ (Example A: [* AEON] code)\n\n```json\n{\\\"hello\\\": true}\n``` (Example B: inherited fence)\n\n+++graph\n[\\\"hello\\\", \\\"Hello\\\", 50, 50]\n+++ (Figure 1.1: Hello graph)\n+++fallback\nFallback graph description.\n+++\n\n~~~=\nHighlighted content\n~~~= (Note: highlighted paragraph)\n\n~~~^\nFine print\n~~~ (Disclaimer A)\n\n~~~(example)\nSemantic content\n~~~ (Example C: semantic block)\n\n~~~| Details\nCard body.\n~~~| (Figure 1.2: details card)\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "captions are rich inline content attached to v2 fenced block nodes",
+      "captioned inherited code fences are accepted only in v2 documents",
+      "an extension caption does not interrupt immediately adjacent fallback attachment",
+      "card titles and block captions remain distinct AST fields"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "code_block",
+          "language": "aeon",
+          "ordered": false,
+          "text": "value = \\\"hello\\\"",
+          "caption": [
+            { "type": "text", "value": "Example A: " },
+            { "type": "strong", "children": [{ "type": "text", "value": "AEON" }] },
+            { "type": "text", "value": " code" }
+          ]
+        },
+        {
+          "type": "code_block",
+          "language": "json",
+          "ordered": false,
+          "text": "{\\\"hello\\\": true}",
+          "caption": [{ "type": "text", "value": "Example B: inherited fence" }]
+        },
+        {
+          "type": "extension_block",
+          "name": "graph",
+          "text": "[\\\"hello\\\", \\\"Hello\\\", 50, 50]",
+          "caption": [{ "type": "text", "value": "Figure 1.1: Hello graph" }],
+          "fallback": {
+            "type": "document_fragment",
+            "children": [{
+              "type": "paragraph",
+              "children": [{ "type": "text", "value": "Fallback graph description." }]
+            }]
+          }
+        },
+        {
+          "type": "highlight_paragraph_block",
+          "children": [{ "type": "text", "value": "Highlighted content" }],
+          "caption": [{ "type": "text", "value": "Note: highlighted paragraph" }]
+        },
+        {
+          "type": "disclaimer_block",
+          "children": [{ "type": "text", "value": "Fine print" }],
+          "caption": [{ "type": "text", "value": "Disclaimer A" }]
+        },
+        {
+          "type": "semantic_block",
+          "id": "example",
+          "children": [{ "type": "text", "value": "Semantic content" }],
+          "caption": [{ "type": "text", "value": "Example C: semantic block" }]
+        },
+        {
+          "type": "card_block",
+          "title": [{ "type": "text", "value": "Details" }],
+          "children": [{
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "Card body." }]
+          }],
+          "caption": [{ "type": "text", "value": "Figure 1.2: details card" }]
+        }
+      ]
+    }
+  }
+}

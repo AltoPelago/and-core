@@ -124,6 +124,17 @@ export function extensionOpener(line) {
   };
 }
 
+export function blockCloser(line, expected, version = 'v1', allowCaption = true) {
+  if (line === expected) return { ok: true, caption: null, captionOffset: null };
+  if (!allowCaption || !line.startsWith(`${expected} (`) || !line.endsWith(')')) return null;
+  if (version !== 'v2') return { ok: false, errorCode: 'block_caption_requires_v2' };
+  return {
+    ok: true,
+    caption: line.slice(expected.length + 2, -1),
+    captionOffset: expected.length + 2,
+  };
+}
+
 function scanRawIslands(lines, version) {
   const rawLines = new Set();
   for (let i = 0; i < lines.length; i += 1) {
@@ -133,7 +144,9 @@ function scanRawIslands(lines, version) {
       let closed = false;
       for (let j = i + 1; j < lines.length; j += 1) {
         rawLines.add(j);
-        if (lines[j] === `${fence.prefix}${fence.fence}`) {
+        const closer = blockCloser(lines[j], `${fence.prefix}${fence.fence}`, version);
+        if (closer?.ok === false) return failAt(closer.errorCode, j, fence.prefix.length);
+        if (closer?.ok === true) {
           closed = true;
           i = j;
           break;
@@ -171,7 +184,9 @@ function scanRawIslands(lines, version) {
         let foundNestedClose = false;
         for (j += 1; j < lines.length; j += 1) {
           rawLines.add(j);
-          if (lines[j] === `${nestedExtension.prefix}+++`) {
+          const nestedCloser = blockCloser(lines[j], `${nestedExtension.prefix}+++`, version);
+          if (nestedCloser?.ok === false) return failAt(nestedCloser.errorCode, j, nestedExtension.prefix.length);
+          if (nestedCloser?.ok === true) {
             foundNestedClose = true;
             break;
           }
@@ -180,7 +195,14 @@ function scanRawIslands(lines, version) {
         continue;
       }
       rawLines.add(j);
-      if (lines[j] === `${extension.prefix}+++`) {
+      const closer = blockCloser(
+        lines[j],
+        `${extension.prefix}+++`,
+        version,
+        extension.name !== 'fallback'
+      );
+      if (closer?.ok === false) return failAt(closer.errorCode, j, extension.prefix.length);
+      if (closer?.ok === true) {
         closed = true;
         i = j;
         break;

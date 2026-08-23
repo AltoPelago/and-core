@@ -54,6 +54,7 @@
     "block.code",
     "block.code.language",
     "block.code.numbered",
+    "block.caption",
     "block.table.alignment",
     "block.table.colspan",
     "syntax.backtick_code_inherited",
@@ -107,6 +108,7 @@
     "block.semantic",
     "block.card",
     "block.code",
+    "block.caption",
     "block.table",
     "syntax.structural_escape",
     "syntax.shared_identifier",
@@ -152,6 +154,9 @@
     "card.with_block_children",
     "identifier.shared_across_constructs",
     "code.numbered_with_language",
+    "code.language_with_caption",
+    "extension.caption_with_fallback",
+    "card.title_with_caption",
     "table.span_with_alignment"
   ],
   "cases": [
@@ -915,6 +920,30 @@
         },
         "html": {
           "fragment": "<aside class=\"and-card\">\n<p>Standard <strong>card</strong>.</p>\n</aside>\n<details class=\"and-card and-card-collapsible\">\n<summary><strong>Details</strong></summary>\n<h1>Inside</h1>\n<ul>\n<li><p>one</p></li>\n</ul>\n</details>"
+        }
+      }
+    },
+    {
+      "id": "fenced-block-captions",
+      "covers": ["block.caption"],
+      "combinationCovers": [
+        "code.language_with_caption",
+        "extension.caption_with_fallback",
+        "card.title_with_caption"
+      ],
+      "spanAssertions": [{
+        "cover": "block.caption",
+        "path": "$.children[0].caption[1]",
+        "span": { "startOffset": 51, "endOffset": 60, "startLine": 5, "startColumn": 18, "endLine": 5, "endColumn": 27 }
+      }],
+      "source": "&ND v2\n\n~~~$ aeon\nhello = \"world\"\n~~~$ (Example A: [* hello])\n\n+++graph\nopaque\n+++ (Figure 1: graph)\n+++fallback\nFallback.\n+++\n\n~~~| Details\nBody.\n~~~| (Figure 2: card)\n",
+      "expected": {
+        "canonical": {
+          "embedded": "~~~$ aeon\nhello = \"world\"\n~~~$ (Example A: [* hello])\n\n+++graph\nopaque\n+++ (Figure 1: graph)\n+++fallback\nFallback.\n+++\n\n~~~| Details\nBody.\n~~~| (Figure 2: card)\n",
+          "standalone": "&ND v2\n\n~~~$ aeon\nhello = \"world\"\n~~~$ (Example A: [* hello])\n\n+++graph\nopaque\n+++ (Figure 1: graph)\n+++fallback\nFallback.\n+++\n\n~~~| Details\nBody.\n~~~| (Figure 2: card)\n"
+        },
+        "html": {
+          "fragment": "<figure class=\"and-code-block\" data-language=\"aeon\">\n<figcaption><span class=\"and-code-language\">aeon</span> <span class=\"and-block-caption\">Example A: <strong>hello</strong></span></figcaption>\n<pre><code class=\"language-aeon\">hello = &quot;world&quot;</code></pre>\n</figure>\n<figure class=\"and-captioned-block and-captioned-extension-block\">\n<p>Fallback.</p>\n<figcaption class=\"and-block-caption\">Figure 1: graph</figcaption>\n</figure>\n<figure class=\"and-captioned-block and-captioned-card-block\">\n<details class=\"and-card and-card-collapsible\">\n<summary>Details</summary>\n<p>Body.</p>\n</details>\n<figcaption class=\"and-block-caption\">Figure 2: card</figcaption>\n</figure>"
         }
       }
     },

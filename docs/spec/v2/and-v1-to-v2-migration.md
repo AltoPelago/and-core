@@ -164,6 +164,7 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[^ ...]` | Inline disclaimer |
 | `[(id) content]` | Inline semantic wrapper; ID is retained for consumers but hidden by default projection |
 | `~~~(id)` … `~~~` | Semantic block; content projects as an ordinary paragraph by default |
+| `closing-fence (caption)` | Rich authored caption on any fenced block node |
 | `\` before a block opener | Literal block-command text, decoded into an ordinary paragraph |
 
 The consumer-owned meaning of advisory tags, semantic IDs, custom tags and datatypes, numbering,
@@ -218,10 +219,32 @@ numbered typed code
 ```
 
 `[n]` requests numbered lines and an optional language follows it. It is not accepted by a v1
-parser. Every form closes with bare `~~~$`. Canonical v2 output prefers this family even when the source
+parser. Every form closes with bare `~~~$` or an optional v2 captioned closer such as
+`~~~$ (Example A: Description)`. Canonical v2 output prefers this family even when the source
 used backticks; canonical v1 output prefers backticks. Either version uses the alternate supported
 fence when its preferred closer occurs as an exact payload line. The briefly introduced `~~~language` and `~~~~language` forms should be
 replaced with either backticks or `~~~$ language`; they are rejected with `deprecated_code_fence`.
+
+## Block Captions
+
+V2 permits a short rich inline caption after a fenced block's closing delimiter:
+
+```and
++++graph
+opaque graph payload
++++ (Figure 1.1: Processing graph)
+
+~~~$ aeon
+hello = "world"
+~~~$ (Example A: Hello world)
+```
+
+The separator before `(` is exactly one ASCII space, the caption is non-empty and on one physical
+line, and its figure/example label is authored rather than automatically numbered. This applies to
+inherited code and extension blocks as well as v2 paired, semantic, and card blocks. A primary
+extension caption may be followed immediately by `+++fallback`. Card opener text remains the title
+and collapsible label; its closer caption is a separate description. V1 rejects captioned closers,
+so remove or move captions into ordinary prose when downgrading.
 
 ## Tables
 

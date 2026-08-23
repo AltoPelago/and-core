@@ -90,6 +90,7 @@ assigns each promoted form an explicit ownership boundary:
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers whose portable IDs and interpretation are consumer-owned; default projection exposes only content. |
 | `\` before a block opener | Core | V2-only structural escape for literal command text at a block-open position. |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header-text, and disclaimer block structure. |
+| `closing-fence (caption)` | Core | Optional rich inline caption on every fenced block node; authored labels are not automatic numbering instructions. |
 | Other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” does not introduce a feature gate. These forms remain part of one fixed
@@ -99,11 +100,11 @@ consumer vocabularies or presentation.
 ## Active First Slice
 
 The initial implementation slice started with anchor and line-break forms and has expanded into an
-executable 167-fixture proposal lane under `cts/fixtures/v2/strict/`:
+executable 169-fixture proposal lane under `cts/fixtures/v2/strict/`:
 
-- 59 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, card containers, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
+- 60 accepted fixtures covering inline tags, rich nesting, shared identifiers, footnotes, card containers, block captions, semantic and formatted/advisory/comment blocks, structural escapes, code blocks, aligned/spanning tables, first-class todo and auto-number
   lists, compact markers, heading auto-numbering, and paired blocks
-- 108 rejected fixtures covering empty payloads, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
+- 109 rejected fixtures covering empty payloads and captions, malformed spacing and IDs, invalid and misplaced escapes or markers, mixed list kinds,
   footnote graph integrity, local-fragment integrity, table spans, tags, and code/paired fences
 - corpus-level version checks covering v1-only readers, declared-v1 gating in v2-capable readers,
   and preservation of v1 structure under v2
@@ -140,15 +141,36 @@ code
 
 The optional language matches `[A-Za-z][A-Za-z0-9_-]*`; canonical output lowercases it. `[n]`
 records numbered-line intent in the inherited `code_block.ordered` field. Every new form closes with
-bare `~~~$`, and its payload has inherited raw-code semantics and budgets.
+bare `~~~$` or a v2 captioned closer such as `~~~$ (Example A: description)`, and its payload has
+inherited raw-code semantics and budgets.
 
 A v1 parser accepts `~~~$` and `~~~$ language` but rejects the v2-only `[n]` variants. A v2 parser
 accepts every inherited backtick and dollar fence. Canonical v2 emission prefers `~~~$`, including
 for code parsed from backticks, and falls back to the matching inherited backtick fence when the
-payload contains an exact `~~~$` line. Canonical v1 emission prefers backticks, using `~~~$` only
+payload contains a bare or caption-shaped `~~~$` closer line. Canonical v1 emission prefers backticks, using `~~~$` only
 when needed to preserve an exact triple-backtick payload line. The briefly introduced `~~~language` and
 `~~~~language` forms have been removed and reject with `deprecated_code_fence`. Plain `~~~` remains
 ordinary paragraph text.
+
+## Block Caption Grammar Snapshot (Proposal)
+
+V2 permits one optional, non-empty rich inline caption on the closing fence of every fenced block
+node:
+
+```text
+captioned-close ::= block-close [ " " "(" caption-inline ")" ]
+caption-inline ::= non-empty rich inline content on one physical line
+```
+
+This covers inherited backtick and dollar code, opaque extensions, every v2 paired block, semantic
+blocks, and cards. It does not create a caption on the reserved `+++fallback` region. A caption on
+an extension's primary closer preserves immediately adjacent fallback attachment. Card opener text
+remains its title and collapsible label; the closing caption is independent descriptive content.
+
+Canonical v2 emission preserves captions on closing fences. HTML uses visible `figcaption` content,
+while non-visual projections retain an equivalent description. Figure/example numbering is authored
+text, not Core numbering behavior. V1 rejects captioned inherited closers with
+`block_caption_requires_v2`; v2 continues accepting all bare v1 closers.
 
 ## Table Grammar Snapshot (Proposal)
 
@@ -536,6 +558,20 @@ Expected direction:
 - v1 acceptance for unnumbered dollar fences and strict rejection for their `[n]` variants; both
   versions reject removed `~~~language` / `~~~~language`
 - malformed, mismatched, and unclosed dollar fences fail with stable diagnostics
+
+### `seed-v2-block-captions`
+
+Intent:
+
+- generalize one closing-fence caption form across every fenced v2 block node
+- keep extension fallback attachment and card-title meaning independent from captions
+- preserve captions as rich inline AST content without assigning numbering semantics
+
+Expected direction:
+
+- v2 accepts non-empty one-line captions on inherited code/extensions and v2 fenced blocks
+- canonical and consumer projections retain the caption separately from block payload/content
+- v1 rejects captioned inherited closers, while v2 continues accepting their bare v1 forms
 
 ### `seed-v2-table-alignment-and-spans`
 

@@ -163,7 +163,14 @@ interface NdV2TableCell extends NdV1TableCell {
   readonly colSpan?: number;
 }
 
-interface NdCardBlock {
+interface NdBlockCaptionFields {
+  readonly caption?: readonly NdInlineNode[];
+}
+
+interface NdV2CodeBlock extends NdCodeBlock, NdBlockCaptionFields {}
+interface NdV2ExtensionBlock extends NdExtensionBlock, NdBlockCaptionFields {}
+
+interface NdCardBlock extends NdBlockCaptionFields {
   readonly type: "card_block";
   readonly title?: readonly NdInlineNode[];
   readonly children: readonly NdBlockNode[];
@@ -175,11 +182,17 @@ case-sensitive `[A-Za-z0-9][A-Za-z0-9._:-]*` lexical grammar. The exact promoted
 union, containment rules, and local-anchor invariants are defined by
 [`and-ast-contract.md`](./and-ast-contract.md). No v1 node changes meaning under v2.
 
-Code blocks keep the inherited `NdCodeBlock` shape. V1 accepts triple/quadruple backticks plus
+Code blocks keep the inherited `NdCodeBlock` fields. V1 accepts triple/quadruple backticks plus
 unnumbered `~~~$` with optional language; v2 adds `[n]` numbered-line intent to the dollar opener.
 V2 canonical emission prefers `~~~$`; v1 canonical emission prefers backticks. Each falls back to
-the alternate supported fence on an exact payload-closer collision. Removed `~~~language` and
+the alternate supported fence on a bare or caption-shaped payload-closer collision. Removed `~~~language` and
 `~~~~language` inputs fail with `deprecated_code_fence`.
+
+Every fenced block node may carry `caption` in v2, including inherited code and extension nodes,
+paired blocks, semantic blocks, and cards. It contains non-empty, one-line rich inline content from
+the closing fence and remains distinct from raw payload, semantic ID, and card title. Captioned
+closers under v1 fail with `block_caption_requires_v2`; empty v2 captions fail with
+`invalid_block_caption`.
 
 V2 table alignment arrays are present only when at least one separator cell uses `<--`, `-=-`, or
 `-->`. Spanning cells carry `colSpan > 1`; ordinary cells omit it. V1-shaped tables therefore retain

@@ -33,6 +33,7 @@ parse error, rewrite Core canonical text, or infer the document grammar version.
 | `~~~#` | Rich header-text content | Exact weight, size, placement, and relationship to a preceding heading |
 | `[(id) content]` / `~~~(id)` | Portable `id` plus rich children; the reference HTML exposes only content | ID vocabulary, semantic interpretation, alternate styling, and product behavior |
 | `card_block` from `~~~|` / `~~~| title` | Stable block container; title presence carries collapsible intent | Border, background, spacing, initial expansion state, control styling, and interaction details |
+| Fenced-block `caption` | Separate non-empty rich inline description; authored labels have no automatic numbering meaning | Placement, typography, figure/example conventions, generated indexes, and accessibility association |
 | `[+ value]` | `plus_tag` with one preserved scalar `value` | Value registry, action mapping, analytics, workflow, and UI |
 | Custom `[:type = scalar]` | Structured datatype label/adornments and a validated inline scalar | Datatype registry, domain validation, units, display formatting, and business meaning |
 | heading `[n]` and `auto_number_list` | Stable contextual auto-number intent | Number sequence, scope, format, restart rules, localization, and displayed labels |
@@ -85,6 +86,12 @@ Consumers should define, at minimum:
 
 Calculated numbers belong to a projection or derived model and must not be written into the Core AST
 as though they were parsed source.
+
+Block captions do not participate in Core numbering. Text such as `Figure 1.1` or `Example A` is
+authored content. A consumer may build a figure/example index or validate a house numbering style,
+but it must not rewrite the caption AST as though a generated label had appeared in source. Visible
+captions supplement rather than replace accessible names or alternative descriptions supplied by a
+block-specific renderer.
 
 ## Footnotes
 
