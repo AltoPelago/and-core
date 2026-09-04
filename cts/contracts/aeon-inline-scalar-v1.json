@@ -127,10 +127,10 @@
     {
       "id": "wtc",
       "datatypes": ["wtc"],
-      "scalar": "2025-01-01T09:30Z&Local",
-      "canonicalScalar": "2025-01-01T09:30Z&Local",
-      "value": { "type": "DateTimeLiteral", "value": "2025-01-01T09:30Z&Local", "temporalKind": "wtc" },
-      "htmlText": "2025-01-01T09:30Z&Local"
+      "scalar": "2025-01-01T09:30Z&local",
+      "canonicalScalar": "2025-01-01T09:30Z&local",
+      "value": { "type": "DateTimeLiteral", "value": "2025-01-01T09:30Z&local", "temporalKind": "wtc" },
+      "htmlText": "2025-01-01T09:30Z&local"
     },
     {
       "id": "separator",

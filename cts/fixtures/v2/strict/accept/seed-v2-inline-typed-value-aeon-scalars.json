@@ -3,7 +3,7 @@
   "id": "seed-v2-inline-typed-value-aeon-scalars",
   "specVersion": "&ND Core v2",
   "mode": "strict",
-  "source": "&ND v2\n\n[:string = \"hello\"] [:number = 1_000.50] [:infinity = -Infinity] [:nan = NaN] [:null<datetime> = !none] [:boolean = true] [:toggle = on] [:hex = #FF_00] [:radix[2] = %1011] [:base64 = &QmFzZTY0IQ==] [:date = 2024-02-29] [:time = 09:30Z] [:datetime = 2025-01-01T09:30:00Z] [:wtc = 2025-01-01T09:30Z&Local] [:sep[\"x\"] = ^300x250] [:sansa = $.contact.name] [:temperature = 21.5]\n",
+  "source": "&ND v2\n\n[:string = \"hello\"] [:number = 1_000.50] [:infinity = -Infinity] [:nan = NaN] [:null<datetime> = !none] [:boolean = true] [:toggle = on] [:hex = #FF_00] [:radix[2] = %1011] [:base64 = &QmFzZTY0IQ==] [:date = 2024-02-29] [:time = 09:30Z] [:datetime = 2025-01-01T09:30:00Z] [:wtc = 2025-01-01T09:30Z&local] [:sep[\"x\"] = ^300x250] [:sansa = $.contact.name] [:temperature = 21.5]\n",
   "expected": {
     "ok": true,
     "assertions": [
