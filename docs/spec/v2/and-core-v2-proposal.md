@@ -470,7 +470,7 @@ Expected direction:
 - enforce reserved datatype/literal compatibility and reject structured values, references,
   multiline families, nested typed values, or the earlier equals-free spelling
 - pin the boundary as machine-readable contract `and-v2-aeon-inline-scalar-v1`, aligned with AEON
-  TypeScript `0.12.0`, with mandatory &ND AST/canonical/HTML snapshots and an optional live AEON
+  TypeScript `0.12.1`, with mandatory &ND AST/canonical/HTML snapshots and an optional live AEON
   lexer/parser/canonicalizer drift check
 
 ### `seed-v2-inline-highlight-tag-enabled`

@@ -3,7 +3,7 @@
   "id": "and-v2-aeon-inline-scalar-v1",
   "description": "Pinned AEON scalar boundary used by &ND Core v2 typed values.",
   "aeon": {
-    "packageVersion": "0.12.0",
+    "packageVersion": "0.12.1",
     "syntax": "anonymous typed value :TypeAnnotation = ScalarLiteral",
     "maxGenericDepth": 1
   },

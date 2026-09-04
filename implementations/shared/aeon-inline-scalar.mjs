@@ -30,7 +30,7 @@ const MAX_GENERIC_DEPTH = 1;
 
 export const AEON_INLINE_SCALAR_CONTRACT = Object.freeze({
   id: 'and-v2-aeon-inline-scalar-v1',
-  aeonPackageVersion: '0.12.0',
+  aeonPackageVersion: '0.12.1',
   maxGenericDepth: MAX_GENERIC_DEPTH,
   datatypes: Object.freeze([...FAMILY_BY_DATATYPE.keys()]),
   unsupportedReservedDatatypes: Object.freeze([...UNSUPPORTED_RESERVED_DATATYPES]),

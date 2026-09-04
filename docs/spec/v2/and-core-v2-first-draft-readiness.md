@@ -20,7 +20,7 @@ clean-baseline and lifecycle review described below.
 | v2 grammar | 174 indexed strict fixtures: 61 accept and 113 reject. | Ready |
 | v2 executable checks | 1054 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
 | AST snapshots | 60 of 61 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
-| AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.0` drift comparison passes when available. | Ready |
+| AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.12.1` drift comparison passes when available. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
 | Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 56 exact canonical snapshots across promoted families and interactions. | Ready |
 | HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 29 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
