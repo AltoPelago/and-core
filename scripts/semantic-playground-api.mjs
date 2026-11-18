@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import { fromAeon, normalizeAeon, profile, toAeon } from '../examples/v2-aeon-roundtrip/bridge.mjs';
 import { queries } from '../examples/v2-aeon-roundtrip/queries.mjs';
+import { renderQueryViews } from './semantic-query-output.mjs';
 import { loadAeon } from '../examples/v2-aeon-roundtrip/aeon-runtime.mjs';
 
 export const maxSourceLength = 262_144;
@@ -34,7 +35,8 @@ export async function executeSemanticRequest(operation, request, engine) {
     // Query the editor's native AEON directly, including source-free documents.
     // No &ND-specific namespace or silent normalization is introduced here.
     const { namespace } = selected.readAeonNamespace(request.source);
-    return selected.evaluateQuery(request.query, namespace);
+    const evaluation = selected.evaluateQuery(request.query, namespace);
+    return evaluation.ok ? { ...evaluation, ...renderQueryViews(evaluation, request.source, selected) } : evaluation;
   }
   throw new Error('Unknown playground operation.');
 }

@@ -9,13 +9,16 @@ export async function loadAeon() {
     ? import(pathToFileURL(path.resolve(root, `packages/${name}/dist/index.js`)).href)
     : import(`@altopelago/aeon-${name}`);
   try {
-    const [{ tokenize }, { parse }, { readAeonNamespace }, { evaluateQuery, resolveAddress }] = await Promise.all([
+    const [{ tokenize }, { parse }, { readAeonNamespace }, { evaluateQuery, resolveAddress }, { getQueryValueMetadata, getQueryObjectFieldMetadata }] = await Promise.all([
       load('lexer'), load('parser'),
       root ? import(pathToFileURL(path.resolve(root, 'packages/sdk/dist/sansa.js')).href)
         : import('@altopelago/aeon-sdk/sansa'),
-      import('@altopelago/sansa'),
+      import('@altopelago/sansa'), import('@altopelago/sansa/query-metadata'),
     ]);
-    return { tokenize, parse, readAeonNamespace, evaluateQuery, resolveAddress };
+    if (typeof getQueryValueMetadata !== 'function' || typeof getQueryObjectFieldMetadata !== 'function') {
+      throw new Error('SANSA runtime must expose the public query metadata accessors.');
+    }
+    return { tokenize, parse, readAeonNamespace, evaluateQuery, resolveAddress, getQueryValueMetadata, getQueryObjectFieldMetadata };
   } catch (cause) {
     throw new Error('Install this example with npm install --prefix examples/v2-aeon-roundtrip, or set AND_AEON_TYPESCRIPT_ROOT to a built AEON TypeScript checkout.', { cause });
   }

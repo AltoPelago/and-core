@@ -95,5 +95,13 @@ prose query results.
 
 See [SEMANTIC-PROFILE.md](./SEMANTIC-PROFILE.md) for vocabulary/versioning decisions,
 normalization boundaries, identity rules, and implementation limits. This is an
-experimental profile, not a published Aeonite standard. It uses the existing &ND
+frozen candidate profile, not a published Aeonite standard. It uses the existing &ND
 inline scalar subset and adds no document-specific SANSA query language.
+
+
+The [machine-readable vocabulary](./vocabulary.json) pins the accepted nodes,
+attributes and containment; incompatible changes require a new vocabulary ID.
+The [query cookbook](./QUERIES.md) contains all 19 playground presets.
+Both result views use the stable `and-query-results-v1` list envelope.
+The example uses a [pinned unpublished SANSA snapshot](./vendor/README.md) for
+its public query metadata API; no private SANSA properties are read by the adapter.

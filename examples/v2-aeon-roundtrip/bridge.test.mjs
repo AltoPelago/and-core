@@ -175,7 +175,11 @@ test('semantic normalization preserves content distinctions and exact large numb
 
 test('SANSA queries select headings, values, links, tasks, references, and fallbacks', async () => {
   const reports = queryDocument(toAeon(await read('./input.and')), runtime);
-  assert.deepEqual(reports.map(({ results }) => results.length), [2, 1, 30, 1, 1, 1, 1, 1, 1, 1]);
+  for (const report of reports) {
+    const { queries } = await import('./queries.mjs');
+    const expected = queries.find(({ name }) => name === report.name).exampleCandidateCount;
+    if (expected !== undefined) assert.equal(report.results.length, expected, report.name);
+  }
   const date = reports.find(({ name }) => name === 'Native inline values').results[0].value.bindings[0];
   assert.equal(date.representationKind, 'DateLiteral');
   assert.equal(date.value, '2026-08-20');
@@ -347,4 +351,37 @@ test('a source-free AEON document is queryable without inventing an &ND source v
   // Only the &ND conversion example requires explicit syntax-version metadata.
   assert.throws(() => fromAeon(source, runtime), /Expected exactly and_version and doc/);
   assert.equal(fromAeon(`and_version="v2"\n${source}`, runtime).canonical, '&ND v2\n\n## Native document\n');
+});
+
+
+test('frozen vocabulary rejects unknown fields, missing fields, wrong types and containment', () => {
+  for (const body of [
+    '<document(<paragraph@{future="silently lost"}("text")>)>',
+    '<document(<heading("missing level")>)>',
+    '<document(<heading@{level="2"}("wrong native type")>)>',
+    '<document(<paragraph(<paragraph("block in inline content")>)>)>',
+    '<document(<todo_list(<list_item(<paragraph("wrong item role")>)>)>)>',
+    '<document(<paragraph(<image@{src="x",alt="alt",mode="giant"}>)>)>',
+    '<document(<paragraph(<anchor@{id="a",extra=true}>)>)>',
+    '<document(<heading@{level:CustomLevel=2}("unpreserved property annotation")>)>',
+  ]) assert.throws(() => fromAeon(envelope(body), runtime), undefined, body);
+});
+
+test('the vocabulary manifest enumerates every emitted node in the v2 fixture corpus', async () => {
+  const { vocabulary } = await import('./vocabulary.mjs');
+  assert.equal(vocabulary.id, profile);
+  assert.equal(vocabulary.status, 'frozen-candidate');
+  assert.ok(Object.isFrozen(vocabulary.nodes));
+  const emitted = new Set();
+  for (const entry of contract.cases) {
+    const aeon = toAeon(entry.source);
+    function visit(value) {
+      if (!value || typeof value !== 'object') return;
+      if (value.type === 'NodeLiteral') emitted.add(value.tag);
+      if (value instanceof Map) { for (const item of value.values()) visit(item); }
+      else for (const item of Object.values(value)) visit(item);
+    }
+    visit(runtime.parse(runtime.tokenize(aeon).tokens).document);
+  }
+  for (const tag of emitted) assert.ok(Object.hasOwn(vocabulary.nodes, tag), tag);
 });

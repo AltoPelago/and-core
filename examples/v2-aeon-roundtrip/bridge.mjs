@@ -1,9 +1,10 @@
+import { vocabulary, validateVocabularyNode } from './vocabulary.mjs';
 import { parseAnd, emitCanonical } from '../../index.mjs';
 import {
   emitAeonInlineTypedValue, formatAeonDatatype, parseAeonInlineTypedValue,
 } from '../../implementations/shared/aeon-inline-scalar.mjs';
 
-export const profile = 'and-document-semantic-example-2';
+export const profile = vocabulary.id;
 
 const tagNames = new Map([
   'anchor_tag', 'image_tag', 'underline_tag', 'highlight_tag', 'admonition_tag',
@@ -11,7 +12,7 @@ const tagNames = new Map([
   'semantic_tag', 'plus_tag',
 ].map((type) => [type, type.slice(0, -4)]));
 const astNames = new Map([...tagNames].map(([type, tag]) => [tag, type]));
-const taskStates = new Set(['unchecked', 'checked', 'in_progress', 'cancelled']);
+const taskStates = new Set(vocabulary.taskStates);
 
 function scalarValue(value) {
   if (typeof value === 'string' || typeof value === 'boolean') return JSON.stringify(value);
@@ -83,6 +84,10 @@ function encode(value, depth = 0, tag = value.type) {
     if (['title', 'caption'].includes(key) && auxiliaryAllowed(tag, key)) continue;
     if (tag === 'table' && ['header', 'rows'].includes(key)) continue;
     if (tag === 'extension_block' && key === 'fallback') continue;
+    const definition = vocabulary.nodes[tagNames.get(tag) ?? tag];
+    if (!definition || !Object.hasOwn(definition.required, key) && !Object.hasOwn(definition.optional, key)) {
+      throw new Error(`Unknown vocabulary attribute on ${tag}: ${key}`);
+    }
     if (tag === 'todo_item' && key === 'state') {
       if (!taskStates.has(field)) throw new Error(`Unknown task state: ${field}`);
       attributes.push(`state=|${field}|`);
@@ -167,6 +172,7 @@ function requireNode(value, tag) {
   if (value?.type !== 'NodeLiteral' || (tag !== undefined && value.tag !== tag)) {
     throw new Error(`Expected ${tag ?? 'an AEON'} node`);
   }
+  validateVocabularyNode(value);
 }
 
 function roleChildren(value, tag) {

@@ -1,6 +1,6 @@
 # &ND semantic document example profile
 
-Status: experimental implementation of the supplied **&ND v2 — AES-Native
+Status: **frozen candidate vocabulary, revision 2**, implementing the supplied **&ND v2 — AES-Native
 Semantic Representation** proposal and its follow-up revisions. This does not
 promote the &ND v2 language proposal or publish an Aeonite vocabulary/CTS standard.
 
@@ -13,9 +13,24 @@ and mapping revision. An extracted document subtree retains that identifier.
 syntax version. The root's vocabulary does not depend on the syntax version.
 The identifier denotes this versioned experimental semantic contract for any
 conforming document; it is not the identity of `input.and` or another fixture.
-A future normative identifier (for example, `and.document.v1`) would require an
-agreed stable contract and release decision. This revision retains the existing
-experimental identifier and changes no representation or language stage.
+The machine-readable [vocabulary.json](./vocabulary.json) pins all node names,
+containment models, required and optional property types, role placement, and task
+symbols. [vocabulary.mjs](./vocabulary.mjs) validates this contract during decoding;
+the &ND emitter additionally validates content constraints and reference integrity.
+Unknown nodes/properties, missing required properties, wrong native types and
+invalid containment fail before conversion rather than being silently discarded.
+
+This identifier is now frozen for this candidate: changing node names, containment,
+attribute types, required fields, enum membership, or normalization requires a new
+vocabulary identifier and explicit migration. Documentation fixes and diagnostics
+may evolve without changing the accepted document semantics. Native equivalent
+literal spellings may normalize; custom annotations on ordinary structural
+properties are not part of this contract. Custom inline types belong in
+`typed_value.value`, where their full supported annotation is preserved.
+
+A future normative identifier (for example, `and.document.v1`) requires an agreed
+release decision. Freezing this candidate does not promote the source language
+proposal or claim an Aeonite standard.
 The old redundant envelope `and_profile` binding is no longer emitted.
 
 A document authored directly in AEON can omit `and_version`: AES compilation and
@@ -196,8 +211,11 @@ These example checks complement the language CTS and run separately in CI.
 
 ## Verification of the reviewed representation
 
-The tests use the existing published AEON lexer/parser/SDK 0.16.0 and SANSA 0.14.2,
-with no &ND-specific change to their parsers, namespaces, equality, or traversal.
+The tests use published AEON lexer/parser/SDK 0.16.0 and the pinned local SANSA
+0.15.0-rc.1 snapshot described in [vendor/README.md](./vendor/README.md). It adds
+public presentation accessors without changing parsers, namespaces, equality,
+or traversal. The snapshot is unpublished; it makes a clean install reproducible
+until a SANSA release exports `@altopelago/sansa/query-metadata`.
 The optional checkout lane repeats these tests against the selected built AEON
 packages. Tests cover the exact checked-in `document.aeon`, not only synthetic trees.
 
@@ -217,3 +235,38 @@ Focused interoperability assertions establish that:
 These checks provide implementation evidence for candidate semantic-model review.
 They are example interoperability tests alongside the existing language CTS,
 not a claim of normative Aeonite semantic-model CTS certification or publication.
+
+## Query cookbook and result contract
+
+The playground loads [queries.mjs](./queries.mjs) directly. See the executable
+[query cookbook](./QUERIES.md) for common document questions and traversal limits.
+Queries operate on the current native AEON source; querying does not implicitly
+validate or normalize it into this vocabulary.
+
+Presentation contract `and-query-results-v1` always emits a standalone AEON
+document with one `results` list, in both values-only and metadata views:
+
+```aeon
+results = ["a reusable footnote"]
+```
+
+Each selected binding contributes one element. Computed scalar/object projections
+contribute one element per candidate. Empty Binding Sets contribute no elements.
+Actual selected lists, tuples, objects and node subtrees remain native values;
+they are never flattened. Ordering and duplicate occurrences are retained. No
+scalar unwrapping, automatic concatenation, deduplication or null substitution
+occurs. Empty, single and multiple results therefore share one outer shape.
+
+Metadata view has an address/kind/value record for each of the same elements.
+Binding addresses identify selected occurrences; computed projections use their
+candidate address and kind `scalar` or `object`, not a fabricated source span.
+Intrinsic data fields named address/kind/value remain unchanged inside the value.
+Annotations are carried on the native value assignment when significant.
+
+The HTTP response reports `resultFormat`, `valueCount` (displayed elements), and
+`candidateCount` (engine result records). Raw `results` retain SANSA's grouping;
+the two AEON strings are the lossless presentation/transport representations.
+JSON numeric transport alone cannot preserve all native scalar information.
+The formatter obtains derived metadata through SANSA's supported public accessors
+before JSON transport, and uses AEON parser spans for selected source values.
+The metadata toggle redraws this cached evaluation without querying again.
