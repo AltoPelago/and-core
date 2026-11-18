@@ -24,16 +24,25 @@ export function highlightSansa(source) {
 function inlineAnd(source) {
   // Tolerant presentation lexer: show syntax while a document is incomplete.
   // Validation remains exclusively in and-core, not in this renderer.
-  const pattern = /\\[^\n]|\[:[^\]\n]*\]|\[(?:\([A-Za-z0-9._:-]+\)|[*/$@#~!?:+="'_^%<>.n-])|\[[ x,;]\]|\]|\|/g;
+  const pattern = /\\[^\n]|\[(?:\([A-Za-z0-9._:-]+\)|[*/$@#~!?:+="'_^%<>.n-])|\[[ x,;]\]|\]|\|/g;
   let offset = 0;
   const parts = [];
-  for (const match of source.matchAll(pattern)) {
+  for (let match; (match = pattern.exec(source));) {
     parts.push(escapeHtml(source.slice(offset, match.index)));
     const value = match[0];
-    if (value.startsWith('[:')) {
-      parts.push(wrap('punct', '[:'), highlightAeon(value.slice(2, -1)), wrap('punct', ']'));
-    } else parts.push(wrap(value.startsWith('\\') ? 'type' : value.startsWith('[') ? 'tag' : 'punct', value));
-    offset = match.index + value.length;
+    if (value === '[:') {
+      // Each closer search consumes the interval it examines. A missing closer
+      // consumes the rest of this line once, including any further openers.
+      const close = source.indexOf(']', pattern.lastIndex);
+      const end = close < 0 ? source.length : close;
+      parts.push(wrap('punct', value), highlightAeon(source.slice(pattern.lastIndex, end)));
+      if (close >= 0) parts.push(wrap('punct', ']'));
+      offset = close < 0 ? end : close + 1;
+      pattern.lastIndex = offset;
+    } else {
+      parts.push(wrap(value.startsWith('\\') ? 'type' : value.startsWith('[') ? 'tag' : 'punct', value));
+      offset = match.index + value.length;
+    }
   }
   parts.push(escapeHtml(source.slice(offset)));
   return parts.join('');
@@ -88,9 +97,14 @@ export function attachEditor(textarea, language) {
   };
   const sync = () => {
     code.innerHTML = highlight(textarea.value, language) + '\n';
-    gutter.replaceChildren(...Array.from({ length: textarea.value.split('\n').length }, (_, index) => {
-      const line = document.createElement('span'); line.textContent = index + 1; return line;
-    }));
+    const lines = document.createDocumentFragment();
+    const count = textarea.value.split('\n').length;
+    for (let index = 0; index < count; index++) {
+      const line = document.createElement('span');
+      line.textContent = index + 1;
+      lines.append(line);
+    }
+    gutter.replaceChildren(lines);
     scroll();
   };
   textarea.addEventListener('input', sync);
