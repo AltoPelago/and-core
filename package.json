@@ -10,8 +10,11 @@
   "scripts": {
     "test": "npm run precommit:check && npm run cts:run:reference && npm run cts:run:subset && npm run cts:run:example && npm run check:canonical-emitter && npm run check:html-renderer && npm run check:vscode && npm run vscode:package && npm run check:vscode-package && npm run check:public-api && npm run cli:smoke && npm run playground:check",
     "and": "node ./bin/and.mjs",
+    "example:aeon-roundtrip": "node examples/v2-aeon-roundtrip/run.mjs",
+    "check:example-aeon-roundtrip": "node --test examples/v2-aeon-roundtrip/bridge.test.mjs",
     "playground": "node scripts/serve-playground.mjs",
     "playground:check": "node scripts/check-playground.mjs",
+    "playground:semantic:check": "node scripts/check-semantic-playground.mjs",
     "vscode:package": "node scripts/package-vscode.mjs",
     "check:no-local-paths": "bash scripts/check-no-local-paths.sh",
     "check:spec-layout": "bash scripts/check-spec-layout.sh",

@@ -1,0 +1,409 @@
+{
+  "id": "and-document-semantic-example-2",
+  "status": "frozen-candidate",
+  "revision": 2,
+  "syntax": "v2",
+  "compatibility": "Changing node names, containment, attribute types, required fields, enum membership or normalization requires a new vocabulary id.",
+  "taskStates": [
+    "unchecked",
+    "checked",
+    "in_progress",
+    "cancelled"
+  ],
+  "roles": {
+    "title": {
+      "parents": [
+        "card_block"
+      ],
+      "maximum": 1,
+      "canonicalPosition": "first"
+    },
+    "caption": {
+      "parents": [
+        "table",
+        "code_block",
+        "extension_block",
+        "card_block",
+        "semantic_block",
+        "highlight_paragraph_block",
+        "strong_paragraph_block",
+        "emphasis_paragraph_block",
+        "underline_paragraph_block",
+        "header_text_block",
+        "disclaimer_block",
+        "question_paragraph_block",
+        "admonition_paragraph_block",
+        "comment_block"
+      ],
+      "maximum": 1,
+      "canonicalPosition": "last"
+    },
+    "document_fragment": {
+      "parents": [
+        "extension_block"
+      ],
+      "maximum": 1
+    }
+  },
+  "nodes": {
+    "document": {
+      "category": "root",
+      "children": "blocks",
+      "required": {
+        "vocabulary": "vocabulary-id"
+      },
+      "optional": {}
+    },
+    "document_fragment": {
+      "category": "role",
+      "children": "blocks",
+      "required": {},
+      "optional": {}
+    },
+    "paragraph": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "heading": {
+      "category": "block",
+      "children": "inline",
+      "required": {
+        "level": "heading-level"
+      },
+      "optional": {
+        "autoNumber": "true"
+      }
+    },
+    "list": {
+      "category": "block",
+      "children": "list-items",
+      "required": {
+        "ordered": "boolean"
+      },
+      "optional": {}
+    },
+    "auto_number_list": {
+      "category": "block",
+      "children": "list-items",
+      "required": {},
+      "optional": {}
+    },
+    "todo_list": {
+      "category": "block",
+      "children": "todo-items",
+      "required": {},
+      "optional": {}
+    },
+    "list_item": {
+      "category": "item",
+      "children": "blocks",
+      "required": {},
+      "optional": {}
+    },
+    "todo_item": {
+      "category": "item",
+      "children": "blocks",
+      "required": {
+        "state": "task-state"
+      },
+      "optional": {}
+    },
+    "blockquote": {
+      "category": "block",
+      "children": "blocks",
+      "required": {},
+      "optional": {}
+    },
+    "card_block": {
+      "category": "block",
+      "children": "blocks",
+      "required": {},
+      "optional": {}
+    },
+    "strong": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "emphasis": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "admonition": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "question": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "strike": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "quoted": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "comment": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "highlight": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "underline": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "disclaimer": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "footnote_definition": {
+      "category": "inline",
+      "children": "inline",
+      "required": {},
+      "optional": {
+        "id": "string"
+      }
+    },
+    "semantic": {
+      "category": "inline",
+      "children": "inline",
+      "required": {
+        "id": "string"
+      },
+      "optional": {}
+    },
+    "link": {
+      "category": "inline",
+      "children": "inline",
+      "required": {
+        "href": "string"
+      },
+      "optional": {}
+    },
+    "highlight_paragraph_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "strong_paragraph_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "emphasis_paragraph_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "underline_paragraph_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "header_text_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "disclaimer_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "question_paragraph_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "admonition_paragraph_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "comment_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "semantic_block": {
+      "category": "block",
+      "children": "inline",
+      "required": {
+        "id": "string"
+      },
+      "optional": {}
+    },
+    "code": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "text": "string"
+      },
+      "optional": {}
+    },
+    "anchor": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "id": "string"
+      },
+      "optional": {}
+    },
+    "footnote_reference": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "id": "string"
+      },
+      "optional": {}
+    },
+    "plus": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "value": "string"
+      },
+      "optional": {}
+    },
+    "image": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "src": "string",
+        "alt": "string",
+        "mode": "image-mode"
+      },
+      "optional": {}
+    },
+    "directional_marker": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "direction": "direction"
+      },
+      "optional": {}
+    },
+    "advisory_marker": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "kind": "advisory-kind"
+      },
+      "optional": {}
+    },
+    "line_break": {
+      "category": "inline",
+      "children": "none",
+      "required": {},
+      "optional": {}
+    },
+    "typed_value": {
+      "category": "inline",
+      "children": "none",
+      "required": {
+        "value": "inline-scalar"
+      },
+      "optional": {}
+    },
+    "horizontal_rule": {
+      "category": "block",
+      "children": "none",
+      "required": {},
+      "optional": {}
+    },
+    "code_block": {
+      "category": "block",
+      "children": "none",
+      "required": {
+        "language": "nullable-string",
+        "ordered": "boolean",
+        "text": "string"
+      },
+      "optional": {}
+    },
+    "extension_block": {
+      "category": "block",
+      "children": "none",
+      "required": {
+        "name": "string",
+        "text": "string"
+      },
+      "optional": {}
+    },
+    "table": {
+      "category": "block",
+      "children": "table",
+      "required": {},
+      "optional": {
+        "alignments": "alignments"
+      }
+    },
+    "table_header": {
+      "category": "role",
+      "children": "cells",
+      "required": {},
+      "optional": {}
+    },
+    "table_row": {
+      "category": "role",
+      "children": "cells",
+      "required": {},
+      "optional": {}
+    },
+    "table_cell": {
+      "category": "role",
+      "children": "inline",
+      "required": {},
+      "optional": {
+        "colSpan": "column-span"
+      }
+    },
+    "title": {
+      "category": "role",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    },
+    "caption": {
+      "category": "role",
+      "children": "inline",
+      "required": {},
+      "optional": {}
+    }
+  }
+}

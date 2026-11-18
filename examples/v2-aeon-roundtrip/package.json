@@ -1,0 +1,15 @@
+{
+  "name": "and-v2-aeon-roundtrip-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node run.mjs",
+    "test": "node --test bridge.test.mjs"
+  },
+  "dependencies": {
+    "@altopelago/aeon-lexer": "0.16.0",
+    "@altopelago/aeon-parser": "0.16.0",
+    "@altopelago/aeon-sdk": "0.16.0",
+    "@altopelago/sansa": "file:vendor/sansa-0.15.0-rc.1-query-metadata.tgz"
+  }
+}

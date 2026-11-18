@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>&amp;ND semantic playground</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to playground</a>
+  <header class="local-header">
+    <strong>&amp;ND <span>Playground</span></strong>
+    <span class="local-source-badge">Local source · v2 semantic document</span>
+    <nav aria-label="Playground links"><a href="../">Parser playground</a><a href="/examples/v2-aeon-roundtrip/SEMANTIC-PROFILE.md">Vocabulary contract ↗</a></nav>
+  </header>
+  <main class="page--playground" id="workspace">
+    <h1 class="visually-hidden">&amp;ND ↔ Aeon semantic playground</h1>
+    <div class="playground-app-shell" id="playground-shell" data-view="convert">
+      <div class="playground-toolbar">
+        <div class="playground-toolbar-groups">
+          <button id="restore" class="playground-button" type="button" disabled>Restore example</button>
+          <div class="playground-toolbar-groups" id="conversion-actions" role="group" aria-label="Convert document">
+            <button id="to-aeon" class="playground-button" type="button" disabled>&amp;ND → Aeon</button>
+            <button id="to-and" class="playground-button" type="button" disabled>Aeon → &amp;ND</button>
+          </div>
+          <span class="playground-note" id="view-note">Semantic round-trip conversion</span>
+        </div>
+        <div class="playground-toggle-group" role="group" aria-label="Workspace view">
+          <button class="playground-toggle is-active" id="view-convert" type="button" data-workspace-view="convert" aria-pressed="true">Convert</button>
+          <button class="playground-toggle" id="view-query" type="button" data-workspace-view="query" aria-pressed="false">Query</button>
+        </div>
+      </div>
+      <section class="playground-pane and-pane" id="and-pane" aria-labelledby="and-heading">
+        <div class="panel-head"><h2 id="and-heading"><label for="and-source">&amp;ND source</label></h2></div>
+        <textarea class="code-editor" id="and-source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="&ND v2 source"></textarea>
+      </section>
+      <section class="playground-pane aeon-pane" aria-labelledby="aeon-heading">
+        <div class="panel-head"><h2 id="aeon-heading"><label for="aeon-source">Aeon source</label></h2><span class="panel-note">Native semantic document</span></div>
+        <textarea class="code-editor" id="aeon-source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Semantic Aeon source"></textarea>
+      </section>
+      <section class="playground-pane query-pane" id="query-pane" aria-labelledby="query-heading" hidden>
+        <div class="panel-head query-panel-head">
+          <h2 id="query-heading"><label for="query">SANSA query</label></h2>
+          <label class="preset" for="query-preset"><span class="visually-hidden">Examples</span><select id="query-preset" aria-label="Examples" disabled><option>Loading…</option></select></label>
+          <button id="run-query" class="playground-button" type="button" disabled>Run <kbd>⌘/Ctrl ↵</kbd></button>
+        </div>
+        <p class="query-help" id="query-help"></p>
+        <textarea aria-describedby="query-help" class="query-editor" id="query" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="SANSA query"></textarea>
+      </section>
+      <section class="playground-pane results-pane" id="results-pane" aria-labelledby="results-heading" hidden>
+        <div class="panel-head"><h2 id="results-heading">Aeon results</h2><label class="result-metadata-control"><input id="show-result-metadata" type="checkbox"> Show metadata</label><span id="result-count" class="panel-note">—</span></div>
+        <pre class="code-output" id="results" tabindex="0" aria-label="SANSA query results in Aeon">No query run yet.</pre>
+      </section>
+      <section class="playground-pane diagnostics-pane" aria-labelledby="diagnostics-heading">
+        <div class="panel-head"><h2 id="diagnostics-heading">Diagnostics</h2><span class="panel-note">Versioned semantic vocabulary · candidate</span></div>
+        <div class="playground-diagnostics">
+          <div><h3>Conversion</h3><p id="conversion-status" class="status" role="status" aria-live="polite">Loading example…</p></div>
+          <div><h3>SANSA</h3><p id="query-status" class="status" role="status" aria-live="polite">Choose an example or write a query.</p></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

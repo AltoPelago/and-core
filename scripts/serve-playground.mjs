@@ -4,6 +4,7 @@ import { stat } from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { handleSemanticApi } from './semantic-playground-api.mjs';
 
 const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const port = Number(process.env.PORT ?? process.argv[2] ?? 4173);
@@ -38,6 +39,11 @@ function resolveRequestPath(requestUrl) {
 }
 
 const server = http.createServer(async (request, response) => {
+  const pathname = new URL(request.url ?? '/', 'http://localhost').pathname;
+  if (pathname.startsWith('/api/semantic/')) {
+    await handleSemanticApi(request, response, pathname);
+    return;
+  }
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     send(response, 405, 'Method not allowed\n');
     return;
@@ -75,6 +81,7 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-server.listen(port, () => {
+server.listen(port, '127.0.0.1', () => {
+  console.log(`Semantic playground: http://localhost:${port}/playground/semantic/`);
   console.log(`&ND playground listening on http://localhost:${port}/playground/`);
 });
