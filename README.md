@@ -23,7 +23,7 @@ editor integration, canonicalization, and future conformance-tested implementati
 * [playground/](./playground/) — static parser/canonical/preview playground prototype
 * [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
 * [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
-* [examples/README.md](./examples/README.md) — future example documents and interoperability samples
+* [examples/README.md](./examples/README.md) — example documents and interoperability samples, including a [v2 AEON node round trip](./examples/v2-aeon-roundtrip/README.md)
 * [CONTRIBUTING.md](./CONTRIBUTING.md) — contribution workflow for spec, CTS, and implementation changes
 
 ## Current Status

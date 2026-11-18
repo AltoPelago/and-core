@@ -1,0 +1,31 @@
+&ND v2
+
+# [n] Field guide [# guide]
+
+Read [@ #details | the [* details]] with [:date = 2026-08-20] and [~ diagram.png | A diagram | half].
+
+~~~| [* Details]
+## Details [# details]
+
+- [x] Preserve [= rich content].
+- [ ] Keep the document tree.
+
+> A quote with [_ emphasis] and [% (note) a reusable footnote].
+~~~| (A rich [/ caption])
+
+See [% (note)] again.
+
+| Feature | Status |
+| <-- | --> |
+| Nodes | [* Preserved] |
+
+~~~$ [n] js
+const message = "Hello, &ND";
+~~~$ (Example code)
+
++++chart/pie
+{"values":[1,2,3]}
++++
++++fallback
+A chart with [* three] values.
++++

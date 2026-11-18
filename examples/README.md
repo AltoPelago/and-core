@@ -1,19 +1,9 @@
 # `and-core` Examples
 
-This directory is reserved for example `&ND` documents and interoperability samples.
-
-Current examples:
+This directory contains human-oriented `&ND` documents and interoperability samples.
 
 * [minimal.and](./minimal.and) — a small standalone document with an `&ND v1` header
+* [v2-aeon-roundtrip/](./v2-aeon-roundtrip/README.md) — runnable `&ND v2 → AEON nodes
+  → &ND v2` example with input, node document, canonical output, and round-trip checks
 
-Likely future contents:
-
-* nesting and edge-case examples
-* canonicalization before/after samples
-* editor demo documents
-* AEON embedding examples such as `fmt.and.aeon`
-
-Examples should complement the CTS, not replace it:
-
-* `examples/` is for human-oriented samples
-* `cts/` is for machine-checked conformance fixtures
+Examples complement the machine-checked conformance fixtures in `cts/`.

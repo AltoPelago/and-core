@@ -1,0 +1,109 @@
+and_version = "v2"
+
+doc:node = <document@{vocabulary="and-document-semantic-example-2"}(
+  <heading@{level=1, autoNumber=true}(
+    "Field guide ",
+    <anchor@{id="guide"}>
+  )>,
+  <paragraph(
+    "Read ",
+    <link@{href="#details"}(
+      "the ",
+      <strong(
+        "details"
+      )>
+    )>,
+    " with ",
+    <typed_value@{value:date = 2026-08-20}>,
+    " and ",
+    <image@{src="diagram.png", alt="A diagram", mode="half"}>,
+    "."
+  )>,
+  <card_block(
+    <title(
+      <strong(
+        "Details"
+      )>
+    )>,
+    <heading@{level=2}(
+      "Details ",
+      <anchor@{id="details"}>
+    )>,
+    <todo_list(
+      <todo_item@{state=|checked|}(
+        <paragraph(
+          "Preserve ",
+          <highlight(
+            "rich content"
+          )>,
+          "."
+        )>
+      )>,
+      <todo_item@{state=|unchecked|}(
+        <paragraph(
+          "Keep the document tree."
+        )>
+      )>
+    )>,
+    <blockquote(
+      <paragraph(
+        "A quote with ",
+        <underline(
+          "emphasis"
+        )>,
+        " and ",
+        <footnote_definition@{id="note"}(
+          "a reusable footnote"
+        )>,
+        "."
+      )>
+    )>,
+    <caption(
+      "A rich ",
+      <emphasis(
+        "caption"
+      )>
+    )>
+  )>,
+  <paragraph(
+    "See ",
+    <footnote_reference@{id="note"}>,
+    " again."
+  )>,
+  <table@{alignments=["left", "right"]}(
+    <table_header(
+      <table_cell(
+        "Feature"
+      )>,
+      <table_cell(
+        "Status"
+      )>
+    )>,
+    <table_row(
+      <table_cell(
+        "Nodes"
+      )>,
+      <table_cell(
+        <strong(
+          "Preserved"
+        )>
+      )>
+    )>
+  )>,
+  <code_block@{language="js", ordered=true, text="const message = \"Hello, &ND\";"}(
+    <caption(
+      "Example code"
+    )>
+  )>,
+  <extension_block@{name="chart/pie", text="{\"values\":[1,2,3]}"}(
+    <document_fragment(
+      <paragraph(
+        "A chart with ",
+        <strong(
+          "three"
+        )>,
+        " values."
+      )>
+    )>
+  )>
+)>

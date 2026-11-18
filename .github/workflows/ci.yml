@@ -52,3 +52,9 @@ jobs:
 
       - name: Check playground wiring
         run: npm run playground:check
+
+      - name: Install AEON node round-trip example dependencies
+        run: npm ci --prefix examples/v2-aeon-roundtrip --ignore-scripts
+
+      - name: Check v2 AEON node round-trip example
+        run: npm run check:example-aeon-roundtrip
