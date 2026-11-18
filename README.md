@@ -114,7 +114,7 @@ If you want to extend or audit the CTS:
 ## Safety Scripts
 
 * `npm test` — runs the repository safety checks, CTS adapters, adapter example, canonical checks, and CLI smoke checks
-* `npm run playground` — serves the local playground at `http://localhost:4173/playground/`
+* `npm run playground` — serves the parser playground at `http://localhost:4173/playground/` and the [&ND ↔ Aeon + SANSA workspace](./docs/tooling/playground.md) at `/playground/semantic/` (install the semantic example dependencies first)
 * `npm run playground:check` — verifies playground wiring, parser budgets, and parser/canonical smoke behavior
 * `npm run check:html-renderer` — verifies the reference AST-to-HTML projection
 * `npm run check:vscode` — verifies the VS Code prototype manifest, grammar, and language configuration

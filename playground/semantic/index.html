@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>&amp;ND ↔ Aeon · Semantic playground</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div><a class="brand" href="../">&amp;ND <span>/</span> Playground</a><p class="eyebrow">Native values. Shared structure.</p></div>
+      <span class="version">v2 · experimental vocabulary</span>
+    </header>
+    <section class="intro">
+      <h1>A document. Two representations.</h1>
+      <p>Convert &amp;ND and semantic Aeon in either direction. Explore the document with SANSA.</p>
+    </section>
+    <div class="toolbar">
+      <div class="conversion-actions">
+        <button id="to-aeon" class="primary" disabled>&amp;ND → Aeon</button>
+        <button id="to-and" disabled>Aeon → &amp;ND</button>
+      </div>
+      <button id="restore" class="quiet" disabled>Restore example</button>
+    </div>
+    <p id="conversion-status" class="status" role="status" aria-live="polite">Loading example…</p>
+    <section class="editors" aria-label="Document conversion editors">
+      <div class="editor-panel">
+        <div class="panel-heading"><label for="and-source">&amp;ND</label><span>Rich document syntax</span></div>
+        <textarea id="and-source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="&ND v2 source"></textarea>
+      </div>
+      <div class="editor-panel">
+        <div class="panel-heading"><label for="aeon-source">Aeon</label><span>Native semantic document</span></div>
+        <textarea id="aeon-source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Semantic Aeon source"></textarea>
+      </div>
+    </section>
+    <section class="query-section" aria-labelledby="query-heading">
+      <div class="query-heading">
+        <div><p class="eyebrow">Explore the document</p><h2 id="query-heading">Query with SANSA</h2></div>
+        <div class="preset"><label for="query-preset">Examples</label><select id="query-preset" disabled><option>Loading…</option></select></div>
+      </div>
+      <div class="query-workspace">
+        <div class="query-input">
+          <label for="query">SANSA query</label>
+          <textarea id="query" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="SANSA query"></textarea>
+          <div class="query-actions"><button id="run-query" class="primary" disabled>Run query</button><span>Queries the current Aeon editor.</span></div>
+        </div>
+        <div class="results-panel">
+          <div class="results-heading"><h3>Results</h3><span id="result-count">—</span></div>
+          <p id="query-status" class="status" role="status" aria-live="polite">Choose an example or write a query.</p>
+          <pre id="results" tabindex="0" aria-label="SANSA query results">No query run yet.</pre>
+        </div>
+      </div>
+    </section>
+    <footer><span>Conversions preserve document semantics and emit canonical text.</span><a href="/examples/v2-aeon-roundtrip/SEMANTIC-PROFILE.md">Vocabulary contract ↗</a></footer>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

@@ -31,6 +31,54 @@ The source header includes an explicit parser selector. `v1` remains the default
 The adjacent example selector provides version-aware v1 and v2 documents. Choosing an example loads
 its source and parser version together, and Reset restores the currently selected example.
 
+## Semantic &ND ↔ Aeon and SANSA playground
+
+A second workspace at [`playground/semantic/`](../../playground/semantic/index.html)
+provides editable &ND and Aeon panes, conversion in both directions, and a SANSA
+query editor with presets and structured results.
+
+Install the isolated semantic runtime once, then start the existing local server:
+
+```sh
+npm ci --prefix examples/v2-aeon-roundtrip
+npm run playground
+```
+
+Open `http://localhost:4173/playground/semantic/`. The parser playground links to
+this workspace too. An alternate port can be selected with `npm run playground -- 4174`.
+
+- **&ND → Aeon** updates the Aeon editor using the semantic vocabulary.
+- **Aeon → &ND** updates the &ND editor with canonical v2 text.
+- Each conversion verifies the semantic round trip. Editing either pane does not
+  automatically overwrite the other pane.
+- **Run query** evaluates the current Aeon editor with the real SDK/SANSA runtime,
+  without silently normalizing it. Source-free native AEON can also be queried.
+- Presets cover headings, prose, links, task symbols, footnotes, extensions,
+  typed values, and fallbacks. Ctrl/Cmd+Enter runs the query.
+- Query diagnostics and empty results appear separately from conversion status.
+  Results become stale when the Aeon or query text changes.
+- Drafts are retained in this browser's local storage. **Restore example** replaces
+  the editors with the bundled sample and initial query.
+
+The semantic workspace uses local JSON endpoints under `/api/semantic/`, reusing
+[`bridge.mjs`](../../examples/v2-aeon-roundtrip/bridge.mjs) and the pinned native
+runtime. It requires the Node server; opening the HTML directly or using an
+unrelated static server does not provide those endpoints. The server binds only
+to loopback. No external hosting or document persistence service is required.
+Inputs are bounded to 262,144 characters; queries to 16,384 characters. Parsed
+results are rendered as text, and cross-origin API requests are rejected.
+
+Run the runtime/integration checks with:
+
+```sh
+npm run playground:semantic:check
+node scripts/check-semantic-playground.mjs --http
+```
+
+The HTTP checks require permission to open a temporary listening socket. These
+checks complement the semantic example's fixture suite and run after dependency
+installation in CI.
+
 ## Parser Budgets
 
 The source pane includes optional parser-budget controls for hostile-input and agent workflow
@@ -88,9 +136,9 @@ document language deterministic and non-executable while still supporting useful
 
 ## Implementation Notes
 
-The current implementation is client-side and intentionally small. The local server serves the repo
+The original parser workspace is client-side and intentionally small. The local server serves the repo
 root because the playground imports parser and emitter modules from sibling implementation folders.
-A server-backed implementation is still acceptable later if renderers need heavier dependencies.
+The semantic workspace uses the same server for its heavier AEON/SANSA runtime.
 
 The first version should prioritize:
 

@@ -58,3 +58,6 @@ jobs:
 
       - name: Check v2 AEON node round-trip example
         run: npm run check:example-aeon-roundtrip
+
+      - name: Check semantic conversion and query playground
+        run: npm run playground:semantic:check
