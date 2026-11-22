@@ -135,6 +135,13 @@ async function main() {
     ' = 2024-01-01', ' [1, 2]', '2024-01-01',
     ...['001', '-01.5', '0_1', '00e2'].flatMap((literal) => [` ${literal}`, `number = ${literal}`]),
     ...['\u00a0', '\u2028'].flatMap((padding) => [` true${padding}`, `boolean = true${padding}`]),
+    ...['3.', '3.e2'].flatMap((literal) => [` ${literal}`, `number = ${literal}`]),
+    ...['Local', 'LOCAL'].flatMap((zone) => [
+      ` 2025-01-01T09:30Z&${zone}`, `wtc = 2025-01-01T09:30Z&${zone}`,
+    ]),
+    ...['$.foo=bar', '$.foo[]', '$.foo.[1]', '$.foo:unit[0.0000001]'].flatMap((address) => [
+      ` ${address}`, `sansa = ${address}`,
+    ]),
   ];
   for (const expression of invalidExpressions) {
     const parsed = parseAnd(`&ND v2\n\n[:${expression}]\n`, { allowV2: true });

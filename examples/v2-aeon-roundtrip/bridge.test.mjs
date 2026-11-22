@@ -67,6 +67,15 @@ test('checked-in outputs reproduce exactly', async () => {
   assert.equal(fromAeon(aeon, runtime).canonical, await read('./roundtrip.and'));
 });
 
+test('round-trips quoted SANSA selectors through a typed value', () => {
+  for (const address of ['$.["some key"]', '$.["a=b, c"]']) {
+    const shorthand = `&ND v2\n\n[: ${address}]\n`;
+    const explicit = `&ND v2\n\n[:sansa = ${address}]\n`;
+    assert.equal(fromAeon(toAeon(shorthand), runtime).canonical, explicit);
+    assert.equal(fromAeon(toAeon(explicit), runtime).canonical, explicit);
+  }
+});
+
 test('AEON edits flow back into &ND without original source', () => {
   const aeon = toAeon('&ND v2\n\n# Before\n');
   assert.equal(fromAeon(aeon.replace('"Before"', '"After"'), runtime).canonical,

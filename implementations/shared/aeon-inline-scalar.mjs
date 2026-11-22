@@ -1,9 +1,12 @@
 const IDENTIFIER_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
-const NUMBER_PATTERN = /^[+-]?(?:(?:0|[1-9](?:_?\d)*)(?:\.(?:\d(?:_?\d)*)?)?|\.\d(?:_?\d)*)(?:[eE][+-]?\d(?:_?\d)*)?$/;
+const NUMBER_PATTERN = /^[+-]?(?:(?:0|[1-9](?:_?\d)*)(?:\.\d(?:_?\d)*)?|\.\d(?:_?\d)*)(?:[eE][+-]?\d(?:_?\d)*)?$/;
 const HEX_PATTERN = /^#[0-9A-Fa-f](?:_?[0-9A-Fa-f])*$/;
 const RADIX_PATTERN = /^%[+-]?(?:(?:[0-9A-Za-z&!](?:_?[0-9A-Za-z&!])*)?\.[0-9A-Za-z&!](?:_?[0-9A-Za-z&!])*|[0-9A-Za-z&!](?:_?[0-9A-Za-z&!])*)$/;
 const ENCODING_PATTERN = /^&[A-Za-z0-9_-]+={0,2}$/;
-const SANSA_PATTERN = /^(?:\$|\?)(?:\.|$)/;
+const SANSA_SELECTOR_PATTERN = /(?:\.(?:[A-Za-z_][A-Za-z0-9_]*|[@^]|\*\*?)|[#%][A-Za-z_][A-Za-z0-9_]*)/y;
+const SANSA_POSITION_PATTERN = /\[(?:(?:0|[1-9]\d{0,5})(?:\.\.(?:0|[1-9]\d{0,5})?)?|\.\.(?:0|[1-9]\d{0,5}))\]/y;
+const SANSA_QUALIFIER_NUMBER_PATTERN = /[+-]?(?:(?:0|[1-9]\d*)(?:\.\d+)?|\.\d+)/y;
+const SANSA_QUOTED_SELECTORS = new Map([['[', ']'], ['<', '>'], ['(', ')']]);
 const RESERVED_NULL_SENTINELS = new Set(['none', 'notSet', 'notApplicable', 'tombstone']);
 
 const FAMILY_BY_DATATYPE = new Map([
@@ -308,28 +311,104 @@ function temporalFamily(source) {
   const clock = rest.slice(0, amp);
   const reference = rest.slice(amp + 1);
   if (!isValidTime(clock, true) || !/^[A-Za-z0-9_.+-]+(?:\/[A-Za-z0-9_.+-]+)*$/.test(reference)) return null;
+  if (reference !== 'local' && reference.toLowerCase() === 'local') return null;
   return 'wtc';
 }
 
-function validateBalancedSansa(source) {
-  if (!SANSA_PATTERN.test(source) || /[\s,]/.test(source)) return false;
-  const pairs = { '[': ']', '(': ')', '<': '>' };
-  const stack = [];
-  let quote = false;
-  let escaped = false;
-  for (const char of source) {
-    if (quote) {
-      if (escaped) escaped = false;
-      else if (char === '\\') escaped = true;
-      else if (char === '"') quote = false;
+function readSansaQualifierArguments(source, start) {
+  let index = start;
+  const args = [];
+  do {
+    index += 1;
+    if (source[index] === '"') {
+      const quoted = parseQuotedString(source, index, ['"']);
+      if (!quoted) return null;
+      args.push(formatString(quoted.value));
+      index = quoted.nextIndex;
+    } else {
+      SANSA_QUALIFIER_NUMBER_PATTERN.lastIndex = index;
+      const number = SANSA_QUALIFIER_NUMBER_PATTERN.exec(source);
+      if (!number) return null;
+      const text = String(Number(number[0]));
+      // SANSA renders decimal arguments as numbers. The result must still be a SANSA decimal.
+      if (!/^-?\d+(?:\.\d+)?$/.test(text)) return null;
+      args.push(text);
+      index = SANSA_QUALIFIER_NUMBER_PATTERN.lastIndex;
+    }
+  } while (source[index] === ',');
+  if (source[index] !== ']') return null;
+  return { text: '[' + args.join(',') + ']', nextIndex: index + 1 };
+}
+
+function parseSansaQualifier(source, start) {
+  let index = start;
+  let depth = 0;
+  let needsTerm = true;
+  let hasArguments = false;
+  let text = '';
+  while (index < source.length) {
+    if (needsTerm) {
+      const name = readIdentifier(source, index);
+      if (!name) return null;
+      text += name.value;
+      index = name.nextIndex;
+      needsTerm = false;
+      hasArguments = false;
       continue;
     }
-    if (char === '/' || char === '\\') return false;
-    if (char === '"') quote = true;
-    else if (pairs[char]) stack.push(pairs[char]);
-    else if (Object.values(pairs).includes(char) && stack.pop() !== char) return false;
+    const char = source[index];
+    if (char === '[' && !hasArguments) {
+      const args = readSansaQualifierArguments(source, index);
+      if (!args) return null;
+      text += args.text;
+      index = args.nextIndex;
+      hasArguments = true;
+      continue;
+    }
+    if (char === '<' && !hasArguments) {
+      depth += 1;
+      needsTerm = true;
+    } else if (char === '>' && depth > 0) {
+      depth -= 1;
+      hasArguments = false;
+    } else if ((char === ',' && depth > 0) || (char === '|' && depth === 0)) {
+      needsTerm = true;
+    } else {
+      return null;
+    }
+    text += char;
+    index += 1;
   }
-  return !quote && stack.length === 0 && !source.endsWith('.') && !source.includes('..');
+  return !needsTerm && depth === 0 ? text : null;
+}
+
+function parseSansaAddress(source) {
+  if (source[0] !== '$' && source[0] !== '?') return null;
+  let text = source[0];
+  let index = 1;
+  while (index < source.length && source[index] !== ':') {
+    const opener = source[index + 1];
+    const closer = SANSA_QUOTED_SELECTORS.get(opener);
+    if (source[index] === '.' && closer) {
+      const quoted = parseQuotedString(source, index + 2, ['"']);
+      if (!quoted || source[quoted.nextIndex] !== closer) return null;
+      if (opener !== '(' && quoted.value.length === 0) return null;
+      text += opener === '[' && IDENTIFIER_PATTERN.test(quoted.value)
+        ? '.' + quoted.value
+        : '.' + opener + formatString(quoted.value) + closer;
+      index = quoted.nextIndex + 1;
+      continue;
+    }
+    const pattern = source[index] === '[' ? SANSA_POSITION_PATTERN : SANSA_SELECTOR_PATTERN;
+    pattern.lastIndex = index;
+    const selector = pattern.exec(source);
+    if (!selector) return null;
+    text += selector[0];
+    index = pattern.lastIndex;
+  }
+  if (index === source.length) return text;
+  const qualifier = parseSansaQualifier(source, index + 1);
+  return qualifier === null ? null : text + ':' + qualifier;
 }
 
 function validateSeparator(source) {
@@ -380,7 +459,8 @@ function parseScalar(source) {
   if (RADIX_PATTERN.test(source)) return { type: 'RadixLiteral', value: source.slice(1).replaceAll('_', '') };
   if (ENCODING_PATTERN.test(source)) return { type: 'EncodingLiteral', value: source.slice(1) };
   if (validateSeparator(source)) return { type: 'SeparatorLiteral', value: source.slice(1) };
-  if (validateBalancedSansa(source)) return { type: 'SansaAddressLiteral', value: source };
+  const address = parseSansaAddress(source);
+  if (address !== null) return { type: 'SansaAddressLiteral', value: address };
   const temporal = temporalFamily(source);
   if (temporal === 'date') return { type: 'DateLiteral', value: source };
   if (temporal === 'time') return { type: 'TimeLiteral', value: source };

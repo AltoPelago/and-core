@@ -143,10 +143,10 @@
     {
       "id": "sansa",
       "datatypes": ["sansa"],
-      "scalar": "$.contact.name",
-      "canonicalScalar": "$.contact.name",
-      "value": { "type": "SansaAddressLiteral", "value": "$.contact.name" },
-      "htmlText": "$.contact.name"
+      "scalar": "$.[\"some key\"]",
+      "canonicalScalar": "$.[\"some key\"]",
+      "value": { "type": "SansaAddressLiteral", "value": "$.[\"some key\"]" },
+      "htmlText": "$.[\"some key\"]"
     }
   ],
   "annotationCases": [
