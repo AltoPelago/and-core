@@ -27,13 +27,29 @@ Use the full local check before opening or updating a PR:
 npm test
 ```
 
-This runs repository safety checks plus both CTS adapters.
+This runs the main repository safety, parser CTS, canonicalization, HTML,
+editor-package, public API, CLI, and parser-playground checks. The exact chain is
+maintained in [`package.json`](./package.json).
 
 For a faster documentation-only check:
 
 ```sh
 npm run precommit:check
 ```
+
+Additional checks depend on the area you change:
+
+| Area | Check / guide |
+| --- | --- |
+| v2 draft behavior | `npm run cts:run:v2`; [v2 contracts](./docs/spec/v2/README.md) |
+| CTS fixtures, adapter runs, and coverage | [CTS guide](./cts/README.md) |
+| Parser playground | `npm run playground:check`; [playground guide](./docs/tooling/playground.md) |
+| Semantic AEON/SANSA workspace | [Setup and runtime checks](./docs/tooling/playground.md) |
+| VS Code grammar and local bundle | [Editor guide](./vscode/README.md) |
+| CLI commands and parser budgets | [CLI guide](./docs/tooling/cli.md) |
+
+Some CI checks, including the v2 lane and semantic workspace, run separately from
+`npm test`. See [the workflow](./.github/workflows/ci.yml) for the complete CI roster.
 
 ## Spec Changes
 
@@ -75,7 +91,14 @@ should declare document capability when they emit AST output.
 
 ## Generated Reports
 
-Regenerate CTS reports with:
+Regenerate the parser, canonical, and HTML reports with:
+
+```sh
+npm run cts:report:all
+npm run check:reports
+```
+
+Review the generated diffs before committing. To regenerate only one parser report:
 
 ```sh
 npm run cts:report:reference
