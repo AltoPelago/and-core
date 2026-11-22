@@ -29,13 +29,13 @@ Current scope:
   dollar-fence numbering
 * the initial block-boundary and indentation rules covered by the CTS
 * explicit v2 capability and effective-version selection through `allowV2` and `version`
-* proposal-v2 scalar metadata tags, inline images, rich nested inline tags, compact directional and
+* v2 scalar metadata tags, inline images, rich nested inline tags, compact directional and
   advisory list markers, footnote definitions/references, first-class todo and auto-number lists,
   heading auto-numbering, semantic wrappers, block-content cards, formatted/advisory paragraph blocks, and paired blocks
 * explicit AEON `:type = scalar` syntax and inferred `[: scalar]` shorthand for the closed v2 inline
   typed-value subset, including literal-family compatibility, structured datatype adornments, and
   custom labels
-* proposal-v2 document-local anchor uniqueness and case-sensitive `[@ #id | label]` resolution
+* v2 document-local anchor uniqueness and case-sensitive `[@ #id | label]` resolution
 * effective-version metadata on successful document parse results
 * v2-only structural escapes for literal block-command text at block-open positions
 

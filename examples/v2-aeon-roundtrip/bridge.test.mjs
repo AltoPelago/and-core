@@ -103,7 +103,7 @@ test('rejects malformed source, unsupported profile/version, and broken document
 // The schema now names the supported nodes explicitly, so exercise every v2
 // accept fixture as well as the projection combinations (including all scalar
 // families, not just those present in the illustrative input).
-const v2Index = JSON.parse(await read('../../cts/fixtures/v2/index.proposal.json'));
+const v2Index = JSON.parse(await read('../../cts/fixtures/v2/index.json'));
 for (const fixturePath of v2Index.fixtures) {
   const fixture = JSON.parse(await read(`../../cts/fixtures/v2/${fixturePath}`));
   if (!fixture.expected.ok) continue;

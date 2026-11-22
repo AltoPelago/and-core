@@ -10,7 +10,7 @@ ad-hoc DOM rendering logic.
 
 Input:
 
-* an `NdDocument` AST following the v1 or proposal-v2 AST contract
+* an `NdDocument` AST following the v1 or v2 AST contract
 
 Output:
 
@@ -28,7 +28,7 @@ showing the opaque payload in escaped form.
 
 Unsupported AST node types fail closed with stable error codes.
 
-The proposal-v2 projection includes inert representations for scalar metadata tags, rich inline
+The v2 projection includes inert representations for scalar metadata tags, rich inline
 tags, typed values, inline images, first-class todo and auto-number lists, direction markers,
 explicit line breaks, heading auto-number intent, and footnote definitions/references,
 highlighted paragraphs, header text, and disclaimers. Projection preserves nested inline structure

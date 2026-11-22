@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "track": "v2",
-  "stage": "proposal",
+  "stage": "draft",
   "specVersion": "&ND Core v2",
   "fixtures": [
     "strict/accept/seed-v2-inline-anchor-tag-enabled.json",

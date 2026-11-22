@@ -2,7 +2,7 @@
 
 ## Status And Purpose
 
-This proposal-stage companion note separates the fixed `&ND Core v2` language contract from meanings
+This companion to the v2 draft separates the fixed `&ND Core v2` language contract from meanings
 that belong to applications, rendering profiles, workflow systems, and trust policies.
 
 “Consumer-owned” does not mean optional grammar. Core always parses the listed forms into stable AST

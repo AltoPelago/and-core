@@ -27,7 +27,7 @@ npm run playground:check
 ```
 
 The source header includes an explicit parser selector. `v1` remains the default; selecting the
-`v2 proposal` enables v2 capability and supplies v2 as the effective version for headerless input.
+`v2 draft` enables v2 capability and supplies v2 as the effective version for headerless input.
 The adjacent example selector provides version-aware v1 and v2 documents. Choosing an example loads
 its source and parser version together, and Reset restores the currently selected example.
 
@@ -204,7 +204,7 @@ No SANSA query syntax, traversal, selection, or comparison rule is changed.
 The [semantic vocabulary](../../examples/v2-aeon-roundtrip/SEMANTIC-PROFILE.md)
 is frozen as candidate `and-document-semantic-example-2`, with a machine-readable
 node/property/containment manifest and fail-closed decoding. The source &ND v2
-language remains proposal-stage. Breaking vocabulary changes need a new identifier.
+language remains draft-stage. Breaking vocabulary changes need a new identifier.
 
 The [query cookbook](../../examples/v2-aeon-roundtrip/QUERIES.md) is generated from
 the actual presets; executable checks assert representative content and counts.

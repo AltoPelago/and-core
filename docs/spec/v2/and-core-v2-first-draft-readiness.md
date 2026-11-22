@@ -2,14 +2,10 @@
 
 Audit date: 2026-08-20
 
-## Verdict
+## Assessment
 
-`&ND Core v2` satisfies the documented first-draft candidate gates and is ready for final promotion
-review. It remains proposal-stage until the lifecycle change is explicitly approved.
-
-The grammar surface and compatibility boundary are coherent and executable. Syntax, contracts,
-migration, and consumer guidance are complete. Promotion should occur only through the final
-clean-baseline and lifecycle review described below.
+This audit records the gates used to assess the v2 draft. The reference checks cover the grammar,
+version compatibility, canonical output, and consumer boundaries.
 
 ## Evidence Snapshot
 
@@ -18,7 +14,7 @@ clean-baseline and lifecycle review described below.
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
 | v1 compatibility | All 149 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
 | v2 grammar | 176 indexed strict fixtures with 62 accepted and 114 rejected. | Ready |
-| v2 executable checks | 1065 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| v2 executable checks | 1065 v2 CTS, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
 | AST snapshots | 61 of 62 accepted fixtures carry exact document ASTs. The dedicated scalar contract covers the broad typed-scalar fixture. | Ready |
 | AEON boundary | The scalar contract check covers 40 datatype names and aliases, 61 accepted forms including inferred shorthand, and 49 exclusions. The live drift check uses AEON `0.13.0` for explicit assignments. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
@@ -31,7 +27,7 @@ clean-baseline and lifecycle review described below.
 | Public runtime | Root parser, inline parser, diagnostics, canonical emitter, and HTML renderer support v2; CLI and playground exercise explicit v2 selection. | Ready |
 | Public API types | `and-public-api.md` defines host authority, v2 capability/version options, result metadata, promoted unions, canonical versioning, diagnostics, and HTML options. | Ready |
 | Editor tooling | The VS Code prototype explicitly targets Core v1. | Deferred, not a blocker |
-| Formal mirrors | Proposal and AST-contract mirrors pass repository and website checks. | Ready |
+| Formal mirrors | Core and AST contract sources pass repository and website checks. | Ready |
 
 ## Promotion Gates
 
@@ -156,15 +152,14 @@ and trust policy, independent versioning, and the separate conformance boundary.
 These remain rejected, inert, or consumer-owned under the current strict contract and therefore do
 not prevent a first draft.
 
-## Final Promotion Gate
+## Draft Readiness Criteria
 
-After B1–B8 close:
+The readiness review uses these checks:
 
 1. Run the v1 reference CTS, v2 lane, scalar contract and live drift check, canonical snapshots,
    HTML snapshots, public API, CLI, playground, repository safety, formal-spec, and website checks.
 2. Record a clean baseline with no failures and no unreviewed snapshot changes.
-3. Move the formal documents and CTS metadata from proposal to draft lifecycle status in one reviewed
-   change; do not imply publication merely by renaming a snapshot.
+3. Align lifecycle metadata across the formal documents and the executable v2 CTS.
 4. Keep unpromoted reserved forms, recovery, editor expansion, and consumer semantics explicitly
    deferred.
 
@@ -172,5 +167,5 @@ Candidate baseline recorded 2026-08-20: v1 reference CTS, v2 proposal lane, AEON
 live drift, canonical and HTML checks, projection and guidance contracts, public API, CLI, playground,
 repository safety, formal-spec, and website checks all pass.
 
-All B1–B8 gates are closed. The remaining step is an explicit, reviewed proposal-to-draft lifecycle
-change; the passing baseline alone does not change publication state.
+The archived proposal and its fixture planning remain in Git history. The draft and CTS carry the
+current language and conformance requirements.
