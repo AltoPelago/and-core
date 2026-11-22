@@ -547,16 +547,18 @@ function emitAeonScalarUnchecked(value) {
 export function emitAeonScalar(value) {
   const emitted = emitAeonScalarUnchecked(value);
   const reparsed = parseScalar(emitted);
+  // Saved SANSA nodes can contain a valid address in a noncanonical spelling.
+  const normalizeAddress = value.type === 'SansaAddressLiteral' && typeof value.value === 'string';
   if (
     !reparsed
     || reparsed.type !== value.type
-    || reparsed.value !== value.value
+    || (!normalizeAddress && reparsed.value !== value.value)
     || (value.type === 'NullLiteral' && reparsed.mode !== value.mode)
     || (value.type === 'DateTimeLiteral' && reparsed.temporalKind !== value.temporalKind)
   ) {
     throw new Error('invalid_typed_value');
   }
-  return emitted;
+  return normalizeAddress ? reparsed.value : emitted;
 }
 
 export function emitAeonInlineTypedValue(datatype, value) {

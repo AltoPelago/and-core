@@ -204,6 +204,14 @@ pointer references, bindings, attributes, structural identities, nested typed va
 the enclosed annotation and scalar to these AEON canonical rules.
 Generic datatype nesting uses AEON's default depth lock of one in the v2 reference parser.
 
+An inline SANSA qualifier accepts a numeric argument only if its canonical SANSA spelling is a
+decimal without an exponent. For example, `$.foo:unit[0.0000001]` produces `invalid_typed_value`
+because the pinned SANSA renderer writes the argument as `1e-7` and the qualifier grammar cannot read
+that spelling.
+
+Within table cells, canonical output escapes pipes in typed-value expressions as `\|`. The table
+escape is removed before interpreting the AEON expression, including inside quoted payloads.
+
 The executable compatibility boundary is contract `and-v2-aeon-inline-scalar-v1` in
 `cts/contracts/aeon-inline-scalar-v1.json`. It pins the accepted datatype names and aliases,
 literal-family AST shapes, canonical &ND spelling, HTML projection, and exclusions against AEON

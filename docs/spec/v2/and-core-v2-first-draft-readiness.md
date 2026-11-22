@@ -22,8 +22,8 @@ clean-baseline and lifecycle review described below.
 | AST snapshots | 61 of 62 accepted fixtures carry exact document ASTs. The dedicated scalar contract covers the broad typed-scalar fixture. | Ready |
 | AEON boundary | The scalar contract check covers 40 datatype names and aliases, 61 accepted forms including inferred shorthand, and 49 exclusions. The live drift check uses AEON `0.13.0` for explicit assignments. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
-| Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 56 exact canonical snapshots across promoted families and interactions. | Ready |
-| HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 29 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
+| Canonical output | Every accepted fixture reaches standalone and embedded fixed points. The projection contract pins 58 exact canonical snapshots across promoted families and interactions. | Ready |
+| HTML projection | Every accepted fixture renders. The projection contract pins 30 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |
 | Source spans | The projection contract pins 48 exact assertions covering every promoted node family, adornments, and nested contexts. | Ready |
 | Cross-form interactions | A 39-entry executable matrix covers captions on language code, extension fallback, and titled cards; aligned/spanning tables; paired blocks in lists/quotes; formatted/advisory/comment/semantic blocks with rich children; cross-container links; shared identifiers; rich resources; contextual list-item content; directional/advisory bullet replacement; heading-number hierarchy; semantic and disclaimer inline content; and rich/reused footnotes. | Ready |
 | Migration guidance | The v1-to-v2 guide covers declarations, host selection, canonical profiles, links, images, AEON syntax, tooling, and downgrade limits. | Ready |

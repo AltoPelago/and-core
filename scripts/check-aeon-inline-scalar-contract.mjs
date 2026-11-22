@@ -36,6 +36,24 @@ function extractTypedValue(document) {
   return paragraph.children[0];
 }
 
+function checkStoredSansaAddress() {
+  const canonical = '&ND v2\n\n[:sansa = $.foo]\n';
+  const parsed = parseAnd(canonical, { allowV2: true });
+  assert.equal(parsed.ok, true);
+  const document = JSON.parse(JSON.stringify(parsed.document));
+  const node = extractTypedValue(document);
+  const options = { profile: 'standalone', version: 'v2' };
+
+  node.value.value = '$.["foo"]';
+  assert.equal(emitCanonical(document, options), canonical);
+  assert.equal(renderHtml(document), expectedHtml('sansa', '$.foo', '$.foo'));
+  assert.equal(node.value.value, '$.["foo"]');
+
+  node.value.value = '$.foo=bar';
+  assert.throws(() => emitCanonical(document, options), { code: 'invalid_typed_value' });
+  assert.throws(() => renderHtml(document), { code: 'invalid_typed_value' });
+}
+
 function checkAcceptedCase(testCase) {
   const source = `&ND v2\n\n[:${testCase.expression}]\n`;
   const parsed = parseAnd(source, { allowV2: true });
@@ -122,6 +140,7 @@ async function main() {
   const acceptedCases = [...expandFamilyCases(manifest), ...manifest.annotationCases];
   assert.equal(new Set(acceptedCases.map((entry) => entry.id)).size, acceptedCases.length, 'accepted case IDs must be unique');
   for (const testCase of acceptedCases) checkAcceptedCase(testCase);
+  checkStoredSansaAddress();
 
   for (const exclusion of manifest.exclusions) {
     const shared = parseAeonInlineTypedValue(exclusion.expression);

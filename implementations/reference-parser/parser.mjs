@@ -543,7 +543,10 @@ function parseTypedValueTag(text, index, context, baseOffset = 0) {
       continue;
     }
     if (char === ']') {
-      const parsed = parseAeonInlineTypedValue(text.slice(index + 2, i));
+      const expression = text.slice(index + 2, i);
+      const parsed = parseAeonInlineTypedValue(context?.tableCell
+        ? expression.replace(/\\[\\|]/g, (escape) => escape[1] === '|' ? '|' : escape)
+        : expression);
       if (!parsed.ok) return { ok: false, errorCode: parsed.errorCode, nextIndex: i };
       return {
         ok: true,
@@ -1586,6 +1589,7 @@ function spanCellContent(cell) {
 
 function parseTableCells(cells, options, lineOffset = 0, context = null) {
   const parsedCells = [];
+  const cellContext = { ...context, tableCell: true };
   let logicalWidth = 0;
   let hasSpan = false;
   for (const sourceCell of cells) {
@@ -1595,7 +1599,7 @@ function parseTableCells(cells, options, lineOffset = 0, context = null) {
       return { ok: false, errorCode: 'invalid_table_span', column: sourceCell.rawStart };
     }
     const cellOffset = lineOffset + spanCell.cell.start;
-    const inline = parseInline(spanCell.cell.text, options, cellOffset, context);
+    const inline = parseInline(spanCell.cell.text, options, cellOffset, cellContext);
     if (!inline.ok) return withOffset(inline, cellOffset);
     parsedCells.push({
       children: inline.nodes,
