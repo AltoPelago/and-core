@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1",
+  "id": "v2-inline-question-tag-enabled",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\nAsk [? why] now.\n",
+  "expected": {
+    "ok": true,
+    "assertions": [
+      "v2 strict mode accepts question-tag inline form",
+      "question tag content is preserved as rich inline children"
+    ],
+    "document": {
+      "type": "document",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Ask "
+            },
+            {
+              "type": "question_tag",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "why"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " now."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

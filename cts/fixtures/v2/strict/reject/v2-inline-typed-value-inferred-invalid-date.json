@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "id": "v2-inline-typed-value-inferred-invalid-date",
+  "specVersion": "&ND Core v2",
+  "mode": "strict",
+  "source": "&ND v2\n\n[: 2024-02-30]\n",
+  "expected": {
+    "ok": false,
+    "errorCode": "invalid_typed_value",
+    "assertions": [
+      "v2 typed-value shorthand rejects a date outside the calendar",
+      "the invalid literal produces invalid_typed_value"
+    ]
+  }
+}
