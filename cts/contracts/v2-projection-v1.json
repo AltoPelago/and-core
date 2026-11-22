@@ -163,6 +163,23 @@
   ],
   "cases": [
     {
+      "id": "table-typed-values-with-pipes",
+      "covers": [
+        "inline.typed_value",
+        "block.table.alignment"
+      ],
+      "source": "&ND v2\n\n| Quoted | Qualifier | Backslash |\n| <-- | <-- | <-- |\n| [: $.[\"a\\u007cb\"]] | [:sansa = $.foo:first\\|second] | [: \"a\\\\\\|b\"] |\n",
+      "expected": {
+        "canonical": {
+          "embedded": "| Quoted | Qualifier | Backslash |\n| <-- | <-- | <-- |\n| [:sansa = $.[\"a\\|b\"]] | [:sansa = $.foo:first\\|second] | [:string = \"a\\\\\\|b\"] |\n",
+          "standalone": "&ND v2\n\n| Quoted | Qualifier | Backslash |\n| <-- | <-- | <-- |\n| [:sansa = $.[\"a\\|b\"]] | [:sansa = $.foo:first\\|second] | [:string = \"a\\\\\\|b\"] |\n"
+        },
+        "html": {
+          "fragment": "<table>\n<thead>\n<tr><th style=\"text-align:left\">Quoted</th><th style=\"text-align:left\">Qualifier</th><th style=\"text-align:left\">Backslash</th></tr>\n</thead>\n<tbody>\n<tr><td style=\"text-align:left\"><data class=\"and-typed-value\" data-type=\"sansa\" value=\"$.[&quot;a|b&quot;]\">$.[&quot;a|b&quot;]</data></td><td style=\"text-align:left\"><data class=\"and-typed-value\" data-type=\"sansa\" value=\"$.foo:first|second\">$.foo:first|second</data></td><td style=\"text-align:left\"><data class=\"and-typed-value\" data-type=\"string\" value=\"&quot;a\\\\|b&quot;\">a\\|b</data></td></tr>\n</tbody>\n</table>"
+        }
+      }
+    },
+    {
       "id": "navigation-and-consumer-tags",
       "covers": [
         "inherited.heading",

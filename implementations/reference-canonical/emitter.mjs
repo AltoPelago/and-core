@@ -278,7 +278,8 @@ function emitInlineNode(node, context) {
     case 'typed_value':
       requireV2(context, node.type);
       try {
-        return `[:${emitAeonInlineTypedValue(node.datatype, node.value)}]`;
+        const expression = emitAeonInlineTypedValue(node.datatype, node.value);
+        return `[:${context.tableCell ? expression.replaceAll('|', '\\|') : expression}]`;
       } catch {
         throw fail('invalid_typed_value', 'typed_value requires a supported AEON scalar and compatible datatype.');
       }

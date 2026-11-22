@@ -8,7 +8,7 @@
     "ok": false,
     "errorCode": "invalid_typed_value",
     "assertions": [
-      "v2 typed values use exact AEON type-assignment syntax",
+      "v2 typed values with an explicit datatype require an equals sign",
       "the earlier equals-free proposal spelling is rejected"
     ]
   }

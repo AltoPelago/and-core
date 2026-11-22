@@ -119,13 +119,17 @@ the resource. Consumers own resolution, loading, MIME checks, intrinsic sizing, 
 
 ## AEON Typed Scalars
 
-The final proposal syntax is exact AEON anonymous typed-scalar assignment:
+The explicit form uses AEON anonymous typed-scalar assignment.
 
 ```and
 [:date = 2026-08-20]
 [:number = 1000.5]
 [:radix[2] = %1011]
 ```
+
+Use `[: 2024-01-01]` to infer `date` from the literal. Canonical output expands the shorthand
+to `[:date = 2024-01-01]`. Use the explicit form to supply a custom datatype, generic argument,
+or clarifier.
 
 Replace the earlier equals-free experimental form:
 
@@ -146,7 +150,7 @@ multiline strings, nested typed values, and `prose` remain outside this v2 Core 
 | `[+ value]` | Scalar consumer tag |
 | `[~ source | alt | mode]` | Inline image |
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich strike, quote, comment, highlight, and underline nodes |
-| `[:type = scalar]` | AEON typed scalar |
+| `[:type = scalar]`, `[: scalar]` | AEON typed scalar with an explicit or inferred datatype |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
 | `[>]`, `[<]` | Direction markers; leading list-item arrows replace bullets |
 | `[.]` | Explicit inline line break, never a direction marker |

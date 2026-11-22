@@ -161,16 +161,23 @@ content. Rich tags participate in the inherited inline-depth budget.
 
 ## AEON Inline Typed Values
 
-The typed-value form wraps one AEON anonymous typed scalar:
+An inline typed value takes either an explicit AEON anonymous typed scalar or an &ND v2 shorthand.
 
 ```text
 [:TypeAnnotation = ScalarLiteral]
+[: ScalarLiteral]
 ```
 
-The `=` is mandatory. The earlier proposal spelling `[:date 2026-08-20]` is invalid. &ND uses AEON
-type-annotation syntax, string escapes, literal recognition, reserved datatype aliases, compatibility
-rules, and canonical scalar spelling. Reserved datatype names MUST match their AEON literal family.
+An explicit type annotation requires `=`. The earlier proposal spelling `[:date 2026-08-20]` is invalid.
+&ND uses AEON type-annotation syntax, string escapes, literal recognition, reserved datatype aliases,
+compatibility rules, and canonical scalar spelling. Reserved datatype names MUST match their AEON literal family.
 Custom datatype names are accepted and their meaning remains consumer-defined.
+
+The shorthand requires one or more ASCII spaces immediately after `:` followed by one supported
+scalar literal. It infers the first datatype listed for the literal's family below, with empty
+generic arguments and clarifiers. For the non-finite and temporal rows, the specific literal kind
+selects its matching datatype. Both forms produce the same `typed_value` AST and canonical output.
+For example, `[: 2024-01-01]` canonicalizes to `[:date = 2024-01-01]`.
 
 The supported inline subset is closed:
 
@@ -197,13 +204,20 @@ pointer references, bindings, attributes, structural identities, nested typed va
 the enclosed annotation and scalar to these AEON canonical rules.
 Generic datatype nesting uses AEON's default depth lock of one in the v2 reference parser.
 
+An inline SANSA qualifier accepts a numeric argument only if its canonical SANSA spelling is a
+decimal without an exponent. For example, `$.foo:unit[0.0000001]` produces `invalid_typed_value`
+because the pinned SANSA renderer writes the argument as `1e-7` and the qualifier grammar cannot read
+that spelling.
+
+Within table cells, canonical output escapes pipes in typed-value expressions as `\|`. The table
+escape is removed before interpreting the AEON expression, including inside quoted payloads.
+
 The executable compatibility boundary is contract `and-v2-aeon-inline-scalar-v1` in
 `cts/contracts/aeon-inline-scalar-v1.json`. It pins the accepted datatype names and aliases,
 literal-family AST shapes, canonical &ND spelling, HTML projection, and exclusions against AEON
-TypeScript package version `0.13.0`. The contract check is mandatory and dependency-free. A separate
-drift check compares the same cases with the sibling AEON lexer, parser, and canonicalizer when those
-built packages are available; an unavailable sibling checkout does not weaken or fail the standalone
-&ND conformance check.
+TypeScript package version `0.13.0`. The mandatory, dependency-free &ND check covers explicit
+assignments and inferred shorthand. The optional live drift check runs the explicit assignment
+cases against the pinned AEON lexer, parser, and canonicalizer when those packages are available.
 
 ## Local Anchors and Fragment Links
 
