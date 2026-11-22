@@ -1,168 +1,60 @@
 # `and-core`
 
-`and-core` is the standalone home for `&ND` (AEON Native Document).
+`and-core` is the standalone home for `&ND` (AEON Native Document): a deterministic,
+fail-closed language for structured prose, with a reference parser, canonical emitter,
+HTML renderer, playgrounds, editor tooling, and conformance tests.
 
 > &ND is a pedantic prose language. Pronounced “amperand”… with a silent G.
 > Markdown tries to be forgiving.
 > &ND is not.
 
-`&ND` is a deterministic, fail-closed document language designed for structured document content,
-editor integration, canonicalization, and future conformance-tested implementations.
+Both **v1 and v2 are draft**. Semantics may change before formal publication by
+`aeonite-org`. Current work develops v2 while maintaining its v1 compatibility
+boundary. See the [specification tracks](./docs/spec/README.md).
 
-## Repository Layout
+## Get started
 
-* [docs/spec/README.md](./docs/spec/README.md) — version-stage index for `&ND` spec tracks
-* [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
-* [docs/spec/v2/README.md](./docs/spec/v2/README.md) — the v2 draft and implementation contracts
-* [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md) — parser-author guidance and recommended architecture
-* [docs/spec/v1/and-public-api.md](./docs/spec/v1/and-public-api.md) — proposed stable package surface for external consumers
-* [docs/spec/v1/fmt-and-reference.md](./docs/spec/v1/fmt-and-reference.md) — proposed AES-facing `fmt.and` vocabulary and model boundary
-* [docs/tooling/playground.md](./docs/tooling/playground.md) — local playground direction and usage
-* [docs/tooling/html-renderer.md](./docs/tooling/html-renderer.md) — AST-to-HTML projection contract
-* [vscode/](./vscode/) — first-pass VS Code language prototype
-* [playground/](./playground/) — static parser/canonical/preview playground prototype
-* [cts/README.md](./cts/README.md) — conformance test suite plan and fixture layout
-* [implementations/README.md](./implementations/README.md) — future parser/emitter implementation home
-* [examples/README.md](./examples/README.md) — example documents and interoperability samples, including a [v2 AEON node round trip](./examples/v2-aeon-roundtrip/README.md)
-* [CONTRIBUTING.md](./CONTRIBUTING.md) — contribution workflow for spec, CTS, and implementation changes
+Use Node.js 22, matching [CI](./.github/workflows/ci.yml). Run these commands from
+the repository root; the root tools need no dependency installation.
 
-## Current Status
+```sh
+npm test
+npm run playground
+```
 
-The repository is currently spec-and-CTS first:
+`npm test` runs the main local checks. The playground opens at
+<http://localhost:4173/playground/>. Stop its server with Ctrl+C.
 
-* the v1 language spec has been migrated in from the design workspace
-* canonical, implementation, and editor-support documents are present
-* CTS fixtures are machine-readable and indexed
-* a reference parser adapter validates strict accept/reject fixtures, expected ASTs, and expected error codes
-* an executable v2 draft CTS lane validates promoted syntax, cross-version boundaries, canonical
-  round trips, resource budgets, and HTML projection
-* a smaller reference subset adapter demonstrates capability-scoped CTS participation
-* an initial root package surface is available through [`index.mjs`](./index.mjs)
-* CI runs the repository safety checks and both CTS adapters
+The separate [&ND ↔ Aeon + SANSA workspace](./docs/tooling/playground.md) runs
+on the same server at `/playground/semantic/` and needs its example dependencies
+installed first. Its guide covers setup and focused checks.
 
-## Version Stages
+## Common commands
 
-The repository currently tracks two language versions:
+| Command | Purpose |
+| --- | --- |
+| `npm run and -- check examples/minimal.and` | Validate a document with the local CLI. |
+| `npm run and -- canonical examples/minimal.and --profile standalone` | Print canonical text. |
+| `npm run precommit:check` | Run repository safety and public API checks. |
+| `npm run cts:run:v2` | Run the dedicated v2 draft conformance lane. |
 
-* `&ND Core v1` is in **draft** stage
-* `&ND Core v2` is in **draft** stage
+For CLI options, budgets, AST output, and HTML rendering, see the
+[CLI guide](./docs/tooling/cli.md). For targeted checks and report regeneration,
+see [Contributing](./CONTRIBUTING.md). The complete script list lives in
+[`package.json`](./package.json).
 
-Stage meanings in this repository:
+## Find your way around
 
-* **draft**: semantics and behavior may still change, including breaking changes, while design and CTS pressure continue
-* **proposal**: exploratory design work where shape and boundaries are intentionally fluid
+| Area | Start here |
+| --- | --- |
+| Language, AST, and public API contracts | [Specification tracks](./docs/spec/README.md): [v1](./docs/spec/v1/README.md), [v2](./docs/spec/v2/README.md) |
+| Parser and emitter implementations | [Implementations](./implementations/README.md); root API in [`index.mjs`](./index.mjs) |
+| Conformance fixtures and adapters | [CTS guide](./cts/README.md) and [fixture authoring](./cts/AUTHORING.md) |
+| Examples and AEON interoperability | [Examples](./examples/README.md) |
+| Browser playgrounds | [Playground guide](./docs/tooling/playground.md) |
+| VS Code prototype | [Editor guide](./vscode/README.md) |
+| HTML projection | [Renderer contract](./docs/tooling/html-renderer.md) |
+| Development and maintenance | [Contributing](./CONTRIBUTING.md) |
 
-Current work maintains the v2 implementation and its v1 compatibility boundary. Both versions may
-evolve through reviewed specification and conformance changes before formal publication.
-
-## Suggested Reading Order
-
-1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
-2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
-3. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
-4. [docs/spec/v1/and-vscode-support.md](./docs/spec/v1/and-vscode-support.md)
-5. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
-
-## Common Entry Paths
-
-If you are here to understand the language itself:
-
-1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
-2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
-
-If you want to work on the v2 specification or implementation:
-
-1. [docs/spec/README.md](./docs/spec/README.md)
-2. [docs/spec/v2/README.md](./docs/spec/v2/README.md)
-3. [&ND Core v2 Draft](https://github.com/aeonite-org/aeonite-specs/blob/main/sources/and/v2/and-core-v2.aeon)
-4. [docs/spec/v2/and-ast-contract.md](./docs/spec/v2/and-ast-contract.md)
-
-If you want to build a parser or canonical emitter:
-
-1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
-2. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
-3. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
-4. [cts/README.md](./cts/README.md)
-5. [implementations/README.md](./implementations/README.md)
-
-If you want to connect `&ND` into the AES ecosystem:
-
-1. [docs/spec/v1/and-public-api.md](./docs/spec/v1/and-public-api.md)
-2. [docs/spec/v1/fmt-and-reference.md](./docs/spec/v1/fmt-and-reference.md)
-3. [docs/spec/v1/and-ast-contract.md](./docs/spec/v1/and-ast-contract.md)
-
-If you want to work on editor tooling:
-
-1. [docs/spec/v1/and-vscode-support.md](./docs/spec/v1/and-vscode-support.md)
-2. [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md)
-3. [vscode/](./vscode/)
-4. [playground/](./playground/)
-
-If you want to extend or audit the CTS:
-
-1. [cts/README.md](./cts/README.md)
-2. [cts/AUTHORING.md](./cts/AUTHORING.md)
-3. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
-
-## Near-Term Next Steps
-
-* keep the executable v2 draft CTS lane independent from the normative v1 fixture index
-* continue validating and refining v1 draft behavior under implementation pressure
-* keep conformance seeds, CTS fixtures, and reference reports moving together
-
-## Safety Scripts
-
-* `npm test` — runs the repository safety checks, CTS adapters, adapter example, canonical checks, and CLI smoke checks
-* `npm run playground` — serves the parser playground at `http://localhost:4173/playground/` and the [&ND ↔ Aeon + SANSA workspace](./docs/tooling/playground.md) at `/playground/semantic/` (install the semantic example dependencies first)
-* `npm run playground:check` — verifies playground wiring, parser budgets, and parser/canonical smoke behavior
-* `npm run check:html-renderer` — verifies the reference AST-to-HTML projection
-* `npm run check:vscode` — verifies the VS Code prototype manifest, grammar, and language configuration
-* `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
-* `npm run and -- check examples/minimal.and` — checks one document with the local CLI
-* `npm run and -- check examples/minimal.and --budget maxLineLength=120` — checks with an explicit parser budget
-* `npm run and -- check path/to/proposal.and --version v2` — opts the CLI into the v2 parser
-* `npm run and -- diagnostics examples/minimal.and --json` — emits parser-backed diagnostics for editor tooling
-* open the repo in VS Code and run `.vscode/launch.json` → `Run &ND VS Code Prototype` — launches the current editor prototype against `vscode/samples/`
-* `npm run vscode:package` — stages a dependency-free unpacked VS Code extension bundle under `artifacts/`
-* `npm run and -- parse examples/minimal.and --json` — emits a parsed AST
-* `npm run and -- parse examples/minimal.and --json --spans` — emits an AST with source spans
-* `npm run and -- canonical examples/minimal.and --profile standalone` — emits canonical text
-* `npm run and -- render-html examples/minimal.and` — emits an escaped HTML fragment
-* `npm run and -- render-html examples/minimal.and --document --out output.html` — writes a complete HTML document
-* `npm run and -- render-html path/to/proposal.and --version v2 --image-base-url https://docs.example/guide/proposal.and` — resolves relative image sources against an explicit HTTP(S) document base
-* CLI parser budgets use repeatable `--budget name=value` flags. Supported names are `maxDocumentSize`,
-  `maxLineLength`, `maxNestingDepth`, `maxInlineDepth`, `maxTableColumns`, `maxBlockSize`,
-  `maxBlockCount`, `maxListItemCount`, and `maxLinkTargetLength`.
-* CLI failures include stable `errorCode` values and line/column diagnostics where available
-* `npm run check:no-local-paths` — blocks workstation-specific path leaks in tracked files
-* `npm run check:spec-layout` — verifies the expected spec bundle layout and local Markdown links
-* `npm run check:cts-fixtures` — validates the CTS fixture index and fixture JSON shape
-* `npm run check:cts-seed-coverage` — verifies that all normative spec seeds are represented in the CTS index
-* `npm run check:reports` — verifies generated CTS/canonical/HTML report artifacts are fresh
-* `npm run check:canonical-emitter` — emits canonical text for supported CTS AST fixtures and reparses it
-* `npm run check:html-renderer` — checks escaped HTML fragment/full-document output and fail-closed behavior
-* `npm run check:public-api` — verifies the root package surface for parse, inline parse, diagnostics, canonical emission, and HTML projection
-* `npm run check:v2-guidance` — verifies the migration and consumer-convention boundaries remain complete
-* `npm run cli:smoke` — verifies the local CLI check, parse, and canonical commands
-* `npm run canonical:report` — writes canonical emitter output snapshots to `cts/reports/`
-* `npm run html:report` — writes HTML renderer output snapshots to `cts/reports/`
-* `npm run cts:run` — loads the CTS fixture manifest and emits the current placeholder/adapted run report
-* `npm run cts:run:example` — runs the copyable baseline adapter example
-* `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
-* `npm run cts:run:reference` — runs the first reference parser adapter against the CTS
-* `npm run cts:run:v2` — runs v2 draft fixtures plus v1/v2 version-boundary checks
-* `npm run cts:report:example` — writes a JSON CTS report artifact for the baseline adapter example
-* `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
-* `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
-* `npm run cts:report:all` — regenerates all parser and canonical report artifacts
-* `npm run precommit:check` — runs the current repository safety checks together
-
-## Continuous Integration
-
-The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs:
-
-* `npm run precommit:check`
-* `npm run cts:run:reference`
-* `npm run cts:run:subset`
-* `npm run cts:run:v2`
-* `npm run check:canonical-emitter`
+Changes should keep the specification, fixtures, and implementation behavior
+aligned. CI's exact checks are maintained in its [workflow](./.github/workflows/ci.yml).
