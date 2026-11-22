@@ -115,8 +115,8 @@ The projection contract indexes and pins focused cases for:
 - named cards with rich titles and ordinary nested block children;
 - heading-number hierarchy plus rich footnote content and repeated named references.
 
-Closure evidence: all 39 required combination identifiers appear exactly once and participate in the
-same 56 canonical and 29 HTML snapshots as the promoted-surface contract.
+The projection contract exercises all 39 required combinations exactly once and pins 58 canonical
+and 30 HTML snapshots.
 
 ### B7. v1-to-v2 migration guide
 
