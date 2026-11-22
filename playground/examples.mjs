@@ -145,7 +145,7 @@ This is header text and appears slightly stronger than body text.
 ~~~#
 
 ~~~^
-v2 remains proposal-stage.
+v2 is a draft with a reference parser and conformance suite.
 ~~~
 `,
   },

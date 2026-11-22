@@ -43,20 +43,20 @@ For a runnable copyable example, see
 Current CTS tracks:
 
 1. `v1` active fixtures at `cts/fixtures/index.json`
-2. `v2` executable proposal fixtures at `cts/fixtures/v2/index.proposal.json`
+2. `v2` executable draft fixtures at `cts/fixtures/v2/index.json`
 
 Today, `scripts/run-cts.mjs` executes only the active v1 fixture index.
 
-The dedicated `scripts/run-cts-v2-proposal.mjs` runner executes the v2 lane against the reference
+The dedicated `scripts/run-cts-v2.mjs` runner executes the v2 lane against the reference
 parser with explicit v2 capability enabled. It also checks that v1-only parsers reject v2 headers,
 that a v2-capable parser honors v1 declarations, and that the v1 accepted corpus retains its
 structure when read by the v2-capable parser. Accepted v2 ASTs additionally pass standalone and
 embedded canonical round trips plus inert HTML projection; direct checks cover effective-version
 selection, nested contexts, block budgets, opaque extensions, and the strict forward boundary.
 
-## v2 Adapter Strategy (Proposal Stage)
+## v2 Adapter Strategy
 
-The current proposal implementation uses the first of these strategies:
+The reference implementation uses the first of these strategies:
 
 1. Single adapter with explicit version switch:
   1. `runFixture` branches behavior by fixture-level version metadata.
@@ -66,13 +66,13 @@ The current proposal implementation uses the first of these strategies:
   1. `run-cts` is invoked with a separate adapter path for v2 runs.
   2. The adapter can evolve independently while v1 remains stable.
 
-The dedicated proposal runner remains separate from the normative v1 runner so reports and stage
+The dedicated v2 runner remains separate from the normative v1 runner so reports and stage
 semantics cannot be confused.
 
 In both strategies:
 
 1. v1 and v2 reports MUST remain independently reviewable.
-2. v2 proposal fixtures MUST NOT reduce existing v1 coverage checks.
+2. v2 fixtures MUST NOT reduce existing v1 coverage checks.
 3. Unsupported version declarations SHOULD fail with stable error codes instead of silent fallback.
 
 ## Result Shape

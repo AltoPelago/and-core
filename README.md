@@ -13,7 +13,7 @@ editor integration, canonicalization, and future conformance-tested implementati
 
 * [docs/spec/README.md](./docs/spec/README.md) — version-stage index for `&ND` spec tracks
 * [docs/spec/v1/README.md](./docs/spec/v1/README.md) — the current v1 spec bundle
-* [docs/spec/v2/README.md](./docs/spec/v2/README.md) — the active v2 proposal track
+* [docs/spec/v2/README.md](./docs/spec/v2/README.md) — the v2 draft and implementation contracts
 * [docs/spec/v1/and-implementation-guide.md](./docs/spec/v1/and-implementation-guide.md) — parser-author guidance and recommended architecture
 * [docs/spec/v1/and-public-api.md](./docs/spec/v1/and-public-api.md) — proposed stable package surface for external consumers
 * [docs/spec/v1/fmt-and-reference.md](./docs/spec/v1/fmt-and-reference.md) — proposed AES-facing `fmt.and` vocabulary and model boundary
@@ -34,7 +34,7 @@ The repository is currently spec-and-CTS first:
 * canonical, implementation, and editor-support documents are present
 * CTS fixtures are machine-readable and indexed
 * a reference parser adapter validates strict accept/reject fixtures, expected ASTs, and expected error codes
-* an executable v2 proposal lane validates promoted syntax, cross-version boundaries, canonical
+* an executable v2 draft CTS lane validates promoted syntax, cross-version boundaries, canonical
   round trips, resource budgets, and HTML projection
 * a smaller reference subset adapter demonstrates capability-scoped CTS participation
 * an initial root package surface is available through [`index.mjs`](./index.mjs)
@@ -42,18 +42,18 @@ The repository is currently spec-and-CTS first:
 
 ## Version Stages
 
-The repository currently tracks two active language stages:
+The repository currently tracks two language versions:
 
 * `&ND Core v1` is in **draft** stage
-* `&ND Core v2` is in **proposal** stage
+* `&ND Core v2` is in **draft** stage
 
 Stage meanings in this repository:
 
 * **draft**: semantics and behavior may still change, including breaking changes, while design and CTS pressure continue
 * **proposal**: exploratory design work where shape and boundaries are intentionally fluid
 
-Current working focus is v2 proposal development. v1 remains editable and may still change until
-it is formally published by `aeonite-org`.
+Current work maintains the v2 implementation and its v1 compatibility boundary. Both versions may
+evolve through reviewed specification and conformance changes before formal publication.
 
 ## Suggested Reading Order
 
@@ -70,11 +70,11 @@ If you are here to understand the language itself:
 1. [docs/spec/v1/and-core-proposal.md](./docs/spec/v1/and-core-proposal.md)
 2. [docs/spec/v1/and-canonical-rules.md](./docs/spec/v1/and-canonical-rules.md)
 
-If you want to contribute to ongoing design direction:
+If you want to work on the v2 specification or implementation:
 
 1. [docs/spec/README.md](./docs/spec/README.md)
 2. [docs/spec/v2/README.md](./docs/spec/v2/README.md)
-3. [docs/spec/v2/and-core-v2-proposal.md](./docs/spec/v2/and-core-v2-proposal.md)
+3. [&ND Core v2 Draft](https://github.com/aeonite-org/aeonite-specs/blob/main/sources/and/v2/and-core-v2.aeon)
 4. [docs/spec/v2/and-ast-contract.md](./docs/spec/v2/and-ast-contract.md)
 
 If you want to build a parser or canonical emitter:
@@ -106,8 +106,7 @@ If you want to extend or audit the CTS:
 
 ## Near-Term Next Steps
 
-* run the reviewed v2 proposal-to-draft promotion gate
-* keep the executable v2 proposal lane independent from the normative v1 fixture index
+* keep the executable v2 draft CTS lane independent from the normative v1 fixture index
 * continue validating and refining v1 draft behavior under implementation pressure
 * keep conformance seeds, CTS fixtures, and reference reports moving together
 
@@ -121,7 +120,7 @@ If you want to extend or audit the CTS:
 * `npm run html:report` — writes reference HTML renderer output snapshots to `cts/reports/`
 * `npm run and -- check examples/minimal.and` — checks one document with the local CLI
 * `npm run and -- check examples/minimal.and --budget maxLineLength=120` — checks with an explicit parser budget
-* `npm run and -- check path/to/proposal.and --version v2` — opts the CLI into the v2 proposal parser
+* `npm run and -- check path/to/proposal.and --version v2` — opts the CLI into the v2 parser
 * `npm run and -- diagnostics examples/minimal.and --json` — emits parser-backed diagnostics for editor tooling
 * open the repo in VS Code and run `.vscode/launch.json` → `Run &ND VS Code Prototype` — launches the current editor prototype against `vscode/samples/`
 * `npm run vscode:package` — stages a dependency-free unpacked VS Code extension bundle under `artifacts/`
@@ -151,7 +150,7 @@ If you want to extend or audit the CTS:
 * `npm run cts:run:example` — runs the copyable baseline adapter example
 * `npm run cts:run:subset` — runs the current reference subset adapter against the CTS
 * `npm run cts:run:reference` — runs the first reference parser adapter against the CTS
-* `npm run cts:run:v2:proposal` — runs v2 proposal fixtures plus v1/v2 version-boundary checks
+* `npm run cts:run:v2` — runs v2 draft fixtures plus v1/v2 version-boundary checks
 * `npm run cts:report:example` — writes a JSON CTS report artifact for the baseline adapter example
 * `npm run cts:report:subset` — writes a JSON CTS report artifact for the reference subset adapter
 * `npm run cts:report:reference` — writes a JSON CTS report artifact for the reference parser adapter
@@ -165,5 +164,5 @@ The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/
 * `npm run precommit:check`
 * `npm run cts:run:reference`
 * `npm run cts:run:subset`
-* `npm run cts:run:v2:proposal`
+* `npm run cts:run:v2`
 * `npm run check:canonical-emitter`

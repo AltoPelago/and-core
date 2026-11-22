@@ -1,7 +1,7 @@
 # Reference Canonical Emitter
 
 This is the reference canonical emitter for `&ND Core v1` and the executable `&ND Core v2`
-proposal AST.
+draft AST.
 
 It emits canonical text from the CTS AST contract shape documented in
 [`docs/spec/v1/and-ast-contract.md`](../../docs/spec/v1/and-ast-contract.md) and

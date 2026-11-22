@@ -5,7 +5,7 @@ repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root"
 
 lane_dir="cts/fixtures/v2"
-lane_index="$lane_dir/index.proposal.json"
+lane_index="$lane_dir/index.json"
 
 if [[ ! -d "$lane_dir" ]]; then
   echo "Missing v2 CTS lane directory: $lane_dir" >&2
@@ -21,22 +21,22 @@ python3 - <<'PY'
 import json
 from pathlib import Path
 
-lane_index = Path("cts/fixtures/v2/index.proposal.json")
+lane_index = Path("cts/fixtures/v2/index.json")
 index = json.loads(lane_index.read_text(encoding="utf-8"))
 errors = []
 
 if index.get("schemaVersion") != "1":
-    errors.append("cts/fixtures/v2/index.proposal.json must declare schemaVersion \"1\"")
+    errors.append("cts/fixtures/v2/index.json must declare schemaVersion \"1\"")
 if index.get("track") != "v2":
-    errors.append("cts/fixtures/v2/index.proposal.json must declare track \"v2\"")
-if index.get("stage") != "proposal":
-    errors.append("cts/fixtures/v2/index.proposal.json must declare stage \"proposal\"")
+    errors.append("cts/fixtures/v2/index.json must declare track \"v2\"")
+if index.get("stage") != "draft":
+    errors.append("cts/fixtures/v2/index.json must declare stage \"draft\"")
 if index.get("specVersion") != "&ND Core v2":
-    errors.append("cts/fixtures/v2/index.proposal.json must declare specVersion \"&ND Core v2\"")
+    errors.append("cts/fixtures/v2/index.json must declare specVersion \"&ND Core v2\"")
 
 fixtures = index.get("fixtures")
 if not isinstance(fixtures, list):
-    errors.append("cts/fixtures/v2/index.proposal.json fixtures must be an array")
+    errors.append("cts/fixtures/v2/index.json fixtures must be an array")
     fixtures = []
 
 for rel in fixtures:
@@ -52,5 +52,5 @@ if errors:
         print(error)
     raise SystemExit(1)
 
-print("v2 CTS proposal lane scaffold looks good.")
+print("v2 draft CTS lane looks good.")
 PY

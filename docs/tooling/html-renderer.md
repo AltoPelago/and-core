@@ -23,20 +23,20 @@ It supports:
 
 * paragraphs, headings, horizontal rules, blockquotes, lists, code blocks, ordered code blocks, extension blocks, and tables
 * text, strong, emphasis, inline code, and links
-* proposal-v2 scalar metadata tags, inline images, rich inline tags, compact directional markers,
+* v2 scalar metadata tags, inline images, rich inline tags, compact directional markers,
   explicit line breaks, and typed values
-* first-class proposal-v2 todo lists without visual bullets and auto-number lists projected as
+* first-class v2 todo lists without visual bullets and auto-number lists projected as
   semantic ordered lists
 * inherited `#id` links projected as browser-native fragment links
-* proposal-v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
+* v2 heading auto-number intent, highlighted paragraphs, header text, and disclaimers
 * semantic inline and block wrappers projected as ordinary content without exposing their IDs
-* proposal-v2 strong, emphasis, and underline paragraph-wide formatting blocks
-* proposal-v2 footnotes projected as linked numeric superscripts and a trailing endnote section
+* v2 strong, emphasis, and underline paragraph-wide formatting blocks
+* v2 footnotes projected as linked numeric superscripts and a trailing endnote section
 * leading directional markers in unordered items projected in place of those items' bullets
 * leading hint/attention markers projected in place of unordered-item bullets
 * focusable inline hint/attention callouts and visible advisory paragraph blocks
 * preserved but hidden rich block comments
-* proposal-v2 rich captions projected as `figcaption` content on fenced blocks
+* v2 rich captions projected as `figcaption` content on fenced blocks
 * parsed extension fallback content from adjacent `+++fallback` blocks
 * explicit diagnostics for unsupported extension blocks that do not provide fallback content
 * escaped fragment output by default

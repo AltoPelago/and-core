@@ -8,12 +8,12 @@ fixtures, and implementation behavior moving together.
 Current stage assignments:
 
 1. `&ND Core v1` is **draft**.
-2. `&ND Core v2` is **proposal**.
+2. `&ND Core v2` is **draft**.
 
 Practical implications:
 
 1. v1 is not yet frozen and may still accept breaking changes while it remains draft.
-2. v2 proposal work is the current primary design focus.
+2. v2 grammar changes require coordinated specification, CTS, and implementation updates.
 3. Any behavior changes should state which version they target and whether they are intentionally
 	breaking within that stage.
 4. No version is treated as published/final in this repository until formal publication by
@@ -47,13 +47,9 @@ When changing normative language in `docs/spec/v1/and-core-proposal.md`:
 
 The seed coverage check fails when named spec seeds and indexed CTS fixtures drift apart.
 
-When changing proposal language in `docs/spec/v2/and-core-v2-proposal.md`:
-
-1. Add named seeds only for areas where behavior expectations are concrete enough to test.
-2. Record open questions and unresolved compatibility assumptions explicitly.
-3. Keep unstable alternatives in proposal docs, not in v1 normative docs.
-4. Introduce v2 CTS fixtures only after the seed names and expected outcomes are stable enough
-	for repeatable checks.
+For v2, update the [authoritative draft](https://github.com/aeonite-org/aeonite-specs/blob/main/sources/and/v2/and-core-v2.aeon)
+with the grammar or compatibility change. Add accepted and rejected cases to the v2 CTS index,
+including expected ASTs or diagnostics, and run `npm run cts:run:v2`.
 
 ## CTS Changes
 
@@ -86,5 +82,4 @@ npm run cts:report:reference
 npm run cts:report:subset
 ```
 
-Reports are execution artifacts, not normative definitions. The fixture suite and spec seeds remain
-the source of truth.
+Reports record runner outcomes. The versioned CTS indexes enumerate the executable fixtures.

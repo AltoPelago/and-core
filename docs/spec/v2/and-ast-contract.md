@@ -1,6 +1,6 @@
-# &ND Core v2 AST Contract (Proposal)
+# &ND Core v2 AST Contract
 
-This document defines the proposal-stage AST additions used by the executable `&ND Core v2` fixture
+This document defines the v2 draft AST additions used by the executable `&ND Core v2` fixture
 lane. v2 inherits every v1 node in [`../v1/and-ast-contract.md`](../v1/and-ast-contract.md) without
 changing its structural meaning.
 
@@ -338,7 +338,7 @@ Spans are valid in header and body rows but never in the separator row. For ever
 required space or content, or a row whose sum underflows or overflows that count, fails with
 `invalid_table_span`. Invalid alignment tokens or alignment metadata fail with
 `invalid_table_alignment`. The inherited `maxTableColumns` budget applies to logical columns.
-Vertical/row spanning is not part of this proposal.
+The v2 draft supports horizontal spanning.
 
 Alignment remains column metadata. A spanning cell uses the alignment of the first logical column
 it covers. Canonical output emits the exact separator tokens and compact adjacent span marker. The
@@ -752,7 +752,7 @@ emitCanonical(document, { profile: "embedded", version: "v2" });
 
 Standalone v2 output begins with `&ND v2`; embedded output omits the declaration. Every promoted v2
 node has a deterministic spelling, and emitting a v2-only node under version v1 MUST fail. The
-executable proposal runner checks standalone and embedded parse–emit–parse structural equivalence
+v2 CTS runner checks standalone and embedded parse–emit–parse structural equivalence
 and canonical fixed-point stability for every accepted v2 fixture.
 
 Machine-readable contract `and-v2-projection-v1` in `cts/contracts/v2-projection-v1.json` pins exact
@@ -770,13 +770,12 @@ and titled cards.
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 47 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 48 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
 clarifiers, footnotes, code blocks and block captions, cards, aligned/spanning tables, nested rich
 resources, lists, and blockquotes.
 
 ## Stability
 
-This contract is executable but remains proposal-stage. The scalar-versus-rich-content split and
-the capability disposition above are now decisions for the first-draft candidate; lexical
-constraints and projection snapshots may still tighten before v2 advances to draft.
+The v2 draft contract is exercised by the reference parser, canonical emitter, and HTML renderer.
+Reviewed draft changes update the contract and its executable fixtures together.

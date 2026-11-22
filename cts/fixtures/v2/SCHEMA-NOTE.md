@@ -1,7 +1,6 @@
 # v2 Fixture Schema Note
 
-This lane uses the same fixture envelope shape as the active v1 CTS fixtures while v2 remains in
-proposal stage.
+The v2 draft uses the same fixture envelope as the active v1 CTS fixtures.
 
 ## Current Shape
 
@@ -24,10 +23,9 @@ Expected may also include:
 
 - document (object) for successful fixtures when AST shape should be pinned
 
-## Proposal Caveat
+## Draft Compatibility
 
-Field names and error-code taxonomy in this lane are still proposal-scoped and may evolve as v2
-grammar and AST contracts stabilize.
+Field names and error-code taxonomy in this lane follow the draft grammar and AST contract.
 
 Accepted fixture documents follow
 [`docs/spec/v2/and-ast-contract.md`](../../../docs/spec/v2/and-ast-contract.md). The dedicated runner

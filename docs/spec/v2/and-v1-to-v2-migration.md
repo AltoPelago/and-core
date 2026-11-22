@@ -2,8 +2,7 @@
 
 ## Status And Scope
 
-This guide describes migration to the `&ND Core v2` first-draft candidate. v2 remains proposal-stage;
-the guide records the executable compatibility contract rather than announcing publication.
+This guide describes migration to the `&ND Core v2` draft and its implemented compatibility rules.
 
 The central rule is asymmetric:
 

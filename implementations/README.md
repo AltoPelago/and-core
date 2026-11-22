@@ -13,8 +13,8 @@ Current contents:
 
 * `reference-subset/` — a small CTS-facing strict subset adapter used to bootstrap the runner
 * `reference-parser/` — the first parser-shaped implementation, currently guarded by the CTS
-* `reference-canonical/` — canonical v1 and proposal-v2 emission from the current AST contracts
-* `reference-html/` — inert v1 and proposal-v2 AST-to-HTML projection used by tooling such as the playground
+* `reference-canonical/` — canonical v1 and v2 emission from the current AST contracts
+* `reference-html/` — inert v1 and v2 AST-to-HTML projection used by tooling such as the playground
 
 Recommended sequencing:
 

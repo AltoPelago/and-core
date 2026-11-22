@@ -12,7 +12,7 @@ const repoRoot = process.cwd();
 const v1FixturesRoot = path.join(repoRoot, 'cts', 'fixtures');
 const v1IndexPath = path.join(v1FixturesRoot, 'index.json');
 const fixturesRoot = path.join(repoRoot, 'cts', 'fixtures', 'v2');
-const indexPath = path.join(fixturesRoot, 'index.proposal.json');
+const indexPath = path.join(fixturesRoot, 'index.json');
 
 async function loadJson(filePath) {
   const text = await readFile(filePath, 'utf8');
@@ -509,10 +509,10 @@ async function runVersionBoundaryChecks(v2Index) {
 async function main() {
   const index = await loadJson(indexPath);
   if (index.schemaVersion !== '1') {
-    throw new Error('cts/fixtures/v2/index.proposal.json must declare schemaVersion "1"');
+    throw new Error('cts/fixtures/v2/index.json must declare schemaVersion "1"');
   }
   if (!Array.isArray(index.fixtures) || index.fixtures.length === 0) {
-    throw new Error('cts/fixtures/v2/index.proposal.json must include at least one fixture');
+    throw new Error('cts/fixtures/v2/index.json must include at least one fixture');
   }
 
   let pass = 0;
@@ -631,7 +631,7 @@ async function main() {
   pass += apiBoundaries.pass;
   fail += apiBoundaries.fail;
 
-  console.log(`v2 proposal CTS and version boundaries: ${pass} pass, ${fail} fail`);
+  console.log(`v2 draft CTS and version boundaries: ${pass} pass, ${fail} fail`);
   if (fail > 0) process.exitCode = 1;
 }
 
