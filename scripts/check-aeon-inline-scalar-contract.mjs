@@ -86,7 +86,7 @@ function expandFamilyCases(manifest) {
     return [...explicit, {
       ...explicit[0],
       id: `${family.id}:inferred`,
-      expression: ` ${family.scalar}`,
+      expression: ` ${family.scalar} `,
     }];
   });
 }
@@ -130,17 +130,19 @@ async function main() {
     assert.equal(parsed.ok, false, `${exclusion.id}: &ND parser accepted an exclusion`);
   }
 
-  const invalidShorthand = [
+  const invalidExpressions = [
     ' ', ' 2024-02-30', ' 2024-01-01 extra', ' date 2024-01-01',
     ' = 2024-01-01', ' [1, 2]', '2024-01-01',
+    ...['001', '-01.5', '0_1', '00e2'].flatMap((literal) => [` ${literal}`, `number = ${literal}`]),
+    ...['\u00a0', '\u2028'].flatMap((padding) => [` true${padding}`, `boolean = true${padding}`]),
   ];
-  for (const expression of invalidShorthand) {
+  for (const expression of invalidExpressions) {
     const parsed = parseAnd(`&ND v2\n\n[:${expression}]\n`, { allowV2: true });
     assert.equal(parsed.errorCode, 'invalid_typed_value', `[:${expression}]: expected a typed-value error`);
   }
 
   console.log(
-    `aeonInlineScalarContract accepted=${acceptedCases.length} excluded=${manifest.exclusions.length + invalidShorthand.length} datatypes=${manifestDatatypes.length} failed=0`,
+    `aeonInlineScalarContract accepted=${acceptedCases.length} excluded=${manifest.exclusions.length + invalidExpressions.length} datatypes=${manifestDatatypes.length} failed=0`,
   );
 }
 

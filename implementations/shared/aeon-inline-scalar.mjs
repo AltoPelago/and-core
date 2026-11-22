@@ -1,5 +1,5 @@
 const IDENTIFIER_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
-const NUMBER_PATTERN = /^[+-]?(?:(?:\d(?:_?\d)*)\.(?:\d(?:_?\d)*)|(?:\d(?:_?\d)*)\.|\.(?:\d(?:_?\d)*)|(?:\d(?:_?\d)*))(?:[eE][+-]?\d(?:_?\d)*)?$/;
+const NUMBER_PATTERN = /^[+-]?(?:(?:0|[1-9](?:_?\d)*)(?:\.(?:\d(?:_?\d)*)?)?|\.\d(?:_?\d)*)(?:[eE][+-]?\d(?:_?\d)*)?$/;
 const HEX_PATTERN = /^#[0-9A-Fa-f](?:_?[0-9A-Fa-f])*$/;
 const RADIX_PATTERN = /^%[+-]?(?:(?:[0-9A-Za-z&!](?:_?[0-9A-Za-z&!])*)?\.[0-9A-Za-z&!](?:_?[0-9A-Za-z&!])*|[0-9A-Za-z&!](?:_?[0-9A-Za-z&!])*)$/;
 const ENCODING_PATTERN = /^&[A-Za-z0-9_-]+={0,2}$/;
@@ -407,10 +407,16 @@ function validateCompatibility(datatype, value) {
   return expected === scalarFamily(value);
 }
 
+function parseScalarWithPadding(source, start) {
+  let end = source.length;
+  while (end > start && (source[end - 1] === ' ' || source[end - 1] === '\t')) end -= 1;
+  return parseScalar(source.slice(start, end));
+}
+
 export function parseAeonInlineTypedValue(source) {
   const leadingSpaces = source.match(/^ +/);
   if (leadingSpaces) {
-    const value = parseScalar(source.slice(leadingSpaces[0].length).trimEnd());
+    const value = parseScalarWithPadding(source, leadingSpaces[0].length);
     if (!value) return failure();
     const family = scalarFamily(value);
     const name = family === 'separator' ? 'sep' : family;
@@ -422,9 +428,7 @@ export function parseAeonInlineTypedValue(source) {
   let i = skipWhitespace(source, datatypeResult.nextIndex);
   if (source[i] !== '=') return failure();
   i = skipWhitespace(source, i + 1);
-  const scalarSource = source.slice(i).trimEnd();
-  if (scalarSource.length === 0) return failure();
-  const value = parseScalar(scalarSource);
+  const value = parseScalarWithPadding(source, i);
   if (!value || !validateCompatibility(datatypeResult.datatype, value)) return failure();
   return { ok: true, datatype: datatypeResult.datatype, value };
 }
