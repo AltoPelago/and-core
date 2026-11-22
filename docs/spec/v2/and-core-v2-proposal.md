@@ -462,16 +462,21 @@ Intent:
 - promote v1-reserved `[: ...]` into a v2 typed-value inline form
 - adopt exact AEON anonymous typed-scalar syntax such as `[:date = 2012-10-10]` and
   `[:string = "hello world"]`
+- accept `[: ScalarLiteral]` as &ND shorthand that infers the AEON datatype from the literal family
 
 Expected direction:
 
 - v2 strict parse success for the listed AEON scalar families and custom datatype labels
 - preserve structured datatype generics/clarifiers and literal-family-aware scalar nodes
+- give shorthand the same AST and explicit canonical output as its inferred assignment
 - enforce reserved datatype/literal compatibility and reject structured values, references,
-  multiline families, nested typed values, or the earlier equals-free spelling
+  multiline families, nested typed values, and annotations missing `=`
 - pin the boundary as machine-readable contract `and-v2-aeon-inline-scalar-v1`, aligned with AEON
   TypeScript `0.13.0`, with mandatory &ND AST/canonical/HTML snapshots and an optional live AEON
   lexer/parser/canonicalizer drift check
+
+Shorthand fixtures cover date inference in `seed-v2-inline-typed-value-inferred-date` and invalid
+dates in `seed-v2-inline-typed-value-inferred-invalid-date`.
 
 ### `seed-v2-inline-highlight-tag-enabled`
 

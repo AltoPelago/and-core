@@ -4,11 +4,12 @@ This folder is reserved for `&ND Core v2` CTS fixtures while v2 remains in propo
 
 Current status:
 
-- 169 accept/reject proposal fixtures (60 accept, 109 reject) cover promoted inline image, AEON
+- 176 accept/reject proposal fixtures (62 accept, 114 reject) cover promoted inline image, AEON
   scalar, tag, marker, footnote, heading, block-caption, formatted-paragraph, first-class todo/auto-number-list, and paired-block forms,
   including nested rich content and document-wide reference integrity
 - `../../contracts/aeon-inline-scalar-v1.json` pins the complete typed-value datatype/alias list,
-  per-family AST, canonical, and HTML projections, annotation cases, and explicit exclusions
+  which the scalar contract check uses to verify per-family AST, canonical, and HTML projections
+  for explicit assignments and inferred shorthand
 - `../../contracts/v2-projection-v1.json` pins 36 exact standalone/embedded canonical snapshots,
   19 inert HTML snapshots, 34 exact source-span assertions, and a 24-entry cross-form interaction
   matrix across all promoted families, nested containers, composition boundaries, and safety cases

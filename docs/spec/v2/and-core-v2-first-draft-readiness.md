@@ -17,10 +17,10 @@ clean-baseline and lifecycle review described below.
 | :--- | :--------------- | :--------- |
 | Version boundary | Declared v1 remains v1; v1-only readers reject v2; headerless v2 requires explicit capability and version selection. | Ready |
 | v1 compatibility | All 149 v1 reference fixtures pass; accepted v1 documents retain their structure under declared v2. | Ready |
-| v2 grammar | 174 indexed strict fixtures: 61 accept and 113 reject. | Ready |
-| v2 executable checks | 1054 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
-| AST snapshots | 60 of 61 accepted fixtures carry exact document ASTs; the broad typed-scalar fixture is covered by the dedicated scalar contract. | Ready |
-| AEON boundary | Contract `and-v2-aeon-inline-scalar-v1` covers 40 datatype names/aliases, 45 accepted forms, and 14 exclusions; live AEON `0.13.0` drift comparison passes when available. | Ready |
+| v2 grammar | 176 indexed strict fixtures with 62 accepted and 114 rejected. | Ready |
+| v2 executable checks | 1065 proposal, version-boundary, canonical-fixed-point, HTML-smoke, budget, and API checks pass. | Ready |
+| AST snapshots | 61 of 62 accepted fixtures carry exact document ASTs. The dedicated scalar contract covers the broad typed-scalar fixture. | Ready |
+| AEON boundary | The scalar contract check covers 40 datatype names and aliases, 61 accepted forms including inferred shorthand, and 21 exclusions. The live drift check uses AEON `0.13.0` for explicit assignments. | Ready |
 | Image boundary | Authored sources remain in Core; explicit HTML `imageBaseUrl` resolution and fail-closed URL handling are tested. | Ready |
 | Canonical output | Every accepted fixture reaches standalone and embedded fixed points; contract `and-v2-projection-v1` pins 56 exact canonical snapshots across promoted families and interactions. | Ready |
 | HTML projection | Every accepted fixture renders; contract `and-v2-projection-v1` pins 29 exact inert HTML snapshots across promoted families, interactions, and safety cases. | Ready |

@@ -73,14 +73,22 @@ function checkAcceptedCase(testCase) {
 }
 
 function expandFamilyCases(manifest) {
-  return manifest.families.flatMap((family) => family.datatypes.map((datatype) => ({
-    id: `${family.id}:${datatype}`,
-    expression: `${datatype} = ${family.scalar}`,
-    canonicalExpression: `${datatype} = ${family.canonicalScalar}`,
-    datatype: { name: datatype, genericArgs: [], clarifiers: [] },
-    value: family.value,
-    htmlText: family.htmlText,
-  })));
+  return manifest.families.flatMap((family) => {
+    const explicit = family.datatypes.map((datatype) => ({
+      id: `${family.id}:${datatype}`,
+      expression: `${datatype} = ${family.scalar}`,
+      canonicalExpression: `${datatype} = ${family.canonicalScalar}`,
+      datatype: { name: datatype, genericArgs: [], clarifiers: [] },
+      value: family.value,
+      htmlText: family.htmlText,
+    }));
+    // Each family lists its inferred datatype first, followed by its explicit aliases.
+    return [...explicit, {
+      ...explicit[0],
+      id: `${family.id}:inferred`,
+      expression: ` ${family.scalar}`,
+    }];
+  });
 }
 
 async function main() {
@@ -122,8 +130,17 @@ async function main() {
     assert.equal(parsed.ok, false, `${exclusion.id}: &ND parser accepted an exclusion`);
   }
 
+  const invalidShorthand = [
+    ' ', ' 2024-02-30', ' 2024-01-01 extra', ' date 2024-01-01',
+    ' = 2024-01-01', ' [1, 2]', '2024-01-01',
+  ];
+  for (const expression of invalidShorthand) {
+    const parsed = parseAnd(`&ND v2\n\n[:${expression}]\n`, { allowV2: true });
+    assert.equal(parsed.errorCode, 'invalid_typed_value', `[:${expression}]: expected a typed-value error`);
+  }
+
   console.log(
-    `aeonInlineScalarContract accepted=${acceptedCases.length} excluded=${manifest.exclusions.length} datatypes=${manifestDatatypes.length} failed=0`,
+    `aeonInlineScalarContract accepted=${acceptedCases.length} excluded=${manifest.exclusions.length + invalidShorthand.length} datatypes=${manifestDatatypes.length} failed=0`,
   );
 }
 

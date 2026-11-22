@@ -161,16 +161,23 @@ content. Rich tags participate in the inherited inline-depth budget.
 
 ## AEON Inline Typed Values
 
-The typed-value form wraps one AEON anonymous typed scalar:
+An inline typed value takes either an explicit AEON anonymous typed scalar or an &ND v2 shorthand.
 
 ```text
 [:TypeAnnotation = ScalarLiteral]
+[: ScalarLiteral]
 ```
 
-The `=` is mandatory. The earlier proposal spelling `[:date 2026-08-20]` is invalid. &ND uses AEON
-type-annotation syntax, string escapes, literal recognition, reserved datatype aliases, compatibility
-rules, and canonical scalar spelling. Reserved datatype names MUST match their AEON literal family.
+An explicit type annotation requires `=`. The earlier proposal spelling `[:date 2026-08-20]` is invalid.
+&ND uses AEON type-annotation syntax, string escapes, literal recognition, reserved datatype aliases,
+compatibility rules, and canonical scalar spelling. Reserved datatype names MUST match their AEON literal family.
 Custom datatype names are accepted and their meaning remains consumer-defined.
+
+The shorthand requires one or more ASCII spaces immediately after `:` followed by one supported
+scalar literal. It infers the first datatype listed for the literal's family below, with empty
+generic arguments and clarifiers. For the non-finite and temporal rows, the specific literal kind
+selects its matching datatype. Both forms produce the same `typed_value` AST and canonical output.
+For example, `[: 2024-01-01]` canonicalizes to `[:date = 2024-01-01]`.
 
 The supported inline subset is closed:
 

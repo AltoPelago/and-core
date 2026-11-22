@@ -408,6 +408,15 @@ function validateCompatibility(datatype, value) {
 }
 
 export function parseAeonInlineTypedValue(source) {
+  const leadingSpaces = source.match(/^ +/);
+  if (leadingSpaces) {
+    const value = parseScalar(source.slice(leadingSpaces[0].length).trimEnd());
+    if (!value) return failure();
+    const family = scalarFamily(value);
+    const name = family === 'separator' ? 'sep' : family;
+    return { ok: true, datatype: { name, genericArgs: [], clarifiers: [] }, value };
+  }
+
   const datatypeResult = parseTypeAnnotationAt(source, 0);
   if (!datatypeResult) return failure();
   let i = skipWhitespace(source, datatypeResult.nextIndex);
