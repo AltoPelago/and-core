@@ -139,7 +139,7 @@ test('rejects ambiguous roles and the earlier wrapper profile', () => {
 const envelope = (body) => `and_version="v2"\ndoc:node=${body.replace(/^<document(?=[(>])/, `<document@{vocabulary="${profile}"}`)}`;
 
 test('native inline attributes replace parser nodes for every closed scalar family', async () => {
-  const fixture = JSON.parse(await read('../../cts/fixtures/v2/strict/accept/seed-v2-inline-typed-value-aeon-scalars.json'));
+  const fixture = JSON.parse(await read('../../cts/fixtures/v2/strict/accept/v2-inline-typed-value-aeon-scalars.json'));
   const aeon = toAeon(fixture.source);
   assert.match(aeon, /<typed_value@\{value:date = 2024-02-29\}>/);
   assert.match(aeon, /value:null<datetime> = !none/);
